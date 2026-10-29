@@ -666,12 +666,12 @@
       }
     });
 
-    window.doStudentLogout = function() {
-      localStorage.removeItem("a2z_user");
-      sessionStorage.clear();
-      window.location.reload();
-    };
-
+window.doStudentLogout = function() {
+  localStorage.removeItem("a2z_user");
+  sessionStorage.clear();
+  // Keeps the user on https://student.schoolalarm.online (shows login screen)
+  window.location.href = window.location.origin;
+};
     // Auto-boot on load
     document.addEventListener("DOMContentLoaded", function() {
       window.initStudentPortal();
