@@ -1247,15 +1247,45 @@
     }
     window.submitSchoolInquiry = submitSchoolInquiry;
 
-    // Subdomain routing detection (Localhost vs Production)
+    // Universal Dynamic Subdomain & Routing Detection (Localhost, *.pages.dev & Custom Domains)
     document.addEventListener("DOMContentLoaded", function() {
-        const host = window.location.hostname;
-        if (host === 'localhost' || host === '127.0.0.1') {
-            document.querySelectorAll("#nav-app-link, #hero-app-link, #footer-app-link").forEach(el => el.href = "/app.html");
-            document.querySelectorAll("#nav-student-link, #hero-student-link, #footer-student-link").forEach(el => el.href = "/student.html");
-            const adminLink = document.getElementById("footer-admin-link");
-            if (adminLink) adminLink.href = "/superadmin.html";
+        const host = window.location.hostname.toLowerCase();
+        const protocol = window.location.protocol;
+
+        // Helper: Extracts root apex domain (e.g., schoolalarm.online, domain.co.in)
+        function getBaseDomain(hostname) {
+            const parts = hostname.split('.');
+            if (parts.length <= 2) return hostname;
+            const secondTld = parts[parts.length - 2];
+            const commonTlds = ['co', 'edu', 'org', 'ac', 'gov', 'net', 'com'];
+            if (parts.length >= 3 && commonTlds.includes(secondTld) && parts[parts.length - 1].length === 2) {
+                return parts.slice(-3).join('.');
+            }
+            return parts.slice(-2).join('.');
         }
+
+        // 1. Check if running on Cloudflare Pages default (*.pages.dev) or Localhost
+        const isDirectHost = host.endsWith('.pages.dev') || 
+                             host.endsWith('.workers.dev') || 
+                             host === 'localhost' || 
+                             host === '127.0.0.1';
+
+        let appUrl = "/app.html";
+        let studentUrl = "/student.html";
+        let adminUrl = "/superadmin.html";
+
+        // 2. If running on ANY live Custom Domain
+        if (!isDirectHost) {
+            const baseDomain = getBaseDomain(host);
+            appUrl = `${protocol}//app.${baseDomain}`;
+            studentUrl = `${protocol}//student.${baseDomain}`;
+            adminUrl = `${protocol}//admin.${baseDomain}`;
+        }
+
+        // Update all buttons, nav links & footer links dynamically
+        document.querySelectorAll("#nav-app-link, #hero-app-link, #footer-app-link, a[href*='app.schoolalarm']").forEach(el => el.href = appUrl);
+        document.querySelectorAll("#nav-student-link, #hero-student-link, #footer-student-link, a[href*='student.schoolalarm']").forEach(el => el.href = studentUrl);
+        document.querySelectorAll("#footer-admin-link, a[href*='admin.schoolalarm']").forEach(el => el.href = adminUrl);
 
         // Mobile navbar auto-close on link click
         const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
