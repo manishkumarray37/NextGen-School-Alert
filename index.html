@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+    <title>NextGen School Alarm | Multi-School Enterprise ERP</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+    
+    <!-- CSS Dependencies -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        .feed-links, .subscribe-wrapper {
+            display: none !important;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+            padding: 0;
+            margin: 0;
+            background-color: #f0f4f9;
+            background-image: radial-gradient(#d3e0ea 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* 3D AUTOMATION STYLES */
+        .text-3d-glow {
+            font-weight: 800;
+            text-shadow: 0 4px 15px rgba(13, 110, 253, 0.3), 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .title-3d {
+            font-weight: 800;
+            color: #1a202c;
+            text-shadow: 2px 2px 0px #e2e8f0, 4px 4px 8px rgba(0,0,0,0.08);
+        }
+
+        .navbar {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06) !important;
+        }
+
+        section {
+            padding: 80px 0;
+            position: relative;
+        }
+
+        .nav-link {
+            font-weight: 600;
+            color: #333 !important;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* DYNAMIC NAVBAR */
+        .navbar-nav {
+            display: flex !important;
+            align-items: center !important;
+            flex-direction: row !important;
+            gap: 5px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .navbar-nav .nav-item {
+            display: inline-flex !important;
+            align-items: center !important;
+        }
+
+        .navbar-nav .nav-link {
+            font-size: 13.5px !important;
+            font-weight: 700 !important;
+            color: #475569 !important;
+            padding: 7px 14px !important;
+            border-radius: 8px !important;
+            white-space: nowrap !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            text-decoration: none !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            border: 1.5px solid transparent;
+        }
+
+        .navbar-nav .nav-link[href="#"], 
+        .navbar-nav .nav-link[href="#home"],
+        .navbar-nav .nav-item:nth-child(1) .nav-link:hover,
+        .navbar-nav .nav-item:nth-child(1) .nav-link.active {
+            color: #0284c7 !important;
+            background: #f0f9ff !important;
+            border-color: #bae6fd !important;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15) !important;
+        }
+
+        .navbar-nav .nav-link[href*="about"]:hover,
+        .navbar-nav .nav-link[href*="about"].active,
+        .navbar-nav .nav-item:nth-child(2) .nav-link:hover,
+        .navbar-nav .nav-item:nth-child(2) .nav-link.active {
+            color: #7c3aed !important;
+            background: #f5f3ff !important;
+            border-color: #ddd6fe !important;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15) !important;
+        }
+
+        .navbar-nav .nav-link[href*="feature"]:hover,
+        .navbar-nav .nav-link[href*="feature"].active,
+        .navbar-nav .nav-item:nth-child(3) .nav-link:hover,
+        .navbar-nav .nav-item:nth-child(3) .nav-link.active {
+            color: #d97706 !important;
+            background: #fffbeb !important;
+            border-color: #fde68a !important;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.15) !important;
+        }
+
+        .navbar-nav .nav-link[href*="ceo-desk"]:hover,
+        .navbar-nav .nav-link[href*="ceo-desk"].active,
+        .navbar-nav .nav-item:nth-child(4) .nav-link:hover,
+        .navbar-nav .nav-item:nth-child(4) .nav-link.active {
+            color: #e11d48 !important;
+            background: #fff1f2 !important;
+            border-color: #fecdd3 !important;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15) !important;
+        }
+
+        .navbar-nav .nav-link[href*="pricing"]:hover,
+        .navbar-nav .nav-link[href*="pricing"].active,
+        .navbar-nav .nav-item:nth-child(5) .nav-link:hover,
+        .navbar-nav .nav-item:nth-child(5) .nav-link.active {
+            color: #0284c7 !important;
+            background: #f0f9ff !important;
+            border-color: #bae6fd !important;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15) !important;
+        }
+
+        .navbar-nav .nav-link[href*="contact"]:hover,
+        .navbar-nav .nav-link[href*="contact"].active,
+        .navbar-nav .nav-item:nth-child(6) .nav-link:hover,
+        .navbar-nav .nav-item:nth-child(6) .nav-link.active {
+            color: #059669 !important;
+            background: #ecfdf5 !important;
+            border-color: #a7f3d0 !important;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.18) !important;
+        }
+
+        /* STUDENT BUTTON */
+        .btn-student-capsule {
+            color: #0f766e !important;
+            background: #f0fdfa !important;
+            border: 1.5px solid #99f6e4 !important;
+            border-radius: 20px !important;
+            padding: 6px 14px !important;
+            margin-left: 4px !important;
+        }
+        .btn-student-capsule:hover {
+            background: #0d9488 !important;
+            color: #ffffff !important;
+            border-color: #0d9488 !important;
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3) !important;
+        }
+
+        /* SCHOOL LOGIN BUTTON */
+        .btn-school-login {
+            background: linear-gradient(135deg, #0f172a, #1e293b) !important;
+            color: #ffffff !important;
+            border-radius: 20px !important;
+            padding: 7px 18px !important;
+            margin-left: 4px !important;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25) !important;
+        }
+        .btn-school-login:hover {
+            background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+            color: #ffffff !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35) !important;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: radial-gradient(circle at 80% 20%, #dbeafe 0%, #f0f4f9 60%, #ffffff 100%);
+            overflow: hidden;
+            position: relative;
+            padding: 10px 0;
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .main-hero-img {
+            filter: drop-shadow(0 25px 35px rgba(13, 110, 253, 0.25));
+            animation: floatImage 4s ease-in-out infinite;
+            border-radius: 30px;
+        }
+
+        @keyframes floatImage {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-18px) rotate(1deg); }
+        }
+
+        .hero-image-wrapper {
+            position: relative;
+            padding: 20px;
+            perspective: 1000px;
+        }
+
+        .floating-card {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(4px);
+            padding: 15px 22px;
+            border-radius: 18px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12), 0 5px 15px rgba(13, 110, 253, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 2;
+            font-weight: bold;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: transform 0.3s ease;
+        }
+        .floating-card:hover {
+            transform: scale(1.08) translateZ(20px);
+        }
+
+        .card-1 {
+            top: 6%;
+            left: -8%;
+            animation: floatImage 3.5s ease-in-out infinite reverse;
+        }
+
+        .card-2 {
+            bottom: 32%;
+            right: -20%;
+            animation: floatImage 5s ease-in-out infinite;
+        }
+
+        .floating-card i {
+            font-size: 1.6rem;
+        }
+
+        #about { background: #ffffff; }
+        #features { background: #f8f9fa; }
+        #contact { background: #ffffff; }
+
+        .bg-blue { background: linear-gradient(135deg, #4399bc 0%, #206382 100%) !important; }
+        .bg-teal { background: linear-gradient(135deg, #26a69a 0%, #00695c 100%) !important; }
+        .bg-orange { background: linear-gradient(135deg, #f29235 0%, #d84315 100%) !important; }
+
+        .feature-card {
+            border-radius: 20px;
+            text-align: center;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+            position: relative;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.22);
+        }
+
+        .icon-circle {
+            background: rgba(255, 255, 255, 0.25);
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin-bottom: 20px;
+            font-size: 28px;
+            border: 2px solid rgba(255,255,255,0.6);
+            box-shadow: inset 0 0 15px rgba(255,255,255,0.3);
+            animation: pulseIcon 3s infinite ease-in-out;
+        }
+
+        @keyframes pulseIcon {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .btn-demo {
+            margin-top: auto;
+            border: 2px solid #fff;
+            color: #fff;
+            padding: 8px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .btn-demo:hover {
+            background: #fff;
+            color: #333;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255,255,255,0.4);
+        }
+
+        .animated-box {
+            padding: 12px 18px;
+            border-radius: 12px;
+            border: 2px solid #0d6efd;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            width: 100%;
+            box-shadow: 0 8px 16px rgba(13, 110, 253, 0.08);
+            animation: bgColorChange 5s infinite alternate; 
+        }
+
+        @keyframes bgColorChange {
+            0% { background-color: #ffffff; color: #333; }
+            25% { background-color: #e3f2fd; color: #0d47a1; }
+            50% { background-color: #f1f8e9; color: #1b5e20; }
+            75% { background-color: #fff3e0; color: #e65100; }
+            100% { background-color: #fce4ec; color: #880e4f; }
+        }
+
+        .animated-box:hover {
+            transform: scale(1.04) translateY(-3px);
+            border-color: #0b5ed7;
+            box-shadow: 0 12px 24px rgba(13, 110, 253, 0.2);
+        }
+
+        .ceo-text p {
+            text-align: justify;
+        }
+
+        @media (max-width: 1200px) {
+            .ceo-text p { text-align: center; }
+            .ceo-desk .text-lg-start { text-align: center !important; }
+        }
+
+        .tab-btn {
+            padding: 12px 28px;
+            border: 1px solid #dee2e6;
+            background: #ffffff;
+            border-radius: 12px;
+            font-weight: 600;
+            color: #6c757d;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%) !important;
+            color: #ffffff !important;
+            border-color: #0d6efd;
+            box-shadow: 0 8px 20px rgba(13, 110, 253, 0.35);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #eef2f6;
+            transform: translateY(-2px);
+        }
+
+        .tab-panel {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .brand-container {
+            position: relative;
+            width: 250px;
+            height: 50px;
+            overflow: hidden;
+        }
+
+        .brand-text, .brand-logo-1, .brand-logo-2 {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            transition: opacity 1s ease-in-out;
+            display: block;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .brand-logo-1 {
+            height: 60px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .brand-logo-2 {
+            height: 45px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        @keyframes cycleAnimation {
+            0%, 30% { opacity: 1; visibility: visible; }
+            33%, 100% { opacity: 0; visibility: hidden; }
+        }
+
+        .brand-text { 
+            animation: cycleAnimation 15s infinite; 
+            color: #0d6efd; 
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+        .brand-logo-1 { 
+            animation: cycleAnimation 15s infinite 5s; 
+        }
+        .brand-logo-2 { 
+            animation: cycleAnimation 15s infinite 10s; 
+        }
+
+        /* SAAS PRICING SECTION STYLES */
+        .pricing-section {
+            padding: 70px 0;
+            background: #ffffff;
+        }
+        .pricing-card {
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 35px 25px;
+            position: relative;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+        .pricing-card.popular {
+            border: 2px solid #ff3366;
+            box-shadow: 0 15px 35px rgba(255, 51, 102, 0.12);
+        }
+        .popular-badge {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff3366;
+            color: #ffffff;
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 4px 16px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(255, 51, 102, 0.3);
+        }
+        .pricing-title {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: #1a202c;
+            margin-bottom: 5px;
+        }
+        .pricing-subtitle {
+            font-size: 0.88rem;
+            color: #64748b;
+            margin-bottom: 25px;
+        }
+        .price-tag {
+            font-size: 2.6rem;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 2px;
+        }
+        .price-tag span {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #64748b;
+        }
+        .pricing-features-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 30px 0;
+            text-align: left;
+            flex-grow: 1;
+        }
+        .pricing-features-list li {
+            font-size: 0.92rem;
+            color: #334155;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .pricing-features-list li i {
+            color: #16a34a;
+            font-size: 1rem;
+        }
+        .btn-pricing-outline {
+            background: #f1f5f9;
+            color: #0f172a;
+            border: none;
+            font-weight: 700;
+            font-size: 0.92rem;
+            padding: 12px;
+            border-radius: 12px;
+            width: 100%;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+        .btn-pricing-outline:hover {
+            background: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 6px 15px rgba(2, 132, 199, 0.25);
+        }
+        .btn-pricing-solid {
+            background: #ff3366;
+            color: #ffffff;
+            border: none;
+            font-weight: 700;
+            font-size: 0.92rem;
+            padding: 12px;
+            border-radius: 12px;
+            width: 100%;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            box-shadow: 0 6px 15px rgba(255, 51, 102, 0.3);
+        }
+        .btn-pricing-solid:hover {
+            background: #e61e51;
+            color: #ffffff;
+            box-shadow: 0 8px 20px rgba(255, 51, 102, 0.4);
+        }
+
+        /* DEMO BOOKING FORM STYLES */
+        .demo-form-card {
+            background: #ffffff;
+            border: none;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            padding: 40px;
+        }
+        .demo-input, .demo-select {
+            height: 48px;
+            font-size: 13.5px;
+            border-radius: 12px;
+            border: 1.5px solid #cbd5e1;
+            background: #f8fafc;
+        }
+        .demo-input:focus, .demo-select:focus {
+            border-color: #0284c7;
+            background: #ffffff;
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12);
+        }
+        .demo-submit-btn {
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 15px;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            width: 100%;
+            box-shadow: 0 10px 20px rgba(2, 132, 199, 0.25);
+            transition: all 0.2s ease;
+        }
+        .demo-submit-btn:hover {
+            background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(2, 132, 199, 0.35);
+        }
+        .perk-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.92rem;
+            color: #334155;
+            margin-bottom: 14px;
+            font-weight: 600;
+        }
+        .perk-item i {
+            color: #16a34a;
+            background: #dcfce7;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+        }
+
+        /* MOBILE NAVBAR OVERFLOW FIX */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: #ffffff;
+                padding: 15px 20px;
+                border-radius: 12px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+                margin-top: 15px;
+                border: 1px solid #e2e8f0;
+            }
+            .navbar-nav {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 8px !important;
+                width: 100%;
+            }
+            .navbar-nav .nav-item {
+                width: 100%;
+            }
+            .navbar-nav .nav-link {
+                width: 100%;
+                text-align: left;
+            }
+            .navbar-nav .nav-item:nth-last-child(2) .nav-link,
+            .navbar-nav .nav-item:last-child .nav-link {
+                margin-left: 0 !important;
+                text-align: center !important;
+                justify-content: center !important;
+            }
+        }
+
+        /* RAINBOW TOP LOADER */
+        #global-top-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3.5px;
+            background: linear-gradient(90deg, #ff0055, #ff5500, #ffcc00, #00e676, #00b0ff, #7c4dff, #ff0055);
+            background-size: 300% 100%;
+            z-index: 999999999 !important;
+            transition: width 0.3s ease, opacity 0.3s ease;
+            box-shadow: 0 0 12px rgba(255, 0, 85, 0.8), 0 0 8px rgba(0, 176, 255, 0.7);
+            pointer-events: none;
+            opacity: 0;
+            animation: rainbowWaveFlow 1.8s linear infinite;
+        }
+
+        @keyframes rainbowWaveFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Progress Bar -->
+    <div id="global-top-loader"></div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/" style="padding: 0;">
+                <div class="brand-container">
+                    <span class="brand-text">NextGen Alarm</span>
+                    <img alt="Logo 1" class="brand-logo-1" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjz750omNvlH13soJKUck_8oUuyT05gRBRWCNcRgXE-VqXEMJBVK7ZQOZfJmSnSEkkx_GLoskmEMLWFqJsHOV_wsMF1tCtOixgkkBhmGgqcC1QxJPXZ1DAQ9-8Ay_YDt4q1N-XiTHhW-_eh0HtUS4DHmuxA67s-AzBFy0r2509YpVbv_ZUB3ZsEh9vJ6dKJ/s2075/file_000000006ec8820ba0956969337d1e9d.png">
+                    <img alt="Logo 2" class="brand-logo-2" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjGzdT3E0JGXM5EfpX-zJq0E2Fcl8s_OvPgTgF5SeR7N2QpJK6_nhevN9OIWq_eYvE214_5gsGOpFm2nuu_wgI00ZUHfpC9OwmdYDZAHx-p5DZ0wqHawLB7EIvSBHH4hIpwQaCLzWBTTkHE3tKJz_iTQsfRkyVnVrClJJl0GN-IC2muPNmNv12qhmpfqz3h/s1600/School.png">
+                </div>
+            </a>
+
+            <button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbarNav" data-bs-toggle="collapse" style="border: none;" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#ceo-desk">Developer Message</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-student-capsule" id="nav-student-link" href="https://student.schoolalarm.online">
+                            <i class="fas fa-graduation-cap me-1"></i> Student Portal
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-school-login" id="nav-app-link" href="https://app.schoolalarm.online">
+                            <i class="fas fa-sign-in-alt me-1"></i> School Login
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="home">
+        <div class="container">
+            <div class="row align-items-center" style="min-height: 85vh;">
+                <div class="col-lg-7 text-start animate-fade-in">
+                    <span class="badge rounded-pill bg-warning text-dark px-3 py-2 mb-3 shadow-sm">🚀 Next-Gen School ERP</span>
+                    <h1 class="display-3 fw-bold mb-3 title-3d" style="line-height: 1.2;">
+                        NextGen School Alarm <br/><span class="text-3d-glow" style="color: #0d6efd;">Enterprise Cloud ERP</span>
+                    </h1>
+                    <p class="lead fw-bold text-primary mb-2">Automate Anything and Everything!</p>
+                    <p class="text-secondary mb-4" style="font-size: 1.1rem; line-height: 1.7;">
+                        Automate your entire school using a single platform. From admission to certificate generation, fee-collection, and academic analysis—automate workflows in minutes with our 360-degree solution.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a class="btn btn-primary btn-lg px-4 shadow" id="hero-app-link" href="https://app.schoolalarm.online" style="border-radius: 12px; box-shadow: 0 10px 20px rgba(13,110,253,0.3);">
+                            <i class="fas fa-school me-2"></i> School Portal
+                        </a>
+                        <a class="btn btn-outline-dark btn-lg px-4" id="hero-student-link" href="https://student.schoolalarm.online" style="border-radius: 12px;">
+                            <i class="fas fa-user-graduate me-2"></i> Student Portal
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-5 d-none d-lg-block">
+                    <div class="hero-image-wrapper">
+                        <div class="floating-card card-1">
+                            <i class="fas fa-user-graduate text-primary"></i>
+                            <span>10k+ Students</span>
+                        </div>
+                        <div class="floating-card card-2">
+                            <i class="fas fa-check-circle text-success"></i>
+                            <span>10+ Active Schools</span>
+                        </div>
+                        <img alt="School ERP" class="img-fluid main-hero-img" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi4EyAApEZAMOoK1xOs_i9DsKT0Q5UhMiB9odXA9EMF9CWZeTuz9QVrEAxJMal3Hjs-EnVXFV7bgPeaT2hVFQRQduw6QSeSoCgaUqMDUzdpi8dNMeMDbJaVszC-EIpvQLnBfsHSrEAQxPBZZZ932yoXyepYHsqJrcmgZP1VCygRBg9SP6P8Gxs3qQSXgciA/s1600/file_00000000d63881fa906af9e51f158b48.png">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section id="about" style="padding: 60px 0; background: #ffffff;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <div class="pe-lg-5">
+                        <span class="badge rounded-pill bg-warning text-dark px-3 py-2 mb-3 shadow-sm" style="font-size: 0.85rem; letter-spacing: 1px;">ABOUT US</span>
+                        <h2 class="fw-bold display-5 mb-4 title-3d">
+                            <span style="color: #0d6efd;">ERP Provider</span> for Modern Schools
+                        </h2>
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6 mb-3">
+                                <div class="d-flex align-items-center animated-box">
+                                    <i class="fas fa-check-circle text-primary me-2"></i>
+                                    <span class="fw-bold">Student Data Management</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <div class="d-flex align-items-center animated-box">
+                                    <i class="fas fa-check-circle text-primary me-2"></i>
+                                    <span class="fw-bold">Staff Data Management</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <div class="d-flex align-items-center animated-box">
+                                    <i class="fas fa-check-circle text-primary me-2"></i>
+                                    <span class="fw-bold">Fee Collection & Reminders</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 mb-3">
+                                <div class="d-flex align-items-center animated-box">
+                                    <i class="fas fa-check-circle text-primary me-2"></i>
+                                    <span class="fw-bold">Standard Messaging Service</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center p-3 rounded-4 shadow-sm" style="background: #f8f9fa; border-left: 8px solid #0d6efd;">
+                            <div class="ms-3">
+                                <h5 class="mb-0 fw-bold">Manish Kumar Ray</h5>
+                                <small class="text-muted">Founder, NextGen School Alarm</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div style="display: flex; gap: 0px; align-items: center; justify-content: center; width: 100%;">
+                        <div style="flex: 1; overflow: hidden; border-radius: 12px 0 0 12px;">
+                            <img alt="School Management Software 1" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiAp-GEYbeTXsznzMWmZDHHe6HWanZn5mfA5tpSTVK3rv2fCHWboHPwzt83ioJhAWFQKlbT8SktXAF6Ht6zXhubrKsZ1UyM2bJAF3WzH3lVY7XSXsxNj8t20iic5R1bmrhf2eFMevcldFXjxwoUQ49kDCRmpdqQIf8U5EXTSBwe-I2t-vpOvGlplf_Z7I3/s1600/file_00000000a92c81fa8bc75abf7a577d38.png" style="width: 100%; height: 500px; object-fit: cover; display: block;">
+                        </div>
+                        <div style="flex: 1; overflow: hidden; border-radius: 0 12px 12px 0;">
+                            <img alt="School Management Software 2" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh4DLD5CBLrBuJ1KwwblocT_7DA2YizPe6dJQit-FiiTQ2CfIl7l-GIS8-Yq7WwcguQ42kTJselbrK9OZug8MyLP8KzsM0L3dBaZ3Izxqn0KciJKHzWfbX6fN29kQz0TgdZdu5MlczBEKBx6QS-UkFIlL8IYw_XZrdfdSDBpmP1Xxu3n-Lday8u12L2ti85/s1600/file_00000000c17881fb8acba35b93980e56.png" style="width: 100%; height: 500px; object-fit: cover; display: block;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section id="features" style="padding: 60px 0; background: #f8f9fa;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold title-3d">Our Core Features</h2>
+                <div class="mx-auto" style="width: 50px; height: 3px; background: #4399bc;"></div>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card bg-orange shadow-sm p-4 h-100">
+                        <div class="icon-circle">
+                            <i class="fas fa-school"></i>
+                        </div>
+                        <h4>All-In-One School ERP</h4>
+                        <p>Single bundle solution including all our modules for modern school automation. Complete Paperless Solutions.</p>
+                        <a class="btn-demo" href="#contact">Request Demo</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card bg-blue shadow-sm p-4 h-100">
+                        <div class="icon-circle">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <h4>Fee Collection Software</h4>
+                        <p>Automate end-to-end fee collection including payment receipts, tracking, and dues reminders.</p>
+                        <a class="btn-demo" href="#contact">Request Demo</a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card bg-teal shadow-sm p-4 h-100">
+                        <div class="icon-circle">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h4>Admission Management</h4>
+                        <p>Complete solution for managing Enquiry to Enrollment funnel with customizable digital admission workflows.</p>
+                        <a class="btn-demo" href="#contact">Request Demo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CEO / DEVELOPER DESK -->
+    <section id="ceo-desk" style="padding: 60px 0; background-color: #ffffff;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <p class="mb-1 text-muted fw-bold" style="letter-spacing: 2px;">NextGen School Alarm Suite</p>
+                <h2 class="fw-bold display-5 title-3d">CEO Desk</h2>
+            </div>
+
+            <div class="row align-items-center mt-4">
+                <div class="col-lg-7">
+                    <h2 class="fw-bold mb-1 title-3d" style="font-size: 2.5rem; color: #1a202c;">Manish Kumar Ray</h2>
+                    <h5 class="text-dark fw-bold mb-4">Founder & CEO</h5>
+                    
+                    <div class="ceo-text" style="line-height: 1.8; color: #4a5568; font-size: 1.05rem;">
+                        <p class="mb-3">
+                            Manish is the Founder & CEO of <b>A2Z Online Services Pvt Ltd</b>. With a vision to digitalize the education system, he has been leading innovation in school automation.
+                        </p>
+                        <p class="mb-3">
+                            His entrepreneurial zeal and management skills keep the entire technical team motivated to deliver excellence daily.
+                        </p>
+                        <p>
+                            NextGen School Alarm has been engineered as one of the most advanced, scalable, and intuitive platforms to simplify institutional administration.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-5 text-center mt-5 mt-lg-0">
+                    <img alt="CEO Manish Kumar" class="img-fluid" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi1uA4m8OdNcdJdTjI_kHdQyxMY9zDbdZriT8bHHAB_DcBPT0hZWOgt81-30ihMGzbXziL0XXNYfqlt1BwZ1AKBllMPJseHVB73Hq8Hpqfb4Oku7fum9KTS2Hg5zMjQ5r7vYL1mIqvz9VpgXR9Q-LSTAjjCST1ZJdaNpOW_4581wkkuAtPIJExpQckSGWld/s1600/file_00000000bf5081fa8f69b5c6aa300719.png" style="width: 100%; max-width: 300px; height: auto; display: inline-block; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OUR STORY TABS SECTION -->
+    <section id="our-story-tabs" style="padding: 60px 0; background: #ffffff;">
+        <div class="container text-center">
+            <p class="mb-1 text-muted fw-bold">Platform Overview</p>
+            <h2 class="fw-bold display-5 mb-2 title-3d">Welcome to School Canvas</h2>
+            <div class="d-flex justify-content-center flex-wrap gap-3 mb-5 mt-4">
+                <button class="tab-btn active" onclick="openTab(event, 'story')">Our Story</button>
+                <button class="tab-btn" onclick="openTab(event, 'vision')">Our Vision</button>
+                <button class="tab-btn" onclick="openTab(event, 'mission')">Our Mission</button>
+                <button class="tab-btn" onclick="openTab(event, 'refund')">Refund Policy</button>
+            </div>
+            
+            <div class="tab-content-container text-start shadow-sm p-4 p-md-5 rounded-4 border bg-white">
+                <div class="tab-panel" id="story" style="display: block;">
+                    <h3 class="fw-bold mb-4 text-primary">Dear Parents & Educators,</h3>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <p class="text-secondary" style="line-height: 1.9; font-size: 1.02rem; text-align: justify;">
+                                Empowering modern education with intelligence and speed, <b style="color: #0d6efd;">NextGen School Alarm</b> is built to redefine how schools connect with families. Our automation platform delivers instant attendance tracking, live academic updates, and hassle-free online fee collection right at your fingertips.
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="text-secondary" style="line-height: 1.9; font-size: 1.02rem; text-align: justify;">
+                                Driven by innovation under <b>A2Z Online Services Pvt. Ltd.</b>, NextGen School Alarm delivers seamless 360-degree control over school operations, ensuring parents and educators stay perfectly synchronized.
+                            </p>
+                        </div> 
+                    </div> 
+                </div>
+
+                <div class="tab-panel" id="vision" style="display: none;">
+                    <div class="row align-items-center">
+                        <div class="col-md-6 mb-4 mb-md-0">
+                            <img alt="Vision" class="img-fluid" src="https://schoolcanvas.com/assets/img/screen/widget-8.png" style="width: 100%; border-radius: 20px;">
+                        </div>
+                        <div class="col-md-6 ps-lg-4">
+                            <h2 class="fw-bold mb-4 title-3d" style="color: #1a202c;">Our Vision</h2>
+                            <p class="text-secondary mb-4" style="line-height: 1.8; font-size: 1.05rem;">
+                                We envision providing the best software experience to educational institutes using technology as innovation, bringing all stakeholders of the education system closer.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-panel" id="mission" style="display: none;">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h3 class="fw-bold mb-4 title-3d" style="color: #1a202c;">Our Mission</h3>
+                            <p class="text-secondary mb-4" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
+                                Our dedicated, experienced and expert professionals are continuously striving to add new features and tools ensuring uniqueness and high quality to our offerings.
+                            </p>
+                        </div>
+                        <div class="col-md-6 mt-4 mt-md-0">
+                            <img alt="Our Mission" class="img-fluid w-100 rounded-4" src="https://schoolcanvas.com/assets/img/screen/widget-11.png" style="object-fit: cover;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-panel" id="refund" style="display: none;">
+                    <h3 class="fw-bold mb-4 title-3d" style="color: #1a202c;">Refund Policy</h3>
+                    <ul class="text-secondary ps-4" style="line-height: 2;">
+                        <li><b>Subscription Basis:</b> Services are provided on a subscription basis; once activated, cannot be cancelled for current cycle.</li>
+                        <li><b>No Refunds:</b> No refunds for payments made, as we provide a full demo period before purchase.</li>
+                        <li><b>Cancellation:</b> Inform us 15 days in advance to cancel subsequent renewal cycles.</li>
+                    </ul>
+                </div>
+            </div>     
+        </div>
+    </section>
+
+    <!-- PRICING SECTION -->
+    <section class="pricing-section" id="pricing" style="padding: 70px 0; background-color: #ffffff;">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="badge rounded-pill px-3 py-2 mb-2 shadow-sm" style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.5px; background-color: #dc3545; color: #ffffff;">SIMPLE & AFFORDABLE</span>
+                <h2 class="fw-bold display-6 title-3d">Choose the Right Plan for Your School</h2>
+                <p class="text-muted">All plans include core features with secure cloud access.</p>
+            </div>
+
+            <div class="row g-4 align-items-stretch">
+                <!-- 1. BASIC PLAN -->
+                <div class="col-lg-4 col-md-6 col-12">
+                    <div class="pricing-card">
+                        <div class="text-center">
+                            <h3 class="pricing-title">Basic</h3>
+                            <p class="pricing-subtitle">Perfect for small schools</p>
+                            <div class="price-tag">₹699<span>/month</span></div>
+                        </div>
+                        <ul class="pricing-features-list">
+                            <li><i class="fas fa-check"></i> Student Management</li>
+                            <li><i class="fas fa-check"></i> Fees Management</li>
+                            <li><i class="fas fa-check"></i> Basic Reports</li>
+                            <li><i class="fas fa-check"></i> Email Support</li>
+                        </ul>
+                        <a class="btn-pricing-outline" href="#contact">Book Free Demo</a>
+                    </div>
+                </div>
+
+                <!-- 2. STANDARD PLAN -->
+                <div class="col-lg-4 col-md-6 col-12">
+                    <div class="pricing-card popular">
+                        <div class="popular-badge">Most Popular</div>
+                        <div class="text-center">
+                            <h3 class="pricing-title">Standard</h3>
+                            <p class="pricing-subtitle">Best for growing schools</p>
+                            <div class="price-tag">₹999<span>/month</span></div>
+                        </div>
+                        <ul class="pricing-features-list">
+                            <li><i class="fas fa-check"></i> All Basic Features</li>
+                            <li><i class="fas fa-check"></i> Attendance Management</li>
+                            <li><i class="fas fa-check"></i> Exam & Academic</li>
+                            <li><i class="fas fa-check"></i> Accounts Management</li>
+                            <li><i class="fas fa-check"></i> Priority Support</li>
+                        </ul>
+                        <a class="btn-pricing-solid" href="#contact">Book Free Demo</a>
+                    </div>
+                </div>
+
+                <!-- 3. PREMIUM PLAN -->
+                <div class="col-lg-4 col-md-6 col-12">
+                    <div class="pricing-card">
+                        <div class="text-center">
+                            <h3 class="pricing-title">Premium</h3>
+                            <p class="pricing-subtitle">Complete solution for all needs</p>
+                            <div class="price-tag">₹1499<span>/month</span></div>
+                        </div>
+                        <ul class="pricing-features-list">
+                            <li><i class="fas fa-check"></i> All Standard Features</li>
+                            <li><i class="fas fa-check"></i> Auto Bell & Talking Timetable</li>
+                            <li><i class="fas fa-check"></i> Parent & Teacher Portal</li>
+                            <li><i class="fas fa-check"></i> Staff & Payroll Management</li>
+                            <li><i class="fas fa-check"></i> Transport Management</li>
+                            <li><i class="fas fa-check"></i> Advanced Reports</li>
+                        </ul>
+                        <a class="btn-pricing-outline" href="#contact">Book Free Demo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT & DEMO BOOKING SECTION -->
+    <section id="contact" style="padding: 70px 0; background: linear-gradient(to bottom, #f1f5f9, #e2e8f0);">
+        <div class="container">
+            <div class="row g-5 align-items-center">
+                <!-- LEFT COLUMN: BENEFITS -->
+                <div class="col-lg-5 text-start">
+                    <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 mb-3 shadow-sm" style="font-weight: 700;">Book My Free Demo</span>
+                    <h2 class="fw-bold display-6 title-3d mb-3" style="line-height: 1.2;">
+                        See your student records on <span style="color: #0284c7;">School Alarm</span>.
+                    </h2>
+                    <p class="text-secondary mb-4" style="line-height: 1.7; font-size: 1.05rem;">
+                        A tailored demo for your school, with your certificate formats, classes, and reports. We will call you within 4 working hours to fix a time.
+                    </p>
+
+                    <div class="bg-white p-4 rounded-4 shadow-sm border mb-4">
+                        <h6 class="fw-bold text-dark mb-3" style="font-size: 0.9rem; text-transform: uppercase;">Your Free Demo Covers:</h6>
+                        <div class="perk-item"><i class="fas fa-check"></i><span>Your own data, formats and processes</span></div>
+                        <div class="perk-item"><i class="fas fa-check"></i><span>Modules needed: from admissions to fees</span></div>
+                        <div class="perk-item"><i class="fas fa-check"></i><span>Dedicated portal access for teachers and students</span></div>
+                        <div class="perk-item"><i class="fas fa-check"></i><span>Smart Attendance & Cloud Automation</span></div>
+                        <div class="perk-item mb-0"><i class="fas fa-check"></i><span>Free setup plan and quotation</span></div>
+                    </div>
+
+                    <div class="d-flex gap-2 flex-wrap">
+                        <span class="badge bg-white text-success border px-3 py-2 shadow-sm fw-bold"><i class="fas fa-clock me-1"></i> Call back in 4 hours</span>
+                        <span class="badge bg-white text-success border px-3 py-2 shadow-sm fw-bold"><i class="fas fa-sync me-1"></i> Free data migration</span>
+                    </div>
+                </div>
+
+                <!-- RIGHT COLUMN: INTERACTIVE FORM -->
+                <div class="col-lg-7">
+                    <div class="demo-form-card">
+                        <div class="mb-4">
+                            <h4 class="fw-bold text-dark m-0">Book my free demo</h4>
+                            <p class="text-muted small m-0">Takes 30 seconds. No commitment.</p>
+                        </div>
+
+                        <form id="formBookDemo" onsubmit="window.submitSchoolInquiry(event)">
+                            <div class="row g-3">
+                                <div class="col-md-6 col-12">
+                                    <label class="form-label small fw-bold text-dark">Your Name *</label>
+                                    <input type="text" class="form-control demo-input" id="demoContactPerson" placeholder="Enter full name" required>
+                                </div>
+
+                                <div class="col-md-6 col-12">
+                                    <label class="form-label small fw-bold text-dark">Mobile Number *</label>
+                                    <input type="tel" class="form-control demo-input" id="demoMobile" placeholder="+91 9876543210" required>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold text-dark">School Name *</label>
+                                    <input type="text" class="form-control demo-input" id="demoSchoolName" placeholder="e.g., Royal International Public School" required>
+                                </div>
+
+                                <div class="col-md-6 col-12">
+                                    <label class="form-label small fw-bold text-dark">Your Role *</label>
+                                    <select class="form-select demo-select" id="demoRole" required>
+                                        <option value="Principal" selected>Principal / Director</option>
+                                        <option value="Administrator">School Administrator</option>
+                                        <option value="Teacher">Teacher / Coordinator</option>
+                                        <option value="IT Manager">IT / Technical Head</option>
+                                        <option value="Other">Other Management</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 col-12">
+                                    <label class="form-label small fw-bold text-dark">City & State *</label>
+                                    <input type="text" class="form-control demo-input" id="demoCity" placeholder="e.g., Patna, Bihar" required>
+                                </div>
+
+                                <div class="col-md-6 col-12">
+                                    <label class="form-label small fw-bold text-dark">E-mail Address</label>
+                                    <input type="email" class="form-control demo-input" id="demoEmail" placeholder="principal@school.com">
+                                </div>
+
+                                <div class="col-md-6 col-12">
+                                    <label class="form-label small fw-bold text-dark">Student Strength *</label>
+                                    <select class="form-select demo-select" id="demoStrength" required>
+                                        <option value="Under 300">Under 300 Students</option>
+                                        <option value="300 - 600" selected>300 - 600 Students</option>
+                                        <option value="600 - 1200">600 - 1200 Students</option>
+                                        <option value="1200+">1200+ Students (Large Campus)</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold text-dark"><i class="fas fa-tags text-primary me-1"></i> Selected Plan *</label>
+                                    <select class="form-select demo-select fw-bold text-primary" id="demoInterestedPlan" required style="background: #f0fdf4; border-color: #86efac;">
+                                        <option value="Basic Plan (₹699/mo)">Basic Plan (₹699/mo) - Perfect for small schools</option>
+                                        <option value="Standard Plan (₹999/mo)" selected>⭐ Standard Plan (₹999/mo) - Most Popular</option>
+                                        <option value="Premium Plan (₹1499/mo)">Premium Plan (₹1499/mo) - Complete solution</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12 pt-2">
+                                    <button type="submit" class="demo-submit-btn shadow-sm" id="btnSubmitDemo">
+                                        Book my free demo <i class="fas fa-arrow-right ms-2"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer style="background: #1a202c; color: #ffffff; padding: 40px 0 20px 0;">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-12 text-start">
+                    <h6 class="fw-bold mb-3 text-white">NextGen School Alarm</h6>
+                    <p class="text-secondary" style="font-size: 0.85rem; line-height: 1.6;">
+                        Complete multi-school ERP suite built for modern educational administration, fee collections, attendance logging, and parent communications.
+                    </p>
+                </div>
+
+                <div class="col-lg-5 col-md-6">
+                    <div class="row">
+                        <div class="col-12 mb-3 text-start">
+                            <h5 class="fw-bold mb-3 text-white" style="font-size: 1rem;">Direct Portals</h5>
+                            <div class="row g-0">
+                                <div class="col-6">
+                                    <ul class="list-unstyled mb-0" style="font-size: 0.85rem;">
+                                        <li class="mb-2"><a href="#home" style="color: #a0aec0; text-decoration: none;">Home</a></li>
+                                        <li class="mb-2"><a href="#about" style="color: #a0aec0; text-decoration: none;">About Us</a></li>
+                                        <li class="mb-2"><a href="#features" style="color: #a0aec0; text-decoration: none;">Features</a></li>
+                                        <li class="mb-2"><a href="#pricing" style="color: #a0aec0; text-decoration: none;">Pricing</a></li>
+                                    </ul>
+                                </div>
+                                <div class="col-6">
+                                    <ul class="list-unstyled mb-0" style="font-size: 0.85rem;">
+                                        <li class="mb-2"><a href="https://student.schoolalarm.online" id="footer-student-link" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-graduation-cap me-1 text-success"></i> Student Portal</a></li>
+                                        <li class="mb-2"><a href="https://app.schoolalarm.online" id="footer-app-link" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-school me-1 text-primary"></i> School Login</a></li>
+                                        <li class="mb-2"><a href="https://admin.schoolalarm.online" id="footer-admin-link" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-shield-alt me-1 text-warning"></i> Super Admin</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 text-start">
+                    <h5 class="fw-bold mb-3 text-white" style="font-size: 1rem;">Contact Us</h5>
+                    <p class="mb-1 text-secondary" style="font-size: 0.85rem;"><i class="fas fa-map-marker-alt text-primary me-2"></i> Hajipur, Bihar, India</p>
+                    <p class="mb-1 text-secondary" style="font-size: 0.85rem;"><i class="fas fa-phone-alt text-primary me-2"></i> +91 7079090740</p>
+                    <p class="mb-0 text-secondary" style="font-size: 0.85rem;"><i class="fas fa-envelope text-primary me-2"></i> manishkumarray37@gmail.com</p>
+                </div>
+            </div>
+
+            <hr class="my-4" style="border-color: rgba(255,255,255,0.1);"/>
+
+            <div class="text-center">
+                <p class="mb-0 text-secondary" style="font-size: 0.75rem;">
+                    &copy; 2026 <b>School Alarm</b>. All Rights Reserved. Powered by Cloudflare Pages & Supabase.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Supabase JS Client for Demo Booking -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script type="text/javascript">
+    // Tab Switcher
+    function openTab(evt, tabName) {
+        var tabContent = document.getElementsByClassName("tab-panel");
+        for (var i = 0; i < tabContent.length; i++) {
+            tabContent[i].style.display = "none";
+        }
+        var tabBtns = document.getElementsByClassName("tab-btn");
+        for (var i = 0; i < tabBtns.length; i++) {
+            tabBtns[i].className = tabBtns[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    // Direct Supabase Demo Booking
+    async function submitSchoolInquiry(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btnSubmitDemo');
+        btn.disabled = true;
+        btn.innerHTML = `<i class='fas fa-spinner fa-spin me-2'></i>Booking your demo...`;
+
+        try {
+            const SUPABASE_URL = "https://yanzstgfsvnlspbrminc.supabase.co";
+            const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnpzdGdmc3ZubHNwYnJtaW5jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4NjEyNjAsImV4cCI6MjEwNjQzNzI2MH0.mFYUSJio3AlPwkideCDMHCjg1Ek5hNhZkgW_x92Kmjo";
+            
+            const landDb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+            const payload = {
+                ContactPerson: document.getElementById('demoContactPerson').value.trim(),
+                MobileNo: document.getElementById('demoMobile').value.trim(),
+                SchoolName: document.getElementById('demoSchoolName').value.trim(),
+                UserRole: document.getElementById('demoRole').value,
+                City: document.getElementById('demoCity').value.trim(),
+                Email: document.getElementById('demoEmail').value.trim(),
+                StudentStrength: document.getElementById('demoStrength').value,
+                InterestedIn: document.getElementById('demoInterestedPlan').value,
+                Status: 'PENDING',
+                AdminRemarks: 'Web Demo Booking'
+            };
+
+            const { error } = await landDb.from('School_Inquiries').insert([payload]);
+            if (error) throw error;
+
+            alert("🎉 Success! Your demo request has been submitted. Our team will contact you within 4 hours.");
+            document.getElementById('formBookDemo').reset();
+
+        } catch (err) {
+            console.error("Demo Booking Error:", err);
+            alert(`Failed to book demo: ${err.message}`);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = `Book my free demo <i class='fas fa-arrow-right ms-2'></i>`;
+        }
+    }
+    window.submitSchoolInquiry = submitSchoolInquiry;
+
+    // Subdomain routing detection (Localhost vs Production)
+    document.addEventListener("DOMContentLoaded", function() {
+        const host = window.location.hostname;
+        if (host === 'localhost' || host === '127.0.0.1') {
+            document.querySelectorAll("#nav-app-link, #hero-app-link, #footer-app-link").forEach(el => el.href = "/app.html");
+            document.querySelectorAll("#nav-student-link, #hero-student-link, #footer-student-link").forEach(el => el.href = "/student.html");
+            const adminLink = document.getElementById("footer-admin-link");
+            if (adminLink) adminLink.href = "/superadmin.html";
+        }
+
+        // Mobile navbar auto-close on link click
+        const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+        const navbarCollapse = document.getElementById('navbarNav');
+        if (navbarCollapse) {
+            const bsCollapse = new bootstrap.Collapse(navbarCollapse, { toggle: false });
+            navLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    const toggler = document.querySelector('.navbar-toggler');
+                    if (window.getComputedStyle(toggler).display !== 'none') {
+                        bsCollapse.hide();
+                    }
+                });
+            });
+        }
+    });
+
+    // Rainbow Loader Controller
+    (function() {
+        var loader = document.getElementById('global-top-loader');
+        window.startTopLoader = function() {
+            if (loader) {
+                loader.style.opacity = '1';
+                loader.style.width = '35%';
+            }
+        };
+        window.stopTopLoader = function() {
+            if (loader) {
+                loader.style.width = '100%';
+                setTimeout(function() {
+                    loader.style.opacity = '0';
+                    setTimeout(function() { loader.style.width = '0%'; }, 250);
+                }, 200);
+            }
+        };
+
+        window.startTopLoader();
+        window.addEventListener('load', function() {
+            window.stopTopLoader();
+        });
+    })();
+    </script>
+</body>
+</html>
