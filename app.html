@@ -995,10 +995,11 @@
     });
 
     window.doAdminLogout = function() {
-      localStorage.removeItem("a2z_user");
-      sessionStorage.clear();
-      window.location.reload();
-    };
+  localStorage.removeItem("a2z_user");
+  sessionStorage.clear();
+  // Keeps the user on https://app.schoolalarm.online (shows login screen)
+  window.location.href = window.location.origin;
+};
 
     // Accordion expand/collapse click
     document.addEventListener('click', function(e) {
