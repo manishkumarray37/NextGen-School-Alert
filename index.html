@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css' rel='stylesheet'></li>
+    <meta charset='utf-8'/>
+    <meta content='width=device-width, initial-scale=1' name='viewport'/>
+    <title><data:blog.pageTitle/></title>
+    
+    <link href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css' rel='stylesheet'></li>
+    <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&amp;display=swap' rel='stylesheet'></li>
+
+    <style>
+
+.feed-links, .subscribe-wrapper {
+    display: none !important;
+}
+body {
+    font-family: 'Poppins', sans-serif;
+    scroll-behavior: smooth;
+    padding: 0;
+    margin: 0;
+    background-color: #f0f4f9;
+    background-image: radial-gradient(#d3e0ea 1px, transparent 1px);
+    background-size: 20px 20px;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+img {
+    -webkit-user-drag: none;
+    user-drag: none;
+}
+
+/* ================= 3D AUTOMATION STYLES ================= */
+.text-3d-glow {
+    font-weight: 800;
+    text-shadow: 0 4px 15px rgba(13, 110, 253, 0.3), 0 1px 2px rgba(0,0,0,0.1);
+}
+.title-3d {
+    font-weight: 800;
+    color: #1a202c;
+    text-shadow: 2px 2px 0px #e2e8f0, 4px 4px 8px rgba(0,0,0,0.08);
+}
+
+.navbar {
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06) !important;
+}
+
+section {
+    padding: 80px 0;
+    position: relative;
+}
+
+.nav-link {
+    font-weight: 600;
+    color: #333 !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+/* ========================================================= */
+/* 🌈 VIBRANT COLOURFUL DYNAMIC NAVBAR (CLICK & HOVER ACTIVE)*/
+/* ========================================================= */
+
+.navbar-nav {
+    display: flex !important;
+    align-items: center !important;
+    flex-direction: row !important;
+    gap: 5px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.navbar-nav .nav-item {
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+/* Base Link */
+.navbar-nav .nav-link {
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    color: #475569 !important;
+    padding: 7px 14px !important;
+    border-radius: 8px !important;
+    white-space: nowrap !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    text-decoration: none !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: 1.5px solid transparent;
+}
+
+/* 1. 🔵 HOME (Blue Glow) */
+.navbar-nav .nav-link[href="#"], 
+.navbar-nav .nav-link[href="#home"],
+.navbar-nav .nav-item:nth-child(1) .nav-link:hover,
+.navbar-nav .nav-item:nth-child(1) .nav-link.active {
+    color: #0284c7 !important;
+    background: #f0f9ff !important;
+    border-color: #bae6fd !important;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15) !important;
+}
+
+/* 2. 🟣 ABOUT US (Purple Glow) */
+.navbar-nav .nav-link[href*="about"]:hover,
+.navbar-nav .nav-link[href*="about"].active,
+.navbar-nav .nav-item:nth-child(2) .nav-link:hover,
+.navbar-nav .nav-item:nth-child(2) .nav-link.active {
+    color: #7c3aed !important;
+    background: #f5f3ff !important;
+    border-color: #ddd6fe !important;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15) !important;
+}
+
+/* 3. 🟠 FEATURES (Amber/Orange Glow) */
+.navbar-nav .nav-link[href*="feature"]:hover,
+.navbar-nav .nav-link[href*="feature"].active,
+.navbar-nav .nav-item:nth-child(3) .nav-link:hover,
+.navbar-nav .nav-item:nth-child(3) .nav-link.active {
+    color: #d97706 !important;
+    background: #fffbeb !important;
+    border-color: #fde68a !important;
+    box-shadow: 0 4px 12px rgba(217, 119, 6, 0.15) !important;
+}
+
+/* 4. 🌹 DEVELOPER MESSAGE (Rose Pink Glow) */
+.navbar-nav .nav-link[href*="developer"]:hover,
+.navbar-nav .nav-link[href*="developer"].active,
+.navbar-nav .nav-item:nth-child(4) .nav-link:hover,
+.navbar-nav .nav-item:nth-child(4) .nav-link.active {
+    color: #e11d48 !important;
+    background: #fff1f2 !important;
+    border-color: #fecdd3 !important;
+    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15) !important;
+}
+
+/* 5. 🟢 CONTACT (Emerald Green Glow) */
+.navbar-nav .nav-link[href*="contact"]:hover,
+.navbar-nav .nav-link[href*="contact"].active,
+.navbar-nav .nav-item:nth-child(5) .nav-link:hover,
+.navbar-nav .nav-item:nth-child(5) .nav-link.active {
+    color: #059669 !important;
+    background: #ecfdf5 !important;
+    border-color: #a7f3d0 !important;
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.18) !important;
+}
+
+/* 6. 📱 DOWNLOAD APP (Vibrant Green Capsule) */
+.navbar-nav .nav-item:nth-last-child(2) .nav-link {
+    color: #15803d !important;
+    background: #f0fdf4 !important;
+    border: 1.5px solid #86efac !important;
+    border-radius: 20px !important;
+    padding: 6px 14px !important;
+    margin-left: 6px !important;
+}
+.navbar-nav .nav-item:nth-last-child(2) .nav-link:hover {
+    background: #16a34a !important;
+    color: #ffffff !important;
+    border-color: #16a34a !important;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3) !important;
+}
+
+/* 7. 🔐 SCHOOL LOGIN (Dark 3D Button) */
+.navbar-nav .nav-item:last-child .nav-link {
+    background: linear-gradient(135deg, #0f172a, #1e293b) !important;
+    color: #ffffff !important;
+    border-radius: 20px !important;
+    padding: 7px 18px !important;
+    margin-left: 4px !important;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25) !important;
+}
+.navbar-nav .nav-item:last-child .nav-link:hover {
+    background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35) !important;
+}
+
+/* 3D Hero Section */
+.hero-section {
+    background: radial-gradient(circle at 80% 20%, #dbeafe 0%, #f0f4f9 60%, #ffffff 100%);
+    overflow: hidden;
+    position: relative;
+    padding: 10px 0;
+}
+
+.animate-fade-in {
+    animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.main-hero-img {
+    filter: drop-shadow(0 25px 35px rgba(13, 110, 253, 0.25));
+    animation: floatImage 4s ease-in-out infinite;
+    border-radius: 30px;
+    border: 0px solid #ffffff;
+}
+
+@keyframes floatImage {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-18px) rotate(1deg); }
+}
+
+.hero-image-wrapper {
+    position: relative;
+    padding: 20px;
+    perspective: 1000px;
+}
+
+.floating-card {
+    position: absolute;
+    background: transparent !important;
+    backdrop-filter: blur(2px);
+    padding: 15px 22px;
+    border-radius: 18px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.12), 0 5px 15px rgba(13, 110, 253, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 2;
+    font-weight: bold;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    transition: transform 0.3s ease;
+}
+.floating-card:hover {
+    transform: scale(1.08) translateZ(20px);
+}
+
+.card-1 {
+    top: 6%;
+    left: -8%;
+    animation: floatImage 3.5s ease-in-out infinite reverse;
+}
+
+.card-2 {
+    bottom: 32%;
+    right: -20%;
+    animation: floatImage 5s ease-in-out infinite;
+}
+
+.floating-card i {
+    font-size: 1.6rem;
+}
+
+#about { background: #ffffff; }
+#features { background: #f8f9fa; }
+#contact { background: #ffffff; }
+
+/* 3D Color Classes */
+.bg-blue { background: linear-gradient(135deg, #4399bc 0%, #206382 100%) !important; }
+.bg-teal { background: linear-gradient(135deg, #26a69a 0%, #00695c 100%) !important; }
+.bg-orange { background: linear-gradient(135deg, #f29235 0%, #d84315 100%) !important; }
+
+/* 3D Card Main Design */
+.feature-card {
+    border-radius: 20px;
+    text-align: center;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+    position: relative;
+}
+
+.feature-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 25px 45px rgba(0,0,0,0.22);
+}
+
+.icon-circle {
+    background: rgba(255, 255, 255, 0.25);
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    font-size: 28px;
+    border: 2px solid rgba(255,255,255,0.6);
+    box-shadow: inset 0 0 15px rgba(255,255,255,0.3);
+    animation: pulseIcon 3s infinite ease-in-out;
+}
+
+@keyframes pulseIcon {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+}
+
+.btn-demo {
+    margin-top: auto;
+    border: 2px solid #fff;
+    color: #fff;
+    padding: 8px 24px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.btn-demo:hover {
+    background: #fff;
+    color: #333;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(255,255,255,0.4);
+}
+
+/* 3D Animated Box */
+.animated-box {
+    padding: 12px 18px;
+    border-radius: 12px;
+    border: 2px solid #0d6efd;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    width: 100%;
+    box-shadow: 0 8px 16px rgba(13, 110, 253, 0.08);
+    animation: bgColorChange 5s infinite alternate; 
+}
+
+@keyframes bgColorChange {
+    0% { background-color: #ffffff; color: #333; }
+    25% { background-color: #e3f2fd; color: #0d47a1; }
+    50% { background-color: #f1f8e9; color: #1b5e20; }
+    75% { background-color: #fff3e0; color: #e65100; }
+    100% { background-color: #fce4ec; color: #880e4f; }
+}
+
+.animated-box:hover {
+    transform: scale(1.04) translateY(-3px);
+    border-color: #0b5ed7;
+    box-shadow: 0 12px 24px rgba(13, 110, 253, 0.2);
+}
+
+/* CEO Image 3D */
+.ceo-image-wrapper {
+    max-width: 400px;
+    margin: 0 auto;
+    transition: all 0.4s ease;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+
+.ceo-image-wrapper:hover {
+    transform: scale(1.03) rotate(0.5deg);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.18);
+}
+
+.ceo-text p {
+    text-align: justify;
+}
+
+@media (max-width: 1200px) {
+    .ceo-text p { text-align: center; }
+    .ceo-desk .text-lg-start { text-align: center !important; }
+}
+
+/* 3D Tab Buttons */
+.tab-btn {
+    padding: 12px 28px;
+    border: 1px solid #dee2e6;
+    background: #ffffff;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #6c757d;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%) !important;
+    color: #ffffff !important;
+    border-color: #0d6efd;
+    box-shadow: 0 8px 20px rgba(13, 110, 253, 0.35);
+    transform: translateY(-2px);
+}
+
+.tab-btn:hover:not(.active) {
+    background: #eef2f6;
+    transform: translateY(-2px);
+}
+
+.tab-panel {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Brand Container */
+.brand-container {
+    position: relative;
+    width: 250px;
+    height: 50px;
+    overflow: hidden;
+}
+
+.brand-text, .brand-logo-1, .brand-logo-2 {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    transition: opacity 1s ease-in-out;
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.brand-logo-1 {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+.brand-logo-2 {
+    height: 45px;
+    width: auto;
+    object-fit: contain;
+}
+
+@keyframes cycleAnimation {
+    0%, 30% { opacity: 1; visibility: visible; }
+    33%, 100% { opacity: 0; visibility: hidden; }
+}
+
+.brand-text { 
+    animation: cycleAnimation 15s infinite; 
+    color: #0d6efd; 
+}
+.brand-logo-1 { 
+    animation: cycleAnimation 15s infinite 5s; 
+}
+.brand-logo-2 { 
+    animation: cycleAnimation 15s infinite 10s; 
+}
+
+/* Post / Page Content 3D Wrapper */
+.post-page-card {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 35px;
+    margin: 30px auto;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+    border: 1px solid #eef2f6;
+    min-height: 60vh;
+}
+.post-title a {
+    color: #1a202c;
+    text-decoration: none;
+    font-weight: 700;
+}
+.post-title a:hover {
+    color: #0d6efd;
+}
+    
+</style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class='navbar navbar-expand-lg navbar-light sticky-top shadow-sm'>
+    <div class='container'>
+        <a class='navbar-brand fw-bold' href='https://schoolalarminfo.blogspot.com' style='padding: 0;'>
+            <div class='brand-container'>
+                <span class='brand-text'><data:blog.title/></span>
+                
+                <img alt='Logo 1' class='brand-logo-1' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjz750omNvlH13soJKUck_8oUuyT05gRBRWCNcRgXE-VqXEMJBVK7ZQOZfJmSnSEkkx_GLoskmEMLWFqJsHOV_wsMF1tCtOixgkkBhmGgqcC1QxJPXZ1DAQ9-8Ay_YDt4q1N-XiTHhW-_eh0HtUS4DHmuxA67s-AzBFy0r2509YpVbv_ZUB3ZsEh9vJ6dKJ/s2075/file_000000006ec8820ba0956969337d1e9d.png'></i>
+                
+                <img alt='Logo 2' class='brand-logo-2' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjGzdT3E0JGXM5EfpX-zJq0E2Fcl8s_OvPgTgF5SeR7N2QpJK6_nhevN9OIWq_eYvE214_5gsGOpFm2nuu_wgI00ZUHfpC9OwmdYDZAHx-p5DZ0wqHawLB7EIvSBHH4hIpwQaCLzWBTTkHE3tKJz_iTQsfRkyVnVrClJJl0GN-IC2muPNmNv12qhmpfqz3h/s1600/School.png'></i>
+            </div>
+        </a>
+
+        <button aria-controls='navbarNav' aria-expanded='false' aria-label='Toggle navigation' class='navbar-toggler' data-bs-target='#navbarNav' data-bs-toggle='collapse' style='border: none;' type='button'>
+            <span class='navbar-toggler-icon'></span>
+        </button>
+            <div class='collapse navbar-collapse' id='navbarNav'>
+                <ul class='navbar-nav ms-auto'>
+                    <li class='nav-item'><a class='nav-link' href='https://schoolalarminfo.blogspot.com'>Home</a></li>
+                    <li class='nav-item'><a class='nav-link' href='https://schoolalarminfo.blogspot.com#about'>About Us</a></li>
+                    <li class='nav-item'><a class='nav-link' href='https://schoolalarminfo.blogspot.com#features'>Features</a></li>
+                   	<li class='nav-item'><a class='nav-link' href='https://schoolalarminfo.blogspot.com#ceo-desk'>Developer Message</a></li>
+                   	<li class='nav-item'><a class='nav-link' href='https://schoolalarminfo.blogspot.com#contact'>Contact</a></li>
+                  	<li class='nav-item'><a class='nav-link fw-bold text-primary' href='https://www.dropbox.com/scl/fi/3wgstrdozahtdwbnljn0b/School_Alarm.apk?rlkey=eorbkf7gmf5hkxajtgik0yld0&amp;st=oje3ex1h&amp;dl=1' target='_blank'>Download App</a></li>
+                    <li class='nav-item'><a class='nav-link fw-bold text-primary' href='https://schoolalarm.online/' target='_blank'>School Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- TOP GADGET AREA (Blogger Layout Mein Add Gadget Ke Liye) -->
+    <div class='container'>
+        
+    </div>
+
+    <!-- HOMEPAGE LANDING SECTIONS -->
+    <b:if cond='data:view.isHomepage'>
+<section class='hero-section' id='home'>
+    <div class='container'>
+        <div class='row align-items-center' style='min-height: 90vh;'>
+            <div class='col-lg-7 text-start animate-fade-in'>
+                <span class='badge rounded-pill bg-warning text-dark px-3 py-2 mb-3 shadow-sm'>🚀 Next-Gen School ERP</span>
+                <h1 class='display-3 fw-bold mb-3 title-3d' style='line-height: 1.2;'>
+                    School Alarm <br/><span class='text-3d-glow' style='color: #0d6efd;'>School Alarm Info</span>
+                </h1>
+                <p class='lead fw-bold text-primary mb-2'>Automate Anything and Everything!</p>
+                <p class='text-secondary mb-4' style='font-size: 1.1rem; line-height: 1.7;'>
+                    Automate your entire school using a single platform. From admission to certificate generation, fee-collection, and academic analysis&#8212;automate the infinite array of workflows in minutes with our 360-degree solution.
+                </p>
+                <div class='d-flex gap-3'>
+                    <a class='btn btn-primary btn-lg px-4 shadow' href='#about' style='border-radius: 12px; box-shadow: 0 10px 20px rgba(13,110,253,0.3);'>Get Started</a>
+                    <a class='btn btn-outline-dark btn-lg px-4' href='#contact' style='border-radius: 12px;'>Book Demo</a>
+                </div>
+            </div>
+
+            <div class='col-lg-5 d-none d-lg-block'>
+                <div class='hero-image-wrapper'>
+                    <div class='floating-card card-1'>
+                        <i class='fas fa-user-graduate text-primary'></i>
+                        <span>10k+ Students</span>
+                    </div>
+                    <div class='floating-card card-2'>
+                        <i class='fas fa-check-circle text-success'></i>
+                        <span>10+ Schools</span>
+                    </div>
+                    <img alt='School ERP' class='img-fluid main-hero-img' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi4EyAApEZAMOoK1xOs_i9DsKT0Q5UhMiB9odXA9EMF9CWZeTuz9QVrEAxJMal3Hjs-EnVXFV7bgPeaT2hVFQRQduw6QSeSoCgaUqMDUzdpi8dNMeMDbJaVszC-EIpvQLnBfsHSrEAQxPBZZZ932yoXyepYHsqJrcmgZP1VCygRBg9SP6P8Gxs3qQSXgciA/s1600/file_00000000d63881fa906af9e51f158b48.png'></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id='about' style='padding: 20px 0; background: #ffffff; min-height: 70vh;'>
+    <div class='container'>
+        <div class='row align-items-center'>
+            
+            <div class='col-lg-6 mb-5 mb-lg-0'>
+                <div class='pe-lg-5'>
+                    <span class='badge rounded-pill bg-warning text-dark px-3 py-2 mb-3 shadow-sm' style='font-size: 0.85rem; letter-spacing: 1px;'>ABOUT US</span>
+                    
+                    <h2 class='fw-bold display-5 mb-4 title-3d'>
+                        <span style='color: #0d6efd;'>ERP Provider</span> for Modern Schools
+                    </h2>
+                    <div class='row g-3 mb-4'>
+                        <div class='col-sm-6 mb-3'>
+                            <div class='d-flex align-items-center animated-box'>
+                                <i class='fas fa-check-circle text-primary me-2'></i>
+                                <span class='fw-bold'>Student Data Managements</span>
+                            </div>
+                        </div>
+                        <div class='col-sm-6 mb-3'>
+                            <div class='d-flex align-items-center animated-box'>
+                                <i class='fas fa-check-circle text-primary me-2'></i>
+                                <span class='fw-bold'>Staff Data Managements</span>
+                            </div>
+                        </div>
+                        <div class='col-sm-6 mb-3'>
+                            <div class='d-flex align-items-center animated-box'>
+                                <i class='fas fa-check-circle text-primary me-2'></i>
+                                <span class='fw-bold'>Fee Collection and Fee Reminder</span>
+                            </div>
+                        </div>
+                        <div class='col-sm-6 mb-3'>
+                            <div class='d-flex align-items-center animated-box'>
+                                <i class='fas fa-check-circle text-primary me-2'></i>
+                                <span class='fw-bold'>Standard Messaging Service</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='d-flex align-items-center p-3 rounded-4 shadow-sm' style='background: #f8f9fa; border-left: 8px solid #0d6efd;'>
+                        <div class='ms-3'>
+                            <h5 class='mb-0 fw-bold'>Manish Kumar Ray</h5>
+                            <small class='text-muted'>Founder, School Alarm | School Alarm info</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='col-lg-6'>
+                <div style='display: flex; gap: 0px; align-items: center; justify-content: center; width: 110%;'>
+                    <div style='flex: 1; overflow: hidden; border-radius: 12px 0 0 12px;'>
+                        <img alt='School Management Software 1' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiAp-GEYbeTXsznzMWmZDHHe6HWanZn5mfA5tpSTVK3rv2fCHWboHPwzt83ioJhAWFQKlbT8SktXAF6Ht6zXhubrKsZ1UyM2bJAF3WzH3lVY7XSXsxNj8t20iic5R1bmrhf2eFMevcldFXjxwoUQ49kDCRmpdqQIf8U5EXTSBwe-I2t-vpOvGlplf_Z7I3/s1600/file_00000000a92c81fa8bc75abf7a577d38.png' style='width: 100%; height: 550px; object-fit: cover; display: block;'></i>
+                    </div>
+                   <div style='flex: 1; overflow: hidden; border-radius: 0 12px 12px 0;'>
+                        <img alt='School Management Software 2' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh4DLD5CBLrBuJ1KwwblocT_7DA2YizPe6dJQit-FiiTQ2CfIl7l-GIS8-Yq7WwcguQ42kTJselbrK9OZug8MyLP8KzsM0L3dBaZ3Izxqn0KciJKHzWfbX6fN29kQz0TgdZdu5MlczBEKBx6QS-UkFIlL8IYw_XZrdfdSDBpmP1Xxu3n-Lday8u12L2ti85/s1600/file_00000000c17881fb8acba35b93980e56.png' style='width: 100%; height: 550px; object-fit: cover; display: block;'></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id='features' style='padding: 20px 0; background: #f8f9fa;'>
+    <div class='container'>
+        <div class='text-center mb-5'>
+            <h2 class='fw-bold title-3d'>Our Core Features</h2>
+            <div class='mx-auto' style='width: 50px; height: 3px; background: #4399bc;'></div>
+        </div>
+        <div class='row g-4'>
+            <div class='col-md-4'>
+                <div class='feature-card bg-orange shadow-sm p-4 h-100'>
+                    <div class='icon-circle'>
+                        <i class='fas fa-school'></i>
+                    </div>
+                    <h4>All-In-One School ERP</h4>
+                    <p>Single bundle solution including all our modules for the best school automation.
+                       Complete Paperless Solutions. Reduces Workload and Backlogs. Centralized Admin Control.</p>
+                    <a class='btn-demo' href='#contact'>Request Demo</a>
+                </div>
+            </div>
+            <div class='col-md-4'>
+                <div class='feature-card bg-blue shadow-sm p-4 h-100'>
+                    <div class='icon-circle'>
+                        <i class='fas fa-file-invoice-dollar'></i>
+                    </div>
+                    <h4>Fee Collection Software</h4>
+                    <p>Automate end to end fee collection including online fee payment.
+                       Innovative Automatic Payment Links and one-click reconciliation for payments.</p>
+                    <a class='btn-demo' href='#contact'>Request Demo</a>
+                </div>
+            </div>
+            <div class='col-md-4'>
+                <div class='feature-card bg-teal shadow-sm p-4 h-100'>
+                    <div class='icon-circle'>
+                        <i class='fas fa-user-plus'></i>
+                    </div>
+                    <h4>Admission Management</h4>
+                    <p>Complete Solution for managing Enquiry to Enrollment funnel. 
+                       Create application forms in flashes and manage custom workflow admission processes.</p>
+                    <a class='btn-demo' href='#contact'>Request Demo</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section id='ceo-desk' style='padding: 20px 0; background-color: #ffffgf;'>
+    <div class='container'>
+        <div class='text-center mb-5'>
+            <p class='mb-1 text-muted fw-bold' style='letter-spacing: 2px;'>School Alarm | School Alarm Info</p>
+            <h2 class='fw-bold display-5 title-3d'>CEO Desk</h2>
+            <p class='text-muted'>Formerly Known as <span style='color: #28a745; font-weight: bold;'>schoolalarm.online</span></p>
+        </div>
+
+        <div class='row align-items-center mt-4'>
+            <div class='col-lg-7'>
+                <h2 class='fw-bold mb-1 title-3d' style='font-size: 2.5rem; color: #1a202c;'>Manish Kumar Ray</h2>
+                <h5 class='text-dark fw-bold mb-4'>Founder &amp; CEO</h5>
+                
+                <div class='ceo-text' style='line-height: 1.8; color: #4a5568; font-size: 1.05rem;'>
+                    <p class='mb-3'>
+                        Manish is the Founder &amp; CEO of <b>A2Z Online Services Pvt Ltd</b>, the company behind schoolalarm.online With a vision to digitalize the education system, he has been leading the innovation in school automation.
+                    </p>
+                    <p class='mb-3'>
+                        His dynamic capabilities, entrepreneurial zeal, and management skills are the key factors which keep the entire team motivated to deliver excellence every day.
+                    </p>
+                    <p class='mb-3'>
+                        Manish leads the company&#8217;s business development initiatives as well as overall execution excellence, ensuring that every school gets the best-in-class service.
+                    </p>
+                    <p>
+                        His constant innovation has made Parentsalarm.blogspot.com one of the most advanced, scalable, and intuitive applications which eases the life of Parents and school&#8217;s administrators.
+                    </p>
+                </div>
+            </div>
+            <div class='col-lg-5 text-center mt-5 mt-lg-0'>
+    <div style='background: transparent !important; border: none !important; box-shadow: none !important; padding: 0;'>
+        <img alt='CEO Manish Kumar' class='img-fluid' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi1uA4m8OdNcdJdTjI_kHdQyxMY9zDbdZriT8bHHAB_DcBPT0hZWOgt81-30ihMGzbXziL0XXNYfqlt1BwZ1AKBllMPJseHVB73Hq8Hpqfb4Oku7fum9KTS2Hg5zMjQ5r7vYL1mIqvz9VpgXR9Q-LSTAjjCST1ZJdaNpOW_4581wkkuAtPIJExpQckSGWld/s1600/file_00000000bf5081fa8f69b5c6aa300719.png' style='width: 100%; max-width: 300px; height: auto; display: inline-block; background: transparent; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));'></i>
+    			</div>
+			</div>
+        </div>
+    </div>
+</section>
+<section id='our-story-tabs' style='padding: 60px 0; background: #ffffff;'>
+    <div class='container text-center'>
+        <p class='mb-1 text-muted fw-bold'>Our Story</p>
+        <h2 class='fw-bold display-5 mb-2 title-3d'>Welcome to School Canvas</h2>
+        <p class='mb-4 text-muted'>Formerly Known as <span style='color: #28a745; font-weight: bold;'>schoolalarm.online</span></p>
+        <div class='d-flex justify-content-center flex-wrap gap-3 mb-5'>
+            <button class='tab-btn active' onclick='openTab(event, &quot;story&quot;)'>Our Story</button>
+            <button class='tab-btn' onclick='openTab(event, &quot;vision&quot;)'>Our Vision</button>
+            <button class='tab-btn' onclick='openTab(event, &quot;mission&quot;)'>Our Mission</button>
+            <button class='tab-btn' onclick='openTab(event, &quot;refund&quot;)'>Refund Policy</button>
+        </div>
+        <div class='tab-content-container text-start shadow-sm p-4 p-md-5 rounded-4 border bg-pink'>
+    <div class='tab-panel' id='story' style='display: block;'>
+        <h3 class='fw-bold mb-4 text-primary'>Dear Parents &amp; Educators,</h3>
+        <div class='row'>
+            <div class='col-md-6 mb-4'>
+                <p class='text-secondary' style='line-height: 1.9; font-size: 1.02rem; text-align: justify;'>
+    Empowering modern education with intelligence and speed, <b style='color: #0d6efd;'>School Alarm</b> is built to redefine how schools connect with families. Our next-generation automation platform bridges the communication gap by delivering instant attendance tracking, live academic updates, homework notifications, and hassle-free online fee collection right at your fingertips. Designed specifically for visionary institutions, we eliminate manual paperwork and elevate administrative productivity to international standards.
+                 <b> we proudly empower hundreds of forward-thinking schools, thousands of teachers, and over 10,000+ students with reliable, secure, and future-ready educational automation.</b>
+</p>
+            </div>
+            <div class='col-md-6'>
+                <p class='text-secondary' style='line-height: 1.9; font-size: 1.02rem; text-align: justify;'>
+    Driven by innovation under <b>A2Z Online Services Pvt. Ltd.</b>, School Alarm delivers seamless 360-degree control over school operations, ensuring parents and educators stay perfectly in sync. With a robust track record of <b>5+ years of digital excellence</b>
+</p>
+             <div class='mt-4 position-relative text-center'>
+    <!-- TRANSPARENT IMAGE (No Border) -->
+    <div style='background: transparent !important; border: none !important; box-shadow: none !important; position: relative; z-index: 2;'>
+        <img alt='Parents Alarm' class='img-fluid' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjz750omNvlH13soJKUck_8oUuyT05gRBRWCNcRgXE-VqXEMJBVK7ZQOZfJmSnSEkkx_GLoskmEMLWFqJsHOV_wsMF1tCtOixgkkBhmGgqcC1QxJPXZ1DAQ9-8Ay_YDt4q1N-XiTHhW-_eh0HtUS4DHmuxA67s-AzBFy0r2509YpVbv_ZUB3ZsEh9vJ6dKJ/s1600/file_000000006ec8820ba0956969337d1e9d.png' style='max-width: 100%; height: auto; display: inline-block; filter: drop-shadow(0 10px 20px rgba(0, 229, 255, 0.25));'></i>
+    </div>
+    <!-- ANIMATED 3D NEON GLOW LIGHT UNDER IMAGE -->
+    <div class='neon-glow-bar'></div>
+                        </div>
+                    </div> 
+                </div> 
+            </div>
+            <div class='tab-panel' id='vision' style='display: none;'>
+                <div class='row align-items-center'>
+                    <div class='col-md-6 mb-4 mb-md-0'>
+                        <div class='vision-image-wrapper p-3'>
+                            <img alt='School Canvas Vision' class='img-fluid' src='https://schoolcanvas.com/assets/img/screen/widget-8.png' style='width: 100%; border-radius: 20px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));'></i>
+                        </div>
+                    </div>
+                    <div class='col-md-6 ps-lg-4'>
+                        <h2 class='fw-bold mb-4 title-3d' style='color: #1a202c;'>Our Vision</h2>
+                        <p class='text-secondary mb-4' style='line-height: 1.8; font-size: 1.05rem;'>
+                            <span style='color: #0d6efd; font-weight: bold;'>schoolalarm.online</span> envisions providing the best software experience to educational institutes using technology as innovation. We are here to bring all the stakeholders of the education system closer.
+                        </p>
+                        <div class='mt-4'>
+                            <div class='d-flex align-items-center mb-2'>
+                                <i class='fa-solid fa-lightbulb text-warning me-2'></i>
+                                <span class='fw-bold text-dark'>Innovation Driven</span>
+                            </div>
+                            <div class='d-flex align-items-center'>
+                                <i class='fa-solid fa-shield-halved text-primary me-2'></i>
+                                <span class='fw-bold text-dark'>Secure and Scalable</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='tab-panel' id='mission' style='display: none;'>
+                <div class='row align-items-center'>
+                    <div class='col-md-6'>
+                        <h3 class='fw-bold mb-4 title-3d' style='color: #1a202c;'>Our Mission</h3>
+                        <p class='text-secondary mb-4' style='line-height: 1.8; font-size: 1.05rem; text-align: justify;'>
+                            At <b>schoolalarm.online</b> our dedicated, experienced and expert professionals are continuously striving to add the new features and tools ensuring the uniqueness to our offerings.
+                        </p>
+                        <div class='mt-4'>
+                            <span class='badge rounded-pill bg-light text-primary border p-2 px-3 shadow-sm'>
+                                <i class='fa-solid fa-user-tie me-2'></i>Founder - Manish Kumar Ray
+                            </span>
+                        </div>
+                    </div>
+                    <div class='col-md-6 mt-4 mt-md-0'>
+                        <div class='mission-image-box shadow-lg rounded-4 overflow-hidden border border-white border-4'>
+                            <img alt='Our Mission' class='img-fluid w-100' src='https://schoolcanvas.com/assets/img/screen/widget-11.png' style='display: block; object-fit: cover; min-height: 300px;'></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class='tab-panel' id='refund' style='display: none;'>
+                <div class='row'>
+                    <div class='col-md-12 text-start'>
+                        <h3 class='fw-bold mb-4 title-3d' style='color: #1a202c;'>Refund Policy</h3>
+                        
+                        <p class='text-secondary mb-4' style='line-height: 1.8; font-size: 1.05rem;'>
+                            At <b>schoolalarm.online</b> (Royal Master ERP), we value our customers. Please read our refund policy carefully:
+                        </p>
+                        
+                        <ul class='text-secondary ps-4' style='line-height: 2;'>
+                            <li><b>Subscription Basis:</b> Services are provided on a subscription basis; once activated, cannot be cancelled for current cycle.</li>
+                            <li><b>No Refunds:</b> No refunds for payments made, as we provide a demo period before purchase.</li>
+                            <li><b>Technical Issues:</b> Glitches longer than 7 working days may be considered for pro-rata credit.</li>
+                            <li><b>Cancellation:</b> Inform us 15 days in advance to stop the next renewal cycle.</li>
+                        </ul>
+                        
+                        <div class='mt-4 p-3 bg-light rounded-3 border-start border-primary border-4 d-flex align-items-center shadow-sm'>
+                            <i class='fa-solid fa-envelope text-primary me-2'></i>
+                            <span class='text-muted'>Contact Us: <b>manishkumarray37@gmail.com</b></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>     
+    </div>
+</section>
+<section id='contact' style='padding: 60px 0; background: linear-gradient(to bottom, #f8f9fa, #e9ecef);'>
+    <div class='container'>
+        <div class='card border-0 shadow-lg p-5 text-center' style='border-radius: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.08) !important;'>
+            <div class='mb-4'>
+                <span class='badge rounded-pill bg-primary px-3 py-2 mb-3 shadow-sm'>Make Your School Digital Now</span>
+                <h2 class='fw-bold display-6 title-3d'>A2Z ONLINE SERVICES PVT. LTD.</h2>
+                <div class='mx-auto mb-3' style='width: 60px; height: 4px; background: #0d6efd; border-radius: 2px;'></div>
+                <p class='text-muted lead'>We are here to help you with your school automation needs.</p>
+            </div>
+
+            <div class='row justify-content-center mt-4 g-3'>
+                <div class='col-md-3'>
+                    <a class='btn btn-outline-dark w-100 py-3 shadow-sm' href='mailto:manishkumarray37@gmail.com' style='border-radius: 15px;'>
+                        <i class='fas fa-envelope mb-2 d-block fa-2x text-primary'></i>
+                        <span>Email Us</span>
+                    </a>
+                </div>
+                <div class='col-md-3'>
+                    <a class='btn btn-success w-100 py-3 shadow-sm' href='https://wa.me/917079090740' style='border-radius: 15px; background-color: #25D366; border: none;'>
+                        <i class='fab fa-whatsapp mb-2 d-block fa-2x'></i>
+                        <span>WhatsApp</span>
+                    </a>
+                </div>
+                <div class='col-md-3'>
+                    <a class='btn btn-primary w-100 py-3 shadow-sm' href='tel:+917079090740' style='border-radius: 15px; box-shadow: 0 10px 20px rgba(13,110,253,0.3);'>
+                        <i class='fas fa-phone-alt mb-2 d-block fa-2x'></i>
+                        <span>Call Support</span>
+                    </a>
+                </div>
+            </div>
+            <div class='mt-5 text-muted small'>
+                <p><i class='fas fa-clock me-2'></i> Support Timings: Mon - Sat (9:00 AM - 6:00 PM)</p>
+            </div>
+        </div>
+    </div>
+</section>
+    </b:if>
+    <!-- BLOG POSTS & PAGES CONTAINER (Post/Page URL par sahi se dekhne ke liye) -->
+    <div class='container'>
+        <div expr:class='data:view.isMultipleItems and data:view.isHomepage ? &quot;d-none&quot; : &quot;post-page-card shadow-sm&quot;'>
+            
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer style='background: #1a202c; color: #ffffff; padding: 30px 0 10px 0; margin-top: 10px; clear: both;'>
+        <div class='container'>
+            <div class='row g-4'>
+                <div class='col-lg-4 col-md-12 text-start'>
+                    <h6 class='fw-bold mb-3' style='color: white;'>schoolalarm.online | schoolalarm.info</h6>
+                    <p class='text-secondary' style='font-size: 0.85rem; line-height: 1.6;'>
+                        Parents Alarm acts as your bridge to access everything you might need for school management. We envision providing the best software experience to educational institutes using technology as innovation.
+                    </p>
+                    <div class='d-flex gap-3 mt-3'>
+                        <a href='#' style='color: #fff; font-size: 1.1rem;'><i class='fab fa-facebook-f'></i></a>
+                        <a href='#' style='color: #fff; font-size: 1.1rem;'><i class='fab fa-twitter'></i></a>
+                        <a href='#' style='color: #fff; font-size: 1.1rem;'><i class='fab fa-linkedin-in'></i></a>
+                        <a href='#' style='color: #fff; font-size: 1.1rem;'><i class='fab fa-instagram'></i></a>
+                        <a href='#' style='color: #fff; font-size: 1.1rem;'><i class='fab fa-youtube'></i></a>
+                        <a href='#' style='color: #fff; font-size: 1.1rem;'><i class='fab fa-whatsapp'></i></a>
+                    </div>
+                </div>
+
+                <div class='col-lg-5 col-md-6'>
+                    <div class='row'>
+                        <div class='col-12 mb-3 text-start'>
+                            <h5 class='fw-bold mb-3' style='font-size: 1rem;'>Quick Links</h5>
+                            <div class='row g-0'>
+                                <div class='col-6'>
+                                    <ul class='list-unstyled mb-0' style='font-size: 0.8rem;'>
+                                        <li class='mb-1'><a href='https://appschoolcanvas.blogspot.com' style='color: #a0aec0; text-decoration: none;'>Home</a></li>
+                                        <li class='mb-1'><a href='https://schoolalarminfo.blogspot.com#about' style='color: #a0aec0; text-decoration: none;'>About Us</a></li>
+                                        <li class='mb-1'><a href='https://schoolalarminfo.blogspot.com#features' style='color: #a0aec0; text-decoration: none;'>Features</a></li>
+                                        <li class='mb-1'><a href='https://schoolalarminfo.blogspot.com#ceo-desk' style='color: #a0aec0; text-decoration: none;'>Developer Message</a></li>
+                                        <li class='mb-1'><a href='https://www.schoolalarm.info/p/search-your-photo.html' style='color: #a0aec0; text-decoration: none;' target='_blank'>Search Your Photo</a></li>
+                                      	<li class='mb-1'><a href='https://www.ilovepdfmaster.blogspot.com' style='color: #a0aec0; text-decoration: none;' target='_blank'>I&#10084;&#65039;PDF MASTER</a></li>
+                                    </ul>
+                                </div>
+                                <div class='col-6'>
+                                    <ul class='list-unstyled mb-0' style='font-size: 0.8rem;'>
+                                        <li class='mb-1'><a href='https://appschoolcanvas.blogspot.com#our-story-tabs' style='color: #a0aec0; text-decoration: none;'>Our Story</a></li>
+                                        <li class='mb-1'><a href='https://appschoolcanvas.blogspot.com#our-story-tabs' style='color: #a0aec0; text-decoration: none;'>Our Vision</a></li>
+                                        <li class='mb-1'><a href='https://appschoolcanvas.blogspot.com#our-story-tabs' style='color: #a0aec0; text-decoration: none;'>Our Mission</a></li>
+                                        <li class='mb-1'><a href='https://appschoolcanvas.blogspot.com#contact' style='color: #a0aec0; text-decoration: none;'>Contact</a></li>
+                                        <li class='mb-1'><a href='https://schoolalarms.blogspot.com' style='color: #a0aec0; text-decoration: none;' target='_blank'>School Login</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='col-lg-3 col-md-6 text-start'>
+                    <h5 class='fw-bold mb-3' style='font-size: 1rem;'>Contact Us</h5>
+                    <div class='d-flex mb-2 align-items-center'>
+                        <i class='fas fa-map-marker-alt text-primary me-2' style='font-size: 0.8rem;'></i>
+                        <p class='mb-0 text-secondary' style='font-size: 0.8rem;'>Hajipur, Bihar, India</p>
+                    </div>
+                    <div class='d-flex mb-2 align-items-center'>
+                        <i class='fas fa-phone-alt text-primary me-2' style='font-size: 0.8rem;'></i>
+                        <p class='mb-0 text-secondary' style='font-size: 0.8rem;'>+91 7079090740</p>
+                    </div>
+                    <div class='d-flex mb-2 align-items-center'>
+                        <i class='fas fa-envelope text-primary me-2' style='font-size: 0.9rem;'></i>
+                        <p class='mb-0 text-secondary' style='font-size: 0.8rem;'>manishkumarray37@yahoo.com</p>
+                    </div>
+                    <div class='d-flex mb-2 align-items-center'>
+                        <i class='fas fa-envelope text-primary me-2' style='font-size: 0.9rem;'></i>
+                        <p class='mb-0 text-secondary' style='font-size: 0.8rem;'>manishkumarray37@gmail.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <hr class='my-4' style='border-color: white;'/>
+
+            <div class='text-center'>
+                <p class='mb-0' style='color: white; font-size: 0.75rem;'>
+                    &#169; 2026 <b>www.schoolalarm.info</b> | Designed for Professional School.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js'></script>
+
+    <script type='text/javascript'>
+    
+    function openTab(evt, tabName) {
+        var i, tabContent, tabBtns;
+        tabContent = document.getElementsByClassName("tab-panel");
+        for (i = 0; i < tabContent.length; i++) {
+            tabContent[i].style.display = "none";
+        }
+        tabBtns = document.getElementsByClassName("tab-btn");
+        for (i = 0; i < tabBtns.length; i++) {
+            tabBtns[i].className = tabBtns[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+    
+    </script>
+  <script type='text/javascript'>
+
+document.addEventListener("DOMContentLoaded", function() {
+  function syncActiveMenu() {
+    var hash = window.location.hash || "#";
+    var navLinks = document.querySelectorAll(".navbar-nav .nav-link");
+    
+    navLinks.forEach(function(link) {
+      var href = link.getAttribute("href") || "";
+      link.classList.remove("active");
+      
+      if (hash === "#" || hash === "#home" || hash === "") {
+        if (href === "#" || href === "#home" || href.indexOf("home") !== -1) {
+          link.classList.add("active");
+        }
+      } else if (href.indexOf(hash) !== -1) {
+        link.classList.add("active");
+      }
+    });
+  }
+
+  // URL Hash change hone par ya Click karne par
+  window.addEventListener("hashchange", syncActiveMenu);
+  syncActiveMenu();
+
+  document.querySelectorAll(".navbar-nav .nav-link").forEach(function(link) {
+    link.addEventListener("click", function() {
+      setTimeout(syncActiveMenu, 50);
+    });
+  });
+});
+
+</script>
+<!-- =================================================================== -->
+<!-- 🌈 ANIMATED RAINBOW TOP LOADER (VIBRANT GLOWING PROGRESS BAR)       -->
+<!-- =================================================================== -->
+
+<!-- 1. TOP PROGRESS BAR CONTAINER -->
+<div id='global-top-loader'></div>
+
+<!-- 2. RAINBOW CSS & WAVE ANIMATION -->
+<style>
+  #global-top-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3.5px;
+    /* 🌈 7-Color High-Vibrancy Rainbow Gradient */
+    background: linear-gradient(
+      90deg, 
+      #ff0055, /* Red / Pink */
+      #ff5500, /* Orange */
+      #ffcc00, /* Yellow */
+      #00e676, /* Green */
+      #00b0ff, /* Cyan / Blue */
+      #7c4dff, /* Purple */
+      #ff0055  /* Loop back to Red */
+    );
+    background-size: 300% 100%;
+    z-index: 999999999 !important;
+    transition: width 0.3s ease, opacity 0.3s ease;
+    /* 🌟 Multi-color Neon Glow Effect */
+    box-shadow: 0 0 12px rgba(255, 0, 85, 0.8), 0 0 8px rgba(0, 176, 255, 0.7);
+    pointer-events: none;
+    opacity: 0;
+    /* &#10024; Moving Wave Animation */
+    animation: rainbowWaveFlow 1.8s linear infinite;
+  }
+
+  @keyframes rainbowWaveFlow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
+</style>
+
+<!-- 3. UNIVERSAL JAVASCRIPT CONTROLLER -->
+<script type='text/javascript'>
+
+(function() {
+  var loader = null;
+
+  function getLoader() {
+    if (!loader) loader = document.getElementById('global-top-loader');
+    return loader;
+  }
+
+  window.startTopLoader = function() {
+    var el = getLoader();
+    if (el) {
+      el.style.transition = 'width 0.3s ease, opacity 0.1s ease';
+      el.style.opacity = '1';
+      el.style.width = '30%';
+      setTimeout(function() { 
+        if (el.style.width === '30%') el.style.width = '70%'; 
+      }, 150);
+    }
+  };
+
+  window.stopTopLoader = function() {
+    var el = getLoader();
+    if (el) {
+      el.style.transition = 'width 0.2s ease, opacity 0.3s ease';
+      el.style.width = '100%';
+      setTimeout(function() {
+        el.style.opacity = '0';
+        setTimeout(function() { 
+          el.style.width = '0%'; 
+        }, 300);
+      }, 250);
+    }
+  };
+
+  // 1. Trigger on Website Load
+  window.startTopLoader();
+  window.addEventListener('load', function() {
+    window.stopTopLoader();
+  });
+
+  // 2. Trigger on Navigation Links Click
+  document.addEventListener('click', function(e) {
+    var targetLink = e.target.closest('a');
+    if (!targetLink) return;
+    
+    var href = targetLink.getAttribute('href');
+    if (href && href !== '#' && !href.startsWith('javascript:')) {
+      window.startTopLoader();
+      setTimeout(function() {
+        window.stopTopLoader();
+      }, 800);
+    }
+  });
+
+  // 3. Trigger on Hash / Section Change
+  window.addEventListener('hashchange', function() {
+    window.startTopLoader();
+    setTimeout(function() {
+      window.stopTopLoader();
+    }, 400);
+  });
+
+  // 4. Trigger on Fetch / API Requests
+  var originalFetch = window.fetch;
+  if (originalFetch) {
+    window.fetch = async function() {
+      window.startTopLoader();
+      try {
+        var response = await originalFetch.apply(this, arguments);
+        window.stopTopLoader();
+        return response;
+      } catch (err) {
+        window.stopTopLoader();
+        throw err;
+      }
+    };
+  }
+})();
+
+</script>
+</body>
+</html>
