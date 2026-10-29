@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <title>Student & Parent Portal | NextGen School Alarm</title>
+  
+  <link rel="icon" type="image/png" href="favicon.png">
+  
+  <!-- CSS Dependencies -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f0f4f9;
+      background-image: radial-gradient(#d3e0ea 1px, transparent 1px);
+      background-size: 20px 20px;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Portal Header */
+    .portal-navbar {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Student Banner */
+    .student-badge-banner {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      border-radius: 16px;
+      padding: 20px 24px;
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.2);
+    }
+
+    /* Tab Navigation Pills */
+    .stu-nav-pills {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 5px;
+    }
+    .stu-nav-btn {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      color: #475569;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 8px 18px;
+      border-radius: 10px;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .stu-nav-btn.active, .stu-nav-btn:hover {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    }
+
+    /* Login Container */
+    .login-card {
+      max-width: 420px;
+      margin: 60px auto;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 35px 30px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    }
+    .login-input {
+      height: 48px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .btn-login {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      font-weight: 700;
+      height: 48px;
+      border-radius: 10px;
+      border: none;
+      width: 100%;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================== -->
+  <!-- 1. LOGIN SCREEN (Visible if Not Logged In) -->
+  <!-- ========================================== -->
+  <div id="studentLoginSection" style="display: none;">
+    <div class="container">
+      <div class="login-card">
+        <div class="text-center mb-4">
+          <div class="w-16 h-16 rounded-circle bg-primary bg-opacity-10 d-inline-flex align-items-center justify-content-center p-3 mb-2">
+            <i class="fas fa-graduation-cap fa-2x text-primary"></i>
+          </div>
+          <h4 class="fw-bold text-dark m-0">Student & Parent Portal</h4>
+          <small class="text-muted">Enter Admission No / Student ID & Password</small>
+        </div>
+
+        <form id="studentLoginForm" onsubmit="window.handleStudentLogin(event)">
+          <div class="mb-3">
+            <label class="form-label small fw-bold text-dark">Admission Number / Roll No *</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0"><i class="fas fa-id-card text-muted"></i></span>
+              <input type="text" class="form-control login-input border-start-0" id="loginAdmissionNo" placeholder="e.g. 1024" required>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label small fw-bold text-dark">Password / DOB (DDMMYYYY) *</label>
+            <div class="input-group">
+              <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-muted"></i></span>
+              <input type="password" class="form-control login-input border-start-0" id="loginPassword" placeholder="••••••••" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-login mb-3" id="btnLoginSubmit">
+            Sign In to Portal <i class="fas fa-arrow-right ms-2"></i>
+          </button>
+        </form>
+
+        <div class="text-center">
+          <small class="text-muted">Need help logging in? Contact your school office.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================= -->
+  <!-- 2. STUDENT DASHBOARD SHELL (Visible When Logged In) -->
+  <!-- ================================================= -->
+  <div id="studentDashboardSection" style="display: none;">
+    <!-- Portal Navbar -->
+    <nav class="portal-navbar py-2 px-3 sticky-top">
+      <div class="container-fluid d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-2">
+          <i class="fas fa-graduation-cap text-primary fa-lg"></i>
+          <span class="fw-bold text-dark" id="headerSchoolName">Student Portal</span>
+        </div>
+        <button class="btn btn-sm btn-outline-danger rounded-pill fw-bold" onclick="window.studentLogout()">
+          <i class="fas fa-sign-out-alt me-1"></i> Logout
+        </button>
+      </div>
+    </nav>
+
+    <div class="container py-4">
+      <!-- Student Profile Card Banner -->
+      <div class="student-badge-banner mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+          <span class="badge bg-light text-dark fw-bold mb-1" id="bannerAdmission">Adm: -</span>
+          <h4 class="fw-bold mb-1" id="bannerStudentName">Loading Student...</h4>
+          <p class="mb-0 small opacity-75" id="bannerClassSec">Class: -</p>
+        </div>
+        <div class="text-end">
+          <span class="badge bg-warning text-dark fw-bold px-3 py-2">
+            <i class="fas fa-calendar-alt me-1"></i> Session: 2026-2027
+          </span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <div class="stu-nav-pills mb-3">
+        <button class="stu-nav-btn active" id="tab-hw" onclick="window.loadStudentTab('homework')">
+          <i class="fas fa-book-open me-1"></i> Daily Homework
+        </button>
+        <button class="stu-nav-btn" id="tab-fees" onclick="window.loadStudentTab('fees')">
+          <i class="fas fa-file-invoice-dollar me-1"></i> Fees & Receipts
+        </button>
+        <button class="stu-nav-btn" id="tab-att" onclick="window.loadStudentTab('attendance')">
+          <i class="fas fa-calendar-check me-1"></i> Attendance
+        </button>
+        <button class="stu-nav-btn" id="tab-marks" onclick="window.loadStudentTab('marks')">
+          <i class="fas fa-chart-line me-1"></i> Marks & Results
+        </button>
+      </div>
+
+      <!-- Main Dynamic Content Workspace -->
+      <div id="studentTabContentArea">
+        <!-- Module templates inject here dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- 📌 STUDENT TEMPLATES CONTAINER                           -->
+  <!-- ======================================================== -->
+
+  <!-- 📌 1. LIVE STUDENT HOMEWORK TEMPLATE (Exact module) -->
+  <template id='tpl-StudentHomework'>
+    <style>
+      .hw-master-card {
+        background: #ffffff;
+        border: 1.5px solid #cbd5e1;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        animation: hwCardFade 0.25s ease-out;
+      }
+      @keyframes hwCardFade { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+      .hw-master-header {
+        background: linear-gradient(135deg, #008b8b, #006666);
+        color: #ffffff;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .hw-subject-item {
+        padding: 16px 20px;
+        border-bottom: 1px solid #e2e8f0;
+        transition: background 0.15s;
+      }
+      .hw-subject-item:last-child {
+        border-bottom: none;
+      }
+      .hw-subject-item:hover {
+        background: #f8fafc;
+      }
+
+      .hw-subj-pill {
+        background: #e0f2fe;
+        color: #0369a1;
+        border: 1.5px solid #bae6fd;
+        font-size: 11.5px;
+        font-weight: 800;
+        padding: 3px 10px;
+        border-radius: 6px;
+        letter-spacing: 0.3px;
+      }
+      .hw-due-pill {
+        background: #fef2f2;
+        color: #b91c1c;
+        border: 1px solid #fecaca;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 3px 8px;
+        border-radius: 6px;
+      }
+
+      .btn-view-work {
+        background: #0284c7;
+        color: #ffffff;
+        font-size: 11.5px;
+        font-weight: 700;
+        border: none;
+        padding: 5px 12px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        box-shadow: 0 2px 5px rgba(2, 132, 199, 0.2);
+        transition: 0.15s;
+      }
+      .btn-view-work:hover { background: #0369a1; color: #fff; }
+
+      .hw-fullscreen-overlay {
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(15, 23, 42, 0.85);
+        backdrop-filter: blur(5px);
+        z-index: 999999;
+        display: none;
+        flex-direction: column;
+        animation: hwFadeIn 0.2s ease-out;
+      }
+      @keyframes hwFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+      .hw-overlay-header {
+        background: #1e293b;
+        color: #ffffff;
+        padding: 12px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #334155;
+      }
+      .hw-overlay-body {
+        flex: 1;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        overflow: auto;
+      }
+      .hw-overlay-img {
+        max-width: 95%;
+        max-height: 85vh;
+        object-fit: contain;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        background: #fff;
+      }
+      .hw-overlay-iframe {
+        width: 95%;
+        height: 85vh;
+        border: none;
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      }
+      .btn-close-overlay {
+        background: #ef4444;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        font-weight: 800;
+        font-size: 13px;
+        padding: 6px 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        transition: 0.15s;
+      }
+      .btn-close-overlay:hover { background: #dc2626; }
+    </style>
+
+    <div class='container-fluid px-0 py-2'>
+      <div class='card border-0 shadow-sm rounded-3'>
+        <div class='card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2'>
+          <div class='d-flex align-items-center gap-2'>
+            <i class='fas fa-book-open text-success fa-lg'></i>
+            <div>
+              <h6 class='m-0 fw-bold text-dark'>Daily Class Homework &amp; Assignments</h6>
+              <small class='text-muted' style='font-size: 11px;'>Consolidated daily tasks &amp; subject worksheets</small>
+            </div>
+          </div>
+
+          <div class='d-flex align-items-center gap-2'>
+            <label class='small fw-bold text-muted'>Select Date:</label>
+            <input class='form-control form-control-sm shadow-sm' id='stuHwDatePick' onchange='window.fetchMyHomework()' style='width: 155px; font-weight: 700; height: 36px;' type='date'>
+          </div>
+        </div>
+
+        <div class='card-body p-4' id='stuHwCardsArea'>
+          <div class='text-center py-5 text-muted'><i class='fas fa-spinner fa-spin fa-2x mb-2 text-success d-block'></i>Loading assigned homework...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class='hw-fullscreen-overlay' id='hwAttachmentOverlay'>
+      <div class='hw-overlay-header'>
+        <div class='d-flex align-items-center gap-2'>
+          <i class='fas fa-file-alt text-warning fa-lg'></i>
+          <span class='fw-bold' id='overlayFileTitle' style='font-size: 14px;'>Homework Worksheet / Attachment</span>
+        </div>
+        <button class='btn-close-overlay' onclick='window.closeHwAttachmentOverlay()' type='button'>
+          <i class='fas fa-times'></i> Close
+        </button>
+      </div>
+      <div class='hw-overlay-body' id='overlayFileContent'></div>
+    </div>
+
+    <script type='text/javascript'>
+    (function() {
+      function cleanDateOnly(dVal) {
+        if (!dVal) return "";
+        if (dVal instanceof Date) {
+          const yr = dVal.getFullYear();
+          const mo = String(dVal.getMonth() + 1).padStart(2, '0');
+          const da = String(dVal.getDate()).padStart(2, '0');
+          return `${yr}-${mo}-${da}`;
+        }
+        let s = String(dVal).trim();
+        if (s.includes("T")) s = s.split("T")[0];
+        const parts = s.split(/[\/\-\.]/);
+        if (parts.length === 3) {
+          if (parts[0].length === 4) {
+            return `${parts[0]}-${parts[1].padStart(2, '0')}-${parts[2].padStart(2, '0')}`;
+          } else if (parts[2].length === 4) {
+            return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+          }
+        }
+        return s;
+      }
+
+      function formatDisplayDate(dVal) {
+        if (!dVal) return "-";
+        let clean = cleanDateOnly(dVal);
+        const p = clean.split("-");
+        if (p.length === 3) return `${p[2]}/${p[1]}/${p[0]}`;
+        return dVal;
+      }
+
+      function normalizeClassString(cVal) {
+        return String(cVal || "").toUpperCase().replace(/CLASS/g, '').replace(/[^0-9A-Z]/g, '').trim();
+      }
+
+      window.initStudentHomeworkModule = function() {
+        const today = new Date();
+        const yr = today.getFullYear();
+        const mo = String(today.getMonth() + 1).padStart(2, '0');
+        const da = String(today.getDate()).padStart(2, '0');
+        const todayStr = `${yr}-${mo}-${da}`;
+
+        const dEl = document.getElementById('stuHwDatePick');
+        if (dEl && !dEl.value) dEl.value = todayStr;
+        
+        window.fetchMyHomework();
+      };
+
+      window.fetchMyHomework = async function() {
+        const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+        const activeSchool = user.schoolId;
+        const p = user.studentProfile || {};
+
+        const area = document.getElementById('stuHwCardsArea');
+        if (!activeSchool) {
+          area.innerHTML = `<div class="text-center py-4 text-muted">Session expired. Please log in again.</div>`;
+          return;
+        }
+
+        const rawStudentClass = p.Class || user.class || "1";
+        const rawStudentSec = p.Section || p.Sec || user.section || "A";
+
+        const studentClassClean = normalizeClassString(rawStudentClass);
+        const studentSecClean = String(rawStudentSec).toUpperCase().replace(/[^0-9A-Z]/g, '').trim();
+
+        const selectedDate = document.getElementById('stuHwDatePick').value;
+        const cleanSelectedDate = cleanDateOnly(selectedDate);
+
+        area.innerHTML = `<div class="text-center py-5 text-muted"><i class="fas fa-spinner fa-spin fa-2x mb-2 text-success d-block"></i>Checking homework for ${formatDisplayDate(selectedDate)}...</div>`;
+
+        try {
+          const { data, error } = await db
+            .from('Homework')
+            .select('*')
+            .eq('SchoolID', activeSchool)
+            .eq('Date', cleanSelectedDate);
+
+          if (error) throw error;
+          const fullList = data || [];
+
+          const myHomework = fullList.filter(h => {
+            const hClassClean = normalizeClassString(h.Class);
+            const hSecClean = String(h.Section || "").toUpperCase().replace(/[^0-9A-Z]/g, '').trim();
+
+            const isClassMatch = (!studentClassClean || hClassClean === studentClassClean);
+            const isSecMatch = (!studentSecClean || hSecClean === "ALL" || hSecClean === "" || hSecClean === studentSecClean);
+
+            return isClassMatch && isSecMatch;
+          });
+
+          if (myHomework.length === 0) {
+            area.innerHTML = `
+              <div class="text-center py-5 text-muted">
+                <i class="fas fa-check-circle fa-3x text-success mb-3 d-block"></i>
+                <h5 class="fw-bold text-dark">No Homework Assigned for this Date!</h5>
+                <p class="small text-muted">Class: <strong>${rawStudentClass} (${rawStudentSec})</strong> • Date: <strong>${formatDisplayDate(selectedDate)}</strong></p>
+              </div>
+            `;
+            return;
+          }
+
+          let subjectsHtml = "";
+          myHomework.forEach((h) => {
+            let attachBtn = "";
+            if (h.AttachmentUrl && h.AttachmentUrl.startsWith("http")) {
+              const isPdf = h.AttachmentUrl.toLowerCase().includes(".pdf");
+              const fileType = isPdf ? "PDF Document" : "Image Worksheet";
+              const icon = isPdf ? "fa-file-pdf text-danger" : "fa-image text-info";
+
+              attachBtn = `
+                <div class="mt-2">
+                  <button type="button" class="btn-view-work" onclick="window.openHwAttachmentOverlay('${h.AttachmentUrl}', '${h.Subject}')">
+                    <i class="fas ${icon}"></i> View ${fileType}
+                  </button>
+                </div>
+              `;
+            }
+
+            subjectsHtml += `
+              <div class="hw-subject-item">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                  <span class="hw-subj-pill"><i class="fas fa-book me-1"></i> ${h.Subject || "Subject"}</span>
+                  <span class="hw-due-pill"><i class="far fa-clock me-1"></i> Due: ${formatDisplayDate(h.DueDate || h.Date)}</span>
+                </div>
+                <div class="fw-bold text-dark mt-1" style="white-space: pre-wrap; font-size: 13.5px; line-height: 1.55;">${h.Description || "No detailed instructions provided."}</div>
+                ${attachBtn}
+              </div>
+            `;
+          });
+
+          const assignedBy = myHomework[0].CreatedBy || "Teacher";
+
+          const masterCardHtml = `
+            <div class="hw-master-card">
+              <div class="hw-master-header">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="fas fa-clipboard-list fa-lg"></i>
+                  <span class="fw-bold fs-6">Class ${rawStudentClass} (${rawStudentSec}) Homework</span>
+                </div>
+                <div class="badge bg-warning text-dark fw-bold">
+                  Date: ${formatDisplayDate(selectedDate)} • ${myHomework.length} Subject(s)
+                </div>
+              </div>
+              <div class="p-0">${subjectsHtml}</div>
+              <div class="bg-light p-2.5 px-3 border-top d-flex justify-content-between align-items-center text-muted small">
+                <span>Assigned for: <strong>${formatDisplayDate(selectedDate)}</strong></span>
+                <span>Issued by: <strong class="text-primary">${assignedBy}</strong></span>
+              </div>
+            </div>
+          `;
+
+          area.innerHTML = masterCardHtml;
+
+        } catch(e) {
+          console.error("Student Homework Load Error:", e);
+          area.innerHTML = `<div class="text-center py-5 text-danger fw-bold"><i class="fas fa-exclamation-triangle me-1"></i> Failed to load homework. Please refresh.</div>`;
+        }
+      };
+
+      window.openHwAttachmentOverlay = function(fileUrl, subject) {
+        const overlay = document.getElementById('hwAttachmentOverlay');
+        const titleEl = document.getElementById('overlayFileTitle');
+        const contentEl = document.getElementById('overlayFileContent');
+
+        titleEl.innerText = `${subject} - Homework Worksheet Preview`;
+        const isPdf = fileUrl.toLowerCase().includes(".pdf");
+
+        if (isPdf) {
+          contentEl.innerHTML = `<iframe src="${fileUrl}" class="hw-overlay-iframe shadow"></iframe>`;
+        } else {
+          contentEl.innerHTML = `<img src="${fileUrl}" class="hw-overlay-img shadow" alt="Homework Attachment">`;
+        }
+
+        overlay.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      };
+
+      window.closeHwAttachmentOverlay = function() {
+        const overlay = document.getElementById('hwAttachmentOverlay');
+        const contentEl = document.getElementById('overlayFileContent');
+        overlay.style.display = 'none';
+        contentEl.innerHTML = "";
+        document.body.style.overflow = 'auto';
+      };
+
+      window.initStudentHomeworkModule();
+    })();
+    </script>
+  </template>
+
+  <!-- ======================================================== -->
+  <!-- 📌 SUPABASE CLIENT & PORTAL CORE CONTROLLER              -->
+  <!-- ======================================================== -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="text/javascript">
+    // 1. SUPABASE INITIALIZATION (Global db instance)
+    const SUPABASE_URL = "https://yanzstgfsvnlspbrminc.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnpzdGdmc3ZubHNwYnJtaW5jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4NjEyNjAsImV4cCI6MjEwNjQzNzI2MH0.mFYUSJio3AlPwkideCDMHCjg1Ek5hNhZkgW_x92Kmjo";
+    window.db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // 2. CHECK SESSION ON LOAD
+    document.addEventListener("DOMContentLoaded", function() {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "null");
+
+      if (user && user.role === 'student') {
+        showStudentDashboard(user);
+      } else {
+        showStudentLogin();
+      }
+    });
+
+    function showStudentLogin() {
+      document.getElementById('studentLoginSection').style.display = 'block';
+      document.getElementById('studentDashboardSection').style.display = 'none';
+    }
+
+    function showStudentDashboard(user) {
+      document.getElementById('studentLoginSection').style.display = 'none';
+      document.getElementById('studentDashboardSection').style.display = 'block';
+
+      // Update banner details
+      const p = user.studentProfile || {};
+      document.getElementById('bannerStudentName').innerText = p.Name || user.name || "Student";
+      document.getElementById('bannerAdmission').innerText = `Adm: ${p.AdmissionNo || user.admissionNo || "-"}`;
+      document.getElementById('bannerClassSec').innerText = `Class: ${p.Class || user.class || "-"} (${p.Section || p.Sec || user.section || "-"})`;
+
+      // Load default module
+      window.loadStudentTab('homework');
+    }
+
+    // 3. STUDENT LOGIN HANDLER
+    window.handleStudentLogin = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnLoginSubmit');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i> Verifying...`;
+
+      const admNo = document.getElementById('loginAdmissionNo').value.trim();
+      const pwd = document.getElementById('loginPassword').value.trim();
+
+      try {
+        // Query student from Supabase Students table
+        const { data, error } = await db
+          .from('Students')
+          .select('*')
+          .or(`AdmissionNo.eq.${admNo},RollNo.eq.${admNo}`)
+          .limit(1);
+
+        if (error) throw error;
+        if (!data || data.length === 0) {
+          throw new Error("Student record not found. Please check your Admission Number.");
+        }
+
+        const student = data[0];
+
+        // Match password with Password or Date of Birth (DOB)
+        const validPass = student.Password || student.DOB || "";
+        const cleanValid = String(validPass).replace(/[^0-9A-Za-z]/g, "");
+        const cleanEntered = String(pwd).replace(/[^0-9A-Za-z]/g, "");
+
+        if (cleanValid && cleanValid !== cleanEntered) {
+          throw new Error("Invalid password. Please check your password or Date of Birth.");
+        }
+
+        // Save session formatted for your templates
+        const sessionPayload = {
+          role: 'student',
+          schoolId: student.SchoolID,
+          admissionNo: student.AdmissionNo,
+          name: student.Name,
+          class: student.Class,
+          section: student.Section || student.Sec,
+          studentProfile: student
+        };
+
+        localStorage.setItem("a2z_user", JSON.stringify(sessionPayload));
+        showStudentDashboard(sessionPayload);
+
+      } catch (err) {
+        alert(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `Sign In to Portal <i class="fas fa-arrow-right ms-2"></i>`;
+      }
+    };
+
+    // 4. TAB CONTROLLER: Clones Template & Injects Scripts
+    window.loadStudentTab = function(tabName) {
+      document.querySelectorAll('.stu-nav-btn').forEach(btn => btn.classList.remove('active'));
+      const activeBtn = document.getElementById(`tab-${tabName === 'homework' ? 'hw' : tabName}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const targetArea = document.getElementById('studentTabContentArea');
+      targetArea.innerHTML = "";
+
+      let templateId = "";
+      if (tabName === 'homework') templateId = 'tpl-StudentHomework';
+      else if (tabName === 'fees') templateId = 'tpl-StudentFees';
+      else if (tabName === 'attendance') templateId = 'tpl-StudentAttendance';
+      else if (tabName === 'marks') templateId = 'tpl-StudentMarks';
+
+      const tpl = document.getElementById(templateId);
+      if (!tpl) {
+        targetArea.innerHTML = `
+          <div class="card border-0 shadow-sm p-5 text-center my-3 rounded-4">
+            <i class="fas fa-tools fa-3x text-muted mb-3"></i>
+            <h5 class="fw-bold text-dark text-capitalize">${tabName} Module</h5>
+            <p class="text-muted small">This module template will be connected next.</p>
+          </div>
+        `;
+        return;
+      }
+
+      // Clone template content
+      const clone = tpl.content.cloneNode(true);
+
+      // Re-execute template script tags so they run in the new view
+      const scripts = clone.querySelectorAll('script');
+      scripts.forEach(s => {
+        const newScript = document.createElement('script');
+        newScript.type = s.type || 'text/javascript';
+        newScript.textContent = s.textContent;
+        s.parentNode.replaceChild(newScript, s);
+      });
+
+      targetArea.appendChild(clone);
+    };
+
+    // 5. LOGOUT
+    window.studentLogout = function() {
+      localStorage.removeItem("a2z_user");
+      window.location.reload();
+    };
+  </script>
+</body>
+</html>
