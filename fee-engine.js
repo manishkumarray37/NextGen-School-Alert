@@ -1,5 +1,3 @@
- * 💰 ENTERPRISE FEE CALCULATION & RECONCILIATION ENGINE (fee-engine.js)
-   
 (function() {
   const ACADEMIC_MONTHS_MAP = {
     "4": "APR", "5": "MAY", "6": "JUN", "7": "JUL", 
