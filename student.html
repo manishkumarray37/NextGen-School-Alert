@@ -13,10 +13,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- JS Dependencies -->
+    <!-- JS Dependencies (Supabase SDK & Config) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script src="fee-engine.js"></script>
+
     <!-- Initial Session Guard -->
     <script>
       (function() {
@@ -71,7 +72,6 @@
         border: 1px solid rgba(255,255,255,0.2);
       }
 
-      /* 3D ANDROID DOWNLOAD BUTTON */
       .btn-3d-download {
         display: inline-flex;
         align-items: center;
@@ -243,7 +243,7 @@
   <div id="global-top-loader"></div>
 
   <!-- =================================================================== -->
-  <!-- 1. LOGIN OVERLAY SCREEN (YOUR ORIGINAL GLASSMORPHIC DESIGN)         -->
+  <!-- 1. LOGIN OVERLAY SCREEN                                             -->
   <!-- =================================================================== -->
   <div id="login-overlay">
     <div class="container-fluid">
@@ -300,7 +300,7 @@
           <h3 class="fw-bold text-white">Portal Features</h3>
           <ul class="list-unstyled text-white small">
             <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> Daily Homework &amp; Worksheets</li>
-            <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> Online Fee Receipts &amp; Dues</li>
+            <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> Online Fee Receipts &amp; Ledger</li>
             <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> Real-time Attendance Record</li>
             <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> Exam Report Card &amp; Marks</li>
             <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> Study Materials &amp; E-Books</li>
@@ -312,7 +312,7 @@
   </div>
 
   <!-- =================================================================== -->
-  <!-- 2. MAIN STUDENT PORTAL APP (ACTIVE ON LOGIN)                        -->
+  <!-- 2. MAIN STUDENT PORTAL APP                                          -->
   <!-- =================================================================== -->
   <div id="main-app" style="display:none;">
     
@@ -323,7 +323,6 @@
       </div>
 
       <div class="ms-auto d-flex align-items-center gap-3">
-        <!-- Student Badge / Name -->
         <div class="d-flex align-items-center gap-2 border rounded-pill shadow-sm px-3 py-1 bg-white">
           <img class="rounded-circle user-avatar-top shadow-sm border" id="topHeaderUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
           <div class="text-start d-none d-sm-block">
@@ -332,7 +331,6 @@
           </div>
         </div>
 
-        <!-- Logout Button -->
         <button class="btn btn-sm btn-outline-danger rounded-pill fw-bold px-3" onclick="window.doStudentLogout()" type="button">
           <i class="fas fa-sign-out-alt me-1"></i> Logout
         </button>
@@ -352,7 +350,6 @@
           <li><a class="stu-nav-link" href="javascript:void(0)" onclick="window.navigateToStudentView('Complaints', this)"><i class="fas fa-comment-alt me-1"></i> Complaints</a></li>
           <li><a class="stu-nav-link" href="javascript:void(0)" onclick="window.navigateToStudentView('ViewCalendar', this)"><i class="far fa-calendar-alt me-1"></i> Academic Calendar</a></li>
           
-          <!-- MORE DROPDOWN -->
           <li class="stu-dropdown-container">
             <a class="stu-nav-link" href="javascript:void(0)" onclick="window.toggleStudentMoreMenu(event)" style="cursor: pointer;">
               <i class="fas fa-th-large me-1 text-warning"></i> More <i class="fas fa-chevron-down ms-1" style="font-size: 10px;"></i>
@@ -369,7 +366,7 @@
       </div>
     </div>
 
-    <!-- MOBILE ICON GRID DASHBOARD (3x3 Layout for Mobile Screens) -->
+    <!-- MOBILE GRID DASHBOARD -->
     <div id="mobile-grid-dashboard">
       <div class="d-flex align-items-center justify-content-between mb-3 px-2 pt-2">
         <div>
@@ -443,33 +440,18 @@
   <!-- =================================================================== -->
   <!-- 3. STUDENT TEMPLATES REPOSITORY                                     -->
   <!-- =================================================================== -->
-
-  <!-- Include all your student templates here -->
-  <!-- 1. tpl-MyProfile -->
-  <!-- 2. tpl-StudentHomework -->
-  <!-- 3. tpl-StudentAttendance -->
-  <!-- 4. tpl-Announcements -->
-  <!-- 5. tpl-StudentFees -->
-  <!-- 6. tpl-StudentReportCard -->
-  <!-- 7. tpl-Complaints -->
-  <!-- 8. tpl-ViewCalendar -->
-  <!-- 9. tpl-Econtents -->
-  <!-- 10. tpl-Gallery -->
-  <!-- 11. tpl-DigitalNoticeBoard -->
-  <!-- (All template IDs match your original code exactly) -->
+  
+  <!-- [YOUR EXISTING TPL MODULE TEMPLATES GO HERE: tpl-MyProfile, tpl-StudentHomework, etc.] -->
 
   <!-- =================================================================== -->
-  <!-- 4. CORE CONTROLLER JAVASCRIPT (SUPABASE CONNECTED)                  -->
+  <!-- 4. CORE CONTROLLER JAVASCRIPT                                       -->
   <!-- =================================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script type="text/javascript">
-    // 1. Initialize Supabase
-    const SUPABASE_URL = (typeof window.SUPABASE_URL !== 'undefined') ? window.SUPABASE_URL : "https://yanzstgfsvnlspbrminc.supabase.co";
-    const SUPABASE_ANON_KEY = (typeof window.SUPABASE_ANON_KEY !== 'undefined') ? window.SUPABASE_ANON_KEY : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnpzdGdmc3ZubHNwYnJtaW5jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4NjEyNjAsImV4cCI6MjEwNjQzNzI2MH0.mFYUSJio3AlPwkideCDMHCjg1Ek5hNhZkgW_x92Kmjo";
-    window.db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // window.db is already initialized by config.js
 
-    // 2. Student Login Handler
+    // Student Login Handler
     window.doStudentLogin = async function() {
       const id = document.getElementById("user_id").value.trim();
       const ps = document.getElementById("user_pass").value.trim();
@@ -500,7 +482,6 @@
           return;
         }
 
-        // Check if deactivated
         if (String(studentData.Status || "").toUpperCase() === "DEACTIVATED") {
           alert(`⚠️ ADMISSION DEACTIVATED\n\nYour student portal access has been suspended.\nReason: ${studentData.DeactivateRemarks || 'Administrative Action'}\nPlease contact school administration.`);
           btn.disabled = false;
@@ -508,7 +489,6 @@
           return;
         }
 
-        // Fetch School Info
         let schoolName = "School Portal";
         if (studentData.SchoolID) {
           const { data: sch } = await db.from('Schools').select('SchoolName').eq('SchoolID', studentData.SchoolID).maybeSingle();
@@ -539,7 +519,7 @@
       }
     };
 
-    // 3. Initialize Portal State
+    // Initialize Portal State
     window.initStudentPortal = function() {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "null");
 
@@ -557,13 +537,13 @@
       const p = user.studentProfile || {};
       const fullName = user.name || "Student";
       document.getElementById("top-user-name").innerText = fullName;
-      document.getElementById("profile-school-name").innerText = user.schoolName || "Student Portal";
+      document.getElementById("profile-school-name").innerText = user.schoolName || "School Portal";
       document.getElementById("topHeaderUserAvatar").src = user.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
       const mobWelcome = document.getElementById("mobWelcomeText");
       const mobSchool = document.getElementById("mobSchoolText");
       if (mobWelcome) mobWelcome.innerText = `Hello ${fullName}`;
-      if (mobSchool) mobSchool.innerText = user.schoolName || "Student Portal";
+      if (mobSchool) mobSchool.innerText = user.schoolName || "School Portal";
 
       if (window.innerWidth <= 768) {
         window.showMobileGridDashboard();
@@ -572,7 +552,7 @@
       }
     };
 
-    // 4. Viewport Navigation
+    // Viewport Navigation
     window.navigateTo = async function(pageName) {
       const cleanPage = String(pageName || "MyProfile").replace(/^#\/?/, "").trim();
       const area = document.getElementById("page-area");
@@ -607,7 +587,6 @@
         newContainer.innerHTML = tpl.innerHTML;
         area.appendChild(newContainer);
 
-        // Re-execute scripts
         newContainer.querySelectorAll("script").forEach(oldScript => {
           const newScript = document.createElement("script");
           Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
@@ -642,7 +621,7 @@
     window.navigateToStudentView = function(pageName, el) {
       if (el) {
         document.querySelectorAll(".stu-nav-link").forEach(l => l.classList.remove("active-stu-tab"));
-        el.classList.add("active-stu-tab");
+        l.classList.add("active-stu-tab");
       }
       window.navigateTo(pageName);
     };
@@ -666,13 +645,12 @@
       }
     });
 
-window.doStudentLogout = function() {
-  localStorage.removeItem("a2z_user");
-  sessionStorage.clear();
-  // Keeps the user on https://student.schoolalarm.online (shows login screen)
-  window.location.href = window.location.origin;
-};
-    // Auto-boot on load
+    window.doStudentLogout = function() {
+      localStorage.removeItem("a2z_user");
+      sessionStorage.clear();
+      window.location.href = window.location.origin;
+    };
+
     document.addEventListener("DOMContentLoaded", function() {
       window.initStudentPortal();
     });
