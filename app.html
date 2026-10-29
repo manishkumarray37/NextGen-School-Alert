@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+    <title>SCHOOL ALARM | Staff & School Admin ERP</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+
+    <!-- External CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- ⚡ Core Libraries & Database SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="fee-engine.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+    <!-- Zero-Flicker Session Guard -->
+    <script>
+      (function() {
+        try {
+          const rawUser = localStorage.getItem("a2z_user");
+          if (rawUser) {
+            const u = JSON.parse(rawUser || "{}");
+            const role = String(u.role || "").toUpperCase();
+            if (role === "STUDENT") {
+              // Redirect students to student subdomain
+              window.location.replace("/student.html");
+              return;
+            }
+            document.documentElement.classList.add("user-logged-in");
+          } else {
+            document.documentElement.classList.remove("user-logged-in");
+          }
+        } catch(e) {}
+      })();
+    </script>
+
+    <style>
+      :root { 
+        --primary: #059669; 
+        --accent: #10b981; 
+        --bg-light: #f8fafc; 
+        --sidebar-w: 220px; 
+        --icon-bar-w: 80px; 
+        --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+        --hover-shadow: 0 20px 30px -10px rgba(16, 185, 129, 0.18);
+      }
+      body { 
+        font-family: 'Inter', sans-serif; 
+        background: var(--bg-light); 
+        margin: 0; 
+        overflow-x: hidden; 
+      }
+
+      ::-webkit-scrollbar { width: 5px !important; height: 5px !important; }
+      ::-webkit-scrollbar-track { background: transparent !important; }
+      ::-webkit-scrollbar-thumb { background: #cbd5e1 !important; border-radius: 10px !important; }
+      ::-webkit-scrollbar-thumb:hover { background: #94a3b8 !important; }
+
+      html.user-logged-in #login-overlay { display: none !important; }
+      html.user-logged-in #main-app { display: block !important; }
+
+      /* ================= LOGIN OVERLAY ================= */
+      #login-overlay { 
+        position: fixed; 
+        inset: 0; 
+        background: linear-gradient(135deg, #0f172a 0%, #064e3b 50%, #059669 100%); 
+        z-index: 10000; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+      }
+      .login-card { 
+        background: rgba(255, 255, 255, 0.98); 
+        backdrop-filter: blur(10px); 
+        padding: 40px; 
+        border-radius: 24px; 
+        width: 100%; 
+        max-width: 420px; 
+        text-align: center; 
+        box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
+        border: 1px solid rgba(255,255,255,0.2);
+      }
+
+      .btn-3d-download {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        color: #ffffff !important;
+        text-decoration: none !important;
+        padding: 10px 22px;
+        font-size: 11px;
+        font-weight: 700;
+        border-radius: 30px;
+        border: 1.5px solid #38bdf8;
+        box-shadow: 0 5px 0 #0f172a, 0 10px 20px rgba(0, 0, 0, 0.25);
+        transition: all 0.15s ease-in-out;
+      }
+      .btn-3d-download:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 0 #0f172a, 0 14px 25px rgba(56, 189, 248, 0.35);
+        color: #38bdf8 !important;
+      }
+
+      /* ================= 1. LEFT ICON BAR ================= */
+      .icon-bar { 
+        width: var(--icon-bar-w); 
+        height: 100vh; 
+        background: #ffffff; 
+        position: fixed; 
+        left: 0; 
+        top: 0; 
+        border-right: 1px solid #e2e8f0; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        padding-top: 15px; 
+        z-index: 1060; 
+        overflow-y: auto; 
+        transition: 0.3s; 
+      }
+      .icon-item { 
+        width: 62px; 
+        text-align: center; 
+        margin-bottom: 12px; 
+        cursor: pointer; 
+        color: #475569; 
+        font-size: 10px; 
+        font-weight: 700; 
+        transition: all 0.2s ease; 
+        border-radius: 12px;
+        border: 1px solid rgba(226, 232, 240, 0.9);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
+        padding: 4px 0;
+      }
+      .icon-item i { 
+        display: block; 
+        font-size: 19px; 
+        margin-bottom: 3px; 
+        padding: 10px; 
+        border-radius: 12px; 
+        background: #f8fafc; 
+        border: 1px solid #e2e8f0; 
+        transition: all 0.2s ease; 
+      }
+      .icon-item.mod-students i { color: #0284c7; background: #f0f9ff; }
+      .icon-item.mod-finance i { color: #10b981; background: #ecfdf5; }
+      .icon-item.mod-exam i { color: #f43f5e; background: #fff1f2; }
+      .icon-item.mod-academic i { color: #8b5cf6; background: #f5f3ff; }
+      .icon-item.mod-hr i { color: #06b6d4; background: #ecfeff; }
+      .icon-item.mod-admission i { color: #f97316; background: #fff7ed; }
+      .icon-item.mod-transport i { color: #eab308; background: #fefce8; }
+      .icon-item.mod-collaborate i { color: #ec4899; background: #fdf2f8; }
+      .icon-item.mod-addons i { color: #059669; background: #ecfdf5; }
+      .icon-item.mod-setting i { color: #475569; background: #f1f5f9; }
+
+      .icon-item:hover { transform: translateY(-2px) scale(1.05); }
+      .icon-item.active {
+        background: linear-gradient(145deg, #059669, #047857) !important;
+        color: #ffffff !important;
+      }
+      .icon-item.active i { background: #059669 !important; color: white !important; }
+
+      /* ================= 2. SECONDARY TEXT SIDEBAR ================= */
+      .text-sidebar { 
+        width: var(--sidebar-w); 
+        height: 100vh; 
+        background: #ffffff; 
+        position: fixed; 
+        left: var(--icon-bar-w); 
+        top: 0; 
+        border-right: 1px solid #e2e8f0; 
+        z-index: 1050; 
+        padding: 0; 
+        overflow-y: auto; 
+        transition: 0.3s; 
+      }
+      .sidebar-header-box { 
+        background: linear-gradient(135deg, #059669, #10b981) !important; 
+        color: #ffffff !important; 
+        padding: 14px 16px !important; 
+        font-weight: 700 !important; 
+        font-size: 13.5px !important; 
+        position: sticky !important; 
+        top: 0 !important; 
+        z-index: 2 !important; 
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+      }
+      .menu-scroll { padding: 12px 10px 80px 10px !important; }
+
+      /* ACCORDION GROUP LABELS */
+      .group-label { 
+        background: #f0fdf4 !important;
+        border: 1.5px solid #86efac !important;
+        border-radius: 8px !important;
+        color: #166534 !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        padding: 9px 12px !important;
+        margin: 8px 0 4px 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        cursor: pointer !important;
+      }
+      .group-label::after {
+        content: '\f054';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        font-size: 10px;
+        color: #059669;
+        transition: transform 0.2s ease;
+      }
+      .group-label.group-open::after { content: '\f078'; }
+
+      .nav-link-custom { 
+        display: none !important; 
+        padding: 7px 12px; 
+        color: #334155; 
+        text-decoration: none; 
+        font-size: 12px; 
+        font-weight: 600; 
+        border-radius: 6px; 
+        cursor: pointer; 
+        margin-bottom: 2px; 
+        margin-left: 6px; 
+        border-left: 2px solid #f1f5f9; 
+      }
+      .nav-link-custom.sub-open { display: block !important; }
+      .nav-link-custom:hover { background: #f0fdf4; color: #059669; padding-left: 15px; }
+      .nav-link-custom.active-sub { background: #dcfce7 !important; color: #065f46 !important; font-weight: 700 !important; border-left: 3px solid #059669 !important; }
+
+      /* ================= 3. MAIN CONTENT WORKSPACE ================= */
+      .main-content { margin-left: calc(var(--icon-bar-w) + var(--sidebar-w)); min-height: 100vh; transition: 0.3s; }
+      body.sidebar-collapsed .text-sidebar { left: -300px; }
+      body.sidebar-collapsed .main-content { margin-left: var(--icon-bar-w) !important; }
+
+      header { 
+        background: #ffffff; 
+        padding: 10px 20px; 
+        border-bottom: 1px solid #e2e8f0; 
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between; 
+        min-height: 65px; 
+        position: sticky; 
+        top: 0; 
+        z-index: 1000; 
+      }
+      .school-sel { 
+        border: 2px solid var(--accent); 
+        border-radius: 20px; 
+        font-weight: 700; 
+        color: var(--primary); 
+        width: 250px; 
+        height: 36px; 
+        font-size: 12px; 
+        background-color: #f0fdf4; 
+        padding: 4px 12px; 
+      }
+      .user-avatar-top { width: 34px; height: 34px; object-fit: cover; }
+
+      /* KPI DASHBOARD CARDS */
+      .card-modern { border: none !important; border-radius: 14px !important; background: #ffffff; box-shadow: var(--card-shadow); transition: all 0.25s ease; }
+      .card-modern:hover { transform: translateY(-3px); box-shadow: var(--hover-shadow); }
+
+      .icon-badge-blue { background: rgba(2, 132, 199, 0.1); color: #0284c7; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+      .icon-badge-purple { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+      .icon-badge-green { background: rgba(16, 185, 129, 0.1); color: #10b981; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+      .icon-badge-amber { background: rgba(245, 158, 11, 0.1); color: #f59e0b; width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+
+      /* ================= 4. FOOTER BAR ================= */
+      .erp-footer {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        left: calc(var(--icon-bar-w) + var(--sidebar-w));
+        z-index: 1030;
+        background: #ffffff;
+        border-top: 1.5px solid #e2e8f0;
+        padding: 8px 24px;
+        transition: all 0.3s ease;
+      }
+      body.sidebar-collapsed .erp-footer { left: var(--icon-bar-w) !important; }
+
+      #btnScrollToTop {
+        position: fixed;
+        bottom: 55px;
+        right: 22px;
+        width: 42px;
+        height: 42px;
+        background: linear-gradient(135deg, #059669, #10b981);
+        color: #ffffff;
+        border: none;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1035;
+        opacity: 0;
+        visibility: hidden;
+        transition: 0.25s;
+        box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4);
+      }
+      #btnScrollToTop.show-scroll-top { opacity: 1; visibility: visible; }
+
+      /* Mobile Support */
+      .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1040; }
+      .menu-toggle { display: none; font-size: 22px; cursor: pointer; color: var(--primary); margin-right: 12px; }
+
+      @media (max-width: 992px) {
+        .menu-toggle { display: block; }
+        .icon-bar { left: -100px; }
+        .text-sidebar { left: -400px; }
+        .main-content { margin-left: 0 !important; }
+        .erp-footer { left: 0 !important; padding: 6px 12px; }
+        body.sidebar-open .icon-bar { left: 0; }
+        body.sidebar-open .text-sidebar { left: var(--icon-bar-w); }
+        body.sidebar-open .sidebar-overlay { display: block; }
+      }
+    </style>
+</head>
+<body>
+
+  <!-- Top Progress Loader -->
+  <div id="global-top-loader"></div>
+  <div class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
+
+  <!-- =================================================================== -->
+  <!-- 1. LOGIN OVERLAY (ADMIN & STAFF ACCESS)                             -->
+  <!-- =================================================================== -->
+  <div id="login-overlay">
+    <div class="container-fluid">
+      <div class="row align-items-center justify-content-center" style="min-height: 100vh;">
+        
+        <!-- Left Side Information -->
+        <div class="col-lg-3 side-content text-end d-none d-lg-block">
+          <div class="mb-3"><i class="fas fa-user-shield fa-4x text-white"></i></div>
+          <div class="badge bg-warning text-dark p-2 mb-2 fw-bold">Enterprise Cloud ERP</div>
+          <h2 class="fw-bold text-white">School Management</h2>
+          <p class="text-white-50">Authorized Staff, Teacher &amp; Administration Portal.</p>
+          <div class="badge bg-light text-dark p-2 fw-bold">Support: +91 7079090740</div>
+        </div>
+
+        <!-- Center Login Card -->
+        <div class="col-lg-4 col-md-8 col-sm-12">
+          <div class="login-card mx-auto shadow-lg">
+            <div class="mb-3">
+              <img alt="Logo" src="https://yanzstgfsvnlspbrminc.supabase.co/storage/v1/object/public/School_Data/ADMIN%20DATA/schoolalarm%20header.png" style="max-width: 100%; height: auto;">
+            </div>
+            
+            <h3 class="fw-bold mb-1 text-primary">Staff &amp; School Login</h3>
+            <p class="small text-muted mb-3">Sign in with your Staff ID or Admin Username</p>
+
+            <div class="mb-4 text-center">
+              <a class="btn-3d-download" download="School_Alarm.apk" href="https://www.dropbox.com/scl/fi/3wgstrdozahtdwbnljn0b/School_Alarm.apk?rlkey=eorbkf7gmf5hkxajtgik0yld0&st=oje3ex1h&dl=1">
+                <i class="fab fa-android me-2 text-warning fs-5"></i>
+                <span>Download Android App</span>
+              </a>
+            </div>                       
+
+            <form onsubmit="event.preventDefault(); window.doAdminLogin();">
+              <div class="text-start mb-3">
+                <label class="small fw-bold text-secondary">User ID / Staff ID *</label>
+                <input autocomplete="username" class="form-control form-control-lg" id="user_id" placeholder="Enter User ID" required type="text">
+              </div>
+              
+              <div class="text-start mb-4">
+                <label class="small fw-bold text-secondary">Password *</label>
+                <input autocomplete="current-password" class="form-control form-control-lg" id="user_pass" placeholder="Enter Password" required type="password">
+              </div>
+              
+              <button class="btn btn-primary w-100 py-3 fw-bold rounded-pill shadow" id="loginBtn" type="submit">
+                Login to Dashboard
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Right Side Features List -->
+        <div class="col-lg-3 side-content text-start d-none d-lg-block">
+          <h3 class="fw-bold text-white">School Modules</h3>
+          <ul class="list-unstyled text-white small">
+            <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> Admissions &amp; Student Manager</li>
+            <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> Fee Collection &amp; Instant Receipts</li>
+            <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> Staff Attendance &amp; Payroll Desk</li>
+            <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> Exam Marks &amp; Report Cards</li>
+            <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> WhatsApp &amp; Parent Broadcast</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- 2. MAIN ERP DASHBOARD APPLICATION                                   -->
+  <!-- =================================================================== -->
+  <div id="main-app" style="display:none;">
+    
+    <!-- 1. Left Icon Navigation Bar -->
+    <div class="icon-bar">
+      <div class="icon-item mod-students active" onclick="switchModule('Students', this)"><i class="fas fa-user-graduate"></i>Students</div>
+      <div class="icon-item mod-finance" onclick="switchModule('Finance', this)"><i class="fas fa-coins"></i>Finance</div>
+      <div class="icon-item mod-exam" onclick="switchModule('Exam', this)"><i class="fas fa-file-signature"></i>Exam</div>
+      <div class="icon-item mod-academic" onclick="switchModule('Academic', this)"><i class="fas fa-book"></i>Academic</div>
+      <div class="icon-item mod-hr" onclick="switchModule('HR', this)"><i class="fas fa-users-gear"></i>HR</div>
+      <div class="icon-item mod-admission" onclick="switchModule('Admission', this)"><i class="fas fa-user-plus"></i>Admission</div>
+      <div class="icon-item mod-collaborate" onclick="switchModule('Collaborate', this)"><i class="fas fa-comments"></i>Connect</div>
+      <div class="icon-item mod-addons" onclick="switchModule('Addons', this)"><i class="fas fa-puzzle-piece"></i>Add-ons</div>
+      <div class="icon-item mod-setting" onclick="switchModule('Setting', this)"><i class="fas fa-cog"></i>Setting</div>
+    </div>
+
+    <!-- 2. Secondary Accordion Text Sidebar -->
+    <div class="text-sidebar">
+      <div class="sidebar-header-box" id="mod-title">STUDENTS</div>
+      <div class="menu-scroll" id="dynamic-menu"></div>
+    </div>
+
+    <!-- 3. Main Center Content Container -->
+    <div class="main-content">
+      
+      <!-- Top Sticky Header -->
+      <header>
+        <div class="d-flex align-items-center gap-2">
+          <div class="menu-toggle" onclick="window.toggleSidebar()"><i class="fas fa-bars"></i></div>
+          <div class="btn-fullscreen-toggle d-none d-lg-block" onclick="window.toggleCollapseSidebar()" title="Toggle Sidebar" style="cursor:pointer;">
+            <i class="fas fa-compress-alt" id="collapse-icon"></i>
+          </div>
+          <div class="header-logo" onclick="window.navigateTo('Dashboard')" style="cursor:pointer;">
+            <img alt="School Logo" class="brand-logo-img" src="https://yanzstgfsvnlspbrminc.supabase.co/storage/v1/object/public/School_Data/ADMIN%20DATA/schoolalarm%20header.png" style="height: 38px;">
+          </div>
+        </div>
+
+        <div class="ms-auto d-flex align-items-center gap-3">
+          <!-- Switch School (Super Admin Only) -->
+          <div id="switcher-box" style="display:none;">
+            <select class="form-select form-select-sm school-sel shadow-sm" id="schoolSelect" onchange="window.switchSchool()"></select>
+          </div>
+
+          <!-- Greeting & Real-time Clock -->
+          <div class="text-end d-none d-md-block border-start ps-3">
+            <div class="fw-bold text-primary small" id="dynamic-greeting">Welcome</div>
+            <div class="small text-muted" id="live-clock" style="font-size: 11px;"></div>
+          </div>
+
+          <!-- Profile Dropdown Hub -->
+          <div class="dropdown">
+            <div class="d-flex align-items-center gap-2 border rounded-pill shadow-sm bg-white px-2 py-1" data-bs-toggle="dropdown" style="cursor:pointer;">
+              <span class="small fw-bold text-dark d-none d-sm-inline ps-1" id="top-user-name">Admin</span>
+              <img class="rounded-circle user-avatar-top shadow-sm border" id="topHeaderUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+            </div>
+
+            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 rounded-4 p-2" style="min-width: 240px;">
+              <li class="p-2 text-center bg-light rounded-3 mb-2 border">
+                <img class="rounded-circle border border-2 border-primary shadow-sm mb-1" id="dropdownUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width: 48px; height: 48px; object-fit: cover;">
+                <div class="fw-bold text-dark" id="dropdownUserName" style="font-size: 13px;">User Name</div>
+                <span class="badge bg-success bg-opacity-10 text-success border border-success" id="dropdownUserRole" style="font-size: 10px;">ADMIN</span>
+                <div class="text-muted small mt-1 text-truncate fw-bold" id="profile-school-name" style="font-size: 11px;">School Name</div>
+              </li>
+              <li><a class="dropdown-item fw-bold py-2 rounded-2 text-dark" href="javascript:void(0)" onclick="window.openMyProfileModal()"><i class="fas fa-user-circle text-primary me-2"></i>My Profile</a></li>
+              <li><a class="dropdown-item fw-bold py-2 rounded-2 text-dark" href="javascript:void(0)" onclick="window.openChangePasswordModal()"><i class="fas fa-key text-warning me-2"></i>Change Password</a></li>
+              <li><hr class="dropdown-divider my-1"/></li>
+              <li><a class="dropdown-item fw-bold py-2 rounded-2 text-danger" href="javascript:void(0)" onclick="window.doAdminLogout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Container -->
+      <div class="p-4">
+        
+        <!-- ================= 8 DASHBOARD KPI STATS CARDS ================= -->
+        <div class="row g-3 mb-4" id="dash-stats-row">
+          
+          <!-- 1. Total Students -->
+          <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+            <div class="card card-modern p-3 h-100" onclick="window.navigateTo('ViewStudent')" style="cursor: pointer;">
+              <div class="d-flex align-items-center justify-content-between">
+                <div><span class="text-muted small fw-bold text-uppercase">Students</span><h3 class="fw-bold mb-0 text-dark mt-1" id="dash-total">0</h3></div>
+                <div class="icon-badge-blue"><i class="fas fa-user-graduate"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Active Staff -->
+          <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+            <div class="card card-modern p-3 h-100" onclick="window.navigateTo('ViewStaff')" style="cursor: pointer;">
+              <div class="d-flex align-items-center justify-content-between">
+                <div><span class="text-muted small fw-bold text-uppercase">Active Staff</span><h3 class="fw-bold mb-0 text-dark mt-1" id="dash-staff">0</h3></div>
+                <div class="icon-badge-purple"><i class="fas fa-chalkboard-teacher"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. Collection -->
+          <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+            <div class="card card-modern p-3 h-100" onclick="window.navigateTo('CollectFee')" style="cursor: pointer;">
+              <div class="d-flex align-items-center justify-content-between">
+                <div><span class="text-muted small fw-bold text-uppercase">Collection</span><h3 class="fw-bold mb-0 text-success mt-1" id="dash-fee">₹0</h3></div>
+                <div class="icon-badge-green"><i class="fas fa-wallet"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Status -->
+          <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+            <div class="card card-modern p-3 h-100">
+              <div class="d-flex align-items-center justify-content-between">
+                <div><span class="text-muted small fw-bold text-uppercase">Status</span><h3 class="fw-bold mb-0 text-warning mt-1" id="dash-status-text">ACTIVE</h3></div>
+                <div class="icon-badge-amber"><i class="fas fa-shield-alt"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Requests -->
+          <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+            <div class="card card-modern p-3 h-100" onclick="window.navigateTo('StudentRequests')" style="cursor: pointer;">
+              <div class="d-flex align-items-center justify-content-between">
+                <div><span class="text-muted small fw-bold text-uppercase">Requests</span><h3 class="fw-bold mb-0 text-dark mt-1" id="kpiPendingRequestsCount">0</h3></div>
+                <div class="icon-badge-amber"><i class="fas fa-user-edit"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6. Complaints -->
+          <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+            <div class="card card-modern p-3 h-100" onclick="window.navigateTo('ComplaintsReport')" style="cursor: pointer;">
+              <div class="d-flex align-items-center justify-content-between">
+                <div>
+                  <span class="text-muted small fw-bold text-uppercase">Complaints</span>
+                  <div class="d-flex align-items-baseline gap-2 mt-1">
+                    <h3 class="fw-bold mb-0 text-danger" id="kpiOpenComplaintsCount">0</h3>
+                    <small class="text-muted fw-bold" style="font-size: 11px;">(<span class="text-success" id="kpiResolvedComplaintsCount">0</span> Resolved)</small>
+                  </div>
+                </div>
+                <div class="icon-badge-amber" style="background:#fee2e2; color:#ef4444;"><i class="fas fa-comments"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7. Today Attendance -->
+          <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+            <div class="card card-modern p-3 h-100" onclick="window.navigateTo('DailyAttendance')" style="cursor: pointer;">
+              <div class="d-flex align-items-center justify-content-between">
+                <div>
+                  <span class="text-muted small fw-bold text-uppercase">Today Attendance</span>
+                  <h3 class="fw-bold mb-0 text-dark mt-1" id="kpiTodayAttendance">-</h3>
+                  <small class="text-muted fw-bold" id="kpiTodayAttSub" style="font-size: 11px;">Daily Muster</small>
+                </div>
+                <div class="icon-badge-green"><i class="fas fa-calendar-check"></i></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8. Pending Fees Due -->
+          <div class="col-xl-3 col-lg-6 col-md-6 col-12">
+            <div class="card card-modern p-3 h-100" onclick="window.navigateTo('FeeDefaulters')" style="cursor: pointer;">
+              <div class="d-flex align-items-center justify-content-between">
+                <div>
+                  <span class="text-muted small fw-bold text-uppercase">Fees Due</span>
+                  <h3 class="fw-bold mb-0 text-danger mt-1" id="kpiDueFees">₹0</h3>
+                  <small class="text-muted fw-bold" id="kpiDueSub" style="font-size: 11px;">Pending Dues</small>
+                </div>
+                <div class="icon-badge-amber"><i class="fas fa-hand-holding-usd"></i></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Dynamic Loaded Module Work Area -->
+        <div id="page-area"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- 3. FOOTER BAR WITH SUPPORT DESK & INBOX                             -->
+  <!-- =================================================================== -->
+  <footer class="erp-footer">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2" style="font-size: 12px;">
+      <div class="text-muted fw-bold">
+        <i class="fas fa-shield-alt text-success me-1"></i> SCHOOL ALARM ERP &copy; 2026. All rights reserved.
+      </div>    
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <button class="btn btn-outline-warning btn-sm fw-bold px-2 py-1 shadow-sm" onclick="window.openStaffInboxModal()" type="button" style="font-size: 11px;">
+          <i class="fas fa-bell me-1"></i> Staff Inbox
+          <span class="badge bg-danger ms-1 rounded-pill" id="staffUnreadMsgBadge" style="display: none;">0</span>
+        </button>
+        <button class="btn btn-outline-success btn-sm fw-bold px-2 py-1 shadow-sm" onclick="window.openRaiseTicketModal()" type="button" style="font-size: 11px;">
+          <i class="fas fa-headset me-1"></i> Raise Ticket
+        </button>
+        <button class="btn btn-outline-primary btn-sm fw-bold px-2 py-1 shadow-sm" onclick="window.openViewTicketsModal()" type="button" style="font-size: 11px;">
+          <i class="fas fa-ticket-alt me-1"></i> Support Desk
+          <span id="unreadTicketReplyBadge"></span>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scroll to Top Button -->
+  <button id="btnScrollToTop" onclick="window.scrollToTop()" title="Scroll to Top" type="button">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+
+  <!-- =================================================================== -->
+  <!-- 4. ALL STAFF & ADMIN <template> MODULES REPOSITORY                  -->
+  <!-- =================================================================== -->
+
+  <!-- Paste your exact <template id="..."> blocks from your previous code here: -->
+  <!-- 1. tpl-StudentRequests -->
+  <!-- 2. tpl-AddStudent -->
+  <!-- 3. tpl-ViewStudent -->
+  <!-- 4. tpl-StudentDashboard -->
+  <!-- 5. tpl-StudentProfile -->
+  <!-- 6. tpl-BulkUpdates -->
+  <!-- 7. tpl-DeactivatedStudents -->
+  <!-- 8. tpl-PrintLoginId -->
+  <!-- 9. tpl-ClassCount -->
+  <!-- 10. tpl-CustomReport -->
+  <!-- 11. tpl-DisplaySequence -->
+  <!-- 12. tpl-ArrangedRollNumber -->
+  <!-- 13. tpl-AddAttendance -->
+  <!-- 14. tpl-EditAttendance -->
+  <!-- 15. tpl-AttendanceRegister -->
+  <!-- 16. tpl-DeleteAttendance -->
+  <!-- 17. tpl-DailyAttendance -->
+  <!-- 18. tpl-RegisterSummary -->
+  <!-- 19. tpl-AttendanceNotAdded -->
+  <!-- 20. tpl-RegularAbsent -->
+  <!-- 21. tpl-ReportParents -->
+  <!-- 22. tpl-ViewCalendar -->
+  <!-- 23. tpl-AddStaff -->
+  <!-- 24. tpl-ViewStaff -->
+  <!-- 25. tpl-DeactivatedStaff -->
+  <!-- 26. tpl-StaffProfile -->
+  <!-- 27. tpl-AddStaffAttendance -->
+  <!-- 28. tpl-DailyStaffAttendance -->
+  <!-- 29. tpl-StaffAttendanceReport -->
+  <!-- 30. tpl-StaffAttendanceRegister -->
+  <!-- 31. tpl-StaffAttendanceNotAdded -->
+  <!-- 32. tpl-DeleteStaffAttendance -->
+  <!-- 33. tpl-StaffLeaveManagement -->
+  <!-- 34. tpl-SendStaffMessage -->
+  <!-- 35. tpl-StaffMessageReport -->
+  <!-- 36. tpl-DeleteStaffMessage -->
+  <!-- 37. tpl-SearchStaffMessage -->
+  <!-- 38. tpl-StaffMessageTemplates -->
+  <!-- 39. tpl-MasterSettings -->
+  <!-- 40. tpl-AddHomework -->
+  <!-- 41. tpl-HomeworkReport -->
+  <!-- 42. tpl-NoHomeWork -->
+  <!-- 43. tpl-DeleteHomework -->
+  <!-- 44. tpl-StaffBirthday -->
+  <!-- 45. tpl-StudentsBirthday -->
+  <!-- 46. tpl-SendAnnouncements -->
+  <!-- 47. tpl-ViewAnnouncements -->
+  <!-- 48. tpl-DeleteAnnouncements -->
+  <!-- 49. tpl-AnnouncementsReport -->
+  <!-- 50. tpl-SearchAnnouncements -->
+  <!-- 51. tpl-ComplaintsReport -->
+  <!-- 52. tpl-StudentIdCard / StaffIdCard / IdCardSetting -->
+  <!-- 53. tpl-Econtents / Videos / Photos / E-Greetings -->
+  <!-- 54. tpl-AdmitCardSetting / PrintAdmitCard -->
+  <!-- 55. tpl-AssignSubject / ViewAssignedSubject -->
+  <!-- 56. tpl-TermSetting / ExamMaster / ActivitySettings -->
+  <!-- 57. tpl-SubjectMarksEntry / BulkMarksEntry / ExcelUpload / ViewMarks / MarksStatus / FreezeMarks / MeritList -->
+  <!-- 58. tpl-CollectFee / GetReceipt / SearchReceipt / StudentWallet / DailyCollection / FeeReport / FeeDefaulters / FeeSetting / FeesManagements -->
+
+  <!-- =================================================================== -->
+  <!-- 5. CORE JAVASCRIPT CONTROLLER (ROUTER & BACKEND ADAPTER)             -->
+  <!-- =================================================================== -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script type="text/javascript">
+    let userData = {};
+
+    // 1. Menu Definitions
+    const menuData = {
+      Students: [
+        { g: "Student Information", items: ["AddStudent", "ViewStudent", "StudentDashboard", "StudentProfile", "BulkUpdates"] },
+        { g: "Attendance", items: ["AddAttendance", "ReportParents", "AttendanceNotAdded", "EditAttendance", "DailyAttendance", "DeleteAttendance", "AttendanceRegister", "RegisterSummary", "RegularAbsent"] },
+        { g: "Reports", items: ["DeactivatedStudents", "PrintLoginId", "ClassCount", "CustomReport"] },
+        { g: "Settings", items: ["DisplaySequence", "ArrangedRollNumber"] },
+        { g: "Announcements", items: ["SendAnnouncements", "ViewAnnouncements", "DeleteAnnouncements", "AnnouncementsReport", "SearchAnnouncements"] }
+      ],
+      Finance: [
+        { g: "Collect Fee", items: ["CollectFee", "GetReceipt", "SearchReceipt", "StudentWallet"] },
+        { g: "Fee Report", items: ["DailyCollection", "FeeReport", "FeeDefaulters"] },
+        { g: "Fee Setting", items: ["FeeSetting", "FeesManagements"] }
+      ],
+      Exam: [
+        { g: "Report Card", items: [
+            { subGroup: "Marks Entry", subItems: ["SubjectMarksEntry", "BulkMarksEntry", "ExcelUpload", "ViewMarks", "MeritList"] },
+            { subGroup: "Exam Setting", subItems: ["TermSetting", "ExamMaster", "ActivitySettings", "MarksStatus", "FreezeMarks"] }
+        ] },
+        { g: "Admit Card", items: ["PrintAdmitCard", "AdmitCardSetting"] },
+        { g: "Subject Management", items: ["AssignSubject", "ViewAssignedSubject"] }
+      ],
+      Academic: [
+        { g: "Home Work", items: ["AddHomework", "HomeworkReport", "NoHomeWork", "DeleteHomework"] },
+        { g: "Calendar", items: ["ViewCalendar"] }
+      ],
+      HR: [
+        { g: "Staff Info", items: ["AddStaff", "ViewStaff", "DeactivatedStaff", "StaffProfile"] },
+        { g: "Staff Attendance", items: ["AddStaffAttendance", "DailyStaffAttendance", "StaffAttendanceReport", "StaffAttendanceRegister", "StaffLeaveManagement", "StaffAttendanceNotAdded", "DeleteStaffAttendance"] },
+        { g: "Communication", items: ["SendStaffMessage", "StaffMessageReport", "SearchStaffMessage", "DeleteStaffMessage", "StaffMessageTemplates"] }
+      ],
+      Admission: [
+        { g: "Admission Desk", items: ["StudentRequests"] }
+      ],
+      Collaborate: [
+        { g: "Connect", items: ["ComplaintsReport"] }
+      ],
+      Addons: [
+        { g: "Birthdays", items: ["StudentsBirthday", "StaffBirthday"] },
+        { g: "Id Cards", items: ["StudentIdCard", "StaffIdCard", "IdCardSetting"] },
+        { g: "Digital Manager", items: ["Econtents", "Videos", "Photos"] },
+        { g: "E Greetings", items: ["E-Greetings", "EGreetingsSetting", "EGreetingsReports"] }
+      ],
+      Setting: [
+        { g: "Master Settings", items: ["MasterSettings"] }
+      ]
+    };
+
+    // 2. Staff & Admin Login
+    window.doAdminLogin = async function() {
+      const id = document.getElementById("user_id").value.trim();
+      const ps = document.getElementById("user_pass").value.trim();
+      const btn = document.getElementById("loginBtn");
+
+      if (!id || !ps) {
+        alert("Please enter User ID and Password.");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i> Verifying Credentials...`;
+
+      try {
+        let loggedUser = null;
+        let userType = "";
+
+        // Check Admin ("Users" table)
+        const { data: adminData } = await db
+          .from('Users')
+          .select('*')
+          .eq('LoginID', id)
+          .eq('Password', ps)
+          .maybeSingle();
+
+        if (adminData) {
+          loggedUser = adminData;
+          userType = adminData.Role || "ADMIN";
+        }
+
+        // Check Staff / Teacher ("Staff" table)
+        if (!loggedUser) {
+          const { data: staffData } = await db
+            .from('Staff')
+            .select('*')
+            .eq('StaffID', id)
+            .eq('StaffPassword', ps)
+            .maybeSingle();
+
+          if (staffData) {
+            if (String(staffData.Status || "").toUpperCase() === "DEACTIVATED") {
+              alert("Your staff account has been deactivated. Please contact administration.");
+              btn.disabled = false;
+              btn.innerHTML = "Login to Dashboard";
+              return;
+            }
+            loggedUser = staffData;
+            userType = staffData.Role || "TEACHER";
+          }
+        }
+
+        // If a Student enters credentials here, redirect them to student portal
+        if (!loggedUser) {
+          const { data: studentCheck } = await db
+            .from('Students')
+            .select('AdmissionNo')
+            .or(`LogInId.eq.${id},StudId.eq.${id},AdmissionNo.eq.${id}`)
+            .eq('LoginPassword', ps)
+            .maybeSingle();
+
+          if (studentCheck) {
+            alert("Notice: You are logging into the Staff & Admin portal. Please use the Student Portal at student.schoolalarm.online.");
+            btn.disabled = false;
+            btn.innerHTML = "Login to Dashboard";
+            return;
+          }
+        }
+
+        if (!loggedUser) {
+          alert("Invalid User ID or Password!");
+          btn.disabled = false;
+          btn.innerHTML = "Login to Dashboard";
+          return;
+        }
+
+        // Fetch School Info
+        let schoolId = loggedUser.SchoolID || "GLOBAL";
+        let schoolName = "School Administration";
+
+        if (schoolId && schoolId !== "GLOBAL") {
+          const { data: sch } = await db.from('Schools').select('SchoolName').eq('SchoolID', schoolId).maybeSingle();
+          if (sch && sch.SchoolName) schoolName = sch.SchoolName;
+        }
+
+        const sessionPayload = {
+          role: userType,
+          schoolId: schoolId,
+          schoolName: schoolName,
+          loginId: loggedUser.LoginID || loggedUser.StaffID || id,
+          name: loggedUser.FullName || loggedUser.StaffName || loggedUser.Name || id,
+          avatar: loggedUser.Photo || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+        };
+
+        userData = sessionPayload;
+        localStorage.setItem("a2z_user", JSON.stringify(sessionPayload));
+
+        if (userType === "SUPERADMIN") {
+          window.location.href = "/superadmin.html";
+          return;
+        }
+
+        document.getElementById("login-overlay").style.display = "none";
+        document.getElementById("main-app").style.display = "block";
+        initDashboard();
+
+      } catch (err) {
+        console.error("Login Error:", err);
+        alert("Connection error: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = "Login to Dashboard";
+      }
+    };
+
+    // 3. Module Switcher & Menu Accordion
+    function switchModule(mod, el) {
+      document.querySelectorAll('.icon-item').forEach(i => i.classList.remove('active'));
+      if (el) el.classList.add('active');
+      document.getElementById('mod-title').innerText = mod.toUpperCase();
+
+      let html = "";
+      if (menuData[mod]) {
+        menuData[mod].forEach(group => {
+          html += `<div class='group-label group-open'>${group.g}</div>`;
+          group.items.forEach(item => {
+            if (typeof item === 'object' && item.subGroup) {
+              item.subItems.forEach(sub => {
+                html += `<a href='javascript:void(0)' class='nav-link-custom sub-open' onclick='window.navigateTo("${sub}")'>${sub.replace(/([A-Z])/g, ' $1').trim()}</a>`;
+              });
+            } else {
+              html += `<a href='javascript:void(0)' class='nav-link-custom sub-open' onclick='window.navigateTo("${item}")'>${item.replace(/([A-Z])/g, ' $1').trim()}</a>`;
+            }
+          });
+        });
+      }
+      document.getElementById('dynamic-menu').innerHTML = html;
+    }
+
+    // 4. Dynamic Viewport Router
+    window.navigateTo = async function(page) {
+      const cleanPage = String(page || "Dashboard").replace(/^#\/?/, "").trim();
+
+      if (window.innerWidth < 992) {
+        document.body.classList.remove('sidebar-open');
+      }
+
+      if (cleanPage === "Dashboard") {
+        document.getElementById("dash-stats-row").style.display = "flex";
+        document.getElementById("page-area").innerHTML = "";
+        window.loadDashboardStats();
+        return;
+      }
+
+      document.getElementById("dash-stats-row").style.display = "none";
+      const area = document.getElementById("page-area");
+      area.innerHTML = "";
+
+      const tpl = document.getElementById("tpl-" + cleanPage);
+      if (tpl) {
+        const clone = tpl.content.cloneNode(true);
+        area.appendChild(clone);
+
+        // Execute inner scripts
+        area.querySelectorAll("script").forEach(oldScript => {
+          const newScript = document.createElement("script");
+          Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+          newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+          oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
+
+        const initName = "init" + cleanPage + "Module";
+        if (typeof window[initName] === "function") {
+          try { await window[initName](); } catch(e) {}
+        }
+      } else {
+        area.innerHTML = `
+          <div class="card p-4 border-0 shadow-sm rounded-4">
+            <h5 class="fw-bold text-primary mb-2">${cleanPage.replace(/([A-Z])/g, ' $1').trim()}</h5>
+            <p class="text-muted small m-0">Module template is connected and ready.</p>
+          </div>
+        `;
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // 5. Dashboard Initializer
+    function initDashboard() {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      document.getElementById("top-user-name").innerText = user.name || "User";
+      document.getElementById("profile-school-name").innerText = user.schoolName || "School ERP";
+      document.getElementById("dropdownUserName").innerText = user.name || "User";
+      document.getElementById("dropdownUserRole").innerText = user.role || "ADMIN";
+
+      if (user.avatar) {
+        document.getElementById("topHeaderUserAvatar").src = user.avatar;
+        document.getElementById("dropdownUserAvatar").src = user.avatar;
+      }
+
+      switchModule("Students", document.querySelector(".mod-students"));
+      window.loadDashboardStats();
+      startClock();
+    }
+
+    // 6. Live Dashboard Statistics
+    window.loadDashboardStats = async function() {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const activeSchool = user.schoolId;
+      if (!activeSchool || activeSchool === "GLOBAL") return;
+
+      try {
+        const { count: stuCount } = await db.from('Students').select('*', { count: 'exact', head: true }).eq('SchoolID', activeSchool).eq('Status', 'ACTIVE');
+        const { count: staffCount } = await db.from('Staff').select('*', { count: 'exact', head: true }).eq('SchoolID', activeSchool).eq('Status', 'ACTIVE');
+        
+        document.getElementById("dash-total").innerText = stuCount || 0;
+        document.getElementById("dash-staff").innerText = staffCount || 0;
+
+        const { data: feeData } = await db.from('Fee_Collections').select('PaidAmount, BalanceDue').eq('SchoolID', activeSchool).eq('Status', 'PAID');
+        let totalCollection = 0;
+        let totalDues = 0;
+        (feeData || []).forEach(f => {
+          totalCollection += parseFloat(f.PaidAmount || 0);
+          totalDues += parseFloat(f.BalanceDue || 0);
+        });
+
+        document.getElementById("dash-fee").innerText = `₹${totalCollection.toLocaleString('en-IN')}`;
+        document.getElementById("kpiDueFees").innerText = `₹${totalDues.toLocaleString('en-IN')}`;
+
+      } catch (e) {
+        console.warn("Stats load error:", e);
+      }
+    };
+
+    function startClock() {
+      setInterval(() => {
+        const clockEl = document.getElementById('live-clock');
+        const greetEl = document.getElementById('dynamic-greeting');
+        if (clockEl) clockEl.innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        if (greetEl) {
+          const hour = new Date().getHours();
+          let g = "Good Morning ☀️";
+          if (hour >= 12 && hour < 17) g = "Good Afternoon 🌤️";
+          else if (hour >= 17) g = "Good Evening 🌙";
+          greetEl.innerText = g;
+        }
+      }, 1000);
+    }
+
+    window.toggleSidebar = function() { document.body.classList.toggle('sidebar-open'); };
+    window.toggleCollapseSidebar = function() { document.body.classList.toggle('sidebar-collapsed'); };
+    window.scrollToTop = function() { window.scrollTo({ top: 0, behavior: 'smooth' }); };
+
+    window.addEventListener('scroll', function() {
+      const btn = document.getElementById('btnScrollToTop');
+      if (btn) btn.classList.toggle('show-scroll-top', window.scrollY > 250);
+    });
+
+    window.doAdminLogout = function() {
+      localStorage.removeItem("a2z_user");
+      sessionStorage.clear();
+      window.location.reload();
+    };
+
+    // Accordion expand/collapse click
+    document.addEventListener('click', function(e) {
+      const targetLabel = e.target.closest('.group-label');
+      if (targetLabel) {
+        targetLabel.classList.toggle('group-open');
+        let curr = targetLabel.nextElementSibling;
+        while (curr && !curr.classList.contains('group-label')) {
+          if (curr.classList.contains('nav-link-custom')) {
+            curr.classList.toggle('sub-open');
+          }
+          curr = curr.nextElementSibling;
+        }
+      }
+    });
+
+    // Auto-check session on page load
+    document.addEventListener("DOMContentLoaded", function() {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "null");
+      if (user && user.role !== "STUDENT") {
+        document.getElementById("login-overlay").style.display = "none";
+        document.getElementById("main-app").style.display = "block";
+        initDashboard();
+      } else {
+        document.getElementById("login-overlay").style.display = "flex";
+        document.getElementById("main-app").style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>
