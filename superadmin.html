@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SCHOOL ALARM | Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- External Libraries -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Core Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <!-- Strict Superadmin Guard (Space-Safe) -->
+  <script type="text/javascript">
+    (function() {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const roleClean = String(user.role || "").toUpperCase().replace(/\s+/g, '');
+      if (!user || roleClean !== "SUPERADMIN") {
+        alert("Unauthorized Access. Redirecting to login portal.");
+        window.location.href = "index.html";
+      }
+    })();
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      margin: 0;
+      padding-bottom: 40px;
+    }
+
+    /* TOP SCREENSHOT REPLICA HEADER */
+    .top-saas-header {
+      background: #ffffff;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding: 10px 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+    .btn-fs-toggle {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: #ecfdf5;
+      color: #059669;
+      border: 1px solid #a7f3d0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .btn-fs-toggle:hover {
+      background: #d1fae5;
+    }
+    .profile-avatar-pill {
+      width: 40px;
+      height: 40px;
+      border-radius: 20%;
+      object-fit: cover;
+      border: 2px solid #0284c7;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: 0.15s;
+    }
+    .profile-avatar-pill:hover {
+      transform: scale(1.05);
+      border-color: #0369a1;
+    }
+/* 🎓 PREMIUM HEADCOUNT BADGES */
+    .headcount-badge-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      color: #334155;
+    }
+    .headcount-badge-box.student-pill {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-color: #bfdbfe;
+    }
+    .headcount-badge-box.staff-pill {
+      background: #f0fdf4;
+      color: #15803d;
+      border-color: #bbf7d0;
+    }
+    /* DROPDOWN MENU CARD */
+    .user-profile-dropdown-card {
+      width: 270px;
+      border-radius: 18px;
+      border: 1px solid #e2e8f0;
+      padding: 18px 14px;
+    }
+    .drop-avatar-wrap {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 10px auto;
+    }
+    .drop-avatar-img {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2.5px solid #0284c7;
+    }
+    .drop-avatar-camera-badge {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #0284c7;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      border: 2px solid #ffffff;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .role-badge-pill {
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 2px 10px;
+      border-radius: 12px;
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #059669;
+      display: inline-block;
+      letter-spacing: 0.3px;
+    }
+    .custom-drop-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      color: #0f172a;
+      text-decoration: none;
+      transition: 0.15s;
+    }
+    .custom-drop-item:hover {
+      background: #f1f5f9;
+    }
+
+    .card-saas {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+      transition: all 0.2s ease;
+    }
+    .card-saas:hover {
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    }
+    .kpi-metric-box {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+    }
+    .kpi-icon-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .badge-active { background: #dcfce7; color: #15803d; border: 1px solid #86efac; font-weight: 700; padding: 4px 10px; border-radius: 6px; font-size: 11px; }
+    .badge-inactive { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; font-weight: 700; padding: 4px 10px; border-radius: 6px; font-size: 11px; }
+    
+    .table-saas {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      vertical-align: middle;
+    }
+    .table-saas th {
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 11px;
+      padding: 12px 10px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+    }
+    .table-saas td {
+      padding: 10px 8px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+      font-weight: 500;
+    }
+    .btn-launch-erp {
+      background: #0284c7;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 6px;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: 0.15s;
+    }
+    .btn-launch-erp:hover {
+      background: #0369a1;
+      color: #ffffff;
+    }
+    .quick-preset-btn {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. TOP NAVBAR -->
+  <header class="top-saas-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <!-- Left: Fullscreen Toggle & Brand -->
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn-fs-toggle shadow-sm" onclick="window.toggleFullScreen()" title="Toggle Fullscreen">
+        <i class="fas fa-expand-arrows-alt"></i>
+      </button>
+      
+      <div class="d-flex align-items-center">
+        <div>
+          <h5 class="fw-bold m-0 text-dark" style="letter-spacing: -0.3px;">SCHOOL <span class="text-primary">ALARM</span></h5>
+          <small class="text-muted" style="font-size: 10px; font-weight: 600;">Smart Technology for Smart School's</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center: Safe School Badges -->
+    <div class="d-none d-md-flex align-items-center gap-3">
+      <img src="https://yanzstgfsvnlspbrminc.supabase.co/storage/v1/object/public/School_Data/ADMIN%20DATA/schoolalarm%20header.png" alt="Safe School Badge 1" style="height: 42px; object-fit: contain;">
+      <img src="https://yanzstgfsvnlspbrminc.supabase.co/storage/v1/object/public/School_Data/ADMIN%20DATA/schoolalarm%20header.png" alt="Safe School Badge 2" style="height: 42px; object-fit: contain;">
+    </div>
+
+    <!-- Right: Dynamic Greeting, Clock, Profile & Logout -->
+    <div class="d-flex align-items-center gap-3">
+      <div class="text-end d-none d-sm-block">
+        <div class="fw-bold text-dark small" id="hdrGreetingText">Good Evening 🌙, <span class="text-primary" id="hdrAdminName">Super Administrator</span></div>
+        <small class="text-muted fw-semibold" id="hdrLiveClock" style="font-size: 11px;">Loading live time...</small>
+      </div>
+
+      <!-- Clickable Profile Avatar Dropdown -->
+      <div class="dropdown">
+        <img id="hdrProfileAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="profile-avatar-pill shadow-sm" data-bs-toggle="dropdown" aria-expanded="false" title="Account Menu">
+        
+        <div class="dropdown-menu dropdown-menu-end shadow-lg user-profile-dropdown-card">
+          <!-- Top Profile Bio -->
+          <div class="text-center pb-3 border-bottom">
+            <div class="drop-avatar-wrap" onclick="window.openSaProfileModal()">
+              <img id="dropAvatarImg" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="drop-avatar-img shadow-sm">
+              <span class="drop-avatar-camera-badge" title="Change Profile Photo">
+                <i class="fas fa-camera"></i>
+              </span>
+            </div>
+            <h6 class="fw-bold text-dark m-0" id="dropUserName">MANISH KUMAR RAY</h6>
+            <div class="mt-1">
+              <span class="role-badge-pill">SUPER ADMIN</span>
+            </div>
+            <small class="text-muted d-block mt-1" style="font-size: 11px;">Super Admin Dashboard</small>
+          </div>
+
+          <!-- Menu Actions -->
+          <div class="py-2">
+            <a class="custom-drop-item" href="javascript:void(0)" onclick="window.openSaProfileModal()">
+              <i class="fas fa-user-circle text-primary fa-lg"></i>
+              <span>My Profile &amp; Photo</span>
+            </a>
+            <a class="custom-drop-item" href="javascript:void(0)" onclick="window.openSaPasswordModal()">
+              <i class="fas fa-key text-warning fa-lg"></i>
+              <span>Change Password</span>
+            </a>
+          </div>
+
+          <!-- Logout -->
+          <div class="pt-2 border-top">
+            <a class="custom-drop-item text-danger" href="javascript:void(0)" onclick="window.doSuperAdminLogout()">
+              <i class="fas fa-sign-out-alt fa-lg"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. MAIN CONTAINER -->
+  <div class="container-fluid px-lg-4 px-3 mt-4">
+
+    <!-- KPI METRICS ROW -->
+    <div class="row g-3 mb-4">
+      <div class="col-xl-3 col-md-6 col-12">
+        <div class="kpi-metric-box card-saas">
+          <div>
+            <span class="text-muted small fw-bold text-uppercase">Total Schools</span>
+            <h3 class="fw-bold m-0 mt-1 text-dark" id="kpiTotalSchools">0</h3>
+            <small class="text-muted">Registered Institutes</small>
+          </div>
+          <div class="kpi-icon-badge bg-primary bg-opacity-10 p-2 d-flex align-items-center justify-content-center">
+            <img src="https://yanzstgfsvnlspbrminc.supabase.co/storage/v1/object/public/School_Data/ADMIN%20DATA/favicon.png.png" alt="ERP Logo" style="width: 28px; height: 28px; object-fit: contain;">
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 col-12">
+        <div class="kpi-metric-box card-saas">
+          <div>
+            <span class="text-muted small fw-bold text-uppercase">Active Portals</span>
+            <h3 class="fw-bold m-0 mt-1 text-success" id="kpiActiveSchools">0</h3>
+            <small class="text-muted">Live &amp; Operational</small>
+          </div>
+          <div class="kpi-icon-badge bg-success bg-opacity-10 text-success">
+            <i class="fas fa-check-circle"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 col-12">
+        <div class="kpi-metric-box card-saas">
+          <div>
+            <span class="text-muted small fw-bold text-uppercase">Suspended / Inactive</span>
+            <h3 class="fw-bold m-0 mt-1 text-danger" id="kpiInactiveSchools">0</h3>
+            <small class="text-muted">Access Restricted</small>
+          </div>
+          <div class="kpi-icon-badge bg-danger bg-opacity-10 text-danger">
+            <i class="fas fa-lock"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-3 col-md-6 col-12">
+        <div class="kpi-metric-box card-saas">
+          <div>
+            <span class="text-muted small fw-bold text-uppercase">Total Students Reach</span>
+            <h3 class="fw-bold m-0 mt-1 text-warning" id="kpiTotalPlatformStudents">0</h3>
+            <small class="text-muted">Enrolled Pupils</small>
+          </div>
+          <div class="kpi-icon-badge bg-warning bg-opacity-10 text-warning">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACTIONS TOOLBAR -->
+    <div class="card-saas p-3 mb-4">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <div class="d-flex gap-2 flex-wrap">
+          <button class="btn btn-success btn-sm fw-bold px-3 py-2 shadow-sm" onclick="window.openNewSchoolModal()">
+            <i class="fas fa-plus-circle me-1"></i> Onboard New School
+          </button>
+          <button class="btn btn-outline-dark btn-sm fw-bold px-3 py-2 shadow-sm" onclick="window.exportSchoolsDirectoryExcel()">
+            <i class="fas fa-file-excel me-1"></i> Export Directory (Excel)
+          </button>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap align-items-center">
+          <select class="form-select form-select-sm" id="saFilterStatus" onchange="window.applySchoolFilters()" style="width: 140px; height: 36px;">
+            <option value="ALL">All Statuses</option>
+            <option value="ACTIVE">Active Only</option>
+            <option value="INACTIVE">Inactive Only</option>
+          </select>
+          <input type="text" class="form-control form-control-sm" id="saSearchInput" oninput="window.applySchoolFilters()" placeholder="Search School, ID, Contact..." style="width: 240px; height: 36px;">
+          <button class="btn btn-outline-primary btn-sm fw-bold" onclick="window.loadAllPlatformSchools()" style="height: 36px;">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MASTER SCHOOL DIRECTORY TABLE -->
+    <div class="card-saas p-0 overflow-hidden mb-4">
+      <div class="table-responsive">
+        <table class="table-saas">
+          <thead>
+            <tr>
+              <th style="width: 50px;">#</th>
+              <th style="width: 100px;">School ID</th>
+              <th style="text-align: left; padding-left: 14px;">School Name &amp; Headcount</th>
+              <th style="width: 140px;">City / State</th>
+              <th style="width: 160px;">Principal &amp; Mobile</th>
+              <th style="width: 150px;">Subscription Expiry</th>
+              <th style="width: 90px;">Status</th>
+              <th style="width: 200px;">Master Actions</th>
+            </tr>
+          </thead>
+          <tbody id="saSchoolsTbody">
+            <tr>
+              <td colspan="8" class="text-center py-5 text-muted fw-bold">
+                <i class="fas fa-spinner fa-spin fa-2x text-primary d-block mb-2"></i>Loading registered schools...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. COMPREHENSIVE ONBOARDING MODAL (WITH DIRECT IMAGE UPLOAD + COMPRESSION) -->
+  <div class="modal fade" id="modalNewSchool" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+        
+        <div class="modal-header bg-dark text-white py-3">
+          <div class="d-flex align-items-center gap-2">
+            <i class="fas fa-university text-warning fa-lg"></i>
+            <div>
+              <h6 class="modal-title fw-bold m-0">Enterprise School Onboarding Engine</h6>
+              <small class="text-secondary" style="font-size: 11px;">Complete Institutional Profile, Branding Uploads &amp; Automated Config Provisioning</small>
+            </div>
+          </div>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        
+        <form id="formOnboardSchool" onsubmit="window.submitNewSchoolOnboarding(event)">
+          <div class="modal-body p-4" style="max-height: 75vh; overflow-y: auto;">
+            
+            <!-- SECTION 1: BASIC INSTITUTIONAL PROFILE -->
+            <div class="p-3 bg-light rounded-3 border mb-3">
+              <h6 class="fw-bold text-primary mb-3 small text-uppercase"><i class="fas fa-school me-1"></i> 1. Basic Institutional Profile</h6>
+              <div class="row g-3">
+                <div class="col-md-6 col-12">
+                  <label class="form-label small fw-bold text-dark">School / Institute Official Name *</label>
+                  <input type="text" class="form-control" id="mSchName" placeholder="e.g., Delhi Public Academy" required>
+                </div>
+                <div class="col-md-3 col-6">
+                  <label class="form-label small fw-bold text-dark">School ID (Tenant Key) *</label>
+                  <input type="text" class="form-control fw-bold text-primary text-uppercase" id="mSchId" placeholder="e.g., SCH103" required>
+                </div>
+                <div class="col-md-3 col-6">
+                  <label class="form-label small fw-bold text-dark">Affiliation / Board Reg. No</label>
+                  <input type="text" class="form-control" id="mSchAffiliation" placeholder="e.g., CBSE/AFF/2026/099">
+                </div>
+                <div class="col-md-6 col-12">
+                  <label class="form-label small fw-bold text-dark">Branch / Campus Name</label>
+                  <input type="text" class="form-control" id="mSchBranch" placeholder="e.g., Main Senior Wing / Civil Lines">
+                </div>
+                <div class="col-md-6 col-12">
+                  <label class="form-label small fw-bold text-dark">Principal / Headmaster Name *</label>
+                  <input type="text" class="form-control" id="mSchPrincipal" placeholder="e.g., Dr. R. K. Sharma" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 2: OFFICIAL CONTACT & POSTAL ADDRESS -->
+            <div class="p-3 bg-light rounded-3 border mb-3">
+              <h6 class="fw-bold text-success mb-3 small text-uppercase"><i class="fas fa-map-marker-alt me-1"></i> 2. Official Contact &amp; Postal Address</h6>
+              <div class="row g-3">
+                <div class="col-md-6 col-12">
+                  <label class="form-label small fw-bold text-dark">Contact Mobile Number *</label>
+                  <input type="tel" class="form-control" id="mSchMobile" placeholder="e.g., 9876543210" required>
+                </div>
+                <div class="col-md-6 col-12">
+                  <label class="form-label small fw-bold text-dark">Official Helpline Email *</label>
+                  <input type="email" class="form-control" id="mSchEmail" placeholder="e.g., info@school.com" required>
+                </div>
+                <div class="col-12">
+                  <label class="form-label small fw-bold text-dark">Campus Street Address *</label>
+                  <input type="text" class="form-control" id="mSchAddress" placeholder="e.g., Plot 45, Near Gandhi Chowk, Station Road" required>
+                </div>
+                <div class="col-md-3 col-6">
+                  <label class="form-label small fw-bold text-dark">City *</label>
+                  <input type="text" class="form-control" id="mSchCity" placeholder="e.g., Patna" required>
+                </div>
+                <div class="col-md-3 col-6">
+                  <label class="form-label small fw-bold text-dark">District *</label>
+                  <input type="text" class="form-control" id="mSchDistrict" placeholder="e.g., Patna" required>
+                </div>
+                <div class="col-md-3 col-6">
+                  <label class="form-label small fw-bold text-dark">State *</label>
+                  <input type="text" class="form-control" id="mSchState" placeholder="e.g., Bihar" required>
+                </div>
+                <div class="col-md-3 col-6">
+                  <label class="form-label small fw-bold text-dark">Pincode *</label>
+                  <input type="text" class="form-control" id="mSchPincode" placeholder="e.g., 800001" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 3: OFFICIAL BRANDING ASSETS (DIRECT UPLOAD + COMPRESSION + URL) -->
+            <div class="p-3 bg-light rounded-3 border mb-3">
+              <h6 class="fw-bold text-warning mb-3 small text-uppercase"><i class="fas fa-stamp me-1"></i> 3. Official Branding Assets (Direct Upload &amp; Auto-Compression)</h6>
+              <div class="row g-3">
+                
+                <!-- School Logo -->
+                <div class="col-md-4 col-12">
+                  <label class="form-label small fw-bold text-dark">School Logo (Upload or URL)</label>
+                  <input type="file" accept="image/*" class="form-control form-control-sm mb-1" onchange="window.handleBrandingFileUpload(this, 'mSchLogoUrl', 'logo', 'mSchLogoPreview')">
+                  <input type="url" class="form-control form-control-sm" id="mSchLogoUrl" placeholder="https://.../logo.png">
+                  <div class="d-flex align-items-center gap-2 mt-1">
+                    <img id="mSchLogoPreview" src="" class="rounded border p-1" style="width: 38px; height: 38px; object-fit: contain; display: none;">
+                    <small class="text-muted" style="font-size: 10px;">ID Cards, Receipts &amp; Reports</small>
+                  </div>
+                </div>
+
+                <!-- Principal Signature -->
+                <div class="col-md-4 col-12">
+                  <label class="form-label small fw-bold text-dark">Principal Signature (Upload or URL)</label>
+                  <input type="file" accept="image/*" class="form-control form-control-sm mb-1" onchange="window.handleBrandingFileUpload(this, 'mSchSignUrl', 'sign', 'mSchSignPreview')">
+                  <input type="url" class="form-control form-control-sm" id="mSchSignUrl" placeholder="https://.../sign.png">
+                  <div class="d-flex align-items-center gap-2 mt-1">
+                    <img id="mSchSignPreview" src="" class="rounded border p-1" style="width: 38px; height: 38px; object-fit: contain; display: none;">
+                    <small class="text-muted" style="font-size: 10px;">Report Cards &amp; Certificates</small>
+                  </div>
+                </div>
+
+                <!-- School Stamp -->
+                <div class="col-md-4 col-12">
+                  <label class="form-label small fw-bold text-dark">School Stamp (Upload or URL)</label>
+                  <input type="file" accept="image/*" class="form-control form-control-sm mb-1" onchange="window.handleBrandingFileUpload(this, 'mSchStampUrl', 'stamp', 'mSchStampPreview')">
+                  <input type="url" class="form-control form-control-sm" id="mSchStampUrl" placeholder="https://.../stamp.png">
+                  <div class="d-flex align-items-center gap-2 mt-1">
+                    <img id="mSchStampPreview" src="" class="rounded border p-1" style="width: 38px; height: 38px; object-fit: contain; display: none;">
+                    <small class="text-muted" style="font-size: 10px;">Official TC &amp; Documents</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 4: DEFAULT ADMIN LOGIN CREDENTIALS -->
+            <div class="p-3 bg-white rounded-3 border border-primary mb-3">
+              <h6 class="fw-bold text-primary mb-2 small text-uppercase"><i class="fas fa-user-shield me-1"></i> 4. Default School Administrator Login Credentials</h6>
+              <div class="row g-3">
+                <div class="col-md-6 col-12">
+                  <label class="form-label small fw-bold text-muted">Admin User ID *</label>
+                  <input type="text" class="form-control fw-bold" id="mAdminLoginId" placeholder="e.g., admin103" required>
+                </div>
+                <div class="col-md-6 col-12">
+                  <label class="form-label small fw-bold text-muted">Admin Initial Password *</label>
+                  <input type="text" class="form-control fw-bold" id="mAdminPassword" value="admin123" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 5: SAAS SUBSCRIPTION & ACCESS STATUS -->
+            <div class="p-3 bg-light rounded-3 border">
+              <h6 class="fw-bold text-danger mb-3 small text-uppercase"><i class="fas fa-file-contract me-1"></i> 5. SaaS Subscription &amp; Access Status</h6>
+              <div class="row g-3">
+                <div class="col-md-4 col-12">
+                  <label class="form-label small fw-bold text-dark">Subscription Plan *</label>
+                  <select class="form-select" id="mSchPlan" required>
+                    <option value="Enterprise Plan (Full Access)" selected>Enterprise Plan (Full Access)</option>
+                    <option value="Standard Plan">Standard Plan</option>
+                    <option value="Basic Plan">Basic Plan</option>
+                    <option value="Trial Plan (30 Days)">Trial Plan (30 Days)</option>
+                  </select>
+                </div>
+                <div class="col-md-4 col-6">
+                  <label class="form-label small fw-bold text-dark">Subscription Validity / Expiry *</label>
+                  <input type="date" class="form-control" id="mSchExpiry" required>
+                </div>
+                <div class="col-md-4 col-6">
+                  <label class="form-label small fw-bold text-dark">Access Status *</label>
+                  <select class="form-select fw-bold" id="mSchStatus" required>
+                    <option value="ACTIVE" selected>ACTIVE (Operational)</option>
+                    <option value="INACTIVE">INACTIVE (Locked)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="modal-footer py-2.5 bg-light d-flex justify-content-between">
+            <small class="text-muted"><i class="fas fa-bolt text-warning me-1"></i> Auto-provisions 25+ Configs (Classes 1-12, A-B-C-D Sections, Subjects, Roles &amp; Designations).</small>
+            <div class="d-flex gap-2">
+              <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-success btn-sm fw-bold px-4 shadow-sm" id="btnSubmitOnboard">
+                <i class="fas fa-check-circle me-1"></i> Complete Onboarding
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. MODAL: EXTEND SUBSCRIPTION (QUICK PRESET BUTTONS + CUSTOM DATE) -->
+  <div class="modal fade" id="modalExtendSub" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+        <div class="modal-header bg-warning text-dark py-3">
+          <h6 class="modal-title fw-bold m-0"><i class="fas fa-calendar-plus me-2"></i>Extend School Subscription</h6>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <form onsubmit="window.saveSubscriptionExtension(event)">
+          <div class="modal-body p-4">
+            <input type="hidden" id="extSchoolId">
+            <div class="mb-3">
+              <span class="text-muted small fw-bold text-uppercase d-block">Target Institute:</span>
+              <h5 class="fw-bold text-dark m-0" id="extSchoolName">-</h5>
+              <small class="text-muted">Current Expiry: <strong id="extCurrentExpiryText" class="text-danger">-</strong></small>
+            </div>
+
+            <!-- Quick Preset Extension Buttons -->
+            <div class="mb-3 p-3 bg-light rounded-3 border">
+              <label class="form-label small fw-bold text-dark mb-2">1-Click Quick Extension Presets:</label>
+              <div class="d-flex gap-1.5 flex-wrap">
+                <button type="button" class="btn btn-outline-primary btn-sm quick-preset-btn" onclick="window.applySubPresetDays(30)">+1 Month</button>
+                <button type="button" class="btn btn-outline-primary btn-sm quick-preset-btn" onclick="window.applySubPresetDays(90)">+3 Months</button>
+                <button type="button" class="btn btn-outline-primary btn-sm quick-preset-btn" onclick="window.applySubPresetDays(180)">+6 Months</button>
+                <button type="button" class="btn btn-outline-success btn-sm quick-preset-btn fw-bold" onclick="window.applySubPresetDays(365)">+1 Year</button>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-dark">New Subscription Expiry Date *</label>
+              <input type="date" class="form-control fw-bold" id="extNewDateInput" required>
+            </div>
+
+            <div class="form-check form-switch mb-2">
+              <input class="form-check-input" type="checkbox" id="extAutoActivateCheck" checked>
+              <label class="form-check-label small fw-bold text-dark" for="extAutoActivateCheck">Ensure School Status is set to ACTIVE</label>
+            </div>
+          </div>
+          <div class="modal-footer py-2 bg-light d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-warning btn-sm fw-bold text-dark px-4 shadow-sm" id="btnSaveSubExtension">
+              <i class="fas fa-save me-1"></i> Update Subscription
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. MODAL: RESET ADMIN PASSWORD VAULT -->
+  <div class="modal fade" id="modalResetAdminPass" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+        <div class="modal-header bg-dark text-white py-3">
+          <h6 class="modal-title fw-bold m-0"><i class="fas fa-key text-warning me-2"></i>Reset School Administrator Password</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form onsubmit="window.saveResetAdminPassword(event)">
+          <div class="modal-body p-4">
+            <input type="hidden" id="rstSchoolId">
+            <div class="mb-3">
+              <span class="text-muted small fw-bold text-uppercase d-block">Target Institute:</span>
+              <h5 class="fw-bold text-dark m-0" id="rstSchoolName">-</h5>
+              <small class="text-muted">Tenant ID: <strong id="rstTenantIdText" class="text-primary">-</strong></small>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-dark">Admin User ID (Found in Users Ledger)</label>
+              <input type="text" class="form-control fw-bold bg-light" id="rstAdminLoginInput" readonly>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-dark">Set New Password *</label>
+              <input type="text" class="form-control fw-bold" id="rstNewPassInput" value="admin123" required minlength="4">
+              <small class="text-muted" style="font-size: 11px;">Password will be updated immediately in the authentication ledger.</small>
+            </div>
+          </div>
+          <div class="modal-footer py-2 bg-light d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm fw-bold px-4 shadow-sm" id="btnSaveResetAdmin">
+              <i class="fas fa-check-circle me-1"></i> Save New Password
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. MODAL: EDIT SCHOOL PROFILE & ASSETS -->
+  <div class="modal fade" id="modalEditSchool" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+        <div class="modal-header bg-primary text-white py-3">
+          <h6 class="modal-title fw-bold m-0"><i class="fas fa-edit me-2"></i>Edit School Profile &amp; Branding Assets</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form onsubmit="window.saveEditedSchool(event)">
+          <div class="modal-body p-4" style="max-height: 75vh; overflow-y: auto;">
+            <input type="hidden" id="editSchId">
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6 col-12">
+                <label class="form-label small fw-bold text-dark">School Name *</label>
+                <input type="text" class="form-control" id="editSchName" required>
+              </div>
+              <div class="col-md-3 col-6">
+                <label class="form-label small fw-bold text-dark">Branch / Campus</label>
+                <input type="text" class="form-control" id="editSchBranch">
+              </div>
+              <div class="col-md-3 col-6">
+                <label class="form-label small fw-bold text-dark">Affiliation No</label>
+                <input type="text" class="form-control" id="editSchAffiliation">
+              </div>
+              <div class="col-md-6 col-12">
+                <label class="form-label small fw-bold text-dark">Principal Name *</label>
+                <input type="text" class="form-control" id="editSchPrincipal" required>
+              </div>
+              <div class="col-md-3 col-6">
+                <label class="form-label small fw-bold text-dark">Contact Mobile *</label>
+                <input type="tel" class="form-control" id="editSchMobile" required>
+              </div>
+              <div class="col-md-3 col-6">
+                <label class="form-label small fw-bold text-dark">Email *</label>
+                <input type="email" class="form-control" id="editSchEmail" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label small fw-bold text-dark">Address *</label>
+                <input type="text" class="form-control" id="editSchAddress" required>
+              </div>
+              <div class="col-md-3 col-6">
+                <label class="form-label small fw-bold text-dark">City *</label>
+                <input type="text" class="form-control" id="editSchCity" required>
+              </div>
+              <div class="col-md-3 col-6">
+                <label class="form-label small fw-bold text-dark">District *</label>
+                <input type="text" class="form-control" id="editSchDistrict" required>
+              </div>
+              <div class="col-md-3 col-6">
+                <label class="form-label small fw-bold text-dark">State *</label>
+                <input type="text" class="form-control" id="editSchState" required>
+              </div>
+              <div class="col-md-3 col-6">
+                <label class="form-label small fw-bold text-dark">Pincode *</label>
+                <input type="text" class="form-control" id="editSchPincode" required>
+              </div>
+            </div>
+
+            <!-- BRANDING ASSET UPLOADS FOR EDIT -->
+            <div class="p-3 bg-light rounded-3 border mb-3">
+              <h6 class="fw-bold text-warning mb-3 small text-uppercase"><i class="fas fa-stamp me-1"></i> Update Branding Assets (Upload or URL)</h6>
+              <div class="row g-3">
+                <div class="col-md-4 col-12">
+                  <label class="form-label small fw-bold text-dark">School Logo</label>
+                  <input type="file" accept="image/*" class="form-control form-control-sm mb-1" onchange="window.handleBrandingFileUpload(this, 'editSchLogoUrl', 'logo', 'editSchLogoPreview')">
+                  <input type="url" class="form-control form-control-sm" id="editSchLogoUrl" placeholder="https://...">
+                  <img id="editSchLogoPreview" src="" class="rounded border p-1 mt-1" style="width: 38px; height: 38px; object-fit: contain; display: none;">
+                </div>
+                <div class="col-md-4 col-12">
+                  <label class="form-label small fw-bold text-dark">Principal Signature</label>
+                  <input type="file" accept="image/*" class="form-control form-control-sm mb-1" onchange="window.handleBrandingFileUpload(this, 'editSchSignUrl', 'sign', 'editSchSignPreview')">
+                  <input type="url" class="form-control form-control-sm" id="editSchSignUrl" placeholder="https://...">
+                  <img id="editSchSignPreview" src="" class="rounded border p-1 mt-1" style="width: 38px; height: 38px; object-fit: contain; display: none;">
+                </div>
+                <div class="col-md-4 col-12">
+                  <label class="form-label small fw-bold text-dark">School Stamp</label>
+                  <input type="file" accept="image/*" class="form-control form-control-sm mb-1" onchange="window.handleBrandingFileUpload(this, 'editSchStampUrl', 'stamp', 'editSchStampPreview')">
+                  <input type="url" class="form-control form-control-sm" id="editSchStampUrl" placeholder="https://...">
+                  <img id="editSchStampPreview" src="" class="rounded border p-1 mt-1" style="width: 38px; height: 38px; object-fit: contain; display: none;">
+                </div>
+              </div>
+            </div>
+
+            <div class="row g-3">
+              <div class="col-md-6 col-12">
+                <label class="form-label small fw-bold text-dark">Subscription Plan</label>
+                <input type="text" class="form-control" id="editSchPlan">
+              </div>
+              <div class="col-md-6 col-12">
+                <label class="form-label small fw-bold text-dark">Status</label>
+                <select class="form-select fw-bold" id="editSchStatus">
+                  <option value="ACTIVE">ACTIVE</option>
+                  <option value="INACTIVE">INACTIVE</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer py-2 bg-light d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm fw-bold px-4 shadow-sm" id="btnSaveEditSchool">
+              <i class="fas fa-save me-1"></i> Save Changes
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. MODALS: MY PROFILE & CHANGE PASSWORD -->
+  <div class="modal fade" id="modalSaProfile" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+        <div class="modal-header bg-primary text-white py-3">
+          <h6 class="modal-title fw-bold m-0"><i class="fas fa-user-circle me-2"></i>My Profile &amp; Photo</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+
+        <form id="formSaProfile" onsubmit="window.saveSaProfileRecord(event)">
+          <div class="modal-body p-4">
+            
+            <div class="text-center mb-3">
+              <div class="drop-avatar-wrap">
+                <img id="saModalAvatarPreview" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="drop-avatar-img shadow-sm">
+                <label for="saAvatarFileInput" class="drop-avatar-camera-badge" title="Upload Photo">
+                  <i class="fas fa-camera"></i>
+                </label>
+              </div>
+              <h6 class="fw-bold m-0 text-dark" id="saModalUserTitle">MANISH KUMAR RAY</h6>
+              <div id="saAvatarSizeBadge" class="badge bg-light text-secondary border mt-1" style="display: none; font-size: 10px;"></div>
+            </div>
+
+            <div class="mb-3 p-3 bg-light rounded-3 border">
+              <label class="form-label small fw-bold text-dark"><i class="fas fa-image text-primary me-1"></i> Change Profile Photo (Auto-Compressed to ~25KB)</label>
+              <input type="file" accept="image/*" class="form-control form-control-sm" id="saAvatarFileInput" onchange="window.handleSaAvatarUpload(this)">
+              <small class="text-muted d-block mt-1" style="font-size: 10px;">JPG/PNG image. Auto-optimized &amp; uploaded to School_Data storage.</small>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-dark">Full Name (FullName in Users Table) *</label>
+              <input type="text" class="form-control" id="saFullNameInput" placeholder="e.g., Manish Kumar Ray" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-dark">Mobile Number (MobileNo in Users Table)</label>
+              <input type="tel" class="form-control" id="saMobileInput" placeholder="e.g., 9876543210">
+            </div>
+
+          </div>
+
+          <div class="modal-footer py-2.5 bg-light d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary btn-sm fw-bold px-4 shadow-sm" id="btnSaveSaProfile">
+              <i class="fas fa-save me-1"></i> Save Profile
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalSaPassword" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+        <div class="modal-header bg-dark text-white py-3">
+          <h6 class="modal-title fw-bold m-0"><i class="fas fa-key text-warning me-2"></i>Change Security Password</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+
+        <form id="formSaPassword" onsubmit="window.saveSaPasswordRecord(event)">
+          <div class="modal-body p-4">
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-dark">New Password *</label>
+              <input type="password" class="form-control" id="saNewPasswordInput" placeholder="Enter new strong password" required minlength="4">
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-dark">Confirm New Password *</label>
+              <input type="password" class="form-control" id="saConfirmPasswordInput" placeholder="Re-type new password" required minlength="4">
+            </div>
+            <small class="text-muted d-block"><i class="fas fa-shield-alt text-success me-1"></i> Password will be updated in the Users authentication ledger immediately.</small>
+          </div>
+          <div class="modal-footer py-2.5 bg-light d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-warning btn-sm fw-bold text-dark px-4 shadow-sm" id="btnSaveSaPassword">
+              <i class="fas fa-lock me-1"></i> Update Password
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 9. JAVASCRIPT MASTER SAAS ENGINE -->
+  <script type="text/javascript">
+  // <![CDATA[
+  (function() {
+    let allPlatformSchools = [];
+    let filteredSchools = [];
+    let schoolStuCountMap = {};
+    let schoolStaffCountMap = {};
+    let saSelectedAvatarBlob = null;
+
+    function formatToDDMMYYYY(val) {
+      if (!val || val === "NA" || val === "-" || val === "null") return "-";
+      let s = String(val).trim();
+      if (s.includes("T")) s = s.split("T")[0];
+      const parts = s.split(/[\/\-\.]/);
+      if (parts.length === 3) {
+        if (parts[0].length === 4) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        return `${parts[0]}/${parts[1]}/${parts[2]}`;
+      }
+      return s;
+    }
+
+    // ⚡ DAYS-LEFT COUNTDOWN BADGE CALCULATOR
+    function getExpiryDaysBadge(expiryDateStr) {
+      if (!expiryDateStr) return `<span class="badge bg-secondary">No Expiry</span>`;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const exp = new Date(expiryDateStr);
+      exp.setHours(0, 0, 0, 0);
+
+      const diffTime = exp - today;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const formattedDate = formatToDDMMYYYY(expiryDateStr);
+
+      if (diffDays < 0) {
+        return `
+          <div class="fw-bold text-danger">${formattedDate}</div>
+          <span class="badge bg-danger text-white mt-0.5" style="font-size:9.5px;">🔴 Expired (${Math.abs(diffDays)}d ago)</span>
+        `;
+      } else if (diffDays <= 30) {
+        return `
+          <div class="fw-bold text-warning">${formattedDate}</div>
+          <span class="badge bg-warning text-dark mt-0.5" style="font-size:9.5px;">⚠️ Expires in ${diffDays}d</span>
+        `;
+      } else {
+        return `
+          <div class="fw-bold text-dark">${formattedDate}</div>
+          <span class="badge bg-success bg-opacity-10 text-success border border-success mt-0.5" style="font-size:9.5px;">🟢 ${diffDays} Days Left</span>
+        `;
+      }
+    }
+
+    // ⚡ 25KB CANVAS IMAGE COMPRESSION HELPER
+    function compressImageBlob(file, maxDim, quality) {
+      return new Promise((resolve) => {
+        if (!file || !file.type.startsWith("image/")) {
+          resolve(file);
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement("canvas");
+            let w = img.width;
+            let h = img.height;
+            if (w > maxDim || h > maxDim) {
+              if (w > h) {
+                h = Math.round((h * maxDim) / w);
+                w = maxDim;
+              } else {
+                w = Math.round((w * maxDim) / h);
+                h = maxDim;
+              }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
+
+            canvas.toBlob((blob) => {
+              resolve(blob || file);
+            }, "image/png", quality);
+          };
+          img.onerror = () => resolve(file);
+          img.src = e.target.result;
+        };
+        reader.onerror = () => resolve(file);
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // ⚡ BRANDING ASSET UPLOAD & AUTO-COMPRESSION HANDLER
+    window.handleBrandingFileUpload = async function(fileInput, targetUrlInputId, assetType, previewImgId) {
+      if (!fileInput.files || !fileInput.files[0]) return;
+      const file = fileInput.files[0];
+      const targetInput = document.getElementById(targetUrlInputId);
+      const previewImg = previewImgId ? document.getElementById(previewImgId) : null;
+
+      const schIdInput = document.getElementById('mSchId') || document.getElementById('editSchId');
+      const schId = schIdInput ? schIdInput.value.trim().toUpperCase() : "GENERAL";
+
+      if (targetInput) {
+        targetInput.value = "Compressing & Uploading...";
+        targetInput.disabled = true;
+      }
+
+      try {
+        const compressedBlob = await compressImageBlob(file, 500, 0.8);
+        const fileName = `${assetType}_${Date.now()}.png`;
+        const filePath = `${schId}/branding/${fileName}`;
+
+        const { error: upErr } = await db.storage
+          .from('School_Data')
+          .upload(filePath, compressedBlob, {
+            contentType: 'image/png',
+            upsert: true
+          });
+
+        if (upErr) throw upErr;
+
+        const { data: pubData } = db.storage
+          .from('School_Data')
+          .getPublicUrl(filePath);
+
+        const finalUrl = `${pubData.publicUrl}?t=${Date.now()}`;
+        if (targetInput) {
+          targetInput.value = finalUrl;
+          targetInput.disabled = false;
+        }
+        if (previewImg) {
+          previewImg.src = finalUrl;
+          previewImg.style.display = 'block';
+        }
+
+      } catch (err) {
+        console.error("Asset Upload Error:", err);
+        alert(`Failed to upload ${assetType}: ${err.message}`);
+        if (targetInput) {
+          targetInput.value = "";
+          targetInput.disabled = false;
+        }
+      }
+    };
+
+    // PROFILE AVATAR UPLOAD
+    window.handleSaAvatarUpload = async function(input) {
+      if (input.files && input.files[0]) {
+        const rawFile = input.files[0];
+        const previewEl = document.getElementById("saModalAvatarPreview");
+        const sizeBadge = document.getElementById("saAvatarSizeBadge");
+
+        if (sizeBadge) {
+          sizeBadge.style.display = "inline-block";
+          sizeBadge.className = "badge bg-warning text-dark mt-1";
+          sizeBadge.innerText = "Compressing to ~25KB...";
+        }
+
+        saSelectedAvatarBlob = await compressImageBlob(rawFile, 400, 0.76);
+        const sizeKB = (saSelectedAvatarBlob.size / 1024).toFixed(1);
+
+        if (previewEl) {
+          previewEl.src = URL.createObjectURL(saSelectedAvatarBlob);
+        }
+        if (sizeBadge) {
+          sizeBadge.className = "badge bg-success text-white mt-1";
+          sizeBadge.innerText = `Optimized: ${sizeKB} KB`;
+        }
+      }
+    };
+
+    function initDynamicHeaderClock() {
+      function updateClock() {
+        const now = new Date();
+        const hrs = now.getHours();
+        
+        let greeting = "Good Evening 🌙";
+        if (hrs >= 4 && hrs < 12) greeting = "Good Morning ☀️";
+        else if (hrs >= 12 && hrs < 17) greeting = "Good Afternoon 🌤️";
+        
+        const greetingEl = document.getElementById('hdrGreetingText');
+        const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+        const displayName = user.name || "MANISH KUMAR RAY";
+        
+        if (greetingEl) {
+          greetingEl.innerHTML = `${greeting}, <span class="text-primary" id="hdrAdminName">${displayName}</span>`;
+        }
+
+        const options = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+        const clockEl = document.getElementById('hdrLiveClock');
+        if (clockEl) clockEl.innerText = now.toLocaleDateString('en-US', options);
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+    }
+
+    window.toggleFullScreen = function() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+      }
+    };
+
+    window.onload = function() {
+      initDynamicHeaderClock();
+
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const avatarEl = document.getElementById('hdrProfileAvatar');
+      const dropAvatarEl = document.getElementById('dropAvatarImg');
+      const dropUserEl = document.getElementById('dropUserName');
+
+      if (user.avatar && user.avatar.startsWith("http")) {
+        if (avatarEl) avatarEl.src = user.avatar;
+        if (dropAvatarEl) dropAvatarEl.src = user.avatar;
+      }
+      if (user.name && dropUserEl) {
+        dropUserEl.innerText = user.name;
+      }
+
+      window.loadAllPlatformSchools();
+    };
+
+    // ⚡ LOAD ALL SCHOOLS + COMPUTE LIVE PER-SCHOOL HEADCOUNTS
+    window.loadAllPlatformSchools = async function() {
+      const tbody = document.getElementById('saSchoolsTbody');
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-muted fw-bold"><i class="fas fa-spinner fa-spin fa-2x text-primary d-block mb-2"></i>Loading registered schools &amp; headcount...</td></tr>`;
+
+      try {
+        const { data: schoolsData, error } = await db
+          .from('Schools')
+          .select('*');
+
+        if (error) throw error;
+        allPlatformSchools = schoolsData || [];
+
+        // Fetch student headcounts
+        const { data: stuRows } = await db.from('Students').select('SchoolID, Status');
+        schoolStuCountMap = {};
+        let totalPlatformStudents = 0;
+        (stuRows || []).forEach(r => {
+          if (String(r.Status || "ACTIVE").toUpperCase() === "ACTIVE") {
+            const sid = String(r.SchoolID).toUpperCase();
+            schoolStuCountMap[sid] = (schoolStuCountMap[sid] || 0) + 1;
+            totalPlatformStudents++;
+          }
+        });
+
+        // Fetch staff headcounts
+        const { data: stfRows } = await db.from('Staff').select('SchoolID, Status');
+        schoolStaffCountMap = {};
+        (stfRows || []).forEach(r => {
+          if (String(r.Status || "ACTIVE").toUpperCase() === "ACTIVE") {
+            const sid = String(r.SchoolID).toUpperCase();
+            schoolStaffCountMap[sid] = (schoolStaffCountMap[sid] || 0) + 1;
+          }
+        });
+
+        document.getElementById('kpiTotalPlatformStudents').innerText = totalPlatformStudents.toLocaleString('en-IN');
+        window.applySchoolFilters();
+
+      } catch (err) {
+        console.error("Super Admin Load Error:", err);
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-4 text-danger fw-bold">Failed to load schools: ${err.message}</td></tr>`;
+      }
+    };
+
+    window.applySchoolFilters = function() {
+      const statusFilter = document.getElementById('saFilterStatus').value;
+      const search = (document.getElementById('saSearchInput').value || "").trim().toUpperCase();
+
+      filteredSchools = allPlatformSchools.filter(s => {
+        const mStatus = (statusFilter === "ALL" || String(s.Status || "ACTIVE").toUpperCase() === statusFilter);
+        const searchPayload = `${s.SchoolID || ""} ${s.SchoolName || ""} ${s.BranchName || ""} ${s.PrincipalName || ""} ${s.ContactMobile || ""}`.toUpperCase();
+        const mSearch = (!search || searchPayload.includes(search));
+        return mStatus && mSearch;
+      });
+
+      let activeCount = 0;
+      let inactiveCount = 0;
+      allPlatformSchools.forEach(s => {
+        if (String(s.Status || "ACTIVE").toUpperCase() === "ACTIVE") activeCount++;
+        else inactiveCount++;
+      });
+
+      document.getElementById('kpiTotalSchools').innerText = allPlatformSchools.length;
+      document.getElementById('kpiActiveSchools').innerText = activeCount;
+      document.getElementById('kpiInactiveSchools').innerText = inactiveCount;
+
+      window.renderSchoolsTable();
+    };
+
+    window.renderSchoolsTable = function() {
+      const tbody = document.getElementById('saSchoolsTbody');
+      if (filteredSchools.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-5 text-muted fw-bold">No schools found matching filter criteria.</td></tr>`;
+        return;
+      }
+
+      let html = "";
+      filteredSchools.forEach((s, idx) => {
+        const isActive = (String(s.Status || "ACTIVE").toUpperCase() === "ACTIVE");
+        const statusBadge = isActive 
+          ? `<span class="badge-active">ACTIVE</span>` 
+          : `<span class="badge-inactive">INACTIVE</span>`;
+
+        const expiryBadgeHtml = getExpiryDaysBadge(s.SubscriptionExpiry);
+        const contactInfo = `${s.PrincipalName || s.SchoolName}<br><small class="text-muted">${s.ContactMobile || s.Email || ""}</small>`;
+        const cityInfo = `${s.BranchName || s.City || "-"}<br><small class="text-secondary">${s.Address || ""}</small>`;
+
+        const sidKey = String(s.SchoolID).toUpperCase();
+        const stuHead = schoolStuCountMap[sidKey] || 0;
+        const stfHead = schoolStaffCountMap[sidKey] || 0;
+
+        // School Profile Logo (Fallback to default icon if missing)
+        const schoolLogo = (s.HeaderLogoUrl && s.HeaderLogoUrl.startsWith("http")) 
+          ? s.HeaderLogoUrl 
+          : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
+        html += `
+          <tr>
+            <td>${idx + 1}</td>
+            <td>
+              <div class="d-flex flex-column align-items-center gap-1">
+                <span class="badge bg-primary text-white fw-bold px-1.5 py-0.5" style="font-size: 10.5px; letter-spacing: 0.3px;">${s.SchoolID}</span>
+                <img src="${schoolLogo}" alt="Logo" class="rounded border shadow-sm bg-white" style="width: 52px; height: 52px; object-fit: contain; padding: 2px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+              </div>
+            </td>
+            <td class="text-start ps-3">
+              <div class="fw-bold text-dark fs-6">${s.SchoolName}</div>
+
+              <div class="d-flex flex-column gap-1 mt-1">
+                <div class="headcount-badge-box student-pill">
+                  <i class="fas fa-user-graduate"></i>
+                  <span>${stuHead} Enrolled Students</span>
+                </div>
+                <div class="headcount-badge-box staff-pill">
+                  <i class="fas fa-chalkboard-teacher"></i>
+                  <span>${stfHead} Active Staff</span>
+                </div>
+              </div>
+            </td>
+            <td>${cityInfo}</td>
+            <td>${contactInfo}</td>
+            <td>${expiryBadgeHtml}</td>
+            <td>${statusBadge}</td>
+            <td>
+              <div class="d-flex gap-1 justify-content-center flex-wrap">
+                <button class="btn-launch-erp shadow-sm" onclick="window.launchSchoolPortal('${s.SchoolID}', '${encodeURIComponent(s.SchoolName)}')" title="Login &amp; Open School ERP">
+                  <i class="fas fa-rocket"></i> Launch
+                </button>
+                <button class="btn btn-sm btn-outline-warning py-1 px-2 fw-bold" style="font-size: 11px;" onclick="window.openExtendSubscriptionModal('${s.SchoolID}')" title="Extend Subscription Validity">
+                  <i class="fas fa-calendar-plus"></i> Extend
+                </button>
+                <button class="btn btn-sm btn-outline-primary py-1 px-2 fw-bold" style="font-size: 11px;" onclick="window.openEditSchoolModal('${s.SchoolID}')" title="Edit School Details &amp; Assets">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-dark py-1 px-2 fw-bold" style="font-size: 11px;" onclick="window.openResetAdminPasswordModal('${s.SchoolID}')" title="Reset Admin Password Vault">
+                  <i class="fas fa-key"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-${isActive ? 'danger' : 'success'} py-1 px-2 fw-bold" style="font-size: 11px;" onclick="window.toggleSchoolStatus('${s.SchoolID}', '${isActive ? 'INACTIVE' : 'ACTIVE'}')" title="Toggle Active/Inactive">
+                  <i class="fas fa-${isActive ? 'lock' : 'unlock'}"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+    };
+
+    window.launchSchoolPortal = function(schoolId, encSchoolName) {
+      const schoolName = decodeURIComponent(encSchoolName);
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+
+      user.schoolId = schoolId;
+      user.schoolName = schoolName;
+      localStorage.setItem("a2z_user", JSON.stringify(user));
+
+      alert(`Launching ERP for [${schoolId}] ${schoolName}...`);
+      window.location.href = "index.html";
+    };
+
+    // 🔒 1-CLICK TOGGLE ACTIVE / INACTIVE
+    window.toggleSchoolStatus = async function(schoolId, newStatus) {
+      const confirmMsg = (newStatus === "INACTIVE")
+        ? `Are you sure you want to SUSPEND/LOCK School [${schoolId}]?\nUsers will be restricted from accessing ERP modules.`
+        : `Reactivate School [${schoolId}]?`;
+
+      if (!confirm(confirmMsg)) return;
+
+      try {
+        const { error } = await db
+          .from('Schools')
+          .update({ Status: newStatus })
+          .eq('SchoolID', schoolId);
+
+        if (error) throw error;
+
+        alert(`School [${schoolId}] status updated to ${newStatus}.`);
+        window.loadAllPlatformSchools();
+
+      } catch (err) {
+        console.error("Status Update Error:", err);
+        alert(`Failed to update status: ${err.message}`);
+      }
+    };
+
+    // 📅 EXTEND SUBSCRIPTION MODAL & PRESETS
+    window.openExtendSubscriptionModal = function(schoolId) {
+      const s = allPlatformSchools.find(x => String(x.SchoolID).toUpperCase() === String(schoolId).toUpperCase());
+      if (!s) return;
+
+      document.getElementById('extSchoolId').value = s.SchoolID;
+      document.getElementById('extSchoolName').innerText = s.SchoolName;
+      document.getElementById('extCurrentExpiryText').innerText = formatToDDMMYYYY(s.SubscriptionExpiry);
+      document.getElementById('extNewDateInput').value = s.SubscriptionExpiry ? s.SubscriptionExpiry.split('T')[0] : "";
+
+      new bootstrap.Modal(document.getElementById('modalExtendSub')).show();
+    };
+
+    window.applySubPresetDays = function(days) {
+      const currentVal = document.getElementById('extNewDateInput').value;
+      const baseDate = currentVal ? new Date(currentVal) : new Date();
+      baseDate.setDate(baseDate.getDate() + days);
+      document.getElementById('extNewDateInput').value = baseDate.toISOString().split('T')[0];
+    };
+
+    window.saveSubscriptionExtension = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSaveSubExtension');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Extending...`;
+
+      const schId = document.getElementById('extSchoolId').value;
+      const newExpiry = document.getElementById('extNewDateInput').value;
+      const autoActive = document.getElementById('extAutoActivateCheck').checked;
+
+      try {
+        const updateObj = { SubscriptionExpiry: newExpiry };
+        if (autoActive) updateObj.Status = 'ACTIVE';
+
+        const { error } = await db
+          .from('Schools')
+          .update(updateObj)
+          .eq('SchoolID', schId);
+
+        if (error) throw error;
+
+        alert(`Subscription for School [${schId}] successfully extended to ${formatToDDMMYYYY(newExpiry)}!`);
+        bootstrap.Modal.getInstance(document.getElementById('modalExtendSub')).hide();
+        window.loadAllPlatformSchools();
+
+      } catch (err) {
+        console.error("Extension Error:", err);
+        alert(`Failed to extend subscription: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fas fa-save me-1"></i> Update Subscription`;
+      }
+    };
+
+    // 🔑 RESET ADMIN PASSWORD VAULT
+    window.openResetAdminPasswordModal = async function(schoolId) {
+      const s = allPlatformSchools.find(x => String(x.SchoolID).toUpperCase() === String(schoolId).toUpperCase());
+      if (!s) return;
+
+      document.getElementById('rstSchoolId').value = s.SchoolID;
+      document.getElementById('rstSchoolName').innerText = s.SchoolName;
+      document.getElementById('rstTenantIdText').innerText = s.SchoolID;
+      document.getElementById('rstNewPassInput').value = "admin123";
+      document.getElementById('rstAdminLoginInput').value = "Locating user...";
+
+      new bootstrap.Modal(document.getElementById('modalResetAdminPass')).show();
+
+      try {
+        const { data: userData } = await db
+          .from('Users')
+          .select('LoginID')
+          .eq('SchoolID', s.SchoolID)
+          .eq('Role', 'ADMIN')
+          .maybeSingle();
+
+        document.getElementById('rstAdminLoginInput').value = userData ? userData.LoginID : `admin${s.SchoolID.toLowerCase().replace(/sch/, '')}`;
+      } catch(e) {
+        document.getElementById('rstAdminLoginInput').value = `admin${s.SchoolID.toLowerCase().replace(/sch/, '')}`;
+      }
+    };
+
+    window.saveResetAdminPassword = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSaveResetAdmin');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Updating...`;
+
+      const schId = document.getElementById('rstSchoolId').value;
+      const adminLogin = document.getElementById('rstAdminLoginInput').value.trim();
+      const newPass = document.getElementById('rstNewPassInput').value.trim();
+
+      try {
+        const { error } = await db
+          .from('Users')
+          .update({ Password: newPass })
+          .eq('SchoolID', schId)
+          .eq('LoginID', adminLogin);
+
+        if (error) throw error;
+
+        alert(`Password for [${adminLogin}] updated successfully to: ${newPass}`);
+        bootstrap.Modal.getInstance(document.getElementById('modalResetAdminPass')).hide();
+
+      } catch (err) {
+        console.error("Reset Password Error:", err);
+        alert(`Failed to reset password: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fas fa-check-circle me-1"></i> Save New Password`;
+      }
+    };
+
+    // ✏️ EDIT SCHOOL PROFILE & ASSETS
+    window.openEditSchoolModal = function(schoolId) {
+      const s = allPlatformSchools.find(x => String(x.SchoolID).toUpperCase() === String(schoolId).toUpperCase());
+      if (!s) return;
+
+      document.getElementById('editSchId').value = s.SchoolID;
+      document.getElementById('editSchName').value = s.SchoolName || "";
+      document.getElementById('editSchBranch').value = s.BranchName || "";
+      document.getElementById('editSchAffiliation').value = s.AffiliationNo || "";
+      document.getElementById('editSchPrincipal').value = s.PrincipalName || "";
+      document.getElementById('editSchMobile').value = s.ContactMobile || "";
+      document.getElementById('editSchEmail').value = s.Email || "";
+      document.getElementById('editSchAddress').value = s.Address || "";
+      document.getElementById('editSchCity').value = s.City || "";
+      document.getElementById('editSchDistrict').value = s.District || "";
+      document.getElementById('editSchState').value = s.State || "";
+      document.getElementById('editSchPincode').value = s.Pincode || "";
+      document.getElementById('editSchLogoUrl').value = s.HeaderLogoUrl || "";
+      document.getElementById('editSchSignUrl').value = s.PrincipalSignUrl || "";
+      document.getElementById('editSchStampUrl').value = s.SchoolStampUrl || "";
+      document.getElementById('editSchPlan').value = s.SubscriptionPlan || "Standard Plan";
+      document.getElementById('editSchStatus').value = s.Status || "ACTIVE";
+
+      const lPrev = document.getElementById('editSchLogoPreview');
+      if (s.HeaderLogoUrl) { lPrev.src = s.HeaderLogoUrl; lPrev.style.display = 'block'; } else lPrev.style.display = 'none';
+
+      const sPrev = document.getElementById('editSchSignPreview');
+      if (s.PrincipalSignUrl) { sPrev.src = s.PrincipalSignUrl; sPrev.style.display = 'block'; } else sPrev.style.display = 'none';
+
+      const stPrev = document.getElementById('editSchStampPreview');
+      if (s.SchoolStampUrl) { stPrev.src = s.SchoolStampUrl; stPrev.style.display = 'block'; } else stPrev.style.display = 'none';
+
+      new bootstrap.Modal(document.getElementById('modalEditSchool')).show();
+    };
+
+    window.saveEditedSchool = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSaveEditSchool');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Saving...`;
+
+      const schId = document.getElementById('editSchId').value;
+      const updatePayload = {
+        SchoolName: document.getElementById('editSchName').value.trim(),
+        BranchName: document.getElementById('editSchBranch').value.trim(),
+        AffiliationNo: document.getElementById('editSchAffiliation').value.trim(),
+        PrincipalName: document.getElementById('editSchPrincipal').value.trim(),
+        ContactMobile: document.getElementById('editSchMobile').value.trim(),
+        Email: document.getElementById('editSchEmail').value.trim(),
+        Address: document.getElementById('editSchAddress').value.trim(),
+        City: document.getElementById('editSchCity').value.trim(),
+        District: document.getElementById('editSchDistrict').value.trim(),
+        State: document.getElementById('editSchState').value.trim(),
+        Pincode: document.getElementById('editSchPincode').value.trim(),
+        HeaderLogoUrl: document.getElementById('editSchLogoUrl').value.trim(),
+        PrincipalSignUrl: document.getElementById('editSchSignUrl').value.trim(),
+        SchoolStampUrl: document.getElementById('editSchStampUrl').value.trim(),
+        SubscriptionPlan: document.getElementById('editSchPlan').value.trim(),
+        Status: document.getElementById('editSchStatus').value
+      };
+
+      try {
+        const { error } = await db
+          .from('Schools')
+          .update(updatePayload)
+          .eq('SchoolID', schId);
+
+        if (error) throw error;
+
+        alert(`School [${schId}] profile & assets updated successfully!`);
+        bootstrap.Modal.getInstance(document.getElementById('modalEditSchool')).hide();
+        window.loadAllPlatformSchools();
+
+      } catch (err) {
+        console.error("Edit School Error:", err);
+        alert(`Failed to update school: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fas fa-save me-1"></i> Save Changes`;
+      }
+    };
+
+    // 🏫 1-CLICK ONBOARDING ENGINE
+    window.openNewSchoolModal = function() {
+      document.getElementById('formOnboardSchool').reset();
+      
+      let nextId = "SCH101";
+      if (allPlatformSchools.length > 0) {
+        const nums = allPlatformSchools.map(s => {
+          const m = String(s.SchoolID || "").match(/\d+/);
+          return m ? parseInt(m[0], 10) : 0;
+        });
+        const maxNum = Math.max(...nums, 100);
+        nextId = `SCH${maxNum + 1}`;
+      }
+      document.getElementById('mSchId').value = nextId;
+      document.getElementById('mAdminLoginId').value = `admin${nextId.toLowerCase().replace(/sch/, '')}`;
+
+      const nextYear = new Date();
+      nextYear.setFullYear(nextYear.getFullYear() + 1);
+      document.getElementById('mSchExpiry').value = nextYear.toISOString().split('T')[0];
+
+      ['mSchLogoPreview', 'mSchSignPreview', 'mSchStampPreview'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+
+      new bootstrap.Modal(document.getElementById('modalNewSchool')).show();
+    };
+
+    window.submitNewSchoolOnboarding = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitOnboard');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Provisioning Institute...`;
+
+      const schId = document.getElementById('mSchId').value.trim().toUpperCase();
+      const schName = document.getElementById('mSchName').value.trim();
+      const affiliation = document.getElementById('mSchAffiliation').value.trim();
+      const branch = document.getElementById('mSchBranch').value.trim();
+      const principal = document.getElementById('mSchPrincipal').value.trim();
+      const mobile = document.getElementById('mSchMobile').value.trim();
+      const email = document.getElementById('mSchEmail').value.trim();
+      
+      const address = document.getElementById('mSchAddress').value.trim();
+      const city = document.getElementById('mSchCity').value.trim();
+      const district = document.getElementById('mSchDistrict').value.trim();
+      const state = document.getElementById('mSchState').value.trim();
+      const pincode = document.getElementById('mSchPincode').value.trim();
+
+      const logoUrl = document.getElementById('mSchLogoUrl').value.trim();
+      const signUrl = document.getElementById('mSchSignUrl').value.trim();
+      const stampUrl = document.getElementById('mSchStampUrl').value.trim();
+
+      const adminLogin = document.getElementById('mAdminLoginId').value.trim();
+      const adminPass = document.getElementById('mAdminPassword').value.trim();
+      const plan = document.getElementById('mSchPlan').value;
+      const expiry = document.getElementById('mSchExpiry').value;
+      const status = document.getElementById('mSchStatus').value;
+
+      try {
+        const schoolPayload = {
+          SchoolID: schId,
+          SchoolName: schName,
+          AffiliationNo: affiliation,
+          BranchName: branch || city,
+          PrincipalName: principal,
+          ContactMobile: mobile,
+          Email: email,
+          Address: address,
+          City: city,
+          District: district,
+          State: state,
+          Pincode: pincode,
+          HeaderLogoUrl: logoUrl,
+          PrincipalSignUrl: signUrl,
+          SchoolStampUrl: stampUrl,
+          SubscriptionPlan: plan,
+          SubscriptionExpiry: expiry,
+          Status: status,
+          CreatedAt: new Date().toISOString()
+        };
+
+        const { error: schErr } = await db.from('Schools').insert([schoolPayload]);
+        if (schErr) throw schErr;
+
+        const userPayload = {
+          LoginID: adminLogin,
+          Password: adminPass,
+          Role: 'ADMIN',
+          SchoolID: schId,
+          FullName: principal || schName,
+          MobileNo: mobile || "",
+          IsActive: true
+        };
+
+        const { error: userErr } = await db.from('Users').insert([userPayload]);
+        if (userErr) console.warn("Admin user creation warning:", userErr);
+
+        const defaultConfigs = [
+          { SchoolID: schId, Category: 'Session', Value: '2026-27', Sections: '', Subjects: '' },
+          { SchoolID: schId, Category: 'Session', Value: '2027-28', Sections: '', Subjects: '' },
+          { SchoolID: schId, Category: 'Session', Value: '2025-26', Sections: '', Subjects: '' },
+
+          { SchoolID: schId, Category: 'Class', Value: 'Class 1', Sections: 'A, B, C, D', Subjects: 'ENGLISH, HINDI, MATHS, SCIENCE, SST' },
+          { SchoolID: schId, Category: 'Class', Value: 'Class 2', Sections: 'A, B, C, D', Subjects: 'ENGLISH, HINDI, MATHS, SCIENCE, SST' },
+          { SchoolID: schId, Category: 'Class', Value: 'Class 3', Sections: 'A, B, C, D', Subjects: 'ENGLISH, HINDI, MATHS, SCIENCE, SST' },
+          { SchoolID: schId, Category: 'Class', Value: 'Class 4', Sections: 'A, B, C, D', Subjects: 'ENGLISH, HINDI, MATHS, SCIENCE, SST' },
+          { SchoolID: schId, Category: 'Class', Value: 'Class 5', Sections: 'A, B, C, D', Subjects: 'ENGLISH, HINDI, MATHS, SCIENCE, SST' },
+
+          { SchoolID: schId, Category: 'Class', Value: 'Class 6', Sections: 'A, B, C, D', Subjects: 'HINDI, ENGLISH, MATHS, SCIENCE, SST, SANSKRIT' },
+          { SchoolID: schId, Category: 'Class', Value: 'Class 7', Sections: 'A, B, C, D', Subjects: 'HINDI, ENGLISH, MATHS, SCIENCE, SST, SANSKRIT' },
+          { SchoolID: schId, Category: 'Class', Value: 'Class 8', Sections: 'A, B, C, D', Subjects: 'HINDI, ENGLISH, MATHS, SCIENCE, SST, SANSKRIT' },
+          { SchoolID: schId, Category: 'Class', Value: 'Class 9', Sections: 'A, B, C, D', Subjects: 'HINDI, ENGLISH, MATHS, SCIENCE, SST, SANSKRIT' },
+          { SchoolID: schId, Category: 'Class', Value: 'Class 10', Sections: 'A, B, C, D', Subjects: 'HINDI, ENGLISH, MATHS, SCIENCE, SST, SANSKRIT' },
+
+          { SchoolID: schId, Category: 'Class', Value: 'Class 11', Sections: 'ART, BIO, COMM, MATHS', Subjects: 'PHYSICS, CHEMISTRY, MATHS, BIOLOGY, ENGLISH' },
+          { SchoolID: schId, Category: 'Class', Value: 'Class 12', Sections: 'ART, BIO, COMM, MATHS', Subjects: 'PHYSICS, CHEMISTRY, MATHS, BIOLOGY, ENGLISH' },
+
+          { SchoolID: schId, Category: 'Role', Value: 'TEACHER', Sections: '', Subjects: '' },
+          { SchoolID: schId, Category: 'Role', Value: 'STAFF', Sections: '', Subjects: '' },
+          { SchoolID: schId, Category: 'Role', Value: 'ACCOUNTANT', Sections: '', Subjects: '' },
+          { SchoolID: schId, Category: 'Role', Value: 'ADMIN', Sections: '', Subjects: '' },
+
+          { SchoolID: schId, Category: 'Designation', Value: 'Principal', Sections: '', Subjects: '' },
+          { SchoolID: schId, Category: 'Designation', Value: 'Vice Principal', Sections: '', Subjects: '' },
+          { SchoolID: schId, Category: 'Designation', Value: 'PGT', Sections: '', Subjects: '' },
+          { SchoolID: schId, Category: 'Designation', Value: 'TGT', Sections: '', Subjects: '' },
+          { SchoolID: schId, Category: 'Designation', Value: 'PRT', Sections: '', Subjects: '' },
+          { SchoolID: schId, Category: 'Designation', Value: 'Driver', Sections: '', Subjects: '' },
+          { SchoolID: schId, Category: 'Designation', Value: 'Peon', Sections: '', Subjects: '' }
+        ];
+
+        const { error: cfgErr } = await db.from('School_Configs').insert(defaultConfigs);
+        if (cfgErr) console.warn("Config auto-seed warning:", cfgErr);
+
+        alert(`🎉 School [${schId}] "${schName}" onboarded successfully!\n\nAll details, Branding, Classes (1-12), Roles & Admin login have been provisioned!\n\nAdmin Credentials:\nUser ID: ${adminLogin}\nPassword: ${adminPass}`);
+        
+        bootstrap.Modal.getInstance(document.getElementById('modalNewSchool')).hide();
+        window.loadAllPlatformSchools();
+
+      } catch (err) {
+        console.error("Onboarding Error:", err);
+        alert(`Failed to onboard school: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fas fa-check-circle me-1"></i> Complete Onboarding`;
+      }
+    };
+
+    window.openSaProfileModal = function() {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      saSelectedAvatarBlob = null;
+
+      const fileInput = document.getElementById('saAvatarFileInput');
+      if (fileInput) fileInput.value = "";
+
+      const sizeBadge = document.getElementById('saAvatarSizeBadge');
+      if (sizeBadge) sizeBadge.style.display = "none";
+
+      document.getElementById('saFullNameInput').value = user.name || "MANISH KUMAR RAY";
+      document.getElementById('saMobileInput').value = user.mobile || "";
+
+      const avatarSrc = (user.avatar && user.avatar.startsWith("http")) 
+        ? user.avatar 
+        : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
+      document.getElementById('saModalAvatarPreview').src = avatarSrc;
+      document.getElementById('saModalUserTitle').innerText = user.name || "MANISH KUMAR RAY";
+
+      new bootstrap.Modal(document.getElementById('modalSaProfile')).show();
+    };
+
+    window.saveSaProfileRecord = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSaveSaProfile');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Saving Profile...`;
+
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const newFullName = document.getElementById('saFullNameInput').value.trim();
+      const newMobile = document.getElementById('saMobileInput').value.trim();
+
+      try {
+        let finalAvatarUrl = user.avatar || "";
+        const currentLoginId = user.loginId || "manish";
+
+        if (saSelectedAvatarBlob) {
+          const filePath = `superadmin/avatar_${currentLoginId}.jpg`;
+          
+          const { error: upErr } = await db.storage
+            .from('School_Data')
+            .upload(filePath, saSelectedAvatarBlob, {
+              contentType: 'image/jpeg',
+              upsert: true
+            });
+
+          if (upErr) throw upErr;
+
+          const { data: pubData } = db.storage
+            .from('School_Data')
+            .getPublicUrl(filePath);
+
+          finalAvatarUrl = `${pubData.publicUrl}?t=${Date.now()}`;
+        }
+
+        const updatePayload = {
+          FullName: newFullName,
+          MobileNo: newMobile
+        };
+        if (finalAvatarUrl) {
+          updatePayload.ProfileAvatarUrl = finalAvatarUrl;
+        }
+
+        const { error: dbErr } = await db
+          .from('Users')
+          .update(updatePayload)
+          .eq('LoginID', currentLoginId);
+
+        if (dbErr) throw dbErr;
+
+        user.name = newFullName;
+        user.mobile = newMobile;
+        if (finalAvatarUrl) user.avatar = finalAvatarUrl;
+        localStorage.setItem("a2z_user", JSON.stringify(user));
+
+        const hName = document.getElementById('hdrAdminName');
+        if (hName) hName.innerText = user.name;
+
+        const dName = document.getElementById('dropUserName');
+        if (dName) dName.innerText = user.name;
+
+        const mTitle = document.getElementById('saModalUserTitle');
+        if (mTitle) mTitle.innerText = user.name;
+
+        if (user.avatar) {
+          const hAv = document.getElementById('hdrProfileAvatar');
+          if (hAv) hAv.src = user.avatar;
+          const dAv = document.getElementById('dropAvatarImg');
+          if (dAv) dAv.src = user.avatar;
+        }
+
+        alert("Profile details and photo updated successfully!");
+        bootstrap.Modal.getInstance(document.getElementById('modalSaProfile')).hide();
+
+      } catch (err) {
+        console.error("Profile Save Error:", err);
+        alert(`Failed to save profile: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fas fa-save me-1"></i> Save Profile`;
+      }
+    };
+
+    window.openSaPasswordModal = function() {
+      document.getElementById('formSaPassword').reset();
+      new bootstrap.Modal(document.getElementById('modalSaPassword')).show();
+    };
+
+    window.saveSaPasswordRecord = async function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSaveSaPassword');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Updating Password...`;
+
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const newPass = document.getElementById('saNewPasswordInput').value.trim();
+      const confirmPass = document.getElementById('saConfirmPasswordInput').value.trim();
+
+      if (newPass !== confirmPass) {
+        alert("New passwords do not match. Please re-enter.");
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fas fa-lock me-1"></i> Update Password`;
+        return;
+      }
+
+      try {
+        const currentLoginId = user.loginId || "manish";
+
+        const { error: dbErr } = await db
+          .from('Users')
+          .update({ Password: newPass })
+          .eq('LoginID', currentLoginId);
+
+        if (dbErr) throw dbErr;
+
+        user.sessionPassword = newPass;
+        localStorage.setItem("a2z_user", JSON.stringify(user));
+
+        alert("Security password updated successfully in authentication ledger.");
+        bootstrap.Modal.getInstance(document.getElementById('modalSaPassword')).hide();
+
+      } catch (err) {
+        console.error("Password Update Error:", err);
+        alert(`Failed to update password: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fas fa-lock me-1"></i> Update Password`;
+      }
+    };
+    window.exportSchoolsDirectoryExcel = function() {
+      if (filteredSchools.length === 0) {
+        alert("No schools data to export.");
+        return;
+      }
+      const exportData = filteredSchools.map((s, idx) => ({
+        "Sl. No.": idx + 1,
+        "School ID": s.SchoolID,
+        "School Name": s.SchoolName,
+        "Affiliation No": s.AffiliationNo || "",
+        "Branch": s.BranchName || "",
+        "Principal Name": s.PrincipalName || "",
+        "Contact Mobile": s.ContactMobile || "",
+        "Email": s.Email || "",
+        "City": s.City || "",
+        "District": s.District || "",
+        "State": s.State || "",
+        "Pincode": s.Pincode || "",
+        "Subscription Plan": s.SubscriptionPlan || "",
+        "Subscription Expiry": formatToDDMMYYYY(s.SubscriptionExpiry),
+        "Status": s.Status || "ACTIVE"
+      }));
+      const ws = XLSX.utils.json_to_sheet(exportData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Schools_Directory");
+      XLSX.writeFile(wb, `SaaS_Schools_Directory_${new Date().toISOString().split('T')[0]}.xlsx`);
+    };
+    window.doSuperAdminLogout = function() {
+      if (!confirm("Are you sure you want to log out of Super Admin Dashboard?")) return;
+      localStorage.removeItem("a2z_user");
+      window.location.href = "index.html";
+    };
+  })();
+  // ]]>
+  </script>
+</body>
+</html>
