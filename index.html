@@ -155,36 +155,69 @@
             box-shadow: 0 4px 12px rgba(5, 150, 105, 0.18) !important;
         }
 
-        /* STUDENT BUTTON */
+        /* =========================================
+           NAVBAR ACTION BUTTONS (UNIFORM CAPSULES)
+           ========================================= */
+
+        /* Base Shared Style for All 3 Portal Buttons */
+        .btn-student-capsule, 
+        .btn-school-login, 
+        .btn-admin-nav {
+            border-radius: 20px !important;
+            padding: 7px 16px !important;
+            font-size: 13.5px !important;
+            font-weight: 700 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            text-decoration: none !important;
+        }
+
+        /* 1. STUDENT PORTAL (Teal / Emerald Theme) */
         .btn-student-capsule {
             color: #0f766e !important;
             background: #f0fdfa !important;
             border: 1.5px solid #99f6e4 !important;
-            border-radius: 20px !important;
-            padding: 6px 14px !important;
             margin-left: 4px !important;
         }
         .btn-student-capsule:hover {
             background: #0d9488 !important;
             color: #ffffff !important;
             border-color: #0d9488 !important;
+            transform: translateY(-2px) !important;
             box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3) !important;
         }
 
-        /* SCHOOL LOGIN BUTTON */
+        /* 2. SCHOOL LOGIN (Dark / Blue 3D Theme) */
         .btn-school-login {
-            color: #0f766e !important;
+            background: linear-gradient(135deg, #0f172a, #1e293b) !important;
             color: #ffffff !important;
-            border-radius: 20px !important;
-            padding: 7px 18px !important;
+            border: 1.5px solid #1e293b !important;
             margin-left: 4px !important;
             box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25) !important;
         }
         .btn-school-login:hover {
             background: linear-gradient(135deg, #0284c7, #0369a1) !important;
             color: #ffffff !important;
+            border-color: #0284c7 !important;
             transform: translateY(-2px) !important;
             box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35) !important;
+        }
+
+        /* 3. SUPER ADMIN PORTAL (Amber / Gold Theme) */
+        .btn-admin-nav {
+            background: #fffbeb !important;
+            color: #b45309 !important;
+            border: 1.5px solid #fde68a !important;
+            margin-left: 4px !important;
+            box-shadow: 0 4px 10px rgba(180, 83, 9, 0.1) !important;
+        }
+        .btn-admin-nav:hover {
+            background: linear-gradient(135deg, #d97706, #b45309) !important;
+            color: #ffffff !important;
+            border-color: #d97706 !important;
+            transform: translateY(-2px) !important;
+            box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35) !important;
         }
 
         /* Hero Section */
