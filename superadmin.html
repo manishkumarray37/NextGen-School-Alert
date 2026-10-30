@@ -1265,10 +1265,24 @@
 
       user.schoolId = schoolId;
       user.schoolName = schoolName;
+      // Mark as superadmin impersonating a school
+      user.isImpersonating = true;
       localStorage.setItem("a2z_user", JSON.stringify(user));
 
-      alert(`Launching ERP for [${schoolId}] ${schoolName}...`);
-      window.location.href = "index.html";
+      // Smart URL Redirection (Handles localhost, pages.dev and Custom Domains)
+      const host = window.location.hostname.toLowerCase();
+      const protocol = window.location.protocol;
+
+      if (host.endsWith('.pages.dev') || host === 'localhost' || host === '127.0.0.1') {
+        window.location.href = '/app.html';
+      } else {
+        const parts = host.split('.');
+        let baseDomain = host;
+        if (parts.length > 2) {
+          baseDomain = parts.slice(1).join('.');
+        }
+        window.location.href = `${protocol}//app.${baseDomain}`;
+      }
     };
 
     // 🔒 1-CLICK TOGGLE ACTIVE / INACTIVE
@@ -1818,7 +1832,9 @@
     window.doSuperAdminLogout = function() {
       if (!confirm("Are you sure you want to log out of Super Admin Dashboard?")) return;
       localStorage.removeItem("a2z_user");
-      window.location.href = "index.html";
+      sessionStorage.clear();
+      // Keeps the user on the current domain/subdomain root (admin login screen)
+      window.location.href = window.location.origin;
     };
   })();
   // ]]>
