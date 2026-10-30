@@ -437,11 +437,1914 @@
     <main class="container-fluid px-3 py-3" id="page-area"></main>
   </div>
 
-  <!-- =================================================================== -->
-  <!-- 3. STUDENT TEMPLATES REPOSITORY                                     -->
-  <!-- =================================================================== -->
+<!-- 📌 1. STUDENT PROFILE: ALL 60+ FIELDS + A4 PORTRAIT PRINT DOSSIER   -->
+<template id='tpl-MyProfile'>
+  <style>
+    .stu-profile-banner {
+      background: #f59e0b;
+      color: #ffffff;
+      padding: 10px 18px;
+      font-weight: 800;
+      font-size: 14.5px;
+      letter-spacing: 0.5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 8px 8px 0 0;
+    }
+    .stu-summary-sidebar {
+      background: #008b8b;
+      color: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+    .stu-summary-title {
+      background: #007070;
+      padding: 12px 14px;
+      font-weight: 800;
+      font-size: 13.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .stu-summary-item {
+      padding: 10px 14px;
+      border-bottom: 1px dashed rgba(255,255,255,0.25);
+      font-size: 13px;
+      font-weight: 600;
+      word-break: break-word;
+    }
+    .stu-summary-item:last-child { border-bottom: none; }
+
+    .stu-photo-frame-lg {
+      width: 175px;
+      height: 205px;
+      border: 3px solid #cbd5e1;
+      border-radius: 8px;
+      object-fit: cover;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      background: #f8fafc;
+    }
+
+    /* CATEGORIZED SECTION HEADERS */
+    .sp-sec-heading {
+      background: #f1f5f9;
+      color: #008b8b;
+      font-weight: 800;
+      font-size: 12.5px;
+      padding: 7px 12px;
+      border-left: 4px solid #008b8b;
+      margin-top: 18px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .sp-data-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 16px; }
+    .sp-data-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px 16px; }
+    .sp-data-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px 16px; }
+
+    .stu-field-row {
+      padding: 6px 0;
+      font-size: 13px;
+      border-bottom: 1px solid #f8fafc;
+      display: flex;
+      align-items: baseline;
+    }
+    .stu-field-label {
+      width: 155px;
+      font-weight: 700;
+      color: #475569;
+      display: inline-block;
+      flex-shrink: 0;
+      font-size: 12.5px;
+    }
+    .stu-field-val {
+      font-weight: 700;
+      color: #0f172a;
+      word-break: break-word;
+    }
+
+    @media (max-width: 768px) {
+      .sp-data-grid-2, .sp-data-grid-3, .sp-data-grid-4 { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <div class='container-fluid px-0 py-3 animate__animated animate__fadeIn'>
+    <div class='row g-4'>
+      
+      <!-- ================= 1. LEFT SIDEBAR: QUICK SUMMARY ================= -->
+      <div class='col-lg-3 col-md-4 col-12'>
+        <div class='stu-summary-sidebar mb-3'>
+          <div class='stu-summary-title'><i class='fas fa-id-card me-2'></i> STUDENT DETAILS</div>
+          <div class='stu-summary-item'><i class='fas fa-user-circle me-2'></i> <span id='sumStuName'>Loading...</span></div>
+          <div class='stu-summary-item'><i class='fas fa-chalkboard me-2'></i> Class: <span id='sumStuClassSec'>-</span></div>
+          <div class='stu-summary-item'><i class='fas fa-sort-numeric-down me-2'></i> Roll No: <span id='sumStuRoll'>-</span></div>
+          <div class='stu-summary-item'><i class='fas fa-hashtag me-2'></i> Adm No: <span id='sumStuAdm'>-</span></div>
+          <div class='stu-summary-item'><i class='fas fa-male me-2'></i> Father: <span id='sumStuFather'>-</span></div>
+          <div class='stu-summary-item'><i class='fas fa-phone me-2'></i> Mobile: <span id='sumStuMobile'>-</span></div>
+        </div>
+
+        <!-- QUICK A4 PRINT BUTTON IN SIDEBAR -->
+        <button class='btn btn-warning w-100 fw-bold shadow-sm py-2 text-white' onclick='window.printStudentA4Dossier()' style='background:#f59e0b;' type='button'>
+          <i class='fas fa-print me-1'></i> Print Profile (A4 PDF)
+        </button>
+      </div>
+
+      <!-- ================= 2. RIGHT MAIN PROFILE (ALL 60+ FIELDS) ================= -->
+      <div class='col-lg-9 col-md-8 col-12'>
+        <div class='card border-0 shadow-sm rounded-3'>
+          
+          <!-- BANNER -->
+          <div class='stu-profile-banner'>
+            <span><i class='fas fa-user-graduate me-2'></i> COMPLETE STUDENT PROFILE DOSSIER</span>
+            <div class='d-flex align-items-center gap-2'>
+              <span class='small fw-bold'>SESSION: <span id='spSessionBadge'>2026-27</span></span>
+            </div>
+          </div>
+          
+          <div class='card-body p-4'>
+            
+            <!-- SECTION 1: IDENTITY & PHOTO -->
+            <div class='row g-3 align-items-start mb-2'>
+              <div class='col-lg-8 col-12'>
+                <div class='sp-sec-heading mt-0'><i class='fas fa-book-reader me-1'></i> 1. Academic &amp; Identity Details</div>
+                <div class='stu-field-row'><span class='stu-field-label'>Student Full Name:</span> <span class='stu-field-val text-primary' id='spName'>-</span></div>
+                <div class='stu-field-row'><span class='stu-field-label'>Admission No.:</span> <span class='stu-field-val text-secondary' id='spAdmNo'>-</span></div>
+                <div class='stu-field-row'><span class='stu-field-label'>Student / Login ID:</span> <span class='stu-field-val text-primary' id='spStudId'>-</span></div>
+                <div class='stu-field-row'><span class='stu-field-label'>Class &amp; Section:</span> <span class='stu-field-val' id='spClassSec'>-</span></div>
+                <div class='stu-field-row'><span class='stu-field-label'>Roll No.:</span> <span class='stu-field-val text-success' id='spRoll'>-</span></div>
+                <div class='stu-field-row'><span class='stu-field-label'>Batch / Session:</span> <span class='stu-field-val' id='spSession'>-</span></div>
+                <div class='stu-field-row'><span class='stu-field-label'>Admission Date:</span> <span class='stu-field-val' id='spAdmDate'>-</span></div>
+                <div class='stu-field-row'><span class='stu-field-label'>Fees Start Date:</span> <span class='stu-field-val' id='spFeesStartDate'>-</span></div>
+                <div class='stu-field-row'><span class='stu-field-label'>Contact Mobile:</span> <span class='stu-field-val text-primary' id='spMobile'>-</span></div>
+                <div class='stu-field-row'><span class='stu-field-label'>Student Email ID:</span> <span class='stu-field-val' id='spEmail'>-</span></div>
+              </div>
+
+              <!-- PHOTO -->
+              <div class='col-lg-4 col-12 text-center'>
+                <img class='stu-photo-frame-lg' id='spPhoto' src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'></i>
+                <div class='mt-2 fw-bold text-muted small'>Student Official Photo</div>
+              </div>
+            </div>
+
+            <!-- SECTION 2: PARENTS & FAMILY -->
+            <div class='sp-sec-heading'><i class='fas fa-users me-1'></i> 2. Parents &amp; Family Information</div>
+            <div class='sp-data-grid-2'>
+              <div class='stu-field-row'><span class='stu-field-label'>Father Name:</span> <span class='stu-field-val' id='spFather'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Mother Name:</span> <span class='stu-field-val' id='spMother'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Father Mobile:</span> <span class='stu-field-val' id='spFatherMob'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Mother Mobile:</span> <span class='stu-field-val' id='spMotherMob'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Father Email:</span> <span class='stu-field-val' id='spFatherEmail'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Mother Email:</span> <span class='stu-field-val' id='spMotherEmail'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Father Aadhaar:</span> <span class='stu-field-val' id='spFatherAadhaar'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Mother Aadhaar:</span> <span class='stu-field-val' id='spMotherAadhaar'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Father Occupation:</span> <span class='stu-field-val' id='spFatherOcc'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Mother Occupation:</span> <span class='stu-field-val' id='spMotherOcc'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Father Education:</span> <span class='stu-field-val' id='spFatherEdu'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Annual Income:</span> <span class='stu-field-val' id='spIncome'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Guardian Name:</span> <span class='stu-field-val' id='spGuardian'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Guardian Contact:</span> <span class='stu-field-val' id='spGuardianContact'>-</span></div>
+            </div>
+
+            <!-- SECTION 3: ADDRESS -->
+            <div class='sp-sec-heading'><i class='fas fa-map-marker-alt me-1'></i> 3. Residential &amp; Contact Address</div>
+            <div class='sp-data-grid-2'>
+              <div class='stu-field-row'><span class='stu-field-label'>Address Line 1:</span> <span class='stu-field-val' id='spAddr1'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Address Line 2:</span> <span class='stu-field-val' id='spAddr2'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>City / Village:</span> <span class='stu-field-val' id='spCity'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>District:</span> <span class='stu-field-val' id='spDist'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>State Name:</span> <span class='stu-field-val' id='spState'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Pincode:</span> <span class='stu-field-val' id='spPin'>-</span></div>
+            </div>
+
+            <!-- SECTION 4: DEMOGRAPHICS, HEALTH & PREVIOUS SCHOOL (NOW ALL INDIVIDUAL CLEAN ROWS) -->
+            <div class='sp-sec-heading'><i class='fas fa-id-card me-1'></i> 4. Demographics, Health &amp; Previous School</div>
+            <div class='sp-data-grid-3'>
+              <div class='stu-field-row'><span class='stu-field-label'>Date of Birth:</span> <span class='stu-field-val' id='spDob'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Gender:</span> <span class='stu-field-val' id='spGender'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Blood Group:</span> <span class='stu-field-val text-danger' id='spBlood'>-</span></div>
+              
+              <div class='stu-field-row'><span class='stu-field-label'>Category:</span> <span class='stu-field-val' id='spCat'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Religion:</span> <span class='stu-field-val' id='spRel'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Nationality:</span> <span class='stu-field-val' id='spNation'>-</span></div>
+
+              <div class='stu-field-row'><span class='stu-field-label'>Mother Tongue:</span> <span class='stu-field-val' id='spTongue'>-</span></div>
+              <!-- CASTE & COMMUNITY SEPARATED -->
+              <div class='stu-field-row'><span class='stu-field-label'>Caste:</span> <span class='stu-field-val' id='spCaste'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Community:</span> <span class='stu-field-val' id='spCommunity'>-</span></div>
+
+              <!-- HEIGHT & WEIGHT SEPARATED -->
+              <div class='stu-field-row'><span class='stu-field-label'>Height:</span> <span class='stu-field-val' id='spHeight'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Weight:</span> <span class='stu-field-val' id='spWeight'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Health Issues:</span> <span class='stu-field-val' id='spHealth'>None</span></div>
+
+              <div class='stu-field-row'><span class='stu-field-label'>Hostel Facility:</span> <span class='stu-field-val' id='spHostel'>No</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Transport Facility:</span> <span class='stu-field-val' id='spTransport'>No</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Birth Place:</span> <span class='stu-field-val' id='spBirthPlace'>-</span></div>
+            </div>
+
+            <!-- SECTION 5: GOVT NUMBERS (EMIS & AADHAAR SEPARATED) -->
+            <div class='sp-sec-heading'><i class='fas fa-university me-1'></i> 5. Government Educational Numbers</div>
+            <div class='sp-data-grid-4'>
+              <div class='stu-field-row'><span class='stu-field-label'>PEN No. (UDISE):</span> <span class='stu-field-val text-primary' id='spPenNo'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>APAAR No.:</span> <span class='stu-field-val text-primary' id='spApaarNo'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>EMIS No.:</span> <span class='stu-field-val' id='spEmisNo'>-</span></div>
+              <div class='stu-field-row'><span class='stu-field-label'>Student Aadhaar:</span> <span class='stu-field-val' id='spAadhaarNo'>-</span></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script type='text/javascript'>
+  // <![CDATA[
+  (async function() {
+    let studentFullRecord = null;
+
+    // ⚡ CLEAN DATE FORMATTER (RETURNS DD/MM/YYYY)
+    function formatToIndianDate(val) {
+      if (!val || val === "NA" || val === "-" || val === "null") return "-";
+      let s = String(val).trim();
+      if (s.includes("T")) s = s.split("T")[0];
+
+      // Handle separator formats: YYYY-MM-DD or DD/MM/YYYY
+      const parts = s.split(/[\/\-\.]/);
+      if (parts.length === 3) {
+        if (parts[0].length === 4) {
+          // YYYY-MM-DD -> DD/MM/YYYY
+          return `${parts[2].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[0]}`;
+        } else if (parts[2].length === 4) {
+          // DD-MM-YYYY -> DD/MM/YYYY
+          return `${parts[0].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[2]}`;
+        }
+      }
+      return s;
+    }
+
+    window.initMyProfileModule = async function() {
+      let user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      let p = user.studentProfile || {};
+
+      // Auto-fetch fresh row from sheet if available
+      if (user.targetSheetId) {
+        try {
+          const fetchUrl = `${scriptURL}?action=getStudents&tsid=${encodeURIComponent(user.targetSheetId)}&sheet=Students&_t=${Date.now()}`;
+          const allStu = await (await fetch(fetchUrl)).json();
+          if (Array.isArray(allStu) && allStu.length > 0) {
+            const targetId = String(user.loginId || user.name || "").trim().toUpperCase();
+            let found = allStu.find(s => {
+              const sid = String(s.StudId || s.StudentID || "").trim().toUpperCase();
+              const logid = String(s.LogInId || "").trim().toUpperCase();
+              const adm = String(s.AdmissionNo || "").trim().toUpperCase();
+              const sname = String(s.StudentName || s.FirstName || "").trim().toUpperCase();
+              return (sid === targetId || logid === targetId || adm === targetId || sname === targetId);
+            });
+            if (found) {
+              p = found;
+              user.studentProfile = found;
+              localStorage.setItem("a2z_user", JSON.stringify(user));
+            }
+          }
+        } catch(e) {}
+      }
+
+      studentFullRecord = p;
+
+      // Extract details
+      const fullName = `${p.StudentName || p.FirstName || user.name || "Student"} ${p.LastName || ""}`.trim();
+      const adm = p.AdmissionNo || "-";
+      const studId = p.StudId || p.LogInId || "-";
+      const cls = p.Class || "-";
+      const sec = p.Section || p.Sec || "-";
+      const roll = p.RollNo || "-";
+      const session = p.BatchName || p.AdmBatchName || p.Batch || "2026-27";
+      
+      // ⚡ CLEAN DATES (DD/MM/YYYY)
+      const admDate = formatToIndianDate(p.AdmDate);
+      const feesStartDate = formatToIndianDate(p.FeesStartDate);
+      const dob = formatToIndianDate(p.DateOfBirth);
+
+      const mob = p.ContactMobileNo || p.FatherMobileNo || "-";
+      const email = p.MailId || "-";
+
+      const father = p.FatherName || "-";
+      const mother = p.MotherName || "-";
+      const fMob = p.FatherMobileNo || "-";
+      const mMob = p.MotherMobileNo || "-";
+      const fEmail = p.FatherMailId || "-";
+      const mEmail = p.MotherMailId || "-";
+      const fAadhaar = p.FatherAadharCard || "-";
+      const mAadhaar = p.MotherAaadharCard || "-";
+      const fOcc = p.FathersOccupation || "-";
+      const mOcc = p.MothersOccupation || "-";
+      const fEdu = p.FatherEducation || "-";
+      const income = p.FathersAnnualIncome ? `₹${p.FathersAnnualIncome}` : "-";
+      const guardian = p.GaurdianName || "-";
+      const gContact = p.GaurdianContactNo || "-";
+
+      const addr1 = p.AddressLine1 || "-";
+      const addr2 = p.AddressLine2 || "-";
+      const city = p.City || "-";
+      const dist = p.DistrictName || "-";
+      const state = p.StateName || "-";
+      const pin = p.Pincode || "-";
+
+      const gender = p.Gender || "Male";
+      const blood = p.BloodGroupName || p.BloodGroup || "O+VE";
+      const cat = p.CategoryName || "GENERAL";
+      const rel = p.ReligionName || "HINDU";
+      const nation = p.Nationlity || "INDIAN";
+      const tongue = p.MotherTongue || "HINDI";
+      
+      // ⚡ INDIVIDUAL SEPARATED FIELDS
+      const caste = p.CasteName || "-";
+      const community = p.CommunityName || "-";
+      const height = p.Height ? `${p.Height} cm` : "-";
+      const weight = p.Weight ? `${p.Weight} kg` : "-";
+
+      const hostel = p.Hostel || "No";
+      const transport = p.Transport || "No";
+      const health = p.HealthIssues || "None";
+      const birthPlace = p.BirthPlace || "-";
+
+      const pen = p.PenNo || "-";
+      const apaar = p.ApaarNo || "-";
+      const emisNo = p.EmisNo || "-";
+      const stuAadhaar = p.AadhaarNo || "-";
+
+      const photo = p.StudentPhoto || user.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
+      // 1. LEFT SIDEBAR
+      document.getElementById('sumStuName').innerText = fullName;
+      document.getElementById('sumStuClassSec').innerText = `${cls} - ${sec}`;
+      document.getElementById('sumStuRoll').innerText = roll;
+      document.getElementById('sumStuAdm').innerText = adm;
+      document.getElementById('sumStuFather').innerText = father;
+      document.getElementById('sumStuMobile').innerText = mob;
+
+      // 2. SECTION 1: ACADEMIC & IDENTITY
+      document.getElementById('spSessionBadge').innerText = session;
+      document.getElementById('spName').innerText = fullName;
+      document.getElementById('spAdmNo').innerText = adm;
+      document.getElementById('spStudId').innerText = studId;
+      document.getElementById('spClassSec').innerText = `${cls} (Section: ${sec})`;
+      document.getElementById('spRoll').innerText = roll;
+      document.getElementById('spSession').innerText = session;
+      document.getElementById('spAdmDate').innerText = admDate;
+      document.getElementById('spFeesStartDate').innerText = feesStartDate;
+      document.getElementById('spMobile').innerText = mob;
+      document.getElementById('spEmail').innerText = email;
+
+      // 3. SECTION 2: PARENTS & FAMILY
+      document.getElementById('spFather').innerText = father;
+      document.getElementById('spMother').innerText = mother;
+      document.getElementById('spFatherMob').innerText = fMob;
+      document.getElementById('spMotherMob').innerText = mMob;
+      document.getElementById('spFatherEmail').innerText = fEmail;
+      document.getElementById('spMotherEmail').innerText = mEmail;
+      document.getElementById('spFatherAadhaar').innerText = fAadhaar;
+      document.getElementById('spMotherAadhaar').innerText = mAadhaar;
+      document.getElementById('spFatherOcc').innerText = fOcc;
+      document.getElementById('spMotherOcc').innerText = mOcc;
+      document.getElementById('spFatherEdu').innerText = fEdu;
+      document.getElementById('spIncome').innerText = income;
+      document.getElementById('spGuardian').innerText = guardian;
+      document.getElementById('spGuardianContact').innerText = gContact;
+
+      // 4. SECTION 3: ADDRESS
+      document.getElementById('spAddr1').innerText = addr1;
+      document.getElementById('spAddr2').innerText = addr2;
+      document.getElementById('spCity').innerText = city;
+      document.getElementById('spDist').innerText = dist;
+      document.getElementById('spState').innerText = state;
+      document.getElementById('spPin').innerText = pin;
+
+      // 5. SECTION 4: DEMOGRAPHICS (SEPARATED CLEAN ROWS)
+      document.getElementById('spDob').innerText = dob;
+      document.getElementById('spGender').innerText = gender;
+      document.getElementById('spBlood').innerText = blood;
+      document.getElementById('spCat').innerText = cat;
+      document.getElementById('spRel').innerText = rel;
+      document.getElementById('spNation').innerText = nation;
+      document.getElementById('spTongue').innerText = tongue;
+      document.getElementById('spCaste').innerText = caste;
+      document.getElementById('spCommunity').innerText = community;
+      document.getElementById('spHeight').innerText = height;
+      document.getElementById('spWeight').innerText = weight;
+      document.getElementById('spHostel').innerText = hostel;
+      document.getElementById('spTransport').innerText = transport;
+      document.getElementById('spHealth').innerText = health;
+      document.getElementById('spBirthPlace').innerText = birthPlace;
+
+      // 6. SECTION 5: GOVT NUMBERS
+      document.getElementById('spPenNo').innerText = pen;
+      document.getElementById('spApaarNo').innerText = apaar;
+      document.getElementById('spEmisNo').innerText = emisNo;
+      document.getElementById('spAadhaarNo').innerText = stuAadhaar;
+
+      const photoImg = document.getElementById('spPhoto');
+      if (photoImg) photoImg.src = photo;
+    };
+
+    // 🖨️ A4 PORTRAIT PRINT DOSSIER (WITH CLEAN DATES)
+    window.printStudentA4Dossier = function() {
+      if (!studentFullRecord) { alert("Student profile not loaded!"); return; }
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolName = user.schoolName || "ROYAL INTERNATIONAL SCHOOL";
+      const p = studentFullRecord;
+      const photo = p.StudentPhoto || user.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+      const fullName = `${p.StudentName || p.FirstName || ""} ${p.LastName || ""}`.trim();
+
+      const printWin = window.open('', '_blank');
+      printWin.document.open();
+      printWin.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Student Profile Dossier - ${fullName}</title>
+          <style>
+            @page { size: A4 portrait; margin: 8mm; }
+            body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; margin: 0; padding: 0; color: #000; background: #fff; }
+            .a4-sheet { border: 2px solid #000; padding: 12px 14px; min-height: 275mm; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
+            .header-box { text-align: center; border-bottom: 2px solid #000; padding-bottom: 6px; margin-bottom: 10px; }
+            .header-box h2 { margin: 0; font-size: 19px; font-weight: 800; text-transform: uppercase; }
+            .header-box h5 { margin: 3px 0 0 0; font-size: 11px; font-weight: bold; }
+            
+            .sec-head { background: #f0f0f0 !important; -webkit-print-color-adjust: exact; border: 1px solid #444; font-size: 10.5px; font-weight: 800; padding: 3px 6px; margin-top: 8px; margin-bottom: 3px; text-transform: uppercase; }
+            table { width: 100%; border-collapse: collapse; margin-bottom: 2px; }
+            td { border: 1px solid #777; padding: 4px 6px; font-size: 10.5px; vertical-align: middle; }
+            .lbl { background: #fafafa; font-weight: bold; width: 23%; }
+            .val { font-weight: 600; }
+            
+            .photo-box { width: 105px; height: 120px; object-fit: cover; border: 1.5px solid #000; border-radius: 4px; }
+            .sig-box { display: flex; justify-content: space-between; margin-top: 35px; font-weight: bold; font-size: 10.5px; text-align: center; }
+            .sig-line { width: 160px; border-top: 1.5px solid #000; padding-top: 4px; }
+            @media print { .no-print { display: none; } }
+          </style>
+        </head>
+        <body>
+          <div class="no-print" style="text-align:right; max-width:190mm; margin:8px auto;">
+            <button onclick="window.print()" style="background:#008b8b; color:#fff; font-weight:bold; border:none; padding:8px 16px; border-radius:4px; cursor:pointer;">
+              🖨️ Print Dossier (PDF)
+            </button>
+          </div>
+          <div class="a4-sheet">
+            <div>
+              <div class="header-box">
+                <h2>${schoolName}</h2>
+                <h5>STUDENT COMPREHENSIVE ADMISSION PROFILE (SESSION: ${p.BatchName || "2026-27"})</h5>
+              </div>
+
+              <!-- IDENTITY & PHOTO -->
+              <div style="display:flex; gap:12px; margin-bottom:4px;">
+                <div style="flex:1;">
+                  <div class="sec-head" style="margin-top:0;">1. Student Identity &amp; Academic Details</div>
+                  <table>
+                    <tr><td class="lbl">Student Name:</td><td class="val" colspan="3"><strong style="font-size:12px;">${fullName}</strong></td></tr>
+                    <tr><td class="lbl">Student ID:</td><td class="val">${p.StudId || p.LogInId || "-"}</td><td class="lbl">Admission No:</td><td class="val">${p.AdmissionNo || "-"}</td></tr>
+                    <tr><td class="lbl">Class &amp; Section:</td><td class="val">${p.Class || "-"} (${p.Section || p.Sec || "-"})</td><td class="lbl">Roll No.:</td><td class="val"><strong>${p.RollNo || "-"}</strong></td></tr>
+                    <tr><td class="lbl">Session / Batch:</td><td class="val">${p.BatchName || "-"}</td><td class="lbl">Admission Date:</td><td class="val">${formatToIndianDate(p.AdmDate)}</td></tr>
+                    <tr><td class="lbl">Contact Mobile:</td><td class="val"><strong>${p.ContactMobileNo || p.FatherMobileNo || "-"}</strong></td><td class="lbl">Fees Start Date:</td><td class="val">${formatToIndianDate(p.FeesStartDate)}</td></tr>
+                  </table>
+                </div>
+                <div style="text-align:center;">
+                  <img src="${photo}" class="photo-box"></i>
+                </div>
+              </div>
+
+              <!-- PARENTS -->
+              <div class="sec-head">2. Parents &amp; Family Information</div>
+              <table>
+                <tr><td class="lbl">Father Name:</td><td class="val"><strong>${p.FatherName || "-"}</strong></td><td class="lbl">Mother Name:</td><td class="val"><strong>${p.MotherName || "-"}</strong></td></tr>
+                <tr><td class="lbl">Father Mobile:</td><td class="val">${p.FatherMobileNo || "-"}</td><td class="lbl">Mother Mobile:</td><td class="val">${p.MotherMobileNo || "-"}</td></tr>
+                <tr><td class="lbl">Father Aadhaar:</td><td class="val">${p.FatherAadharCard || "-"}</td><td class="lbl">Mother Aadhaar:</td><td class="val">${p.MotherAaadharCard || "-"}</td></tr>
+                <tr><td class="lbl">Father Occupation:</td><td class="val">${p.FathersOccupation || "-"}</td><td class="lbl">Annual Income:</td><td class="val">₹${p.FathersAnnualIncome || "0"}</td></tr>
+              </table>
+
+              <!-- ADDRESS -->
+              <div class="sec-head">3. Residential &amp; Contact Address</div>
+              <table>
+                <tr><td class="lbl">Address:</td><td class="val" colspan="3">${p.AddressLine1 || "-"}, ${p.City || ""}, ${p.DistrictName || ""}, ${p.StateName || ""} - ${p.Pincode || ""}</td></tr>
+              </table>
+
+              <!-- DEMOGRAPHICS -->
+              <div class="sec-head">4. Demographics, Health &amp; Govt. Numbers</div>
+              <table>
+                <tr><td class="lbl">Date of Birth:</td><td class="val">${formatToIndianDate(p.DateOfBirth)}</td><td class="lbl">Gender / Blood:</td><td class="val">${p.Gender || "Male"} / <strong>${p.BloodGroupName || "O+VE"}</strong></td></tr>
+                <tr><td class="lbl">Category / Religion:</td><td class="val">${p.CategoryName || "GENERAL"} / ${p.ReligionName || "HINDU"}</td><td class="lbl">PEN No (UDISE):</td><td class="val"><strong>${p.PenNo || "-"}</strong></td></tr>
+                <tr><td class="lbl">APAAR No:</td><td class="val">${p.ApaarNo || "-"}</td><td class="lbl">EMIS No:</td><td class="val">${p.EmisNo || "-"}</td></tr>
+                <tr><td class="lbl">Caste / Community:</td><td class="val">${p.CasteName || "-"} / ${p.CommunityName || "-"}</td><td class="lbl">Student Aadhaar:</td><td class="val">${p.AadhaarNo || "-"}</td></tr>
+              </table>
+            </div>
+
+            <!-- SIGNATURES -->
+            <div class="sig-box">
+              <div class="sig-line">Class Teacher Signature</div>
+              <div class="sig-line">Parent / Guardian Signature</div>
+              <div class="sig-line">Principal Signature &amp; Seal</div>
+            </div>
+          </div>
+          <script>window.onload = function(){ window.print(); }<\/script>
+        </body>
+        </html>
+      `);
+      printWin.document.close();
+    };
+
+    window.initMyProfileModule();
+  })();
+  // ]]>
+  </script>
+</template>
   
-  <!-- [YOUR EXISTING TPL MODULE TEMPLATES GO HERE: tpl-MyProfile, tpl-StudentHomework, etc.] -->
+<!-- 📌 2. LIVE STUDENT HOMEWORK (FUZZY CLASS MATCH & MASTER CARD)   -->
+<template id='tpl-StudentHomework'>
+  <!-- SCOPED STYLES -->
+  <style>
+    /* SINGLE MASTER CARD DESIGN */
+    .hw-master-card {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 14px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      animation: hwCardFade 0.25s ease-out;
+    }
+    @keyframes hwCardFade { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    .hw-master-header {
+      background: linear-gradient(135deg, #008b8b, #006666);
+      color: #ffffff;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* SUBJECT ROW ITEM INSIDE SINGLE CARD */
+    .hw-subject-item {
+      padding: 16px 20px;
+      border-bottom: 1px solid #e2e8f0;
+      transition: background 0.15s;
+    }
+    .hw-subject-item:last-child {
+      border-bottom: none;
+    }
+    .hw-subject-item:hover {
+      background: #f8fafc;
+    }
+
+    .hw-subj-pill {
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1.5px solid #bae6fd;
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 6px;
+      letter-spacing: 0.3px;
+    }
+    .hw-due-pill {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .btn-view-work {
+      background: #0284c7;
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 2px 5px rgba(2, 132, 199, 0.2);
+      transition: 0.15s;
+    }
+    .btn-view-work:hover { background: #0369a1; color: #fff; }
+
+    /* FULL-PAGE OVERLAY POPUP */
+    .hw-fullscreen-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(5px);
+      z-index: 999999;
+      display: none;
+      flex-direction: column;
+      animation: hwFadeIn 0.2s ease-out;
+    }
+    @keyframes hwFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .hw-overlay-header {
+      background: #1e293b;
+      color: #ffffff;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+    }
+    .hw-overlay-body {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      overflow: auto;
+    }
+    .hw-overlay-img {
+      max-width: 95%;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      background: #fff;
+    }
+    .hw-overlay-iframe {
+      width: 95%;
+      height: 85vh;
+      border: none;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .btn-close-overlay {
+      background: #ef4444;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 6px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.15s;
+    }
+    .btn-close-overlay:hover { background: #dc2626; }
+  </style>
+
+  <div class='container-fluid px-0 py-3 animate__animated animate__fadeIn'>
+    <div class='card border-0 shadow-sm rounded-3'>
+      
+      <!-- HEADER BAR -->
+      <div class='card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2'>
+        <div class='d-flex align-items-center gap-2'>
+          <i class='fas fa-book-open text-success fa-lg'></i>
+          <div>
+            <h6 class='m-0 fw-bold text-dark'>Daily Class Homework &amp; Assignments</h6>
+            <small class='text-muted' style='font-size: 11px;'>Consolidated daily tasks &amp; subject worksheets</small>
+          </div>
+        </div>
+
+        <div class='d-flex align-items-center gap-2'>
+          <label class='small fw-bold text-muted'>Select Date:</label>
+          <input class='form-control form-control-sm shadow-sm' id='stuHwDatePick' onchange='window.fetchMyHomework()' style='width: 155px; font-weight: 700; height: 36px;' type='date'></i>
+        </div>
+      </div>
+
+      <!-- CARDS WORKSPACE -->
+      <div class='card-body p-4' id='stuHwCardsArea'>
+        <div class='text-center py-5 text-muted'><i class='fas fa-spinner fa-spin fa-2x mb-2 text-success d-block'></i>Loading assigned homework...</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FULL-PAGE POPUP ATTACHMENT VIEWER -->
+  <div class='hw-fullscreen-overlay' id='hwAttachmentOverlay'>
+    <div class='hw-overlay-header'>
+      <div class='d-flex align-items-center gap-2'>
+        <i class='fas fa-file-alt text-warning fa-lg'></i>
+        <span class='fw-bold' id='overlayFileTitle' style='font-size: 14px;'>Homework Worksheet / Attachment</span>
+      </div>
+      <button class='btn-close-overlay' onclick='window.closeHwAttachmentOverlay()' type='button'>
+        <i class='fas fa-times'></i> Close
+      </button>
+    </div>
+    <div class='hw-overlay-body' id='overlayFileContent'>
+      <!-- Dynamic Image or PDF Iframe loaded here -->
+    </div>
+  </div>
+
+  <!-- 3. SCOPED JAVASCRIPT ENGINE (SUPABASE CONNECTED & DD/MM/YYYY STRICT FORMAT) -->
+  <script type='text/javascript'>
+  // <![CDATA[
+  (function() {
+    // Helper: Formats standard YYYY-MM-DD for date comparison
+    function cleanDateOnly(dVal) {
+      if (!dVal) return "";
+      if (dVal instanceof Date) {
+        const yr = dVal.getFullYear();
+        const mo = String(dVal.getMonth() + 1).padStart(2, '0');
+        const da = String(dVal.getDate()).padStart(2, '0');
+        return `${yr}-${mo}-${da}`;
+      }
+
+      let s = String(dVal).trim();
+      if (s.includes("T")) s = s.split("T")[0];
+      const parts = s.split(/[\/\-\.]/);
+      if (parts.length === 3) {
+        if (parts[0].length === 4) {
+          return `${parts[0]}-${parts[1].padStart(2, '0')}-${parts[2].padStart(2, '0')}`;
+        } else if (parts[2].length === 4) {
+          return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+        }
+      }
+      return s;
+    }
+
+    // Helper: Formats date to strict DD/MM/YYYY for UI display
+    function formatDisplayDate(dVal) {
+      if (!dVal) return "-";
+      let clean = cleanDateOnly(dVal);
+      const p = clean.split("-");
+      if (p.length === 3) return `${p[2]}/${p[1]}/${p[0]}`;
+      return dVal;
+    }
+
+    // Helper: Normalizes Class string ("CLASS 1", "Class 1", "1" -> "1")
+    function normalizeClassString(cVal) {
+      return String(cVal || "").toUpperCase().replace(/CLASS/g, '').replace(/[^0-9A-Z]/g, '').trim();
+    }
+
+    // ⚡ 1. INITIALIZE MODULE
+    window.initStudentHomeworkModule = function() {
+      const today = new Date();
+      const yr = today.getFullYear();
+      const mo = String(today.getMonth() + 1).padStart(2, '0');
+      const da = String(today.getDate()).padStart(2, '0');
+      const todayStr = `${yr}-${mo}-${da}`;
+
+      const dEl = document.getElementById('stuHwDatePick');
+      if (dEl && !dEl.value) dEl.value = todayStr;
+      
+      window.fetchMyHomework();
+    };
+
+    // ⚡ 2. FETCH HOMEWORK DIRECTLY FROM SUPABASE
+    window.fetchMyHomework = async function() {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const activeSchool = user.schoolId;
+      const p = user.studentProfile || {};
+
+      const area = document.getElementById('stuHwCardsArea');
+
+      if (!activeSchool) {
+        area.innerHTML = `<div class="text-center py-4 text-muted">Session expired. Please log in again.</div>`;
+        return;
+      }
+
+      // Identify student class and section
+      const rawStudentClass = p.Class || user.class || "1";
+      const rawStudentSec = p.Section || p.Sec || user.section || "A";
+
+      const studentClassClean = normalizeClassString(rawStudentClass);
+      const studentSecClean = String(rawStudentSec).toUpperCase().replace(/[^0-9A-Z]/g, '').trim();
+
+      const selectedDate = document.getElementById('stuHwDatePick').value;
+      const cleanSelectedDate = cleanDateOnly(selectedDate);
+
+      area.innerHTML = `<div class="text-center py-5 text-muted"><i class="fas fa-spinner fa-spin fa-2x mb-2 text-success d-block"></i>Checking homework for ${formatDisplayDate(selectedDate)}...</div>`;
+
+      try {
+        // Query Supabase directly for this school and selected date
+        const { data, error } = await db
+          .from('Homework')
+          .select('*')
+          .eq('SchoolID', activeSchool)
+          .eq('Date', cleanSelectedDate);
+
+        if (error) throw error;
+        const fullList = data || [];
+
+        // Filter homework matching student's class and section
+        const myHomework = fullList.filter(h => {
+          const hClassClean = normalizeClassString(h.Class);
+          const hSecClean = String(h.Section || "").toUpperCase().replace(/[^0-9A-Z]/g, '').trim();
+
+          const isClassMatch = (!studentClassClean || hClassClean === studentClassClean);
+          const isSecMatch = (!studentSecClean || hSecClean === "ALL" || hSecClean === "" || hSecClean === studentSecClean);
+
+          return isClassMatch && isSecMatch;
+        });
+
+        if (myHomework.length === 0) {
+          area.innerHTML = `
+            <div class="text-center py-5 text-muted">
+              <i class="fas fa-check-circle fa-3x text-success mb-3 d-block"></i>
+              <h5 class="fw-bold text-dark">No Homework Assigned for this Date!</h5>
+              <p class="small text-muted">Class: <strong>${rawStudentClass} (${rawStudentSec})</strong> • Date: <strong>${formatDisplayDate(selectedDate)}</strong></p>
+            </div>
+          `;
+          return;
+        }
+
+        // ⚡ SINGLE CONSOLIDATED MASTER CARD FOR ALL SUBJECTS
+        let subjectsHtml = "";
+        myHomework.forEach((h) => {
+          let attachBtn = "";
+          if (h.AttachmentUrl && h.AttachmentUrl.startsWith("http")) {
+            const isPdf = h.AttachmentUrl.toLowerCase().includes(".pdf");
+            const fileType = isPdf ? "PDF Document" : "Image Worksheet";
+            const icon = isPdf ? "fa-file-pdf text-danger" : "fa-image text-info";
+
+            attachBtn = `
+              <div class="mt-2">
+                <button type="button" class="btn-view-work" onclick="window.openHwAttachmentOverlay('${h.AttachmentUrl}', '${h.Subject}')">
+                  <i class="fas ${icon}"></i> View ${fileType}
+                </button>
+              </div>
+            `;
+          }
+
+          subjectsHtml += `
+            <div class="hw-subject-item">
+              <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                <span class="hw-subj-pill"><i class="fas fa-book me-1"></i> ${h.Subject || "Subject"}</span>
+                <span class="hw-due-pill"><i class="far fa-clock me-1"></i> Due: ${formatDisplayDate(h.DueDate || h.Date)}</span>
+              </div>
+              
+              <div class="fw-bold text-dark mt-1" style="white-space: pre-wrap; font-size: 13.5px; line-height: 1.55;">${h.Description || "No detailed instructions provided."}</div>
+              
+              ${attachBtn}
+            </div>
+          `;
+        });
+
+        const assignedBy = myHomework[0].CreatedBy || "Teacher";
+
+        const masterCardHtml = `
+          <div class="hw-master-card">
+            <div class="hw-master-header">
+              <div class="d-flex align-items-center gap-2">
+                <i class="fas fa-clipboard-list fa-lg"></i>
+                <span class="fw-bold fs-6">Class ${rawStudentClass} (${rawStudentSec}) Homework</span>
+              </div>
+              <div class="badge bg-warning text-dark fw-bold">
+                Date: ${formatDisplayDate(selectedDate)} • ${myHomework.length} Subject(s)
+              </div>
+            </div>
+
+            <div class="p-0">
+              ${subjectsHtml}
+            </div>
+
+            <div class="bg-light p-2.5 px-3 border-top d-flex justify-content-between align-items-center text-muted small">
+              <span>Assigned for: <strong>${formatDisplayDate(selectedDate)}</strong></span>
+              <span>Issued by: <strong class="text-primary">${assignedBy}</strong></span>
+            </div>
+          </div>
+        `;
+
+        area.innerHTML = masterCardHtml;
+
+      } catch(e) {
+        console.error("Student Homework Load Error:", e);
+        area.innerHTML = `<div class="text-center py-5 text-danger fw-bold"><i class="fas fa-exclamation-triangle me-1"></i> Failed to load homework. Please refresh.</div>`;
+      }
+    };
+
+    // 🔍 FULL-SCREEN POPUP ATTACHMENT VIEWER
+    window.openHwAttachmentOverlay = function(fileUrl, subject) {
+      const overlay = document.getElementById('hwAttachmentOverlay');
+      const titleEl = document.getElementById('overlayFileTitle');
+      const contentEl = document.getElementById('overlayFileContent');
+
+      titleEl.innerText = `${subject} - Homework Worksheet Preview`;
+
+      const isPdf = fileUrl.toLowerCase().includes(".pdf");
+
+      if (isPdf) {
+        contentEl.innerHTML = `<iframe src="${fileUrl}" class="hw-overlay-iframe shadow"></iframe>`;
+      } else {
+        contentEl.innerHTML = `<img src="${fileUrl}" class="hw-overlay-img shadow" alt="Homework Attachment">`;
+      }
+
+      overlay.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.closeHwAttachmentOverlay = function() {
+      const overlay = document.getElementById('hwAttachmentOverlay');
+      const contentEl = document.getElementById('overlayFileContent');
+      
+      overlay.style.display = 'none';
+      contentEl.innerHTML = "";
+      document.body.style.overflow = 'auto';
+    };
+    window.initStudentHomeworkModule();
+  })();
+  // ]]>
+  </script>
+</template>
+  
+<!-- 📌 3. LIVE STUDENT ATTENDANCE (3D NEUMORPHIC CALENDAR & KPIS)       -->
+<template id='tpl-StudentAttendance'>
+  <style>
+    /* 3D KPI METRIC CARDS */
+    .att-kpi-card-3d {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 12px 16px;
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+      transition: all 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-width: 130px;
+    }
+    .att-kpi-card-3d:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    }
+    .kpi-title-sm { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .kpi-num-lg { font-size: 20px; font-weight: 800; line-height: 1.1; margin-top: 2px; }
+
+    /* 3D CALENDAR GRID */
+    .att-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; text-align: center; }
+    .att-cal-head { 
+      font-weight: 800; 
+      font-size: 11.5px; 
+      background: #f8fafc; 
+      padding: 10px 4px; 
+      border-radius: 8px; 
+      color: #334155; 
+      box-shadow: inset 0 -2px 0 rgba(0,0,0,0.05); 
+      border: 1px solid #e2e8f0;
+    }
+    .att-cal-head.sun { color: #dc2626; background: #fef2f2; border-color: #fecaca; }
+
+    /* 3D DAY TILE */
+    .att-cal-day-3d { 
+      min-height: 58px; 
+      border-radius: 10px; 
+      padding: 5px; 
+      font-weight: 800; 
+      font-size: 11.5px; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: space-between; 
+      align-items: center; 
+      background: #ffffff; 
+      border: 1.5px solid #e2e8f0;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+      transition: all 0.2s ease;
+    }
+    .att-cal-day-3d:hover {
+      transform: scale(1.04);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+      z-index: 2;
+    }
+
+    /* 3D COLOR STATES */
+    .day-state-p { 
+      background: linear-gradient(145deg, #f0fdf4, #dcfce7) !important; 
+      border-color: #86efac !important; 
+      color: #15803d; 
+      box-shadow: 0 3px 8px rgba(22, 163, 74, 0.15); 
+    }
+    .day-state-a { 
+      background: linear-gradient(145deg, #fef2f2, #fee2e2) !important; 
+      border-color: #fca5a5 !important; 
+      color: #b91c1c; 
+      box-shadow: 0 3px 8px rgba(220, 38, 38, 0.15); 
+    }
+    .day-state-l { 
+      background: linear-gradient(145deg, #fffbeb, #fef3c7) !important; 
+      border-color: #fde047 !important; 
+      color: #b45309; 
+      box-shadow: 0 3px 8px rgba(202, 138, 4, 0.15); 
+    }
+    .day-state-sun { 
+      background: #f8fafc !important; 
+      border-color: #e2e8f0 !important; 
+      color: #94a3b8; 
+    }
+    .day-state-blank { 
+      background: #ffffff !important; 
+      border-color: #f1f5f9 !important; 
+      color: #cbd5e1; 
+    }
+
+    .status-pill-badge {
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 1.5px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.3px;
+    }
+    .day-state-p .status-pill-badge { background: #16a34a; color: #fff; }
+    .day-state-a .status-pill-badge { background: #dc2626; color: #fff; }
+    .day-state-l .status-pill-badge { background: #d97706; color: #fff; }
+    .day-state-sun .status-pill-badge { background: #e2e8f0; color: #64748b; }
+    .day-state-blank .status-pill-badge { color: #cbd5e1; }
+  </style>
+
+  <div class='container-fluid px-0 py-3 animate__animated animate__fadeIn'>
+    <div class='card border-0 shadow-sm rounded-3'>
+      
+      <!-- HEADER -->
+      <div class='card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-3'>
+        <div class='d-flex align-items-center gap-2'>
+          <i class='fas fa-calendar-check text-primary fa-lg'></i>
+          <div>
+            <h6 class='m-0 fw-bold text-dark'>My Attendance History</h6>
+            <small class='text-muted' style='font-size: 11px;'>Monthly calendar record &amp; presence analytics</small>
+          </div>
+        </div>
+
+        <!-- MONTH PICKER (WIDTH INCREASED TO 160px TO PREVENT OVERFLOW) -->
+        <div class='d-flex align-items-center gap-2'>
+          <label class='small fw-bold text-muted'>Select Month:</label>
+          <input class='form-control form-control-sm shadow-sm' id='stuAttMonthPick' onchange='window.fetchMyAttendanceMonth()' style='width: 165px; font-weight: 700; height: 36px;' type='month'></i>
+        </div>
+      </div>
+
+      <div class='card-body p-4'>
+        
+        <!-- 3D SUMMARY STATS CARDS -->
+        <div class='row g-3 mb-4'>
+          
+          <div class='col-lg-auto col-md-4 col-6 flex-grow-1'>
+            <div class='att-kpi-card-3d border-start border-primary border-4'>
+              <div>
+                <div class='kpi-title-sm text-secondary'>Total Days</div>
+                <div class='kpi-num-lg text-primary' id='attStatTotal'>0</div>
+              </div>
+              <i class='fas fa-calendar-alt fa-2x text-primary opacity-25'></i>
+            </div>
+          </div>
+
+          <div class='col-lg-auto col-md-4 col-6 flex-grow-1'>
+            <div class='att-kpi-card-3d border-start border-success border-4'>
+              <div>
+                <div class='kpi-title-sm text-success'>Present</div>
+                <div class='kpi-num-lg text-success' id='attStatP'>0</div>
+              </div>
+              <i class='fas fa-check-circle fa-2x text-success opacity-25'></i>
+            </div>
+          </div>
+
+          <div class='col-lg-auto col-md-4 col-6 flex-grow-1'>
+            <div class='att-kpi-card-3d border-start border-danger border-4'>
+              <div>
+                <div class='kpi-title-sm text-danger'>Absent</div>
+                <div class='kpi-num-lg text-danger' id='attStatA'>0</div>
+              </div>
+              <i class='fas fa-times-circle fa-2x text-danger opacity-25'></i>
+            </div>
+          </div>
+
+          <div class='col-lg-auto col-md-4 col-6 flex-grow-1'>
+            <div class='att-kpi-card-3d border-start border-warning border-4'>
+              <div>
+                <div class='kpi-title-sm text-warning'>Leaves</div>
+                <div class='kpi-num-lg text-warning' id='attStatL'>0</div>
+              </div>
+              <i class='fas fa-coffee fa-2x text-warning opacity-25'></i>
+            </div>
+          </div>
+
+          <!-- PERCENTAGE (CLEAN SINGLE % DISPLAY) -->
+          <div class='col-lg-auto col-md-8 col-12 flex-grow-1'>
+            <div class='att-kpi-card-3d border-start border-dark border-4 bg-dark text-white'>
+              <div>
+                <div class='kpi-title-sm text-white-50'>Attendance Rate</div>
+                <div class='kpi-num-lg text-warning' id='attStatPct'>0%</div>
+              </div>
+              <i class='fas fa-chart-line fa-2x text-warning opacity-50'></i>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 3D CALENDAR HEADER (DAYS OF WEEK) -->
+        <div class='att-cal-grid mb-2'>
+          <div class='att-cal-head sun'>SUN</div>
+          <div class='att-cal-head'>MON</div>
+          <div class='att-cal-head'>TUE</div>
+          <div class='att-cal-head'>WED</div>
+          <div class='att-cal-head'>THU</div>
+          <div class='att-cal-head'>FRI</div>
+          <div class='att-cal-head'>SAT</div>
+        </div>
+
+        <!-- CALENDAR BODY GRID -->
+        <div class='att-cal-grid' id='stuAttCalGridBody'>
+          <!-- Day cells loaded dynamically by JS -->
+        </div>
+
+        <!-- LEGEND HELPER -->
+        <div class='d-flex gap-3 flex-wrap align-items-center justify-content-center mt-4 pt-3 border-top small fw-bold text-muted'>
+          <div class='d-flex align-items-center gap-1.5'><span class='status-pill-badge' style='background:#16a34a; color:#fff;'>P</span> Present</div>
+          <div class='d-flex align-items-center gap-1.5'><span class='status-pill-badge' style='background:#dc2626; color:#fff;'>A</span> Absent</div>
+          <div class='d-flex align-items-center gap-1.5'><span class='status-pill-badge' style='background:#d97706; color:#fff;'>L</span> Leave</div>
+          <div class='d-flex align-items-center gap-1.5'><span class='status-pill-badge' style='background:#e2e8f0; color:#64748b;'>SUN</span> Sunday / Holiday</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. SCOPED JAVASCRIPT ENGINE (SUPABASE CONNECTED & MULTI-TENANT) -->
+  <script type='text/javascript'>
+  // <![CDATA[
+  (function() {
+    window.initStudentAttendanceModule = function() {
+      const curMonth = new Date().toISOString().slice(0, 7);
+      const mEl = document.getElementById('stuAttMonthPick');
+      if (mEl) mEl.value = curMonth;
+      window.fetchMyAttendanceMonth();
+    };
+
+    // ⚡ FETCH STUDENT MONTHLY ATTENDANCE DIRECTLY FROM SUPABASE
+    window.fetchMyAttendanceMonth = async function() {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const activeSchool = user.schoolId;
+      const p = user.studentProfile || {};
+
+      const myId = String(p.StudId || p.StudentID || p.AdmissionNo || user.loginId || "").trim().toUpperCase();
+      const myAdm = String(p.AdmissionNo || "").trim().toUpperCase();
+      const monthStr = document.getElementById('stuAttMonthPick').value;
+
+      const gridBody = document.getElementById('stuAttCalGridBody');
+
+      if (!activeSchool) {
+        gridBody.innerHTML = `<div class="text-center py-4 text-muted" style="grid-column: 1 / -1;">Session expired. Please log in again.</div>`;
+        return;
+      }
+
+      gridBody.innerHTML = `<div class="text-center py-5 text-muted" style="grid-column: 1 / -1;"><i class="fas fa-spinner fa-spin fa-2x mb-2 text-primary d-block"></i>Loading attendance records...</div>`;
+
+      try {
+        const [yr, mo] = monthStr.split("-").map(Number);
+        const daysInMonth = new Date(yr, mo, 0).getDate();
+        const firstDay = new Date(yr, mo - 1, 1).getDay();
+
+        const startDate = `${monthStr}-01`;
+        const endDate = `${monthStr}-${String(daysInMonth).padStart(2, '0')}`;
+
+        // Build targeted query for the logged-in student in the selected month
+        let query = db
+          .from('Attendance')
+          .select('Date, Status, StudId, AdmissionNo')
+          .eq('SchoolID', activeSchool)
+          .gte('Date', startDate)
+          .lte('Date', endDate);
+
+        if (myId && myAdm && myId !== myAdm) {
+          query = query.or(`StudId.eq.${myId},AdmissionNo.eq.${myAdm}`);
+        } else if (myId) {
+          query = query.or(`StudId.eq.${myId},AdmissionNo.eq.${myId}`);
+        }
+
+        const { data: records, error } = await query;
+
+        if (error) throw error;
+
+        // Map status by Day of the month (1 to 31)
+        const dayStatusMap = {};
+        (records || []).forEach(r => {
+          let rDate = String(r.Date || "").trim();
+          if (rDate.includes("T")) rDate = rDate.split("T")[0];
+          const parts = rDate.split(/[\/\-\.]/);
+          let dNum = 0;
+          if (parts.length === 3) {
+            dNum = parts[0].length === 4 ? parseInt(parts[2], 10) : parseInt(parts[0], 10);
+          }
+          if (dNum > 0) {
+            dayStatusMap[dNum] = String(r.Status || "P").toUpperCase();
+          }
+        });
+
+        let pCount = 0, aCount = 0, lCount = 0, workingDays = 0;
+        let html = "";
+
+        // Empty cells before the first day of the month
+        for (let x = 0; x < firstDay; x++) {
+          html += `<div class="att-cal-day-3d day-state-blank" style="opacity:0.25;"></div>`;
+        }
+
+        for (let d = 1; d <= daysInMonth; d++) {
+          const isSun = new Date(yr, mo - 1, d).getDay() === 0;
+          let st = dayStatusMap[d] || "";
+
+          let cClass = "";
+          let label = "";
+
+          if (st === 'P' || st === 'PR') {
+            pCount++; 
+            workingDays++;
+            cClass = "day-state-p"; 
+            label = "P";
+          } else if (st === 'A' || st === 'AB') {
+            aCount++; 
+            workingDays++;
+            cClass = "day-state-a"; 
+            label = "A";
+          } else if (st === 'L' || st === 'LV') {
+            lCount++; 
+            workingDays++;
+            cClass = "day-state-l"; 
+            label = "L";
+          } else if (isSun) {
+            cClass = "day-state-sun";
+            label = "SUN";
+          } else {
+            cClass = "day-state-blank";
+            label = "-";
+          }
+
+          html += `
+            <div class="att-cal-day-3d ${cClass}">
+              <span>${d}</span>
+              <span class="status-pill-badge">${label}</span>
+            </div>
+          `;
+        }
+
+        gridBody.innerHTML = html;
+
+        // Update KPI Counters
+        document.getElementById('attStatTotal').innerText = workingDays;
+        document.getElementById('attStatP').innerText = pCount;
+        document.getElementById('attStatA').innerText = aCount;
+        document.getElementById('attStatL').innerText = lCount;
+
+        const pct = workingDays > 0 ? Math.round((pCount / workingDays) * 100) : 0;
+        document.getElementById('attStatPct').innerText = `${pct}%`;
+
+      } catch(e) {
+        console.error("Student Monthly Attendance Error:", e);
+        gridBody.innerHTML = `<div class="text-center py-4 text-danger fw-bold" style="grid-column: 1 / -1;">Failed to load attendance records: ${e.message}</div>`;
+      }
+    };
+
+    window.initStudentAttendanceModule();
+  })();
+  // ]]>
+  </script>
+</template>
+
+<!-- 📌 4. STUDENT ANNOUNCEMENTS (FULL-SCREEN IN-PAGE POPUP VIEWER)      -->
+<template id='tpl-Announcements'>
+  <style>
+    .ann-card-3d {
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      transition: all 0.2s ease;
+      border-left: 5px solid #008b8b !important;
+    }
+    .ann-card-3d:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.07);
+    }
+
+    /* BORDERS */
+    .ann-type-holiday { border-left-color: #ef4444 !important; }
+    .ann-type-exam { border-left-color: #3b82f6 !important; }
+    .ann-type-alert { border-left-color: #f97316 !important; }
+    .ann-type-event { border-left-color: #10b981 !important; }
+
+    .ann-filter-btn {
+      font-size: 11.5px;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 5px 14px;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      color: #475569;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+    .ann-filter-btn:hover { background: #f1f5f9; }
+    .ann-filter-btn.active {
+      background: #008b8b !important;
+      color: #ffffff !important;
+      border-color: #008b8b !important;
+      box-shadow: 0 2px 6px rgba(0,139,139,0.3);
+    }
+
+    .ann-pill {
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .pill-holiday { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+    .pill-exam { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+    .pill-event { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .pill-alert { background: #ffedd5; color: #c2410c; border: 1px solid #fdba74; }
+
+    /* 🌟 ATTACHMENT COMPACT TILE */
+    .ann-attachment-section {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #e2e8f0;
+    }
+    .ann-media-card {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 8px 14px;
+      max-width: 380px;
+      width: 100%;
+      text-decoration: none !important;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+    .ann-media-card:hover {
+      background: #f0fdf4;
+      border-color: #86efac;
+      box-shadow: 0 4px 12px rgba(16,185,129,0.15);
+      transform: translateY(-1px);
+    }
+    .ann-media-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ann-media-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .ann-media-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      background: #fee2e2;
+      color: #dc2626;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .ann-media-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .ann-media-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #0f172a;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .ann-media-sub {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .ann-media-badge-btn {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #0284c7;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      transition: 0.15s;
+    }
+    .ann-media-card:hover .ann-media-badge-btn {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+    }
+
+    /* 🔍 FULL-SCREEN IN-PAGE POPUP OVERLAY STYLES              */
+    .ann-fullscreen-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(6px);
+      z-index: 999999;
+      display: none;
+      flex-direction: column;
+      animation: annOverlayFade 0.2s ease-out;
+    }
+    @keyframes annOverlayFade { from { opacity: 0; } to { opacity: 1; } }
+
+    .ann-overlay-header {
+      background: #1e293b;
+      color: #ffffff;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+    }
+    .ann-overlay-body {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      overflow: auto;
+    }
+    .ann-overlay-img {
+      max-width: 95%;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      background: #fff;
+    }
+    .ann-overlay-iframe {
+      width: 95%;
+      height: 85vh;
+      border: none;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .btn-close-ann-overlay {
+      background: #ef4444;
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 6px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.15s;
+    }
+    .btn-close-ann-overlay:hover { background: #dc2626; }
+
+    @media (max-width: 768px) {
+      .ann-media-card { max-width: 100%; }
+      .ann-overlay-img, .ann-overlay-iframe { width: 98%; max-height: 80vh; }
+    }
+  </style>
+
+  <div class='container-fluid px-0 py-3 animate__animated animate__fadeIn'>
+    <div class='card border-0 shadow-sm rounded-3'>
+      
+      <!-- HEADER -->
+      <div class='card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2'>
+        <div class='d-flex align-items-center gap-2'>
+          <i class='fas fa-bullhorn text-danger fa-lg'></i>
+          <div>
+            <h6 class='m-0 fw-bold text-dark'>School Notices &amp; Announcements</h6>
+            <small class='text-muted' style='font-size: 11px;'>Holidays, exam dates, events, circulars &amp; official parent alerts</small>
+          </div>
+        </div>
+
+        <button class='btn btn-outline-secondary btn-sm fw-bold shadow-sm' onclick='window.fetchStudentAnnouncementsFeed()' type='button'>
+          <i class='fas fa-sync-alt me-1'></i> Refresh Feed
+        </button>
+      </div>
+
+      <div class='card-body p-4'>
+        
+        <!-- 1. CATEGORY FILTER PILLS -->
+        <div class='d-flex gap-2 flex-wrap align-items-center mb-4 pb-2 border-bottom'>
+          <button class='ann-filter-btn active' id='annTabAll' onclick='window.filterAnnouncementCategory(&quot;ALL&quot;, this)' type='button'>
+            <i class='fas fa-th-list me-1'></i> All (<span id='badgeCntAll'>0</span>)
+          </button>
+          <button class='ann-filter-btn' id='annTabHolidays' onclick='window.filterAnnouncementCategory(&quot;HOLIDAY&quot;, this)' type='button'>
+            <i class='far fa-calendar-alt text-danger me-1'></i> Holidays &amp; Breaks (<span id='badgeCntHolidays'>0</span>)
+          </button>
+          <button class='ann-filter-btn' id='annTabExams' onclick='window.filterAnnouncementCategory(&quot;EXAM&quot;, this)' type='button'>
+            <i class='fas fa-pencil-alt text-primary me-1'></i> Exams &amp; PTM (<span id='badgeCntExams'>0</span>)
+          </button>
+          <button class='ann-filter-btn' id='annTabAlerts' onclick='window.filterAnnouncementCategory(&quot;ALERT&quot;, this)' type='button'>
+            <i class='fas fa-bell text-warning me-1'></i> Parent Alerts (<span id='badgeCntAlerts'>0</span>)
+          </button>
+        </div>
+        <!-- 2. ANNOUNCEMENT FEED AREA -->
+        <div id='stuAnnouncementsFeedArea'>
+          <div class='text-center py-5 text-muted'><i class='fas fa-spinner fa-spin fa-2x mb-2 text-danger d-block'></i>Loading announcements...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🔍 FULL-PAGE POPUP ATTACHMENT VIEWER MODAL                -->
+  <div class='ann-fullscreen-overlay' id='annAttachmentOverlay'>
+    <div class='ann-overlay-header'>
+      <div class='d-flex align-items-center gap-2'>
+        <i class='fas fa-file-alt text-warning fa-lg'></i>
+        <span class='fw-bold' id='annOverlayTitle' style='font-size: 14px;'>Circular / Attachment Preview</span>
+      </div>
+      <div class='d-flex align-items-center gap-2'>
+        <a class='btn btn-sm btn-outline-light fw-bold px-2 py-1' href='javascript:void(0)' id='annOverlayExternalLink' style='font-size: 11.5px;' target='_blank' title='Open in new tab'>
+          <i class='fas fa-external-link-alt me-1'></i> New Tab
+        </a>
+        <button class='btn-close-ann-overlay' onclick='window.closeAnnAttachmentOverlay()' type='button'>
+          <i class='fas fa-times'></i> Close
+        </button>
+      </div>
+    </div>
+    <div class='ann-overlay-body' id='annOverlayContent'>
+    </div>
+  </div>
+
+  <script type='text/javascript'>
+  // <![CDATA[
+  (function() {
+    let allMasterFeed = [];
+    let activeFeedCategory = "ALL";
+    let isFeedFetching = false;
+
+    // Helper: Formats any date into strict DD/MM/YYYY format
+    function formatToDDMMYYYY(dVal) {
+      if (!dVal) return "-";
+      let s = String(dVal).trim();
+      if (s.includes("T")) s = s.split("T")[0];
+      const p = s.split(/[\/\-\.]/);
+      if (p.length === 3) {
+        if (p[0].length === 4) return `${p[2].padStart(2, '0')}/${p[1].padStart(2, '0')}/${p[0]}`;
+        return `${p[0].padStart(2, '0')}/${p[1].padStart(2, '0')}/${p[2]}`;
+      }
+      return dVal;
+    }
+
+    window.initAnnouncementsModule = function() {
+      window.fetchStudentAnnouncementsFeed();
+    };
+
+    window.initDigitalNoticeBoardModule = function() {};
+
+    // ⚡ FETCH STUDENT NOTICES FEED DIRECTLY FROM SUPABASE
+    window.fetchStudentAnnouncementsFeed = async function() {
+      if (isFeedFetching) return;
+      isFeedFetching = true;
+
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const activeSchool = user.schoolId;
+      const p = user.studentProfile || {};
+      const container = document.getElementById('stuAnnouncementsFeedArea');
+
+      if (!activeSchool) {
+        container.innerHTML = `<div class="text-center py-4 text-muted">Session expired. Please log in again.</div>`;
+        isFeedFetching = false;
+        return;
+      }
+
+      const myId = String(p.StudId || p.StudentID || p.AdmissionNo || user.loginId || "").trim().toUpperCase();
+      const myAdm = String(p.AdmissionNo || "").trim().toUpperCase();
+
+      container.innerHTML = `<div class="text-center py-5 text-muted"><i class="fas fa-spinner fa-spin fa-2x mb-2 text-danger d-block"></i>Loading school notices...</div>`;
+
+      try {
+        allMasterFeed = [];
+        const seenKeys = new Set();
+
+        // -------------------------------------------------------------
+        // A. SOURCE 1: CALENDAR EVENTS ("Calendar_Events" Table)
+        // -------------------------------------------------------------
+        try {
+          const { data: eventsData, error: evErr } = await db
+            .from('Calendar_Events')
+            .select('*')
+            .eq('SchoolID', activeSchool)
+            .order('StartDate', { ascending: false });
+
+          if (!evErr && Array.isArray(eventsData)) {
+            eventsData.forEach(e => {
+              const aud = String(e.Audience || "ALL").toUpperCase().trim();
+              if (aud === "STAFF") return;
+
+              const evKey = `EV_${String(e.EventID || e.Title).trim()}_${String(e.StartDate).trim()}`;
+              if (seenKeys.has(evKey)) return;
+              seenKeys.add(evKey);
+
+              const cat = e.Category || "Event";
+              let feedGroup = "EVENT";
+              let pillClass = "pill-event";
+              let cardClass = "ann-card-3d ann-type-event";
+
+              if (cat === "Holiday") {
+                feedGroup = "HOLIDAY";
+                pillClass = "pill-holiday";
+                cardClass = "ann-card-3d ann-type-holiday";
+              } else if (cat === "Exam" || cat === "PTM") {
+                feedGroup = "EXAM";
+                pillClass = "pill-exam";
+                cardClass = "ann-card-3d ann-type-exam";
+              }
+
+              const startDateFmt = formatToDDMMYYYY(e.StartDate);
+              const endDateFmt = formatToDDMMYYYY(e.EndDate);
+              const dateStr = (e.StartDate === e.EndDate || !e.EndDate) ? startDateFmt : `${startDateFmt} to ${endDateFmt}`;
+
+              allMasterFeed.push({
+                feedType: feedGroup,
+                title: e.Title || "School Announcement",
+                categoryText: cat,
+                pillClass: pillClass,
+                cardClass: cardClass,
+                content: e.Description || "Official school announcement.",
+                attachmentUrl: "",
+                dateDisplay: dateStr,
+                author: "School Administration",
+                rawSortDate: e.StartDate || "2026-01-01"
+              });
+            });
+          }
+        } catch(eCal) {
+          console.warn("Calendar Events Fetch Error:", eCal);
+        }
+
+        // -------------------------------------------------------------
+        // B. SOURCE 2: ATTENDANCE ABSENT/LEAVE ALERTS ("Attendance" Table)
+        // -------------------------------------------------------------
+        try {
+          let attQuery = db
+            .from('Attendance')
+            .select('*')
+            .eq('SchoolID', activeSchool)
+            .in('Status', ['A', 'AB', 'L', 'LV'])
+            .order('Date', { ascending: false })
+            .limit(30);
+
+          if (myId && myAdm && myId !== myAdm) {
+            attQuery = attQuery.or(`StudId.eq.${myId},AdmissionNo.eq.${myAdm}`);
+          } else if (myId) {
+            attQuery = attQuery.or(`StudId.eq.${myId},AdmissionNo.eq.${myId}`);
+          }
+
+          const { data: attList, error: attErr } = await attQuery;
+
+          if (!attErr && Array.isArray(attList)) {
+            attList.forEach(a => {
+              const cleanDate = formatToDDMMYYYY(a.Date);
+              const alertKey = `ATT_ALERT_${cleanDate}`;
+
+              if (seenKeys.has(alertKey)) return;
+              seenKeys.add(alertKey);
+
+              const st = String(a.Status || "").toUpperCase();
+              const isLeave = (st === 'L' || st === 'LV');
+              const label = isLeave ? "Leave Recorded" : "Absent Alert";
+
+              allMasterFeed.push({
+                feedType: "ALERT",
+                title: `${label} - ${cleanDate}`,
+                categoryText: "Parent Alert",
+                pillClass: "pill-alert",
+                cardClass: "ann-card-3d ann-type-alert",
+                content: `Respected Parent, your ward was marked ${isLeave ? 'ON LEAVE' : 'ABSENT'} on ${cleanDate}. Remarks: ${a.Remarks || "Regular attendance is requested."}`,
+                attachmentUrl: "",
+                dateDisplay: cleanDate,
+                author: a.MarkedBy || "Class Teacher",
+                rawSortDate: a.Date || ""
+              });
+            });
+          }
+        } catch(eAtt) {
+          console.warn("Attendance Alerts Fetch Error:", eAtt);
+        }
+
+        // -------------------------------------------------------------
+        // C. SOURCE 3: PARENT NOTIFICATIONS ("Parent_Notifications" Table)
+        // -------------------------------------------------------------
+        try {
+          let notifQuery = db
+            .from('Parent_Notifications')
+            .select('*')
+            .eq('SchoolID', activeSchool)
+            .order('Date', { ascending: false })
+            .limit(50);
+
+          if (myId && myAdm && myId !== myAdm) {
+            notifQuery = notifQuery.or(`StudentID.eq.${myId},AdmissionNo.eq.${myAdm},StudentID.is.null,StudentID.eq.ALL`);
+          } else if (myId) {
+            notifQuery = notifQuery.or(`StudentID.eq.${myId},AdmissionNo.eq.${myId},StudentID.is.null,StudentID.eq.ALL`);
+          }
+
+          const { data: inboxList, error: inErr } = await notifQuery;
+
+          if (!inErr && Array.isArray(inboxList)) {
+            inboxList.forEach(n => {
+              const notifKey = `NOTIF_${String(n.NotificationID || n.Title)}_${String(n.Date)}`;
+              if (seenKeys.has(notifKey)) return;
+              seenKeys.add(notifKey);
+
+              const titleStr = n.Title || "Official Notice";
+              const isBirthday = titleStr.includes("Birthday") || (n.Type && n.Type.includes("BIRTHDAY"));
+
+              let pillClass = isBirthday ? "pill-event" : "pill-alert";
+              let cardClass = isBirthday ? "ann-card-3d ann-type-event" : "ann-card-3d ann-type-alert";
+              let categoryText = isBirthday ? "Celebration" : "Official Notice";
+
+              const fileUrl = String(n.AttachmentUrl || "").trim();
+
+              allMasterFeed.push({
+                feedType: "ALERT",
+                title: titleStr,
+                categoryText: categoryText,
+                pillClass: pillClass,
+                cardClass: cardClass,
+                content: n.Message || "",
+                attachmentUrl: fileUrl,
+                dateDisplay: formatToDDMMYYYY(n.Date),
+                author: n.Sender || "School Administration",
+                rawSortDate: n.Date || "2026-01-01"
+              });
+            });
+          }
+        } catch(eInbox) {
+          console.warn("Parent Notifications Fetch Error:", eInbox);
+        }
+
+        // Sort descending by raw date
+        allMasterFeed.sort((a, b) => String(b.rawSortDate).localeCompare(String(a.rawSortDate)));
+
+        document.getElementById('badgeCntAll').innerText = allMasterFeed.length;
+        document.getElementById('badgeCntHolidays').innerText = allMasterFeed.filter(x => x.feedType === "HOLIDAY").length;
+        document.getElementById('badgeCntExams').innerText = allMasterFeed.filter(x => x.feedType === "EXAM").length;
+        document.getElementById('badgeCntAlerts').innerText = allMasterFeed.filter(x => x.feedType === "ALERT").length;
+
+        window.renderFilteredAnnouncements();
+
+      } catch(err) {
+        console.error("Announcements Feed Master Error:", err);
+        container.innerHTML = `<div class="text-center py-4 text-muted fw-bold">Notice board is up to date.</div>`;
+      } finally {
+        isFeedFetching = false;
+      }
+    };
+
+    window.filterAnnouncementCategory = function(cat, btnEl) {
+      activeFeedCategory = cat;
+      document.querySelectorAll('.ann-filter-btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      window.renderFilteredAnnouncements();
+    };
+
+    // ⚡ RENDER CARDS
+    window.renderFilteredAnnouncements = function() {
+      const container = document.getElementById('stuAnnouncementsFeedArea');
+
+      const filtered = allMasterFeed.filter(item => {
+        return (activeFeedCategory === "ALL" || item.feedType === activeFeedCategory);
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-5 text-muted">
+            <i class="fas fa-check-circle fa-3x text-success mb-3 d-block"></i>
+            <h5 class="fw-bold text-dark">No Notices in this Category</h5>
+            <p class="small text-muted">You are completely up to date with all notifications.</p>
+          </div>
+        `;
+        return;
+      }
+
+      let html = "";
+      filtered.forEach(item => {
+        let attachTileHtml = "";
+        if (item.attachmentUrl && item.attachmentUrl.indexOf("http") !== -1) {
+          const isPdf = item.attachmentUrl.toLowerCase().includes(".pdf");
+          const safeTitle = encodeURIComponent(item.title || "Circular Preview");
+
+          if (isPdf) {
+            attachTileHtml = `
+              <div class="ann-attachment-section">
+                <div class="ann-media-card" onclick="window.openAnnAttachmentOverlay('${item.attachmentUrl}', '${safeTitle}')">
+                  <div class="ann-media-icon">
+                    <i class="fas fa-file-pdf"></i>
+                  </div>
+                  <div class="ann-media-info">
+                    <div class="ann-media-title">Official Circular (PDF Document)</div>
+                    <div class="ann-media-sub">Click to preview document</div>
+                  </div>
+                  <span class="ann-media-badge-btn">
+                    <i class="fas fa-expand me-1"></i> Preview
+                  </span>
+                </div>
+              </div>
+            `;
+          } else {
+            attachTileHtml = `
+              <div class="ann-attachment-section">
+                <div class="ann-media-card" onclick="window.openAnnAttachmentOverlay('${item.attachmentUrl}', '${safeTitle}')">
+                  <div class="ann-media-thumb">
+                    <img src="${item.attachmentUrl}" alt="Notice Thumbnail" onerror="this.src='https://cdn-icons-png.flaticon.com/512/337/337940.png'">
+                  </div>
+                  <div class="ann-media-info">
+                    <div class="ann-media-title">Attached Notice Image</div>
+                    <div class="ann-media-sub">Click to view full photo</div>
+                  </div>
+                  <span class="ann-media-badge-btn">
+                    <i class="fas fa-search-plus me-1"></i> Zoom
+                  </span>
+                </div>
+              </div>
+            `;
+          }
+        }
+
+        html += `
+          <div class="${item.cardClass}">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+              <h6 class="fw-bold text-dark m-0" style="font-size: 14.5px;">${item.title}</h6>
+              <span class="ann-pill ${item.pillClass}">${item.categoryText}</span>
+            </div>
+
+            <p class="text-dark small my-2" style="white-space: pre-wrap; font-size: 13px; line-height: 1.6;">${item.content}</p>
+
+            ${attachTileHtml}
+
+            <div class="small text-muted pt-2 border-top d-flex justify-content-between align-items-center mt-2" style="font-size: 11px;">
+              <span><i class="far fa-calendar-alt text-primary me-1"></i> Date: <strong>${item.dateDisplay}</strong></span>
+              <span><i class="fas fa-user-shield text-secondary me-1"></i> Issued by: <strong class="text-dark">${item.author}</strong></span>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    };
+
+    // 🔍 FULL-PAGE IN-PAGE POPUP VIEWER
+    window.openAnnAttachmentOverlay = function(fileUrl, encodedTitle) {
+      const overlay = document.getElementById('annAttachmentOverlay');
+      const titleEl = document.getElementById('annOverlayTitle');
+      const contentEl = document.getElementById('annOverlayContent');
+      const extLink = document.getElementById('annOverlayExternalLink');
+      const title = encodedTitle ? decodeURIComponent(encodedTitle) : "Notice Circular Preview";
+
+      titleEl.innerText = title;
+      if (extLink) extLink.href = fileUrl;
+
+      const isPdf = fileUrl.toLowerCase().includes(".pdf");
+      if (isPdf) {
+        contentEl.innerHTML = `<iframe src="${fileUrl}" class="ann-overlay-iframe shadow"></iframe>`;
+      } else {
+        contentEl.innerHTML = `<img src="${fileUrl}" class="ann-overlay-img shadow" alt="Circular Attachment Preview">`;
+      }
+
+      overlay.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    };
+
+    window.closeAnnAttachmentOverlay = function() {
+      const overlay = document.getElementById('annAttachmentOverlay');
+      const contentEl = document.getElementById('annOverlayContent');
+      if (overlay) overlay.style.display = 'none';
+      if (contentEl) contentEl.innerHTML = '';
+      document.body.style.overflow = 'auto';
+    };
+
+    window.initAnnouncementsModule();
+  })();
+  // ]]>
+  </script>
+</template>
+
 
   <!-- =================================================================== -->
   <!-- 4. CORE CONTROLLER JAVASCRIPT                                       -->
