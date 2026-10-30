@@ -1904,10 +1904,10 @@
       const btn = document.getElementById("saLoginBtn");
 
       btn.disabled = true;
-      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Authenticating...`;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Verifying Master Access...`;
 
       try {
-        // Check in Supabase Users table or direct master check
+        // 1. Check in database
         const { data, error } = await db
           .from('Users')
           .select('*')
@@ -1917,8 +1917,10 @@
 
         if (error) throw error;
 
-        // If user found and is admin/superadmin, or match your master id
-        if (data && (String(data.Role).toUpperCase() === 'SUPERADMIN' || String(data.Role).toUpperCase() === 'ADMIN')) {
+        // 2. STRICT CHECK: Must exist AND Role must be strictly 'SUPERADMIN' 
+        // (Optional: you can also lock it to your specific LoginID like id === 'manish')
+        if (data && String(data.Role || "").toUpperCase().replace(/\s+/g, '') === 'SUPERADMIN') {
+          
           const sessionPayload = {
             role: "SUPERADMIN",
             loginId: data.LoginID,
@@ -1927,15 +1929,19 @@
           };
           localStorage.setItem("a2z_user", JSON.stringify(sessionPayload));
           window.location.reload();
+
         } else {
-          alert("Invalid Super Admin credentials.");
+          // If a normal school admin tries to login here, reject them completely!
+          alert("Access Denied! This portal is restricted to Super Administrators only.");
           btn.disabled = false;
           btn.innerHTML = `Secure Login <i class="fas fa-arrow-right ms-1"></i>`;
         }
+
       } catch (err) {
         console.error("Login error:", err);
-        // Fallback for direct master override if database check fails
-        if (id === "manish" && pass === "admin123") {
+        
+        // Master Emergency Bypass (Aapka apna fix ID & Password jo sirf aapko pata ho)
+        if (id === "manish" && pass === "YOUR_SECRET_MASTER_PASSWORD") {
           const sessionPayload = {
             role: "SUPERADMIN",
             loginId: "manish",
@@ -1945,7 +1951,7 @@
           localStorage.setItem("a2z_user", JSON.stringify(sessionPayload));
           window.location.reload();
         } else {
-          alert("Authentication failed: " + err.message);
+          alert("Access Denied: Invalid Master Credentials.");
           btn.disabled = false;
           btn.innerHTML = `Secure Login <i class="fas fa-arrow-right ms-1"></i>`;
         }
