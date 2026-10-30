@@ -17,15 +17,41 @@
   <script src="config.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-  <!-- Strict Superadmin Guard (Space-Safe) -->
+  <!-- Smart Superadmin Auth & Login Guard -->
+  <style>
+    #sa-login-overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sa-login-card {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      text-align: center;
+    }
+    html.superadmin-logged-in #sa-login-overlay { display: none !important; }
+    html.superadmin-logged-in #sa-main-dashboard { display: block !important; }
+  </style>
+
   <script type="text/javascript">
     (function() {
-      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const roleClean = String(user.role || "").toUpperCase().replace(/\s+/g, '');
-      if (!user || roleClean !== "SUPERADMIN") {
-        alert("Unauthorized Access. Redirecting to login portal.");
-        window.location.href = "index.html";
-      }
+      try {
+        const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+        const roleClean = String(user.role || "").toUpperCase().replace(/\s+/g, '');
+        if (user && roleClean === "SUPERADMIN") {
+          document.documentElement.classList.add("superadmin-logged-in");
+        } else {
+          document.documentElement.classList.remove("superadmin-logged-in");
+        }
+      } catch(e) {}
     })();
   </script>
 
@@ -1838,6 +1864,93 @@
     };
   })();
   // ]]>
+  </script>
+  <!-- Super Admin Login Overlay HTML -->
+  <div id="sa-login-overlay" style="display: none;">
+    <div class="sa-login-card">
+      <div class="mb-3">
+        <i class="fas fa-shield-alt fa-3x text-primary mb-2"></i>
+        <h4 class="fw-bold text-dark">Super Admin Portal</h4>
+        <p class="text-muted small">Enter master credentials to access SaaS control panel</p>
+      </div>
+      <form onsubmit="event.preventDefault(); window.doSuperAdminLogin();">
+        <div class="mb-3 text-start">
+          <label class="form-label small fw-bold text-secondary">Username / Login ID</label>
+          <input type="text" class="form-control" id="saLoginId" placeholder="e.g. manish" required>
+        </div>
+        <div class="mb-4 text-start">
+          <label class="form-label small fw-bold text-secondary">Password</label>
+          <input type="password" class="form-control" id="saPassword" placeholder="Enter password" required>
+        </div>
+        <button type="submit" class="btn btn-primary w-100 py-2.5 fw-bold shadow-sm" id="saLoginBtn">
+          Secure Login <i class="fas fa-arrow-right ms-1"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    // Show login overlay if not logged in
+    document.addEventListener("DOMContentLoaded", function() {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      if (String(user.role || "").toUpperCase().replace(/\s+/g, '') !== "SUPERADMIN") {
+        document.getElementById("sa-login-overlay").style.display = "flex";
+      }
+    });
+
+    window.doSuperAdminLogin = async function() {
+      const id = document.getElementById("saLoginId").value.trim();
+      const pass = document.getElementById("saPassword").value.trim();
+      const btn = document.getElementById("saLoginBtn");
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Authenticating...`;
+
+      try {
+        // Check in Supabase Users table or direct master check
+        const { data, error } = await db
+          .from('Users')
+          .select('*')
+          .eq('LoginID', id)
+          .eq('Password', pass)
+          .maybeSingle();
+
+        if (error) throw error;
+
+        // If user found and is admin/superadmin, or match your master id
+        if (data && (String(data.Role).toUpperCase() === 'SUPERADMIN' || String(data.Role).toUpperCase() === 'ADMIN')) {
+          const sessionPayload = {
+            role: "SUPERADMIN",
+            loginId: data.LoginID,
+            name: data.FullName || "Super Administrator",
+            avatar: data.ProfileAvatarUrl || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+          };
+          localStorage.setItem("a2z_user", JSON.stringify(sessionPayload));
+          window.location.reload();
+        } else {
+          alert("Invalid Super Admin credentials.");
+          btn.disabled = false;
+          btn.innerHTML = `Secure Login <i class="fas fa-arrow-right ms-1"></i>`;
+        }
+      } catch (err) {
+        console.error("Login error:", err);
+        // Fallback for direct master override if database check fails
+        if (id === "manish" && pass === "admin123") {
+          const sessionPayload = {
+            role: "SUPERADMIN",
+            loginId: "manish",
+            name: "Manish Kumar Ray",
+            avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+          };
+          localStorage.setItem("a2z_user", JSON.stringify(sessionPayload));
+          window.location.reload();
+        } else {
+          alert("Authentication failed: " + err.message);
+          btn.disabled = false;
+          btn.innerHTML = `Secure Login <i class="fas fa-arrow-right ms-1"></i>`;
+        }
+      }
+    };
   </script>
 </body>
 </html>
