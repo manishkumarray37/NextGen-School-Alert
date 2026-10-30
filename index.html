@@ -156,68 +156,70 @@
         }
 
         /* =========================================
-           NAVBAR ACTION BUTTONS (UNIFORM CAPSULES)
+           UNIFORM CAPSULE BUTTONS FOR NAVBAR
            ========================================= */
 
-        /* Base Shared Style for All 3 Portal Buttons */
         .btn-student-capsule, 
         .btn-school-login, 
         .btn-admin-nav {
+            /* Exact Same Shape, Height & Padding for All Three */
+            height: 38px !important;
+            padding: 0 16px !important;
             border-radius: 20px !important;
-            padding: 7px 16px !important;
-            font-size: 13.5px !important;
+            font-size: 13px !important;
             font-weight: 700 !important;
             display: inline-flex !important;
             align-items: center !important;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            justify-content: center !important;
+            white-space: nowrap !important;
+            margin-left: 5px !important;
             text-decoration: none !important;
+            transition: all 0.2s ease-in-out !important;
+            border: 1.5px solid transparent !important;
         }
 
-        /* 1. STUDENT PORTAL (Teal / Emerald Theme) */
+        /* 1. STUDENT PORTAL (Teal Theme) */
         .btn-student-capsule {
             color: #0f766e !important;
             background: #f0fdfa !important;
-            border: 1.5px solid #99f6e4 !important;
-            margin-left: 4px !important;
+            border-color: #99f6e4 !important;
         }
         .btn-student-capsule:hover {
             background: #0d9488 !important;
             color: #ffffff !important;
             border-color: #0d9488 !important;
-            transform: translateY(-2px) !important;
-            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
         }
 
         /* 2. SCHOOL LOGIN (Dark / Blue 3D Theme) */
         .btn-school-login {
             background: linear-gradient(135deg, #0f172a, #1e293b) !important;
             color: #ffffff !important;
-            border: 1.5px solid #1e293b !important;
-            margin-left: 4px !important;
-            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25) !important;
+            border-color: #1e293b !important;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
         }
         .btn-school-login:hover {
             background: linear-gradient(135deg, #0284c7, #0369a1) !important;
             color: #ffffff !important;
             border-color: #0284c7 !important;
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
         }
 
-        /* 3. SUPER ADMIN PORTAL (Amber / Gold Theme) */
+        /* 3. SUPER ADMIN (Amber / Gold Theme) */
         .btn-admin-nav {
             background: #fffbeb !important;
             color: #b45309 !important;
-            border: 1.5px solid #fde68a !important;
-            margin-left: 4px !important;
-            box-shadow: 0 4px 10px rgba(180, 83, 9, 0.1) !important;
+            border-color: #fde68a !important;
+            box-shadow: 0 4px 10px rgba(180, 83, 9, 0.1);
         }
         .btn-admin-nav:hover {
             background: linear-gradient(135deg, #d97706, #b45309) !important;
             color: #ffffff !important;
             border-color: #d97706 !important;
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35);
         }
 
         /* Hero Section */
