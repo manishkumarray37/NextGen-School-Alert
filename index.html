@@ -706,6 +706,11 @@
                             <i class="fas fa-sign-in-alt me-1"></i> School Login
                         </a>
                     </li>
+					<li class="nav-item">
+						<a class="nav-link btn-admin-nav" id="nav-admin-link" href="/superadmin.html" style="color: #f59e0b !important; background: #fffbeb !important; border: 1.5px solid #fde68a !important; border-radius: 20px !important; padding: 7px 16px !important; margin-left: 4px !important;">
+							<i class="fas fa-shield-alt me-1"></i> Super Admin
+						</a>
+					</li>
                 </ul>
             </div>
         </div>
@@ -725,13 +730,17 @@
                         Automate your entire school using a single platform. From admission to certificate generation, fee-collection, and academic analysis—automate workflows in minutes with our 360-degree solution.
                     </p>
                     <div class="d-flex flex-wrap gap-3">
-                        <a class="btn btn-primary btn-lg px-4 shadow" id="hero-app-link" href="https://app.schoolalarm.online" style="border-radius: 12px; box-shadow: 0 10px 20px rgba(13,110,253,0.3);">
-                            <i class="fas fa-school me-2"></i> School Portal
-                        </a>
-                        <a class="btn btn-outline-dark btn-lg px-4" id="hero-student-link" href="https://student.schoolalarm.online" style="border-radius: 12px;">
-                            <i class="fas fa-user-graduate me-2"></i> Student Portal
-                        </a>
-                    </div>
+					<a class="btn btn-primary btn-lg px-4 shadow" id="hero-app-link" href="https://app.schoolalarm.online" style="border-radius: 12px; box-shadow: 0 10px 20px rgba(13,110,253,0.3);">
+						<i class="fas fa-school me-2"></i> School Portal
+					</a>
+					<a class="btn btn-outline-dark btn-lg px-4" id="hero-student-link" href="https://student.schoolalarm.online" style="border-radius: 12px;">
+						<i class="fas fa-user-graduate me-2"></i> Student Portal
+					</a>
+					<!-- New Super Admin Button -->
+					<a class="btn btn-warning btn-lg px-4 fw-bold text-dark shadow-sm" id="hero-admin-link" href="/superadmin.html" style="border-radius: 12px; background-color: #f59e0b; border: none;">
+						<i class="fas fa-shield-alt me-2"></i> Super Admin
+					</a>
+				</div>
                 </div>
 
                 <div class="col-lg-5 d-none d-lg-block">
@@ -1285,6 +1294,7 @@
         // Update all buttons, nav links & footer links dynamically
         document.querySelectorAll("#nav-app-link, #hero-app-link, #footer-app-link, a[href*='app.schoolalarm']").forEach(el => el.href = appUrl);
         document.querySelectorAll("#nav-student-link, #hero-student-link, #footer-student-link, a[href*='student.schoolalarm']").forEach(el => el.href = studentUrl);
+		document.querySelectorAll("#nav-admin-link, #hero-admin-link, #footer-admin-link, a[href*='admin.schoolalarm']").forEach(el => el.href = adminUrl);
         document.querySelectorAll("#footer-admin-link, a[href*='admin.schoolalarm']").forEach(el => el.href = adminUrl);
 
         // Mobile navbar auto-close on link click
