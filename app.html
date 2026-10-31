@@ -320,48 +320,102 @@
           .school-sel { width: 140px !important; font-size: 11px !important; }
       }
 
-      /* FOOTER BAR (Desktop & Mobile Responsive) */
-      .erp-footer {
-        position: fixed;
-        bottom: 0;
-        right: 0;
-        left: calc(var(--icon-bar-w) + var(--sidebar-w));
-        z-index: 1030;
-        background: #ffffff;
-        border-top: 1.5px solid #e2e8f0;
-        padding: 10px 24px;
-        box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.04);
-        transition: all 0.3s ease;
-      }
-      body.sidebar-collapsed .erp-footer { left: var(--icon-bar-w) !important; }
-      
-      @media (max-width: 992px) {
-        .erp-footer { 
-          left: 0 !important; 
-          padding: 6px 8px !important; 
-          font-size: 10px !important; 
-          text-align: center !important;
-        }
-        .erp-footer > div {
-          flex-direction: column !important;
-          justify-content: center !important;
-          align-items: center !important;
-          gap: 4px !important;
-        }
-        .erp-footer .btn {
-          font-size: 9.5px !important;
-          padding: 2px 7px !important;
-          height: 24px !important;
-          line-height: 1 !important;
-        }
-        /* 🚀 AUTO-HIDE FOOTER IN MOBILE WHEN INSIDE A MODULE (Screenshot 2 Match) */
-        body.mobile-module-active .erp-footer {
-          display: none !important;
-        }
-        body.mobile-module-active #btnScrollToTop {
-          bottom: 20px !important;
-        }
-      }
+  /* 1. Desktop Footer Bar */
+  .erp-footer {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: calc(var(--icon-bar-w, 80px) + var(--sidebar-w, 220px));
+    z-index: 1030;
+    background: #ffffff;
+    border-top: 1.5px solid #e2e8f0;
+    padding: 10px 24px;
+    box-shadow: 0 -3px 12px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+  }
+
+  body.sidebar-collapsed .erp-footer {
+    left: var(--icon-bar-w, 80px) !important;
+  }
+
+  /* 2. Mobile Responsive Footer (Under 992px - Exact Screenshot Match) */
+  @media (max-width: 992px) {
+    .erp-footer {
+      left: 0 !important;
+      padding: 6px 10px !important;
+      font-size: 11px !important;
+      text-align: center !important;
+    }
+    .erp-footer > div {
+      flex-direction: column !important;
+      justify-content: center !important;
+      align-items: center !important;
+      text-align: center !important;
+      gap: 5px !important;
+      width: 100% !important;
+    }
+    .erp-footer div,
+    .erp-footer .d-flex {
+      justify-content: center !important;
+      align-items: center !important;
+      text-align: center !important;
+      gap: 6px !important;
+      flex-wrap: wrap !important;
+    }
+    .erp-footer .btn {
+      font-size: 10px !important;
+      padding: 3px 8px !important;
+      height: 26px !important;
+      line-height: 1.2 !important;
+      border-radius: 5px !important;
+      font-weight: 700 !important;
+    }
+
+    /* 🚀 AUTO-HIDE FOOTER IN MOBILE WHEN INSIDE A MODULE (SCREENSHOT 2 MATCH) */
+    body.mobile-module-active .erp-footer {
+      display: none !important;
+    }
+    body.mobile-module-active #btnScrollToTop {
+      bottom: 20px !important;
+    }
+  }
+
+  /* Strict Hide in Student Portal */
+  body.student-mode .erp-footer {
+    display: none !important;
+  }
+
+  /* Support Ticket Image Chips */
+  .img-chip-item {
+    background: #e2e8f0;
+    border-radius: 6px;
+    padding: 2px 8px;
+    margin: 2px;
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .btn-remove-chip {
+    cursor: pointer;
+    font-weight: bold;
+    color: #ef4444;
+  }
+
+  /* Bell Shake Animation for Staff Inbox */
+  @keyframes bellShake {
+    0% { transform: rotate(0); }
+    15% { transform: rotate(14deg); }
+    30% { transform: rotate(-14deg); }
+    45% { transform: rotate(10deg); }
+    60% { transform: rotate(-10deg); }
+    75% { transform: rotate(4deg); }
+    100% { transform: rotate(0); }
+  }
+  .bell-animated {
+    display: inline-block;
+    animation: bellShake 2s infinite ease-in-out;
+  }
 
       #btnScrollToTop {
         position: fixed;
