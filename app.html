@@ -23,25 +23,49 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
-    <!-- ZERO-FLICKER SESSION CHECK -->
-    <script>
-      (function() {
-        try {
-          const rawUser = localStorage.getItem("a2z_user");
-          if (rawUser) {
-            const u = JSON.parse(rawUser || "{}");
-            if (String(u.role || "").toUpperCase() === "STUDENT") {
-              const host = window.location.hostname.toLowerCase();
-              if (host.startsWith("app.")) {
-                window.location.href = window.location.protocol + "//student." + host.replace(/^app\./, "");
-                return;
-              }
+    <!-- ZERO-FLICKER SESSION & ROUTE GUARD (APP & CLOUDFLARE PAGES COMPATIBLE) -->
+<script>
+  (function() {
+    function syncAppViewState() {
+      try {
+        const rawUser = localStorage.getItem("a2z_user");
+        if (rawUser) {
+          const u = JSON.parse(rawUser || "{}");
+          
+          // 1. अगर छात्र है तो student पोर्टल पर भेजो
+          if (String(u.role || "").toUpperCase() === "STUDENT") {
+            const host = window.location.hostname.toLowerCase();
+            if (host.startsWith("app.")) {
+              window.location.href = window.location.protocol + "//student." + host.replace(/^app\./, "");
+              return;
             }
           }
-        } catch(e) {}
-      })();
-    </script>
 
+          // 2. ⚡ INSTANT HIDE LOGIN: HTML लोड होने से पहले ही लॉगिन स्क्रीन को गायब करो
+          document.documentElement.classList.add("user-logged-in");
+
+          const path = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '').trim().toLowerCase();
+          const hash = (window.location.hash || '').replace(/^#\/?/, '').trim().toLowerCase();
+          
+          // 3. 🚀 Dashboard Paths Check: '', 'app', 'app.html', 'dashboard' सब मुख्य डैशबोर्ड हैं!
+          const isDashboardPath = (!path || path === "app" || path === "app.html" || path === "dashboard");
+          const isSubpage = (!isDashboardPath) || (hash && hash !== 'dashboard');
+
+          if (isSubpage) {
+            document.documentElement.classList.add("is-subpage");
+          } else {
+            document.documentElement.classList.remove("is-subpage");
+          }
+        } else {
+          document.documentElement.classList.remove("user-logged-in", "is-subpage");
+        }
+      } catch(e) {}
+    }
+    syncAppViewState();
+    window.addEventListener("popstate", syncAppViewState);
+    window.addEventListener("hashchange", syncAppViewState);
+  })();
+</script>
     <style>
       :root { 
           --primary: #059669; 
@@ -60,6 +84,12 @@
       ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
       * { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
 
+        html.user-logged-in #login-overlay { 
+            display: none !important; 
+        }
+        html.user-logged-in #main-app { 
+            display: block !important; 
+        }
       /* Modern Glassmorphism Login Overlay */
       #login-overlay { 
           position: fixed; 
