@@ -14,7 +14,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- ⚡ JS Dependencies (Bootstrap loaded at top to prevent ReferenceError) -->
+    <!-- ⚡ JS Dependencies (Bootstrap top-loaded to prevent undefined errors) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
@@ -23,46 +23,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
-    <!-- ZERO-FLICKER ROUTE & SESSION GUARD (BLANK SCREEN FIX) -->
+    <!-- ZERO-FLICKER SESSION CHECK -->
     <script>
       (function() {
-        function syncAppViewState() {
-          try {
-            const rawUser = localStorage.getItem("a2z_user");
-            if (rawUser) {
-              const u = JSON.parse(rawUser || "{}");
-              const role = String(u.role || "").toUpperCase();
-              
-              if (role === "STUDENT") {
-                const host = window.location.hostname.toLowerCase();
-                if (host.startsWith("app.")) {
-                  window.location.href = window.location.protocol + "//student." + host.replace(/^app\./, "");
-                  return;
-                }
+        try {
+          const rawUser = localStorage.getItem("a2z_user");
+          if (rawUser) {
+            const u = JSON.parse(rawUser || "{}");
+            if (String(u.role || "").toUpperCase() === "STUDENT") {
+              const host = window.location.hostname.toLowerCase();
+              if (host.startsWith("app.")) {
+                window.location.href = window.location.protocol + "//student." + host.replace(/^app\./, "");
+                return;
               }
-
-              document.documentElement.classList.add("user-logged-in");
-              
-              let p = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '').trim().toLowerCase();
-              const hash = (window.location.hash || '').replace(/^#\/?/, '').trim().toLowerCase();
-              
-              // 🚀 CRITICAL FIX: 'app', 'app.html', '', or 'dashboard' are DASHBOARDS, NOT subpages!
-              const isDashboardPath = (!p || p === "app" || p === "app.html" || p === "dashboard");
-              const isSubpage = (!isDashboardPath) || (hash && hash !== 'dashboard');
-
-              if (isSubpage) {
-                document.documentElement.classList.add("is-subpage");
-              } else {
-                document.documentElement.classList.remove("is-subpage");
-              }
-            } else {
-              document.documentElement.classList.remove("user-logged-in", "is-subpage");
             }
-          } catch(e) {}
-        }
-        syncAppViewState();
-        window.addEventListener("popstate", syncAppViewState);
-        window.addEventListener("hashchange", syncAppViewState);
+          }
+        } catch(e) {}
       })();
     </script>
 
@@ -84,11 +60,7 @@
       ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
       * { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
 
-      html.user-logged-in #login-overlay { display: none !important; }
-      html.user-logged-in #main-app { display: block !important; }
-      html.is-subpage #dash-stats-row { display: none !important; }
-
-      /* Glassmorphism Login Overlay */
+      /* Modern Glassmorphism Login Overlay */
       #login-overlay { 
           position: fixed; 
           inset: 0; 
@@ -255,7 +227,7 @@
       header { background: #ffffff; padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; min-height: 65px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
       .school-sel { border: 2px solid var(--accent); border-radius: 20px; font-weight: 700; color: var(--primary); width: 280px; height: 36px; font-size: 13px; background-color: #f0fdf4; padding: 5px 14px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
 
-      /* 👤 Header Profile Avatar Only (Screenshot 2 Match) */
+      /* 👤 Header Profile Avatar Only (Screenshot Match) */
       .header-profile-avatar { 
         width: 40px !important; 
         height: 40px !important; 
@@ -318,7 +290,7 @@
           .school-sel { width: 140px !important; font-size: 11px !important; }
       }
 
-      /* FOOTER BAR (Screenshot 2 Match) */
+      /* FOOTER BAR (Desktop & Mobile Responsive) */
       .erp-footer {
         position: fixed;
         bottom: 0;
@@ -332,8 +304,33 @@
         transition: all 0.3s ease;
       }
       body.sidebar-collapsed .erp-footer { left: var(--icon-bar-w) !important; }
+      
       @media (max-width: 992px) {
-        .erp-footer { left: 0 !important; padding: 6px 8px !important; font-size: 10px !important; }
+        .erp-footer { 
+          left: 0 !important; 
+          padding: 6px 8px !important; 
+          font-size: 10px !important; 
+          text-align: center !important;
+        }
+        .erp-footer > div {
+          flex-direction: column !important;
+          justify-content: center !important;
+          align-items: center !important;
+          gap: 4px !important;
+        }
+        .erp-footer .btn {
+          font-size: 9.5px !important;
+          padding: 2px 7px !important;
+          height: 24px !important;
+          line-height: 1 !important;
+        }
+        /* 🚀 AUTO-HIDE FOOTER IN MOBILE WHEN INSIDE A MODULE (Screenshot 2 Match) */
+        body.mobile-module-active .erp-footer {
+          display: none !important;
+        }
+        body.mobile-module-active #btnScrollToTop {
+          bottom: 20px !important;
+        }
       }
 
       #btnScrollToTop {
@@ -473,7 +470,7 @@
                     <div class="btn-fullscreen-toggle d-none d-lg-block" onclick="window.toggleCollapseSidebar()" title="Full Page Mode">
                         <i class="fas fa-compress-alt" id="collapse-icon"></i>
                     </div>
-                    <div class="header-logo" onclick="window.navigateTo('Dashboard')" style="cursor:pointer;" title="Click to open Dashboard">
+                    <div class="header-logo" onclick="window.backToDash()" style="cursor:pointer;" title="Click to open Dashboard">
                         <img alt="School Logo" class="brand-logo-img" src="https://yanzstgfsvnlspbrminc.supabase.co/storage/v1/object/public/School_Data/ADMIN%20DATA/schoolalarm%20header.png" style="height: 40px; width: auto; object-fit: contain;">
                     </div>
                 </div>
@@ -484,7 +481,7 @@
                         <select class="form-select form-select-sm school-sel shadow-sm" id="schoolSelect" onchange="window.switchSchool()"></select>
                     </div>
 
-                    <!-- Dynamic Greeting & Live Clock (Screenshot 2 Match) -->
+                    <!-- Dynamic Greeting & Live Clock (Screenshot Match) -->
                     <div class="text-end d-none d-md-block border-start ps-3">
                         <div class="fw-bold text-primary small" style="font-size: 13px;">
                             <span id="dynamic-greeting">Good Evening 🌙</span>, <span id="profile-school-name" class="fw-bold text-primary">Royal International Public School</span>
@@ -492,7 +489,7 @@
                         <div class="small text-muted fw-semibold" id="live-clock" style="font-size: 11px;">Loading time...</div>
                     </div>
 
-                    <!-- 👤 User Profile Avatar Only (Screenshot 2 Match) -->
+                    <!-- 👤 User Profile Avatar Only (Screenshot Match) -->
                     <div class="dropdown">
                         <img class="header-profile-avatar shadow-sm" id="topHeaderUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" data-bs-toggle="dropdown" aria-expanded="false" title="Account Menu">
 
@@ -515,7 +512,7 @@
                 </div>
             </header>
 
-            <!-- 8 KPI DASHBOARD CARDS (ALWAYS SHOWN ON DASHBOARD) -->
+            <!-- 8 KPI DASHBOARD CARDS (ALWAYS AVAILABLE ON DASHBOARD) -->
             <div class="p-4">
                 <div class="row g-3 mb-4" id="dash-stats-row">
                     <!-- 1. Students -->
@@ -618,7 +615,7 @@
             </div>
         </div>
 
-        <!-- ================= MODERN ERP FOOTER (SCREENSHOT 2 EXACT MATCH) ================= -->
+        <!-- ================= MODERN ERP FOOTER (AUTO-HIDES IN MOBILE MODULES) ================= -->
         <footer class="erp-footer">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2" style="font-size: 12px;">
                 <div class="text-muted fw-bold">
@@ -1116,7 +1113,6 @@
             userData = sessionData;
             localStorage.setItem("a2z_user", JSON.stringify(sessionData));
 
-            document.getElementById("login-overlay").style.display = "none";
             initDashboard();
 
         } catch (err) {
@@ -1168,7 +1164,7 @@
         window.location.reload();
     };
 
-    // 5. DASHBOARD STATS (SAFE COUNT FETCH - ZERO HEAD CRASH)
+    // 5. DASHBOARD STATS (SAFE REST FETCH - ZERO HEAD CRASH)
     window.loadDashboardStats = async function() {
         const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
         const activeSchool = user.schoolId;
@@ -1186,7 +1182,7 @@
                 statusEl.className = (schoolStatus === "ACTIVE") ? "fw-bold mb-0 text-warning mt-1" : "fw-bold mb-0 text-danger mt-1";
             }
 
-            // Students Count (No head:true crash)
+            // Students Count (No HEAD crash)
             const { data: stuRows } = await db.from('Students').select('Status').eq('SchoolID', activeSchool).eq('Status', 'ACTIVE');
             const stuEl = document.getElementById("dash-total");
             if (stuEl) stuEl.innerText = stuRows ? stuRows.length : 0;
@@ -1240,43 +1236,41 @@
         }
     };
 
-    // 6. SPA NAVIGATION & TEMPLATE ENGINE (SMART URL EXTRACTOR)
+    // 6. SPA NAVIGATION & TEMPLATE ENGINE (SMART LOGIC - ZERO BLANK SCREEN)
     let currentPage = "";
 
-    function getCleanRouteFromUrl() {
-        if (window.location.hash) {
-            const h = window.location.hash.replace(/^#\/?/, "").trim();
-            if (h && h.toLowerCase() !== "dashboard") return h;
-        }
-        let p = window.location.pathname.replace(/^\/+/, "").replace(/\/+$/, "").trim().toLowerCase();
-        // 🚀 CRITICAL FIX: Ensure 'app' & 'app.html' always return Dashboard
-        if (!p || p === "app.html" || p === "app" || p === "dashboard") {
-            return "Dashboard";
-        }
-        return p;
-    }
+    window.backToDash = function() {
+        document.body.classList.remove('mobile-module-active');
+        window.navigateTo("Dashboard");
+    };
 
     window.navigateTo = async function(page) {
         let cleanPage = String(page || "").replace(/^#\/?/, "").trim();
 
-        if (!cleanPage || cleanPage.toLowerCase() === "dashboard") {
-            currentPage = "Dashboard";
+        const dashStats = document.getElementById("dash-stats-row");
+        const pageArea = document.getElementById("page-area");
 
-            const dashStats = document.getElementById("dash-stats-row");
-            if (dashStats) dashStats.style.display = "";
-            const pageArea = document.getElementById("page-area");
+        // 1. Dashboard Handler (Shows 8 KPI Cards & Cleans Work Area)
+        if (!cleanPage || cleanPage.toLowerCase() === "dashboard" || cleanPage === "app" || cleanPage === "app.html") {
+            currentPage = "Dashboard";
+            document.body.classList.remove('mobile-module-active'); // Show Footer in Mobile
+
+            if (dashStats) dashStats.style.setProperty("display", "flex", "important");
             if (pageArea) pageArea.innerHTML = "";
-            document.documentElement.classList.remove("is-subpage");
 
             window.loadDashboardStats();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
         }
 
+        // 2. Module Handler (Hides KPI Cards & Auto-Hides Footer on Mobile)
         currentPage = cleanPage;
+        if (window.innerWidth <= 992) {
+            document.body.classList.add('mobile-module-active'); // 🚀 Hides footer in module (Screenshot 2 Match)
+            document.body.classList.remove('sidebar-open');
+        }
 
-        const dashStats = document.getElementById("dash-stats-row");
-        if (dashStats) dashStats.style.display = "none";
-        document.documentElement.classList.add("is-subpage");
+        if (dashStats) dashStats.style.setProperty("display", "none", "important");
 
         // Highlight Sub-menu
         document.querySelectorAll('.nav-link-custom, .nav-link-nested').forEach(link => {
@@ -1284,10 +1278,9 @@
             link.classList.toggle('active-sub', fn.includes(cleanPage));
         });
 
-        const area = document.getElementById('page-area');
-        if (!area) return;
+        if (!pageArea) return;
 
-        area.querySelectorAll('.spa-page-container').forEach(p => p.style.display = 'none');
+        pageArea.querySelectorAll('.spa-page-container').forEach(p => p.style.display = 'none');
 
         let pageContainer = document.getElementById('page-container-' + cleanPage);
         if (pageContainer) {
@@ -1299,7 +1292,7 @@
                 pageContainer.id = 'page-container-' + cleanPage;
                 pageContainer.className = 'spa-page-container';
                 pageContainer.innerHTML = tpl.innerHTML;
-                area.appendChild(pageContainer);
+                pageArea.appendChild(pageContainer);
 
                 pageContainer.querySelectorAll("script").forEach(oldScript => {
                     const newScript = document.createElement("script");
@@ -1322,7 +1315,7 @@
                         <p class="text-muted small">Please paste the &lt;template id="tpl-${cleanPage}"&gt; code into the templates repository.</p>
                     </div>
                 `;
-                area.appendChild(fallbackDiv);
+                pageArea.appendChild(fallbackDiv);
             }
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1356,12 +1349,16 @@
         const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
         userData = user;
 
+        // Force UI Unhide
+        document.getElementById("login-overlay").style.setProperty("display", "none", "important");
+        document.getElementById("main-app").style.setProperty("display", "block", "important");
+
         const userName = user.name || "Principal Sharma";
         const schoolName = user.schoolName || "Royal International Public School";
         const role = user.role || "ADMIN";
         const av = user.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
-        // Exact Screenshot 2 Bindings
+        // Bind Data
         document.getElementById("dropdownUserName").innerText = userName;
         document.getElementById("dropdownUserRole").innerText = role;
         document.getElementById("profile-school-name").innerText = schoolName;
@@ -1370,19 +1367,12 @@
         document.getElementById("topHeaderUserAvatar").src = av;
         document.getElementById("dropdownUserAvatar").src = av;
 
-        // Force load dashboard and KPI cards
-        window.loadDashboardStats();
-
         // Load First Module
         const activeIconEl = document.querySelector('.icon-item.active') || document.querySelector('.icon-item');
         window.switchModule('Students', activeIconEl);
 
-        const currentRoute = getCleanRouteFromUrl();
-        if (currentRoute && currentRoute !== "Dashboard") {
-            window.navigateTo(currentRoute);
-        } else {
-            window.navigateTo("Dashboard");
-        }
+        // Always show dashboard on initial open/refresh
+        window.navigateTo("Dashboard");
 
         startClock();
         window.checkUnreadTicketReplies();
@@ -1644,7 +1634,7 @@
         } catch(e) {}
     };
 
-    // 9. LOGOUT & UTILITIES (FIXED: KEEPS ON APP. LOGIN SCREEN)
+    // 9. LOGOUT (ALWAYS STAYS ON CURRENT APP LOGIN BOX)
     window.doAdminLogout = function() {
         if (!confirm("Are you sure you want to log out?")) return;
         try {
@@ -1655,7 +1645,7 @@
         localStorage.removeItem("a2z_user");
         sessionStorage.clear();
         
-        // 🚀 CRITICAL FIX: Returns to current app. portal login box, NOT landing page!
+        // 🚀 KEEPS USER ON APP LOGIN SCREEN (NEVER JUMPS TO LANDING PAGE)
         window.location.href = window.location.origin + window.location.pathname;
     };
 
@@ -1686,9 +1676,11 @@
                 initDashboard();
             } catch(e) {
                 document.getElementById("login-overlay").style.display = "flex";
+                document.getElementById("main-app").style.display = "none";
             }
         } else {
             document.getElementById("login-overlay").style.display = "flex";
+            document.getElementById("main-app").style.display = "none";
         }
     };
     // ]]>
