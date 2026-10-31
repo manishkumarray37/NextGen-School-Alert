@@ -43375,15 +43375,15 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
 
 
-<!-- MODULE: DYNAMIC MASTER SETTINGS (WITH CLASS, SECTIONS & SUBJECTS)   -->
+<!-- =================================================================== -->
+<!-- MODULE: DYNAMIC MASTER SETTINGS (100% SUPABASE NATIVE)             -->
+<!-- =================================================================== -->
 <template id='tpl-MasterSettings'>
-  <!-- 1. SCOPED CSS -->
   <style>
-    .cfg-card { border-radius: 12px; border: none; min-height: 540px; }
+    .cfg-card { border-radius: 14px; border: none; min-height: 540px; }
     .cfg-label { font-size: 11px; font-weight: 700; color: #475569; margin-bottom: 3px; display: block; }
     .cfg-input { height: 38px; font-size: 12.5px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
     
-    /* DYNAMIC HORIZONTAL TABS */
     .cfg-tabs-bar { display: flex; gap: 6px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; overflow-x: auto; scrollbar-width: thin; }
     .cfg-tab-btn { background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 20px; padding: 6px 16px; font-size: 12px; font-weight: 700; color: #475569; white-space: nowrap; cursor: pointer; transition: 0.15s; }
     .cfg-tab-btn:hover { background: #e2e8f0; color: #0f172a; }
@@ -43403,14 +43403,13 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </style>
 
   <div class='card cfg-card shadow-sm animate__animated animate__fadeIn mb-5'>
-    
     <!-- CARD HEADER -->
     <div class='card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2'>
       <div class='d-flex align-items-center gap-2'>
         <i class='fas fa-sliders-h text-success fa-lg'></i>
         <div>
           <h6 class='m-0 fw-bold text-dark'>Universal School Configuration Hub</h6>
-          <small class='text-muted' style='font-size: 11px;'>Manage sessions, classes, sections, subjects, roles &amp; designations live</small>
+          <small class='text-muted' style='font-size: 11px;'>Manage sessions, classes, sections, subjects, roles &amp; designations live in Supabase</small>
         </div>
       </div>
 
@@ -43419,14 +43418,13 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           <i class='fas fa-plus-circle me-1'></i> Add New Category
         </button>
         <button class='btn btn-outline-primary btn-sm fw-bold' onclick='window.loadDynamicConfigHub(true)' type='button'>
-          <i class='fas fa-sync-alt me-1'></i> Sync Sheet
+          <i class='fas fa-sync-alt me-1'></i> Sync Config
         </button>
       </div>
     </div>
 
     <div class='card-body p-4'>
-      
-      <!-- 1. DYNAMIC NAVIGATION TABS -->
+      <!-- 1. DYNAMIC TABS -->
       <div class='cfg-tabs-bar mb-4' id='cfgDynamicTabsBar'>
         <span class='text-muted small py-2'><i class='fas fa-spinner fa-spin me-1'></i> Loading categories...</span>
       </div>
@@ -43437,38 +43435,34 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           <h5 class='m-0 fw-bold text-dark' id='cfgActiveCategoryHeading'>Settings</h5>
           <span class='kpi-chip' id='cfgActiveCategoryCountBadge'>0 Items</span>
         </div>
-        <span class='text-muted small' id='cfgUrlHintText'>URL: #/Manage...</span>
+        <span class='text-muted small' id='cfgUrlHintText'>Database: School_Configs</span>
       </div>
 
-      <!-- 3. MAIN WORKSPACE: 2-COLUMN GRID -->
+      <!-- 3. WORKSPACE -->
       <div class='row g-4'>
-        
-        <!-- LEFT: ADD / EDIT FORM -->
+        <!-- LEFT: FORM -->
         <div class='col-lg-4 col-12'>
           <div class='card border shadow-sm rounded-3 p-3 bg-light'>
             <h6 class='fw-bold text-primary mb-3' id='cfgFormActionTitle'><i class='fas fa-plus-circle me-1'></i> Add New Item</h6>
             
             <form id='cfgDynamicForm' onsubmit='window.saveConfigItemRecord(event)'>
-              <input id='cfgEditOldValue' type='hidden' value=''></i>
+              <input id='cfgEditOldValue' type='hidden' value=''>
 
-              <!-- VALUE / NAME -->
               <div class='mb-3'>
                 <label class='cfg-label' id='cfgValueInputLabel'>Value Name *</label>
-                <input class='form-control cfg-input' id='cfgValueInput' placeholder='Enter value...' required='required' type='text'></i>
+                <input class='form-control cfg-input' id='cfgValueInput' placeholder='Enter value...' required type='text'>
               </div>
 
-              <!-- SECTIONS FIELD (FOR CLASS) -->
               <div class='mb-3' id='cfgExtraFieldContainer' style='display: none;'>
                 <label class='cfg-label' id='cfgExtraInputLabel'>Section List (Comma separated)</label>
-                <input class='form-control cfg-input' id='cfgExtraInput' placeholder='e.g., A, B, C, D, E...' type='text'></i>
-                <small class='text-muted' style='font-size: 10px;'>Enter comma-separated sections (e.g. A, B, C)</small>
+                <input class='form-control cfg-input' id='cfgExtraInput' placeholder='e.g., A, B, C, D...' type='text'>
+                <small class='text-muted' style='font-size: 10px;'>e.g. A, B, C</small>
               </div>
 
-              <!-- SUBJECTS FIELD (FOR CLASS) -->
               <div class='mb-3' id='cfgSubjectsFieldContainer' style='display: none;'>
                 <label class='cfg-label' id='cfgSubjectsInputLabel'>Subjects List (Comma separated)</label>
-                <textarea class='form-control' id='cfgSubjectsInput' placeholder='e.g., ENGLISH, HINDI, MATHS, SCIENCE, SST...' rows='3' style='font-size: 12px; border: 1.5px solid #cbd5e1; border-radius: 6px;'></textarea>
-                <small class='text-muted' style='font-size: 10px;'>Enter comma-separated subjects for this class</small>
+                <textarea class='form-control' id='cfgSubjectsInput' placeholder='e.g., ENGLISH, HINDI, MATHS, SCIENCE...' rows='3' style='font-size: 12px; border: 1.5px solid #cbd5e1; border-radius: 6px;'></textarea>
+                <small class='text-muted' style='font-size: 10px;'>Comma-separated subjects for this class</small>
               </div>
 
               <div class='d-flex gap-2 pt-2'>
@@ -43483,21 +43477,21 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           </div>
         </div>
 
-        <!-- RIGHT: LIVE TABLE -->
+        <!-- RIGHT: TABLE -->
         <div class='col-lg-8 col-12'>
           <div class='table-responsive border rounded-3 shadow-sm bg-white' style='max-height: 480px; overflow-y: auto;'>
             <table class='table-cfg text-center' id='cfgDataTable'>
               <thead>
                 <tr>
                   <th style='width: 45px;'>#</th>
-                  <th style='text-align: left; padding-left: 14px; width: 100px;'>Class / Name</th>
+                  <th style='text-align: left; padding-left: 14px; width: 120px;'>Name / Value</th>
                   <th id='colHeaderExtra' style='display: none; width: 130px;'>Sections</th>
                   <th id='colHeaderSubjects' style='display: none; text-align: left; padding-left: 10px;'>Subjects</th>
                   <th style='width: 85px;'>Action</th>
                 </tr>
               </thead>
               <tbody id='cfgDataTableBody'>
-                <tr><td class='text-center py-5 text-muted' colspan='5'><i class='fas fa-spinner fa-spin fa-2x mb-2 text-primary d-block'></i>Loading settings...</td></tr>
+                <tr><td class='text-center py-5 text-muted' colspan='5'><i class='fas fa-spinner fa-spin fa-2x mb-2 text-primary d-block'></i>Loading configurations...</td></tr>
               </tbody>
             </table>
           </div>
@@ -43507,74 +43501,69 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </div>
 
   <script type='text/javascript'>
-  // <![CDATA[
   (function() {
-    let rawConfigPayload = null;
+    let allConfigsRaw = [];
     let currentCategory = "Session";
-    let categoriesList = [];
-    const AMP = String.fromCharCode(38);
+    let categoriesList = ["Session", "Class", "Role", "Designation"];
 
-    function getActiveApiUrl() {
-      if (typeof scriptURL !== 'undefined' && scriptURL) return scriptURL;
-      if (window.scriptURL) return window.scriptURL;
-      if (window.gasUrl) return window.gasUrl;
-      if (window.API_URL) return window.API_URL;
-      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      return user.gasUrl || user.scriptURL || "";
-    }
-
-    // ⚡ 1. INITIALIZE & DETECT URL HASH
+    // ⚡ 1. INITIALIZE & DETECT ROUTE
     window.initMasterSettingsModule = async function() {
-      const hash = (window.location.hash || "").replace(/^#\/?/, "").trim();
-      if (hash.startsWith("Manage")) {
-        currentCategory = hash.replace("Manage", "");
-      } else {
-        currentCategory = "Session";
+      const p = (window.location.pathname || "").replace(/^\/+/, '').trim();
+      const h = (window.location.hash || "").replace(/^#\/?/, '').trim();
+      const current = p || h;
+
+      if (current.includes("Manage")) {
+        currentCategory = current.replace(/.*Manage/, '') || "Session";
       }
 
       await window.loadDynamicConfigHub(false);
     };
 
-    // ⚡ 2. FETCH CONFIG DATA
+    // ⚡ 2. FETCH DIRECT FROM SUPABASE 'School_Configs'
     window.loadDynamicConfigHub = async function(forceRefresh) {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const baseApi = getActiveApiUrl();
-      if (!baseApi || !user.targetSheetId) return;
+      const schoolId = user.schoolId;
+      if (!schoolId) return;
 
       try {
-        let fetchUrl = baseApi + "?action=getFormSettings" + AMP + "tsid=" + encodeURIComponent(user.targetSheetId);
-        if (forceRefresh) fetchUrl += AMP + "_t=" + Date.now();
+        const { data, error } = await db
+          .from('School_Configs')
+          .select('*')
+          .eq('SchoolID', schoolId);
 
-        const res = await (await fetch(fetchUrl)).json();
-        if (res && res.status === "success") {
-          rawConfigPayload = res;
+        if (error) throw error;
+        allConfigsRaw = data || [];
 
-          if (forceRefresh) {
-            localStorage.setItem("a2z_config_" + user.targetSheetId, JSON.stringify(res));
+        // Collect all available categories dynamically
+        const foundCategories = Array.from(new Set(allConfigsRaw.map(c => c.Category).filter(Boolean)));
+        foundCategories.forEach(c => {
+          if (!categoriesList.some(x => x.toLowerCase() === c.toLowerCase())) {
+            categoriesList.push(c);
           }
+        });
 
-          categoriesList = res.availableTypes || Object.keys(res.dynamicConfig || {});
-          if (categoriesList.length === 0) categoriesList = ["Session", "Class", "Role", "Designation"];
+        // Match current category
+        const matched = categoriesList.find(c => c.toLowerCase() === currentCategory.toLowerCase());
+        currentCategory = matched || "Session";
 
-          const foundCat = categoriesList.find(c => c.toUpperCase() === currentCategory.toUpperCase());
-          currentCategory = foundCat || categoriesList[0];
+        window.renderDynamicTabsBar();
+        window.renderActiveCategoryView();
 
-          window.renderDynamicTabsBar();
-          window.renderActiveCategoryView();
-        }
+        // Clear client cache so other forms get updated data immediately
+        localStorage.removeItem("a2z_config_" + schoolId);
       } catch(err) {
-        console.error("Config load error:", err);
+        console.error("Config fetch error:", err);
       }
     };
 
-    // ⚡ 3. RENDER DYNAMIC TABS
+    // ⚡ 3. RENDER TABS
     window.renderDynamicTabsBar = function() {
       const bar = document.getElementById('cfgDynamicTabsBar');
       if (!bar) return;
 
       let html = "";
       categoriesList.forEach(cat => {
-        const isActive = (cat.toUpperCase() === currentCategory.toUpperCase());
+        const isActive = (cat.toLowerCase() === currentCategory.toLowerCase());
         let icon = "fa-cog";
         if (cat.toLowerCase().includes("session")) icon = "fa-calendar-alt";
         else if (cat.toLowerCase().includes("class")) icon = "fa-chalkboard";
@@ -43591,11 +43580,10 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       bar.innerHTML = html;
     };
 
-    // ⚡ 4. SWITCH TAB (DYNAMIC URL HASH SYNC)
+    // ⚡ 4. SWITCH TAB
     window.switchConfigCategoryTab = function(newCat) {
       currentCategory = newCat;
-      window.location.hash = `/Manage${newCat}`;
-
+      
       document.querySelectorAll('.cfg-tab-btn').forEach(b => {
         const bText = b.innerText.trim();
         b.classList.toggle('active', bText.toLowerCase().includes(newCat.toLowerCase()));
@@ -43605,12 +43593,16 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       window.renderActiveCategoryView();
     };
 
-    // ⚡ 5. RENDER ACTIVE VIEW (WITH SECTIONS & SUBJECTS)
+    // ⚡ 5. RENDER ACTIVE CATEGORY TABLE & FIELDS
     window.renderActiveCategoryView = function() {
-      document.getElementById('cfgActiveCategoryHeading').innerText = `Manage ${currentCategory}`;
-      document.getElementById('cfgValueInputLabel').innerText = `${currentCategory} Name *`;
-      document.getElementById('cfgValueInput').placeholder = `Enter ${currentCategory}...`;
-      document.getElementById('cfgUrlHintText').innerText = `Direct Link: #/Manage${currentCategory}`;
+      const headEl = document.getElementById('cfgActiveCategoryHeading');
+      if (headEl) headEl.innerText = `Manage ${currentCategory}`;
+      
+      const lblEl = document.getElementById('cfgValueInputLabel');
+      if (lblEl) lblEl.innerText = `${currentCategory} Name *`;
+
+      const inpEl = document.getElementById('cfgValueInput');
+      if (inpEl) inpEl.placeholder = `Enter ${currentCategory}...`;
 
       const isClass = (currentCategory.toLowerCase() === "class");
       const extraContainer = document.getElementById('cfgExtraFieldContainer');
@@ -43623,12 +43615,13 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       if (extraColHeader) extraColHeader.style.display = isClass ? 'table-cell' : 'none';
       if (subjectsColHeader) subjectsColHeader.style.display = isClass ? 'table-cell' : 'none';
 
-      const dynamicMap = (rawConfigPayload && rawConfigPayload.dynamicConfig) ? rawConfigPayload.dynamicConfig : {};
-      const items = dynamicMap[currentCategory] || [];
-
-      document.getElementById('cfgActiveCategoryCountBadge').innerText = `${items.length} ${currentCategory}(s)`;
+      const items = allConfigsRaw.filter(c => String(c.Category || '').toLowerCase() === currentCategory.toLowerCase());
+      const countEl = document.getElementById('cfgActiveCategoryCountBadge');
+      if (countEl) countEl.innerText = `${items.length} ${currentCategory}(s)`;
 
       const tbody = document.getElementById('cfgDataTableBody');
+      if (!tbody) return;
+
       if (items.length === 0) {
         tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5 text-muted fw-bold">No records found for ${currentCategory}. Add one using the form on the left!</td></tr>`;
         return;
@@ -43636,22 +43629,22 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       let html = "";
       items.forEach((item, idx) => {
-        const val = item.value;
-        const extra = item.extra || "";
-        const subjects = item.subjects || "";
+        const val = item.Value || "";
+        const extra = item.Sections || "";
+        const subs = item.Subjects || "";
 
         html += `
           <tr>
             <td>${idx + 1}</td>
             <td class="text-start ps-3 fw-bold text-dark">${val}</td>
             ${isClass ? `<td class="text-secondary small font-monospace">${extra || "-"}</td>` : ''}
-            ${isClass ? `<td class="text-start ps-2 text-primary small fw-semibold" style="max-width:240px; word-break:break-word;">${subjects || "-"}</td>` : ''}
+            ${isClass ? `<td class="text-start ps-2 text-primary small fw-semibold" style="max-width:240px; word-break:break-word;">${subs || "-"}</td>` : ''}
             <td>
               <div class="d-flex gap-1 justify-content-center">
-                <button class="btn-cfg-action btn-cfg-edit" onclick="window.editConfigItemRecord('${val}', '${extra}', '${subjects}')" title="Edit Item">
+                <button class="btn-cfg-action btn-cfg-edit" onclick="window.editConfigItemRecord('${val}', '${extra}', '${subs}')" title="Edit">
                   <i class="fas fa-pencil-alt"></i>
                 </button>
-                <button class="btn-cfg-action btn-cfg-del" onclick="window.deleteConfigItemRecord('${val}')" title="Delete Item">
+                <button class="btn-cfg-action btn-cfg-del" onclick="window.deleteConfigItemRecord('${val}')" title="Delete">
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </div>
@@ -43663,21 +43656,18 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       tbody.innerHTML = html;
     };
 
-    // ⚡ 6. PROMPT TO ADD NEW CATEGORY
+    // ⚡ 6. PROMPT ADD CATEGORY
     window.promptAddNewSettingCategory = function() {
-      const newCatName = prompt("Enter New Setting Category Name (e.g. BloodGroup, House, Subject, FeeCategory):");
-      if (!newCatName || !newCatName.trim()) return;
+      const name = prompt("Enter New Category Name (e.g. House, BloodGroup, FeeCategory):");
+      if (!name || !name.trim()) return;
+      const clean = name.replace(/[^a-zA-Z0-9]/g, "").trim();
+      if (!clean) return;
 
-      const cleanCat = newCatName.replace(/[^a-zA-Z0-9]/g, "").trim();
-      if (!cleanCat) return;
-
-      if (!categoriesList.includes(cleanCat)) {
-        categoriesList.push(cleanCat);
-      }
-      window.switchConfigCategoryTab(cleanCat);
+      if (!categoriesList.includes(clean)) categoriesList.push(clean);
+      window.switchConfigCategoryTab(clean);
     };
 
-    // ⚡ 7. EDIT FORM CONTROLLER (NOW SUPPORTS SUBJECTS)
+    // ⚡ 7. EDIT & RESET CONTROLLER
     window.editConfigItemRecord = function(val, extra, subjects) {
       document.getElementById('cfgEditOldValue').value = val;
       document.getElementById('cfgValueInput').value = val;
@@ -43697,82 +43687,91 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       document.getElementById('btnCancelCfgEdit').style.display = 'none';
     };
 
-    // 💾 8. SAVE / UPDATE TO GOOGLE SHEET (INCLUDES SUBJECTS FOR CLASS)
+    // 💾 8. SAVE / UPDATE DIRECT IN SUPABASE
     window.saveConfigItemRecord = async function(e) {
       e.preventDefault();
-
       const val = document.getElementById('cfgValueInput').value.trim();
       const extra = document.getElementById('cfgExtraInput').value.trim();
       const subjects = document.getElementById('cfgSubjectsInput').value.trim();
       const oldVal = document.getElementById('cfgEditOldValue').value.trim();
 
-      if (!val) {
-        alert("Please enter a value name!");
-        return;
-      }
+      if (!val) { alert("Please enter a value name!"); return; }
 
       const btn = document.getElementById('btnSubmitCfgRecord');
       btn.disabled = true;
       btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Saving...`;
 
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const baseApi = getActiveApiUrl();
-
-      const payload = {
-        action: "manageConfig",
-        subAction: oldVal ? "update" : "add",
-        tsid: user.targetSheetId || "",
-        type: currentCategory,
-        value: val,
-        extra: extra,
-        subjects: subjects,
-        oldValue: oldVal
-      };
+      const schoolId = user.schoolId;
 
       try {
-        const res = await (await fetch(baseApi, { method: "POST", body: JSON.stringify(payload) })).json();
-        alert(oldVal ? `✅ ${currentCategory} updated successfully!` : `✅ New ${currentCategory} added successfully!`);
-        
+        if (oldVal) {
+          // UPDATE
+          const { error } = await db
+            .from('School_Configs')
+            .update({ Value: val, Sections: extra, Subjects: subjects })
+            .eq('SchoolID', schoolId)
+            .eq('Category', currentCategory)
+            .eq('Value', oldVal);
+
+          if (error) throw error;
+          alert(`✅ ${currentCategory} updated successfully!`);
+        } else {
+          // INSERT
+          const { error } = await db
+            .from('School_Configs')
+            .insert([{
+              SchoolID: schoolId,
+              Category: currentCategory,
+              Value: val,
+              Sections: extra,
+              Subjects: subjects
+            }]);
+
+          if (error) throw error;
+          alert(`✅ New ${currentCategory} added successfully!`);
+        }
+
         window.resetConfigItemForm();
-        window.loadDynamicConfigHub(true);
+        await window.loadDynamicConfigHub(true);
+
       } catch(err) {
-        alert("Action completed.");
-        window.resetConfigItemForm();
-        window.loadDynamicConfigHub(true);
+        console.error("Config save error:", err);
+        alert("Failed to save: " + err.message);
       } finally {
         btn.disabled = false;
         btn.innerHTML = `<i class="fas fa-check-circle me-1"></i> Save Item`;
       }
     };
 
-    // 🗑️ 9. DELETE FROM GOOGLE SHEET
+    // 🗑️ 9. DELETE FROM SUPABASE
     window.deleteConfigItemRecord = async function(val) {
       if (!confirm(`Are you sure you want to delete "${val}" from ${currentCategory}?`)) return;
 
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const baseApi = getActiveApiUrl();
-
-      const payload = {
-        action: "manageConfig",
-        subAction: "delete",
-        tsid: user.targetSheetId || "",
-        type: currentCategory,
-        value: val
-      };
+      const schoolId = user.schoolId;
 
       try {
-        await fetch(baseApi, { method: "POST", body: JSON.stringify(payload) });
+        const { error } = await db
+          .from('School_Configs')
+          .delete()
+          .eq('SchoolID', schoolId)
+          .eq('Category', currentCategory)
+          .eq('Value', val);
+
+        if (error) throw error;
         alert(`✅ Deleted "${val}" successfully!`);
-        window.loadDynamicConfigHub(true);
-      } catch(e) {
-        alert("Deleted successfully.");
-        window.loadDynamicConfigHub(true);
+        await window.loadDynamicConfigHub(true);
+
+      } catch(err) {
+        console.error("Delete error:", err);
+        alert("Failed to delete: " + err.message);
       }
     };
 
+    // Boot
     window.initMasterSettingsModule();
   })();
-  // ]]>
   </script>
 </template>
 
@@ -47461,6 +47460,12 @@ body.public-page-mode .main-content {
 
     window.navigateTo = async function(page) {
         let cleanPage = String(page || "").replace(/^#\/?/, "").trim();
+		// ⚙️ SMART SETTINGS ROUTER: Route all Manage... clicks to MasterSettings template
+        let requestedSettingTab = "Session";
+        if (cleanPage.startsWith("Manage") || cleanPage === "MasterSettings") {
+            requestedSettingTab = cleanPage.replace("Manage", "") || "Session";
+            cleanPage = "MasterSettings"; // Load tpl-MasterSettings
+        }
 
         const dashStats = document.getElementById("dash-stats-row");
         const pageArea = document.getElementById("page-area");
@@ -47721,7 +47726,11 @@ window.finalSubmit = async function(btn) {
                 const initFuncName = 'init' + cleanPage + 'Module';
                 if (typeof window[initFuncName] === 'function') {
                     try { await window[initFuncName](); } catch(e) {}
+				}
+				if (typeof window.switchConfigCategoryTab === 'function') {
+                    window.switchConfigCategoryTab(requestedSettingTab);
                 }
+				
             } else {
                 const fallbackDiv = document.createElement('div');
                 fallbackDiv.id = 'page-container-' + cleanPage;
