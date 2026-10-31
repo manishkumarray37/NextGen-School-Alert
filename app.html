@@ -46979,7 +46979,6 @@ body.public-page-mode .main-content {
         </div>
     </div>
 
-
     <!-- =================================================================== -->
     <!-- 5. CORE JAVASCRIPT CONTROLLER (SUPABASE & R2 NATIVE)                -->
     <!-- =================================================================== -->
@@ -47471,11 +47470,19 @@ body.public-page-mode .main-content {
         const dashStats = document.getElementById("dash-stats-row");
         const pageArea = document.getElementById("page-area");
 
-        // 1. Dashboard Handler (Shows 8 KPI Cards & Cleans Work Area)
+        const host = window.location.hostname.toLowerCase();
+        const isSubdomain = host.startsWith("app.");
+        let targetUrl = "";
+
         if (!cleanPage || cleanPage.toLowerCase() === "dashboard" || cleanPage === "app" || cleanPage === "app.html") {
             currentPage = "Dashboard";
-            document.body.classList.remove('mobile-module-active'); // Show Footer in Mobile
+            targetUrl = isSubdomain ? "/" : "/app";
 
+            if (window.location.pathname !== targetUrl) {
+                history.pushState({ page: "Dashboard" }, "", targetUrl);
+            }
+
+            document.body.classList.remove('mobile-module-active');
             if (dashStats) dashStats.style.setProperty("display", "flex", "important");
             if (pageArea) pageArea.innerHTML = "";
 
@@ -47484,10 +47491,15 @@ body.public-page-mode .main-content {
             return;
         }
 
-        // 2. Module Handler (Hides KPI Cards & Auto-Hides Footer on Mobile)
         currentPage = cleanPage;
+        targetUrl = isSubdomain ? `/${cleanPage}` : `/app/${cleanPage}`;
+        
+        if (window.location.pathname !== targetUrl) {
+            history.pushState({ page: cleanPage }, "", targetUrl);
+        }
+
         if (window.innerWidth <= 992) {
-            document.body.classList.add('mobile-module-active'); // 🚀 Hides footer in module (Screenshot 2 Match)
+            document.body.classList.add('mobile-module-active');
             document.body.classList.remove('sidebar-open');
         }
 
