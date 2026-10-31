@@ -14,7 +14,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- ⚡ JS SDK & Dependencies (Bootstrap Loaded at Top to Prevent ReferenceError) -->
+    <!-- ⚡ JS Dependencies (Bootstrap top-loaded) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
@@ -42,9 +42,11 @@
               }
 
               document.documentElement.classList.add("user-logged-in");
-              const path = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '').trim().toLowerCase();
+              
+              let p = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '').trim().toLowerCase();
+              if (p === "app.html" || p === "app") p = "";
               const hash = (window.location.hash || '').replace(/^#\/?/, '').trim().toLowerCase();
-              const isSubpage = (path && path !== 'dashboard' && path !== 'app.html') || (hash && hash !== 'dashboard');
+              const isSubpage = (p && p !== 'dashboard') || (hash && hash !== 'dashboard');
 
               if (isSubpage) {
                 document.documentElement.classList.add("is-subpage");
@@ -82,10 +84,9 @@
 
       html.user-logged-in #login-overlay { display: none !important; }
       html.user-logged-in #main-app { display: block !important; }
-      html.is-subpage #dash-stats-row,
-      html.is-subpage #dashboard-view { display: none !important; }
+      html.is-subpage #dash-stats-row { display: none !important; }
 
-      /* Modern Glassmorphism Login Overlay */
+      /* Glassmorphism Login Overlay */
       #login-overlay { 
           position: fixed; 
           inset: 0; 
@@ -129,7 +130,7 @@
           color: #38bdf8 !important;
       }
 
-      /* 1. LEFT ICON BAR (80px) */
+      /* 1. LEFT ICON BAR */
       .icon-bar { width: var(--icon-bar-w); height: 100vh; background: #ffffff; position: fixed; left: 0; top: 0; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; padding-top: 15px; z-index: 1060; overflow-y: auto; transition: 0.3s; }
       .icon-item { 
           position: relative;
@@ -163,7 +164,7 @@
       .icon-item.active { background: linear-gradient(145deg, #059669, #047857) !important; color: #ffffff !important; border-color: #047857; }
       .icon-item.active i { background: transparent !important; color: #ffffff !important; border-color: transparent !important; }
 
-      /* 2. SECONDARY TEXT SIDEBAR (220px) */
+      /* 2. SECONDARY TEXT SIDEBAR */
       .text-sidebar { 
           width: var(--sidebar-w); 
           height: 100vh; 
@@ -252,7 +253,7 @@
       header { background: #ffffff; padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; min-height: 65px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
       .school-sel { border: 2px solid var(--accent); border-radius: 20px; font-weight: 700; color: var(--primary); width: 280px; height: 36px; font-size: 13px; background-color: #f0fdf4; padding: 5px 14px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
 
-      /* 👤 Exact Screenshot 2 Profile Avatar (Avatar Only, No Text Box) */
+      /* 👤 Header Profile Avatar Only (Screenshot 2 Match) */
       .header-profile-avatar { 
         width: 40px !important; 
         height: 40px !important; 
@@ -315,7 +316,7 @@
           .school-sel { width: 140px !important; font-size: 11px !important; }
       }
 
-      /* FOOTER BAR (Exact Match to Screenshot 2) */
+      /* FOOTER BAR (Screenshot 2 Match) */
       .erp-footer {
         position: fixed;
         bottom: 0;
@@ -470,7 +471,7 @@
                     <div class="btn-fullscreen-toggle d-none d-lg-block" onclick="window.toggleCollapseSidebar()" title="Full Page Mode">
                         <i class="fas fa-compress-alt" id="collapse-icon"></i>
                     </div>
-                    <div class="header-logo" onclick="window.navigateTo('Dashboard')" style="cursor:pointer;">
+                    <div class="header-logo" onclick="window.navigateTo('Dashboard')" style="cursor:pointer;" title="Click to open Dashboard">
                         <img alt="School Logo" class="brand-logo-img" src="https://yanzstgfsvnlspbrminc.supabase.co/storage/v1/object/public/School_Data/ADMIN%20DATA/schoolalarm%20header.png" style="height: 40px; width: auto; object-fit: contain;">
                     </div>
                 </div>
@@ -481,7 +482,7 @@
                         <select class="form-select form-select-sm school-sel shadow-sm" id="schoolSelect" onchange="window.switchSchool()"></select>
                     </div>
 
-                    <!-- Dynamic Greeting & Live Clock (Exact Screenshot 2) -->
+                    <!-- Dynamic Greeting & Live Clock (Screenshot 2 Match) -->
                     <div class="text-end d-none d-md-block border-start ps-3">
                         <div class="fw-bold text-primary small" style="font-size: 13px;">
                             <span id="dynamic-greeting">Good Evening 🌙</span>, <span id="profile-school-name" class="fw-bold text-primary">Royal International Public School</span>
@@ -489,7 +490,7 @@
                         <div class="small text-muted fw-semibold" id="live-clock" style="font-size: 11px;">Loading time...</div>
                     </div>
 
-                    <!-- 👤 User Profile Avatar Dropdown (Exact Screenshot 2 Match - Avatar Only) -->
+                    <!-- 👤 User Profile Avatar Only (Screenshot 2 Match) -->
                     <div class="dropdown">
                         <img class="header-profile-avatar shadow-sm" id="topHeaderUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" data-bs-toggle="dropdown" aria-expanded="false" title="Account Menu">
 
@@ -512,7 +513,7 @@
                 </div>
             </header>
 
-            <!-- 8 KPI DASHBOARD CARDS (ADMIN OVERVIEW - EXACT SCREENSHOT 2) -->
+            <!-- 8 KPI DASHBOARD CARDS (ALWAYS SHOWN ON DASHBOARD) -->
             <div class="p-4">
                 <div class="row g-3 mb-4" id="dash-stats-row">
                     <!-- 1. Students -->
@@ -615,7 +616,7 @@
             </div>
         </div>
 
-        <!-- ================= MODERN ERP FOOTER (EXACT SCREENSHOT 2) ================= -->
+        <!-- ================= MODERN ERP FOOTER (SCREENSHOT 2 EXACT MATCH) ================= -->
         <footer class="erp-footer">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2" style="font-size: 12px;">
                 <div class="text-muted fw-bold">
@@ -703,7 +704,7 @@
                     </div>
                     <div class="d-flex justify-content-between gap-2 pt-2 border-top">
                         <button class="btn btn-outline-warning btn-sm fw-bold" onclick="window.openChangePasswordModal()" type="button"><i class="fas fa-key me-1"></i> Change Password</button>
-                        <button class="btn btn-primary btn-sm fw-bold px-4" onclick="window.saveUserProfilePhoto()" type="button"><i class="fas fa-save me-1"></i> Save Photo</button>
+                        <button class="btn btn-primary btn-sm fw-bold px-4" id="btnSaveProfilePhoto" onclick="window.saveUserProfilePhoto()" type="button"><i class="fas fa-save me-1"></i> Save Photo</button>
                     </div>
                 </div>
             </div>
@@ -1165,7 +1166,7 @@
         window.location.reload();
     };
 
-    // 5. DASHBOARD STATS (8 KPI CARDS - EXACT MATCH)
+    // 5. DASHBOARD STATS (SAFE REST FETCH - NO HEAD CRASH)
     window.loadDashboardStats = async function() {
         const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
         const activeSchool = user.schoolId;
@@ -1183,20 +1184,20 @@
                 statusEl.className = (schoolStatus === "ACTIVE") ? "fw-bold mb-0 text-warning mt-1" : "fw-bold mb-0 text-danger mt-1";
             }
 
-            // Students Count
-            const { count: stuCount } = await db.from('Students').select('*', { count: 'exact', head: true }).eq('SchoolID', activeSchool).eq('Status', 'ACTIVE');
+            // Students Count (Safe select without HEAD crash)
+            const { data: stuRows } = await db.from('Students').select('Status').eq('SchoolID', activeSchool).eq('Status', 'ACTIVE');
             const stuEl = document.getElementById("dash-total");
-            if (stuEl) stuEl.innerText = stuCount || 0;
+            if (stuEl) stuEl.innerText = stuRows ? stuRows.length : 0;
 
             // Staff Count
-            const { count: staffCount } = await db.from('Staff').select('*', { count: 'exact', head: true }).eq('SchoolID', activeSchool).eq('Status', 'ACTIVE');
+            const { data: staffRows } = await db.from('Staff').select('Status').eq('SchoolID', activeSchool).eq('Status', 'ACTIVE');
             const staffEl = document.getElementById("dash-staff");
-            if (staffEl) staffEl.innerText = staffCount || 0;
+            if (staffEl) staffEl.innerText = staffRows ? staffRows.length : 0;
 
             // Pending Requests
-            const { count: reqCount } = await db.from('Student_Requests').select('*', { count: 'exact', head: true }).eq('SchoolID', activeSchool).eq('Status', 'Pending');
+            const { data: reqRows } = await db.from('Student_Requests').select('Status').eq('SchoolID', activeSchool).eq('Status', 'Pending');
             const reqEl = document.getElementById("kpiPendingRequestsCount");
-            if (reqEl) reqEl.innerText = reqCount || 0;
+            if (reqEl) reqEl.innerText = reqRows ? reqRows.length : 0;
 
             // Collections & Dues
             const { data: feeData } = await db.from('Fee_Collections').select('PaidAmount, BalanceDue').eq('SchoolID', activeSchool);
@@ -1243,10 +1244,11 @@
     function getCleanRouteFromUrl() {
         if (window.location.hash) {
             const h = window.location.hash.replace(/^#\/?/, "").trim();
-            if (h) { return h; }
+            if (h && h.toLowerCase() !== "dashboard") return h;
         }
-        const p = window.location.pathname.replace(/^\/+/, "").replace(/\/+$/, "").trim();
-        return (p === "app.html" || p === "app") ? "Dashboard" : p;
+        let p = window.location.pathname.replace(/^\/+/, "").replace(/\/+$/, "").trim();
+        if (p === "app.html" || p === "app" || !p) return "Dashboard";
+        return p;
     }
 
     window.navigateTo = async function(page) {
@@ -1363,6 +1365,7 @@
         document.getElementById("topHeaderUserAvatar").src = av;
         document.getElementById("dropdownUserAvatar").src = av;
 
+        // Force load dashboard and KPI cards
         window.loadDashboardStats();
 
         // Load First Module
@@ -1372,6 +1375,8 @@
         const currentRoute = getCleanRouteFromUrl();
         if (currentRoute && currentRoute !== "Dashboard") {
             window.navigateTo(currentRoute);
+        } else {
+            window.navigateTo("Dashboard");
         }
 
         startClock();
@@ -1397,7 +1402,7 @@
         }, 1000);
     }
 
-    // 7. PROFILE & PASSWORD MODALS (SUPABASE NATIVE)
+    // 7. PROFILE & PASSWORD MODALS (SUPABASE NATIVE - FIXED PHOTO LOGIC)
     window.openMyProfileModal = function() {
         const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
         document.getElementById('modalProfileImgPreview').src = user.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
@@ -1417,20 +1422,33 @@
 
     window.saveUserProfilePhoto = async function() {
         if (!tempNewAvatarBlob) { alert("Please select a new photo first."); return; }
+        const btn = document.getElementById('btnSaveProfilePhoto');
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Saving...`;
+
         const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+        const activeSchool = user.schoolId || "GLOBAL";
         
         try {
             let finalUrl = "";
-            if (typeof window.uploadToR2 === "function") {
-                finalUrl = await window.uploadToR2(tempNewAvatarBlob, "avatars");
-            } else {
-                const path = `${user.schoolId}/avatars/${Date.now()}_${tempNewAvatarBlob.name}`;
-                await db.storage.from("School_Data").upload(path, tempNewAvatarBlob, { upsert: true });
-                const { data } = db.storage.from("School_Data").getPublicUrl(path);
-                finalUrl = data.publicUrl;
-            }
+            const ext = tempNewAvatarBlob.name ? tempNewAvatarBlob.name.split('.').pop() : "jpg";
+            const filePath = `${activeSchool}/avatars/${user.loginId}_${Date.now()}.${ext}`;
 
-            if (user.role === "ADMIN" || user.role === "SUPER ADMIN") {
+            const { error: upErr } = await db.storage
+                .from('School_Data')
+                .upload(filePath, tempNewAvatarBlob, { upsert: true });
+
+            if (upErr) throw upErr;
+
+            const { data: pubData } = db.storage
+                .from('School_Data')
+                .getPublicUrl(filePath);
+
+            finalUrl = `${pubData.publicUrl}?t=${Date.now()}`;
+
+            // Update in Users or Staff Table
+            const roleClean = String(user.role || "").toUpperCase();
+            if (roleClean.includes("ADMIN")) {
                 await db.from('Users').update({ ProfileAvatarUrl: finalUrl }).eq('LoginID', user.loginId);
             } else {
                 await db.from('Staff').update({ Photo: finalUrl }).eq('StaffID', user.loginId);
@@ -1441,11 +1459,18 @@
 
             document.getElementById("topHeaderUserAvatar").src = finalUrl;
             document.getElementById("dropdownUserAvatar").src = finalUrl;
-            alert("Profile photo updated successfully!");
+            document.getElementById("modalProfileImgPreview").src = finalUrl;
+            tempNewAvatarBlob = null;
+
+            alert("✅ Profile photo updated successfully!");
             bootstrap.Modal.getInstance(document.getElementById('userProfileModal')).hide();
 
         } catch (err) {
+            console.error("Photo upload error:", err);
             alert("Failed to upload photo: " + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fas fa-save me-1"></i> Save Photo`;
         }
     };
 
@@ -1464,7 +1489,8 @@
         const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
 
         try {
-            if (user.role === "ADMIN" || user.role === "SUPER ADMIN") {
+            const roleClean = String(user.role || "").toUpperCase();
+            if (roleClean.includes("ADMIN")) {
                 const { data: chk } = await db.from('Users').select('Password').eq('LoginID', user.loginId).maybeSingle();
                 if (!chk || chk.Password !== oldP) { alert("Current password is incorrect."); return; }
                 await db.from('Users').update({ Password: newP }).eq('LoginID', user.loginId);
@@ -1476,7 +1502,7 @@
 
             user.sessionPassword = newP;
             localStorage.setItem("a2z_user", JSON.stringify(user));
-            alert("Password updated successfully!");
+            alert("✅ Password updated successfully!");
             bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
 
         } catch (err) {
@@ -1484,7 +1510,7 @@
         }
     };
 
-    // 8. STAFF INBOX & SUPPORT TICKETS (SUPABASE NATIVE)
+    // 8. STAFF INBOX & SUPPORT TICKETS
     window.openStaffInboxModal = async function() {
         new bootstrap.Modal(document.getElementById('staffInboxModal')).show();
         const listContainer = document.getElementById('staffInboxMessageList');
@@ -1607,15 +1633,21 @@
         if (!user.schoolId) return;
 
         try {
-            const { count } = await db.from('Support_Tickets').select('*', { count: 'exact', head: true }).eq('SchoolID', user.schoolId).eq('Status', 'Open');
+            const { data: tickets } = await db.from('Support_Tickets').select('Status').eq('SchoolID', user.schoolId).eq('Status', 'Open');
+            const count = tickets ? tickets.length : 0;
             const badge = document.getElementById('unreadTicketReplyBadge');
             if (badge) badge.innerHTML = count > 0 ? `<span class="badge bg-warning text-dark">${count} Open</span>` : "";
         } catch(e) {}
     };
 
-    // 9. LOGOUT & SECURITY
+    // 9. LOGOUT & UTILITIES
     window.doAdminLogout = function() {
         if (!confirm("Are you sure you want to log out?")) return;
+        try {
+            const authChannel = new BroadcastChannel('erp_auth_channel');
+            authChannel.postMessage('FORCE_LOGOUT');
+        } catch(e) {}
+
         localStorage.removeItem("a2z_user");
         sessionStorage.clear();
         window.location.href = window.location.origin;
