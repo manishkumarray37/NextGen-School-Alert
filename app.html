@@ -47707,10 +47707,6 @@ window.finalSubmit = async function(btn) {
         let pageContainer = document.getElementById('page-container-' + cleanPage);
         if (pageContainer) {
             pageContainer.style.display = 'block';
-
-            if (typeof window.switchConfigCategoryTab === 'function') {
-                window.switchConfigCategoryTab(requestedSettingTab);
-            }
         } else {
             const tpl = document.getElementById('tpl-' + cleanPage);
             if (tpl) {
@@ -47730,13 +47726,11 @@ window.finalSubmit = async function(btn) {
                 const initFuncName = 'init' + cleanPage + 'Module';
                 if (typeof window[initFuncName] === 'function') {
                     try { await window[initFuncName](); } catch(e) {}
-                }
-
-                if (typeof window.switchConfigCategoryTab === 'function') {
+					
+				if (typeof window.switchConfigCategoryTab === 'function') {
                     window.switchConfigCategoryTab(requestedSettingTab);
                 }
-            } else {
-				
+                }
             } else {
                 const fallbackDiv = document.createElement('div');
                 fallbackDiv.id = 'page-container-' + cleanPage;
