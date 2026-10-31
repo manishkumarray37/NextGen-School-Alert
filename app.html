@@ -47505,6 +47505,195 @@ body.public-page-mode .main-content {
 
         if (dashStats) dashStats.style.setProperty("display", "none", "important");
 
+// Helper: Convert Base64 to Blob
+function base64ToBlob(base64Data, contentType) {
+    contentType = contentType || 'image/jpeg';
+    const parts = base64Data.split(',');
+    const raw = parts.length > 1 ? parts[1] : parts[0];
+    const byteCharacters = atob(raw);
+    const byteArrays = [];
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+        const slice = byteCharacters.slice(offset, offset + 512);
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+        byteArrays.push(new Uint8Array(byteNumbers));
+    }
+    return new Blob(byteArrays, { type: contentType });
+}
+
+window.finalSubmit = async function(btn) {
+    const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+    const schoolId = user.schoolId;
+
+    if (String(user.role || "").toUpperCase() === "STUDENT") {
+        alert("⛔ Permission Denied: Students are restricted from editing admission records!");
+        return;
+    }
+
+    const form = document.getElementById('admissionForm');
+    if (form && !form.reportValidity()) return;
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving to Database...';
+
+    try {
+        const fd = new FormData(form);
+        const studId = document.getElementById('studIdBox')?.value || ("STU" + Math.floor(10000 + Math.random() * 90000));
+        let photoUrl = document.getElementById('studentPhotoBase64')?.value || "";
+
+        // 🖼️ Photo Upload to Supabase Storage
+        if (photoUrl && photoUrl.startsWith("data:image")) {
+            try {
+                const resBlob = await fetch(photoUrl);
+                const blob = await resBlob.blob();
+                const filePath = `${schoolId}/students/${studId}.jpg`;
+
+                const { error: upErr } = await db.storage
+                    .from('School_Data')
+                    .upload(filePath, blob, { 
+                        contentType: 'image/jpeg',
+                        cacheControl: '0', 
+                        upsert: true   
+                    });
+                if (!upErr) {
+                    const { data: pubData } = db.storage
+                        .from('School_Data')
+                        .getPublicUrl(filePath);
+                    photoUrl = `${pubData.publicUrl}?t=${Date.now()}`;
+                } else {
+                    console.error("Storage upload error:", upErr);
+                }
+            } catch(eUpload) {
+                console.error("Storage upload exception:", eUpload);
+            }
+        }
+		
+        // 📝 ALL 60+ EXACT MATCHED DATABASE COLUMNS
+        const studentRecord = {
+            "SchoolID": schoolId,
+            "StudId": studId,
+            "AdmissionNo": fd.get('AdmissionNo') || studId,
+            "RollNo": fd.get('RollNo') || "",
+            "BatchName": fd.get('BatchName') || "2026-27",
+            "Class": fd.get('Class') || "",
+            "Section": fd.get('Section') || "A",
+            "StudentName": (fd.get('StudentName') || "").toUpperCase(),
+            "LastName": (fd.get('LastName') || "").toUpperCase(),
+            "Gender": fd.get('Gender') || "Male",
+            "DateOfBirth": fd.get('DateOfBirth') || null,
+            "ContactMobileNo": fd.get('ContactMobileNo') || "",
+            "MailId": fd.get('MailId') || "",
+            "AdmDate": fd.get('AdmDate') || new Date().toISOString().split('T')[0],
+            "FeesStartDate": fd.get('FeesStartDate') || new Date().toISOString().split('T')[0],
+            "AppNumber": fd.get('AppNumber') || "NA",
+            "CategoryName": fd.get('CategoryName') || "GENERAL",
+            "IsNewStudent": fd.get('IsNewStudent') || "No",
+            "Hostel": fd.get('Hostel') || "No",
+            "Transport": fd.get('Transport') || "No",
+            "StudentPhoto": photoUrl,
+            // Parents Information
+            "FatherName": (fd.get('FatherName') || "").toUpperCase(),
+            "FatherMobileNo": fd.get('FatherMobileNo') || "",
+            "FatherMailId": fd.get('FatherMailId') || "",
+            "FatherAadharCard": fd.get('FatherAadharCard') || "",
+            "FatherEducation": (fd.get('FatherEducation') || "").toUpperCase(),
+            "FathersOccupation": (fd.get('FathersOccupation') || "").toUpperCase(),
+            "FathersAnnualIncome": fd.get('FathersAnnualIncome') || "",
+            "MotherName": (fd.get('MotherName') || "").toUpperCase(),
+            "MotherMobileNo": fd.get('MotherMobileNo') || "",
+            "MotherMailId": fd.get('MotherMailId') || "",
+            "MotherAaadharCard": fd.get('MotherAaadharCard') || "",
+            "MotherEducation": (fd.get('MotherEducation') || "").toUpperCase(),
+            "MothersOccupation": (fd.get('MothersOccupation') || "HOMEMAKER").toUpperCase(),
+            "MothersAnnualIncome": fd.get('MothersAnnualIncome') || "0",
+            "GaurdianName": (fd.get('GaurdianName') || "NA").toUpperCase(),
+            "GaurdianContactNo": fd.get('GaurdianContactNo') || "",
+            // Address Details
+            "AddressLine1": (fd.get('AddressLine1') || "").toUpperCase(),
+            "AddressLine2": (fd.get('AddressLine2') || "").toUpperCase(),
+            "City": (fd.get('City') || "").toUpperCase(),
+            "StateName": fd.get('StateName') || "Bihar",
+            "DistrictName": fd.get('DistrictName') || "Vaishali",
+            "Pincode": fd.get('Pincode') || "",
+            "GeoLat": fd.get('GeoLat') || "0",
+            "GeoLon": fd.get('GeoLon') || "0",
+            // Demographics & IDs
+            "BirthPlace": (fd.get('BirthPlace') || "").toUpperCase(),
+            "Nationlity": (fd.get('Nationlity') || "INDIAN").toUpperCase(),
+            "MotherTongue": (fd.get('MotherTongue') || "HINDI").toUpperCase(),
+            "ReligionName": (fd.get('ReligionName') || "HINDU").toUpperCase(),
+            "CasteName": (fd.get('CasteName') || "NA").toUpperCase(),
+            "CommunityName": (fd.get('CommunityName') || "NA").toUpperCase(),
+            "BloodGroupName": fd.get('BloodGroupName') || "O+VE",
+            "Height": fd.get('Height') || "",
+            "Weight": fd.get('Weight') || "",
+            "HealthIssues": fd.get('HealthIssues') || "NA",
+            "Allergies": fd.get('Allergies') || "NA",
+            "HouseName": fd.get('HouseName') || "NA",
+            "BiometricId": fd.get('BiometricId') || "NA",
+            "LastClassStudied": fd.get('LastClassStudied') || "NA",
+            "LastSchoolStudied": fd.get('LastSchoolStudied') || "NA",
+            "PenNo": fd.get('PenNo') || "",
+            "ApaarNo": fd.get('ApaarNo') || "",
+            "EmisNo": fd.get('EmisNo') || "",
+            "AadhaarNo": fd.get('AadhaarNo') || "",
+            // Credentials & Status
+            "LogInId": document.getElementById('loginIdBox')?.value || studId,
+            "LoginPassword": document.getElementById('loginPassBox')?.value || "123456",
+            "DisplaySequence": parseInt(fd.get('RollNo'), 10) || 999,
+            "Status": "ACTIVE"
+        };
+
+        const isEditMode = document.getElementById('isEditModeInput')?.value === "true";
+        if (isEditMode) {
+            const { error: updErr } = await db
+                .from('Students')
+                .update(studentRecord)
+                .eq('SchoolID', schoolId)
+                .eq('StudId', studId);
+
+            if (updErr) throw updErr;
+
+            alert("✅ Student Profile Updated Successfully!");
+            sessionStorage.removeItem("edit_student_data");
+            localStorage.removeItem("royal_edit_student");
+            const editModeEl = document.getElementById('isEditModeInput');
+            if (editModeEl) editModeEl.value = 'false';
+
+            form.reset();
+            if (window.removePhoto) window.removePhoto();
+
+            // Return smoothly to View Student
+            window.navigateTo("ViewStudent");
+            setTimeout(() => {
+                if (typeof window.triggerManualSearch === 'function') {
+                    window.triggerManualSearch();
+                }
+            }, 300);
+            return; 
+        } else {
+            const { error: insErr } = await db
+                .from('Students')
+                .insert([studentRecord]);
+
+            if (insErr) throw insErr;
+
+            alert("✅ New Student Added Successfully!");
+            form.reset();
+            if (window.removePhoto) window.removePhoto();
+            if (window.goToStep) window.goToStep(1);
+        }
+    } catch (err) {
+        console.error("Save Student Error:", err);
+        alert("❌ Error saving student: " + (err.message || err));
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-check-circle me-2"></i>SAVE COMPLETE STUDENT PROFILE';
+    }
+};
+
         // Highlight Sub-menu
         document.querySelectorAll('.nav-link-custom, .nav-link-nested').forEach(link => {
             const fn = link.getAttribute('onclick') || '';
