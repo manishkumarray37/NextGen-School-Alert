@@ -110,12 +110,8 @@
         box-shadow: 0 7px 0 #0f172a, 0 14px 25px rgba(56, 189, 248, 0.35);
         color: #38bdf8 !important;
       }
-      .btn-3d-download:active {
-        transform: translateY(4px);
-        box-shadow: 0 1px 0 #0f172a, 0 3px 10px rgba(0, 0, 0, 0.2);
-      }
 
-      /* ================= TOP HEADER (EXACT ORIGINAL DESIGN) ================= */
+      /* ================= TOP HEADER (PROFESSIONAL DESIGN) ================= */
       header { 
         background: #ffffff; 
         padding: 10px 25px; 
@@ -130,6 +126,51 @@
         box-shadow: 0 2px 10px rgba(0,0,0,0.03); 
       }
       .brand-logo-img { height: 42px; width: auto; object-fit: contain; }
+
+      /* AVATAR & DROPDOWN HUB */
+      .user-avatar-top { 
+        width: 38px; 
+        height: 38px; 
+        object-fit: cover; 
+        border: 2px solid #008b8b;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+      .user-avatar-top:hover {
+        transform: scale(1.05);
+      }
+      .user-profile-dropdown-card {
+        width: 270px;
+        border-radius: 18px;
+        border: 1px solid #e2e8f0;
+        padding: 18px 14px;
+      }
+      .custom-drop-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 13px;
+        color: #0f172a;
+        text-decoration: none;
+        transition: 0.15s;
+      }
+      .custom-drop-item:hover {
+        background: #f0fdf4;
+        color: #008b8b;
+      }
+
+      /* SQUARE MODAL AVATAR */
+      .profile-modal-avatar {
+        width: 110px !important;
+        height: 110px !important;
+        border-radius: 16px !important;
+        object-fit: cover !important;
+        border: 3px solid #008b8b !important;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12) !important;
+      }
 
       /* ================= DESKTOP TOP NAVBAR ================= */
       #student-top-navbar {
@@ -171,16 +212,19 @@
       }
       .stu-nav-logout {
         background: #006666 !important;
-        border-radius: 4px;
+        border-radius: 6px;
         border-bottom: none !important;
         color: #ffffff !important;
         padding: 8px 18px !important;
         margin-right: 8px;
-        transition: background 0.2s ease;
+        font-weight: 700;
+        transition: all 0.2s ease;
       }
       .stu-nav-logout:hover {
         background: #dc2626 !important;
         color: #ffffff !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(220, 38, 38, 0.3);
       }
 
       /* "MORE" DROPDOWN MENU */
@@ -302,7 +346,7 @@
   <div id="global-top-loader"></div>
 
   <!-- =================================================================== -->
-  <!-- 1. LOGIN OVERLAY SCREEN (GLASSMORPHISM WITH 3D ANDROID DOWNLOAD)     -->
+  <!-- 1. LOGIN OVERLAY SCREEN                                             -->
   <!-- =================================================================== -->
   <div id="login-overlay">
     <div class="container-fluid">
@@ -375,20 +419,55 @@
   <!-- =================================================================== -->
   <div id="main-app" style="display:none;">
     
-    <!-- Top Header (Exact Match to Your Professional 1st Screenshot) -->
+    <!-- Top Header (With Live Clock, Greeting, Avatar & Clickable Dropdown) -->
     <header>
       <div class="d-flex align-items-center gap-2" onclick="window.navigateToStudentView('MyProfile')" style="cursor: pointer;">
         <img alt="School Logo" class="brand-logo-img" src="https://yanzstgfsvnlspbrminc.supabase.co/storage/v1/object/public/School_Data/ADMIN%20DATA/schoolalarm%20header.png">
       </div>
 
-      <div class="d-flex align-items-center gap-2">
-        <div class="text-end">
+      <div class="d-flex align-items-center gap-3">
+        <!-- Live Clock & Greeting -->
+        <div class="text-end d-none d-sm-block">
           <div class="fw-bold text-primary small" style="font-size: 13.5px;">
             <span id="dynamic-greeting">Good Morning ☀️</span>, <span id="profile-school-name" class="text-primary fw-bold">School Portal</span>
           </div>
           <small class="text-muted fw-semibold" id="live-clock" style="font-size: 11px;">Loading live time...</small>
         </div>
-        <img class="rounded-circle border border-2 border-primary shadow-sm" id="topHeaderUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width: 38px; height: 38px; object-fit: cover;">
+
+        <!-- 👤 User Profile Dropdown Hub (Screenshot 2 Match) -->
+        <div class="dropdown">
+          <img class="rounded-circle user-avatar-top shadow-sm" id="topHeaderUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" data-bs-toggle="dropdown" aria-expanded="false" title="Account Menu">
+
+          <div class="dropdown-menu dropdown-menu-end shadow-lg user-profile-dropdown-card">
+            <div class="text-center pb-3 border-bottom">
+              <div class="position-relative d-inline-block mb-1" onclick="window.openMyAccountProfileModal()" style="cursor: pointer;">
+                <img id="dropdownUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="rounded-circle border border-2 border-primary shadow-sm" style="width: 56px; height: 56px; object-fit: cover;">
+                <span class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-1" style="font-size: 9px;"><i class="fas fa-camera"></i></span>
+              </div>
+              <h6 class="fw-bold text-dark m-0 mt-1" id="dropdownUserName">Student Name</h6>
+              <span class="badge bg-success bg-opacity-10 text-success border border-success mt-1" style="font-size: 10px;">STUDENT</span>
+              <div class="text-muted small mt-1 text-truncate fw-bold" id="dropdownSchoolName" style="font-size: 11px;">School Portal</div>
+            </div>
+
+            <div class="py-2">
+              <a class="custom-drop-item" href="javascript:void(0)" onclick="window.openMyAccountProfileModal()">
+                <i class="fas fa-user-circle text-primary fa-lg"></i>
+                <span>My Profile &amp; Photo</span>
+              </a>
+              <a class="custom-drop-item" href="javascript:void(0)" onclick="window.openChangePasswordModal()">
+                <i class="fas fa-key text-warning fa-lg"></i>
+                <span>Change Password</span>
+              </a>
+            </div>
+
+            <div class="pt-2 border-top">
+              <a class="custom-drop-item text-danger" href="javascript:void(0)" onclick="window.doStudentLogout()">
+                <i class="fas fa-sign-out-alt fa-lg"></i>
+                <span>Logout</span>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </header>
 
@@ -502,17 +581,17 @@
       </button>
     </div>
 
-    <!-- Dynamic Work Area (Single Container to Prevent Layout Breaks) -->
+    <!-- Dynamic Work Area -->
     <div class="container-fluid px-3 py-3" id="page-area"></div>
   </div>
 
   <!-- =================================================================== -->
-  <!-- 3. STUDENT TEMPLATES REPOSITORY (TPL PLACEHOLDERS & DEMOS)          -->
+  <!-- 3. STUDENT TEMPLATES REPOSITORY (PASTE YOUR FULL TPL MODULES HERE)   -->
   <!-- =================================================================== -->
   
   <!-- 👇👇👇 PASTE ALL YOUR FULL STUDENT TPL MODULE CODES HERE 👇👇👇 -->
 
-  <!-- DEMO 1: tpl-MyProfile (REPLACE THIS WITH YOUR FULL tpl-MyProfile CODE) -->
+  <!-- DEMO: tpl-MyProfile -->
   <template id="tpl-MyProfile">
     <div class="card p-4 border-0 shadow-sm rounded-4">
       <h5 class="fw-bold text-primary"><i class="fas fa-user me-2"></i>My Profile Dossier</h5>
@@ -520,7 +599,7 @@
     </div>
   </template>
 
-  <!-- DEMO 2: tpl-StudentHomework (REPLACE THIS WITH YOUR FULL tpl-StudentHomework CODE) -->
+  <!-- DEMO: tpl-StudentHomework -->
   <template id="tpl-StudentHomework">
     <div class="card p-4 border-0 shadow-sm rounded-4">
       <h5 class="fw-bold text-warning"><i class="fas fa-book me-2"></i>Daily Homework</h5>
@@ -528,7 +607,7 @@
     </div>
   </template>
 
-  <!-- DEMO 3: tpl-StudentFees (REPLACE THIS WITH YOUR FULL tpl-StudentFees CODE) -->
+  <!-- DEMO: tpl-StudentFees -->
   <template id="tpl-StudentFees">
     <div class="card p-4 border-0 shadow-sm rounded-4">
       <h5 class="fw-bold text-success"><i class="fas fa-receipt me-2"></i>Fees Payment Ledger</h5>
@@ -536,26 +615,93 @@
     </div>
   </template>
 
-  <!-- ADD REMAINING TEMPLATES HERE:
-       - <template id="tpl-StudentAttendance">...</template>
-       - <template id="tpl-Announcements">...</template>
-       - <template id="tpl-StudentReportCard">...</template>
-       - <template id="tpl-Complaints">...</template>
-       - <template id="tpl-ViewCalendar">...</template>
-       - <template id="tpl-Econtents">...</template>
-       - <template id="tpl-Gallery">...</template>
-       - <template id="tpl-StudentRequests">...</template>
-       - <template id="tpl-DigitalNoticeBoard">...</template>
-  -->
   <!-- 👆👆👆 END OF STUDENT TEMPLATES REPOSITORY 👆👆👆 -->
 
 
   <!-- =================================================================== -->
-  <!-- 4. PROFILE CORRECTION REQUEST MODAL                                 -->
+  <!-- 4. ACCOUNT PROFILE POPUP MODAL (SCREENSHOT 3 EXACT MATCH)           -->
+  <!-- =================================================================== -->
+  <div class="modal fade" id="userAccountProfileModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+        <div class="modal-header bg-primary text-white py-3">
+          <h6 class="modal-title fw-bold"><i class="fas fa-user-circle me-2"></i>My Account Profile</h6>
+          <button class="btn-close btn-close-white" data-bs-dismiss="modal" type="button"></button>
+        </div>
+        <div class="modal-body p-4 text-center">
+          <!-- Square Rounded Avatar (Exact Match) -->
+          <div class="position-relative d-inline-block mb-3">
+            <img class="profile-modal-avatar shadow" id="modalStudentAvatarPreview" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+            <span class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-1.5 shadow" style="font-size: 11px;"><i class="fas fa-camera"></i></span>
+          </div>
+
+          <h5 class="fw-bold text-dark mb-1" id="modalStudentFullName">AARAV KUMAR</h5>
+          <div class="badge bg-primary px-3 py-1 mb-3">STUDENT</div>
+
+          <div class="text-start border rounded-3 p-3 bg-light mb-3" style="font-size: 13px;">
+            <div class="mb-2"><strong>School:</strong> <span class="text-primary fw-bold" id="modalStudentSchoolName">-</span></div>
+            <div class="mb-2"><strong>Login ID:</strong> <span class="text-dark fw-bold" id="modalStudentLoginDetails">-</span></div>
+            <div><strong>Status:</strong> <span class="badge bg-success">ACTIVE</span></div>
+          </div>
+
+          <div class="d-flex justify-content-between gap-2 pt-2 border-top">
+            <button class="btn btn-outline-warning btn-sm fw-bold px-3 py-2" onclick="window.openChangePasswordModal()" type="button">
+              <i class="fas fa-key me-1"></i> Change Password
+            </button>
+            <button class="btn btn-warning btn-sm fw-bold text-dark px-3 py-2 shadow-sm" onclick="window.openStudentCorrectionModal()" type="button">
+              <i class="fas fa-edit me-1"></i> Request Correction
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- 5. CHANGE PASSWORD MODAL                                            -->
+  <!-- =================================================================== -->
+  <div class="modal fade" id="changePasswordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+        <div class="modal-header bg-warning text-dark py-3">
+          <h6 class="modal-title fw-bold"><i class="fas fa-key me-2"></i>Change Account Password</h6>
+          <button class="btn-close" data-bs-dismiss="modal" type="button"></button>
+        </div>
+        <div class="modal-body p-4">
+          <form id="changePasswordForm" onsubmit="window.submitStudentChangePassword(event)">
+            <input autocomplete="username" style="display:none;" type="text" value="student">
+            
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-dark">Current Password *</label>
+              <input autocomplete="current-password" class="form-control" id="oldPasswordInput" placeholder="Enter current password" required type="password">
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-dark">New Password *</label>
+              <input autocomplete="new-password" class="form-control" id="newPasswordInput" minlength="4" placeholder="Enter new password" required type="password">
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-bold text-dark">Confirm New Password *</label>
+              <input autocomplete="new-password" class="form-control" id="confirmPasswordInput" minlength="4" placeholder="Re-enter new password" required type="password">
+            </div>
+            
+            <div class="d-flex justify-content-end gap-2 pt-2 border-top">
+              <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal" type="button">Cancel</button>
+              <button class="btn btn-success btn-sm fw-bold px-4 shadow" id="btnUpdatePassword" type="submit">
+                <i class="fas fa-check-circle me-1"></i> Update Password
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- 6. PROFILE CORRECTION REQUEST MODAL                                 -->
   <!-- =================================================================== -->
   <div aria-hidden="true" class="modal fade" id="studentCorrectionModal" style="z-index: 1060;" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow-lg rounded-4">
+      <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
         <div class="modal-header bg-warning text-dark py-3">
           <h6 class="modal-title fw-bold"><i class="fas fa-edit me-2"></i>Request Profile Data Correction</h6>
           <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
@@ -595,7 +741,7 @@
   </div>
 
   <!-- =================================================================== -->
-  <!-- 5. FESTIVAL GREETING POPUP MODAL                                    -->
+  <!-- 7. FESTIVAL GREETING POPUP MODAL                                    -->
   <!-- =================================================================== -->
   <div aria-hidden="true" class="modal fade" id="globalGreetingPopupModal" style="z-index: 9999999;" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered greeting-modal-dialog">
@@ -628,14 +774,12 @@
   </div>
 
   <!-- =================================================================== -->
-  <!-- 6. CORE CONTROLLER JAVASCRIPT ENGINE (SUPABASE NATIVE)             -->
+  <!-- 8. CORE CONTROLLER JAVASCRIPT ENGINE (SUPABASE NATIVE)             -->
   <!-- =================================================================== -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script type="text/javascript">
-    // window.db is directly used from config.js
-
-    // 🕒 Live Header Clock & Greeting
+    // 🕒 Live Header Clock & Dynamic Greeting
     function initStudentHeaderClock() {
       function updateClock() {
         const now = new Date();
@@ -707,6 +851,7 @@
           schoolId: studentData.SchoolID,
           schoolName: schoolName,
           loginId: studentData.AdmissionNo || studentData.StudId || id,
+          sessionPassword: ps,
           name: fullName,
           avatar: studentData.StudentPhoto || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
           studentProfile: studentData
@@ -724,7 +869,7 @@
       }
     };
 
-    // 🚀 Initialize Student Portal (No innerText of Null Error)
+    // 🚀 Initialize Student Portal
     window.initStudentPortal = function() {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "null");
 
@@ -740,13 +885,23 @@
       document.getElementById("main-app").style.display = "block";
 
       const fullName = user.name || "Student";
+      const p = user.studentProfile || {};
       
-      // Safe Header Population
+      // Header & Dropdown Elements Update
       const schEl = document.getElementById("profile-school-name");
       if (schEl) schEl.innerText = user.schoolName || "School Portal";
 
+      const dropSchEl = document.getElementById("dropdownSchoolName");
+      if (dropSchEl) dropSchEl.innerText = user.schoolName || "School Portal";
+
+      const dropNameEl = document.getElementById("dropdownUserName");
+      if (dropNameEl) dropNameEl.innerText = fullName;
+
       const avEl = document.getElementById("topHeaderUserAvatar");
       if (avEl) avEl.src = user.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
+      const dropAvEl = document.getElementById("dropdownUserAvatar");
+      if (dropAvEl) dropAvEl.src = user.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
       const mobWelcome = document.getElementById("mobWelcomeText");
       if (mobWelcome) mobWelcome.innerText = `Hello ${fullName}`;
@@ -855,7 +1010,7 @@
       }
     };
 
-    // ⚡ Instant Dropdown Toggler
+    // ⚡ Dropdown Menu Toggler
     window.toggleStudentMoreMenu = function(e) {
       if (e) { e.preventDefault(); e.stopPropagation(); }
       const menu = document.getElementById("stuMoreDropdownList");
@@ -875,19 +1030,102 @@
       }
     });
 
-    // 🚪 Logout
-    window.doStudentLogout = function() {
-      if (!confirm("Are you sure you want to log out of Student Portal?")) return;
-      localStorage.removeItem("a2z_user");
-      sessionStorage.clear();
-      window.location.href = window.location.origin;
+    // 👤 Open Account Profile Modal (Screenshot 3)
+    window.openMyAccountProfileModal = function() {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const p = user.studentProfile || {};
+
+      document.getElementById('modalStudentAvatarPreview').src = user.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+      document.getElementById('modalStudentFullName').innerText = user.name || "Student Name";
+      document.getElementById('modalStudentSchoolName').innerText = user.schoolName || "-";
+      
+      const realId = p.StudId || p.LogInId || user.loginId || "-";
+      const realClass = p.Class ? `${p.Class} (${p.Section || 'A'})` : "-";
+      document.getElementById('modalStudentLoginDetails').innerText = `ID: ${realId} | Class: ${realClass}`;
+
+      new bootstrap.Modal(document.getElementById('userAccountProfileModal')).show();
     };
 
-    // 📝 Correction Request Handler (Supabase Native)
+    // 🔑 Open Change Password Modal
+    window.openChangePasswordModal = function() {
+      // Hide account modal if open
+      const accModalEl = document.getElementById('userAccountProfileModal');
+      const accInst = bootstrap.Modal.getInstance(accModalEl);
+      if (accInst) accInst.hide();
+
+      document.getElementById('changePasswordForm').reset();
+      new bootstrap.Modal(document.getElementById('changePasswordModal')).show();
+    };
+
+    // 🔑 Submit Change Password (Supabase Native)
+    window.submitStudentChangePassword = async function(e) {
+      e.preventDefault();
+      const oldPass = document.getElementById('oldPasswordInput').value.trim();
+      const newPass = document.getElementById('newPasswordInput').value.trim();
+      const confirmPass = document.getElementById('confirmPasswordInput').value.trim();
+
+      if (newPass !== confirmPass) {
+        alert("New Password and Confirm Password do not match.");
+        return;
+      }
+
+      const btn = document.getElementById('btnUpdatePassword');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Updating...`;
+
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const p = user.studentProfile || {};
+      const studId = p.StudId || user.loginId;
+
+      try {
+        // Verify current password first
+        const { data: curCheck, error: chkErr } = await db
+          .from('Students')
+          .select('LoginPassword')
+          .eq('SchoolID', user.schoolId)
+          .eq('StudId', studId)
+          .maybeSingle();
+
+        if (chkErr || !curCheck || curCheck.LoginPassword !== oldPass) {
+          alert("Incorrect current password. Please try again.");
+          btn.disabled = false;
+          btn.innerHTML = `<i class="fas fa-check-circle me-1"></i> Update Password`;
+          return;
+        }
+
+        // Update in Supabase
+        const { error: updErr } = await db
+          .from('Students')
+          .update({ LoginPassword: newPass })
+          .eq('SchoolID', user.schoolId)
+          .eq('StudId', studId);
+
+        if (updErr) throw updErr;
+
+        user.sessionPassword = newPass;
+        localStorage.setItem("a2z_user", JSON.stringify(user));
+
+        alert("✅ Password updated successfully!");
+        bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
+
+      } catch(err) {
+        alert("Password update failed: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fas fa-check-circle me-1"></i> Update Password`;
+      }
+    };
+
+    // 📝 Open Correction Request Modal
     window.openStudentCorrectionModal = function() {
+      const accModalEl = document.getElementById('userAccountProfileModal');
+      const accInst = bootstrap.Modal.getInstance(accModalEl);
+      if (accInst) accInst.hide();
+
       new bootstrap.Modal(document.getElementById('studentCorrectionModal')).show();
     };
 
+    // 📝 Submit Correction Request (Supabase Native)
     window.submitStudentCorrectionRequest = async function(e) {
       e.preventDefault();
       const btn = document.getElementById('btnSubmitCorrection');
@@ -934,7 +1172,7 @@
         const { error } = await db.from('Student_Requests').insert([payload]);
         if (error) throw error;
 
-        msgBox.innerHTML = `<div class="alert alert-success py-2 small fw-bold mb-0">✅ Request submitted successfully!</div>`;
+        msgBox.innerHTML = `<div class="alert alert-success py-2 small fw-bold mb-0">✅ Correction request sent to school administration successfully!</div>`;
         document.getElementById('formStudentCorrection').reset();
         setTimeout(() => {
           bootstrap.Modal.getInstance(document.getElementById('studentCorrectionModal')).hide();
@@ -947,6 +1185,14 @@
         btn.disabled = false;
         btn.innerHTML = `<i class="fas fa-paper-plane me-1"></i> Submit Request`;
       }
+    };
+
+    // 🚪 Logout Handler
+    window.doStudentLogout = function() {
+      if (!confirm("Are you sure you want to log out of Student Portal?")) return;
+      localStorage.removeItem("a2z_user");
+      sessionStorage.clear();
+      window.location.href = window.location.origin;
     };
 
     // 🎆 Festival Greetings Controller
