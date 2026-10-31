@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
-    <title>School &amp; Staff ERP Portal | School Alarm</title>
+    <title>SCHOOL ALARM | Multi-School Enterprise ERP</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png">
@@ -12,7 +12,7 @@
     <!-- External CSS Libraries -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- ⚡ JS SDK & Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -32,7 +32,7 @@
               const u = JSON.parse(rawUser || "{}");
               const role = String(u.role || "").toUpperCase();
               
-              // If student accidentally opens app.html, send to student portal
+              // If student opens app.html, direct to student portal
               if (role === "STUDENT") {
                 const host = window.location.hostname.toLowerCase();
                 if (host.startsWith("app.")) {
@@ -129,7 +129,7 @@
           color: #38bdf8 !important;
       }
 
-      /* 1. LEFT ICON BAR */
+      /* 1. LEFT ICON BAR (80px) */
       .icon-bar { width: var(--icon-bar-w); height: 100vh; background: #ffffff; position: fixed; left: 0; top: 0; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; padding-top: 15px; z-index: 1060; overflow-y: auto; transition: 0.3s; }
       .icon-item { 
           position: relative;
@@ -163,7 +163,7 @@
       .icon-item.active { background: linear-gradient(145deg, #059669, #047857) !important; color: #ffffff !important; border-color: #047857; }
       .icon-item.active i { background: transparent !important; color: #ffffff !important; border-color: transparent !important; }
 
-      /* 2. SECONDARY TEXT SIDEBAR */
+      /* 2. SECONDARY TEXT SIDEBAR (220px) */
       .text-sidebar { 
           width: var(--sidebar-w); 
           height: 100vh; 
@@ -253,6 +253,51 @@
       header { background: #ffffff; padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; min-height: 65px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
       .school-sel { border: 2px solid var(--accent); border-radius: 20px; font-weight: 700; color: var(--primary); width: 280px; height: 36px; font-size: 13px; background-color: #f0fdf4; padding: 5px 14px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; }
 
+      /* User Profile Box & Dropdown (Exact Screenshot 1 Replica) */
+      .user-profile-box {
+        padding: 4px 14px 4px 6px !important;
+        border: 1.5px solid #e2e8f0 !important;
+        border-radius: 30px !important;
+        background: #ffffff !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+      }
+      .user-profile-box:hover {
+        border-color: #059669 !important;
+        box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15) !important;
+      }
+      .user-avatar-top { 
+        width: 34px !important; 
+        height: 34px !important; 
+        object-fit: cover !important; 
+        border-radius: 50% !important;
+      }
+
+      .user-profile-dropdown-card {
+        width: 270px;
+        border-radius: 18px;
+        border: 1px solid #e2e8f0;
+        padding: 18px 14px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12) !important;
+      }
+      .custom-drop-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 9px 12px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 13px;
+        color: #0f172a;
+        text-decoration: none;
+        transition: 0.15s;
+      }
+      .custom-drop-item:hover {
+        background: #f0fdf4;
+        color: #059669;
+      }
+
+      /* KPI Cards */
       .card-modern { border: 1.2px solid #e2e8f0 !important; border-radius: 14px !important; background: #ffffff; box-shadow: var(--card-shadow); transition: all 0.3s ease; }
       .card-modern:hover { transform: translateY(-3px); box-shadow: var(--hover-shadow); }
 
@@ -276,7 +321,7 @@
           .school-sel { width: 140px !important; font-size: 11px !important; }
       }
 
-      /* FOOTER BAR */
+      /* FOOTER BAR (Exact Match to Screenshot 1) */
       .erp-footer {
         position: fixed;
         bottom: 0;
@@ -342,7 +387,7 @@
     <div class="sidebar-overlay" onclick="window.toggleSidebar()"></div>
 
     <!-- =================================================================== -->
-    <!-- 1. LOGIN OVERLAY SCREEN (FOR DIRECT APP ACCESS)                     -->
+    <!-- 1. LOGIN OVERLAY SCREEN (FOR DIRECT ACCESS)                         -->
     <!-- =================================================================== -->
     <div id="login-overlay">
         <div class="container-fluid">
@@ -440,46 +485,47 @@
                     </div>
                 </div>
 
-                <div class="ms-auto d-flex align-items-center gap-2">
+                <div class="ms-auto d-flex align-items-center gap-3">
                     <!-- 🏫 SUPER ADMIN MULTI-SCHOOL SWITCHER -->
                     <div id="switcher-box" style="display:none;">
                         <select class="form-select form-select-sm school-sel shadow-sm" id="schoolSelect" onchange="window.switchSchool()"></select>
                     </div>
 
-                    <!-- Dynamic Greeting & Clock -->
+                    <!-- Dynamic Greeting & Live Clock (Exact Screenshot 1) -->
                     <div class="text-end d-none d-md-block border-start ps-3">
-                        <div class="fw-bold text-primary small" id="dynamic-greeting">Good Morning ☀️</div>
-                        <div class="small text-muted" id="live-clock" style="font-size: 11px;"></div>
+                        <div class="fw-bold text-primary small" style="font-size: 13px;">
+                            <span id="dynamic-greeting">Good Evening 🌙</span>, <span id="profile-school-name" class="fw-bold text-primary">Royal International Public School</span>
+                        </div>
+                        <div class="small text-muted fw-semibold" id="live-clock" style="font-size: 11px;">Loading time...</div>
                     </div>
 
-                    <!-- 👤 User Profile Dropdown -->
+                    <!-- 👤 User Profile Dropdown Hub (Exact Screenshot 1 Replica) -->
                     <div class="dropdown">
-                        <div class="d-flex align-items-center gap-2 border rounded-pill shadow-sm px-2 py-1 bg-white" data-bs-toggle="dropdown" style="cursor:pointer;">
-                            <img class="rounded-circle shadow-sm border" id="topHeaderUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width: 32px; height: 32px; object-fit: cover;">
-                            <span class="small fw-bold text-dark d-none d-sm-inline" id="top-user-name">Admin</span>
+                        <div class="d-flex align-items-center gap-2 user-profile-box shadow-sm" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img class="user-avatar-top shadow-sm border" id="topHeaderUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+                            <span class="small fw-bold text-dark d-none d-sm-inline" id="top-user-name">Principal Sharma</span>
                         </div>
 
-                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 rounded-4 p-2" style="min-width: 250px;">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg user-profile-dropdown-card">
                             <li class="p-2 text-center bg-light rounded-3 mb-2 border">
-                                <div class="position-relative d-inline-block">
-                                    <img class="rounded-circle border border-2 border-primary shadow-sm mb-1" id="dropdownUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width: 50px; height: 50px; object-fit: cover;">
-                                    <span class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-1" onclick="window.openMyProfileModal()" style="font-size: 9px; cursor: pointer;"><i class="fas fa-camera"></i></span>
+                                <div class="position-relative d-inline-block mb-1" onclick="window.openMyProfileModal()" style="cursor: pointer;">
+                                    <img class="rounded-circle border border-2 border-primary shadow-sm" id="dropdownUserAvatar" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width: 56px; height: 56px; object-fit: cover;">
+                                    <span class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-1" style="font-size: 9px;"><i class="fas fa-camera"></i></span>
                                 </div>
-                                <div class="fw-bold text-dark" id="dropdownUserName" style="font-size: 13px;">Admin User</div>
-                                <span class="badge bg-success bg-opacity-10 text-success border border-success" id="dropdownUserRole" style="font-size: 10px;">ADMIN</span>
-                                <div class="text-muted small mt-1 text-truncate fw-bold" id="profile-school-name" style="font-size: 11px;">School Name</div>
+                                <div class="fw-bold text-dark" id="dropdownUserName" style="font-size: 13.5px;">Principal Sharma</div>
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success mt-1" id="dropdownUserRole" style="font-size: 10px;">ADMIN</span>
+                                <div class="text-muted small mt-1 text-truncate fw-bold" id="dropdownSchoolName" style="font-size: 11px;">Royal International Public School</div>
                             </li>
 
-                            <li><a class="dropdown-item fw-bold py-2 rounded-2 text-dark" href="javascript:void(0)" onclick="window.openMyProfileModal()"><i class="fas fa-user-circle text-primary me-2"></i>My Profile &amp; Photo</a></li>
-                            <li><a class="dropdown-item fw-bold py-2 rounded-2 text-dark" href="javascript:void(0)" onclick="window.openChangePasswordModal()"><i class="fas fa-key text-warning me-2"></i>Change Password</a></li>
-                            <li><hr class="dropdown-divider my-1"/></li>
-                            <li><a class="dropdown-item fw-bold py-2 rounded-2 text-danger" href="javascript:void(0)" onclick="window.doAdminLogout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            <li><a class="custom-drop-item" href="javascript:void(0)" onclick="window.openMyProfileModal()"><i class="fas fa-user-circle text-primary fa-lg"></i><span>My Profile &amp; Photo</span></a></li>
+                            <li><a class="custom-drop-item" href="javascript:void(0)" onclick="window.openChangePasswordModal()"><i class="fas fa-key text-warning fa-lg"></i><span>Change Password</span></a></li>
+                            <li class="border-top mt-2 pt-2"><a class="custom-drop-item text-danger" href="javascript:void(0)" onclick="window.doAdminLogout()"><i class="fas fa-sign-out-alt fa-lg"></i><span>Logout</span></a></li>
                         </ul>
                     </div>
                 </div>
             </header>
 
-            <!-- 8 KPI DASHBOARD CARDS (ADMIN OVERVIEW) -->
+            <!-- 8 KPI DASHBOARD CARDS (ADMIN OVERVIEW - EXACT SCREENSHOT 1) -->
             <div class="p-4">
                 <div class="row g-3 mb-4" id="dash-stats-row">
                     <!-- 1. Students -->
@@ -554,8 +600,8 @@
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
                                     <span class="text-muted small fw-bold text-uppercase">Today Attendance</span>
-                                    <h3 class="fw-bold mb-0 text-dark mt-1" id="kpiTodayAttendance">-</h3>
-                                    <small class="text-muted fw-bold" id="kpiTodayAttSub" style="font-size: 11px;">Daily Muster</small>
+                                    <h3 class="fw-bold mb-0 text-dark mt-1" id="kpiTodayAttendance">Not Marked</h3>
+                                    <small class="text-muted fw-bold" id="kpiTodayAttSub" style="font-size: 11px;">Daily Attendance</small>
                                 </div>
                                 <div class="icon-badge-green"><i class="fas fa-calendar-check"></i></div>
                             </div>
@@ -582,7 +628,7 @@
             </div>
         </div>
 
-        <!-- ================= MODERN ERP FOOTER ================= -->
+        <!-- ================= MODERN ERP FOOTER (EXACT SCREENSHOT 1) ================= -->
         <footer class="erp-footer">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2" style="font-size: 12px;">
                 <div class="text-muted fw-bold">
@@ -663,7 +709,7 @@
                         </button>
                         <input accept="image/*" id="userAvatarFileInput" onchange="window.handleUserAvatarUpload(this)" style="display:none;" type="file">
                     </div>
-                    <div class="fw-bold text-dark fs-5" id="modalProfileDisplayName">Admin Name</div>
+                    <div class="fw-bold text-dark fs-5" id="modalProfileDisplayName">Principal Sharma</div>
                     <div class="badge bg-primary px-3 py-1 mb-3" id="modalProfileDisplayRole">ADMIN</div>
                     <div class="text-start border rounded-3 p-3 bg-light mb-3" style="font-size: 12.5px;">
                         <div class="mb-2"><strong>School:</strong> <span class="text-primary" id="modalProfileSchoolName">-</span></div>
@@ -1134,7 +1180,7 @@
         window.location.reload();
     };
 
-    // 5. DASHBOARD STATS (8 KPI CARDS)
+    // 5. DASHBOARD STATS (8 KPI CARDS - EXACT SCREENSHOT 1)
     window.loadDashboardStats = async function() {
         const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
         const activeSchool = user.schoolId;
@@ -1196,6 +1242,9 @@
                 const pct = Math.round((pres / attData.length) * 100);
                 const attEl = document.getElementById("kpiTodayAttendance"); if (attEl) attEl.innerText = `${pres} / ${attData.length}`;
                 const attSubEl = document.getElementById("kpiTodayAttSub"); if (attSubEl) attSubEl.innerText = `${pct}% Present Today`;
+            } else {
+                const attEl = document.getElementById("kpiTodayAttendance"); if (attEl) attEl.innerText = "Not Marked";
+                const attSubEl = document.getElementById("kpiTodayAttSub"); if (attSubEl) attSubEl.innerText = "Daily Attendance";
             }
 
         } catch (e) {
@@ -1316,12 +1365,18 @@
         const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
         userData = user;
 
-        document.getElementById("top-user-name").innerText = user.name || "Admin";
-        document.getElementById("dropdownUserName").innerText = user.name || "Admin User";
-        document.getElementById("dropdownUserRole").innerText = user.role || "ADMIN";
-        document.getElementById("profile-school-name").innerText = user.schoolName || "School ERP";
-        
+        const userName = user.name || "Principal Sharma";
+        const schoolName = user.schoolName || "Royal International Public School";
+        const role = user.role || "ADMIN";
         const av = user.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
+        // Exact Screenshot 1 Data Bindings
+        document.getElementById("top-user-name").innerText = userName;
+        document.getElementById("dropdownUserName").innerText = userName;
+        document.getElementById("dropdownUserRole").innerText = role;
+        document.getElementById("profile-school-name").innerText = schoolName;
+        document.getElementById("dropdownSchoolName").innerText = schoolName;
+        
         document.getElementById("topHeaderUserAvatar").src = av;
         document.getElementById("dropdownUserAvatar").src = av;
 
@@ -1360,7 +1415,7 @@
     window.openMyProfileModal = function() {
         const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
         document.getElementById('modalProfileImgPreview').src = user.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-        document.getElementById('modalProfileDisplayName').innerText = user.name || "Admin User";
+        document.getElementById('modalProfileDisplayName').innerText = user.name || "Principal Sharma";
         document.getElementById('modalProfileDisplayRole').innerText = user.role || "ADMIN";
         document.getElementById('modalProfileSchoolName').innerText = user.schoolName || "-";
         document.getElementById('modalProfileLoginId').innerText = user.loginId || "-";
