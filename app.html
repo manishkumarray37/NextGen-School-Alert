@@ -46985,6 +46985,168 @@ body.public-page-mode .main-content {
     <!-- =================================================================== -->
     <script type="text/javascript">
     // <![CDATA[
+	window.vText = function(el) { if(el) el.value = el.value.replace(/[^A-Za-z ]/g, '').toUpperCase(); };
+	window.vNum = function(el) { if(el) el.value = el.value.replace(/[^0-9]/g, ''); };
+	window.vCap = function(el) { if(el) el.value = el.value.toUpperCase(); };
+
+	window.getConfigData = async function(forceRefresh) {
+		const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+		const schoolId = user.schoolId;
+		if (!schoolId) return null;
+
+		const cacheKey = "a2z_config_" + schoolId;
+		const cached = localStorage.getItem(cacheKey);
+
+		if (!forceRefresh && cached) {
+			try { return JSON.parse(cached); } catch(e) {}
+		}
+
+		try {
+			const { data, error } = await db
+				.from('School_Configs')
+				.select('*')
+				.eq('SchoolID', schoolId);
+
+			if (error || !data || data.length === 0) throw error || new Error("No configs found");
+
+			const result = {
+				status: "success",
+				sessions: [],
+				classMap: {},
+				classSubjectMap: {},
+				roles: [],
+				designations: []
+			};
+
+			data.forEach(item => {
+				const cat = String(item.Category || item.category || "").trim().toLowerCase();
+				const val = item.Value || item.value;
+				const secs = item.Sections || item.sections || item.Extra || item.extra_data || "A,B";
+				const subs = item.Subjects || item.subjects || "";
+
+				if (!val) return;
+
+				if (cat === "session") {
+					if (!result.sessions.includes(val)) result.sessions.push(val);
+				} else if (cat === "class") {
+					result.classMap[val] = secs;
+					if (subs) result.classSubjectMap[val] = subs;
+				} else if (cat === "role") {
+					if (!result.roles.includes(val)) result.roles.push(val);
+				} else if (cat === "designation") {
+					if (!result.designations.includes(val)) result.designations.push(val);
+				}
+			});
+
+			localStorage.setItem(cacheKey, JSON.stringify(result));
+			return result;
+		} catch(e) {
+			console.warn("Config load fallback:", e);
+			if (cached) {
+				try { return JSON.parse(cached); } catch(err) {}
+			}
+			return null;
+		}
+	};
+
+	window.fetchLastRollNo = async function() {
+		const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+		const schoolId = user.schoolId;
+		const classDrop = document.getElementById('studentClass');
+		const secDrop = document.getElementById('studentSection');
+		const badge = document.getElementById('lastRollBadge');
+		const rollInput = document.getElementById('rollNoInput');
+
+		const cls = classDrop ? classDrop.value : '';
+		const sec = secDrop ? secDrop.value : '';
+
+		if (!cls || !sec) {
+			if (badge) badge.innerText = "Last Roll: 0";
+			return;
+		}
+
+		if (badge) badge.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+
+		try {
+			const { data, error } = await db
+				.from('Students')
+				.select('RollNo')
+				.eq('SchoolID', schoolId)
+				.eq('Class', cls)
+				.eq('Section', sec)
+				.eq('Status', 'ACTIVE');
+
+			let maxRoll = 0;
+			if (data && data.length > 0) {
+				data.forEach(r => {
+					const num = parseInt(r.RollNo, 10);
+					if (!isNaN(num) && num > maxRoll) maxRoll = num;
+				});
+			}
+
+			if (badge) badge.innerText = "Last Roll: " + maxRoll;
+			if (rollInput && (!rollInput.value || rollInput.value === "0")) {
+				rollInput.value = maxRoll + 1;
+			}
+		} catch(err) {
+			if (badge) badge.innerText = "Last Roll: 0";
+		}
+	};
+
+	window.loadFormDropdowns = async function() {
+		const sessDrop = document.getElementById('academicSession');
+		const classDrop = document.getElementById('studentClass');
+		const secDrop = document.getElementById('studentSection');
+		if (!sessDrop || !classDrop) return;
+
+		const cfg = await window.getConfigData(true);
+		if (cfg) {
+			const classMap = cfg.classMap || {};
+			
+			let sHtml = '<option value="">-- Select Session --</option>';
+			(cfg.sessions || []).forEach(s => sHtml += `<option value="${s}">${s}</option>`);
+			sessDrop.innerHTML = sHtml;
+			sessDrop.onchange = () => window.fetchLastRollNo();
+
+			let cHtml = '<option value="">-- Select Class --</option>';
+			Object.keys(classMap).forEach(c => cHtml += `<option value="${c}">${c}</option>`);
+			classDrop.innerHTML = cHtml;
+
+			classDrop.onchange = function() {
+				if (!secDrop) return;
+				const sc = classMap[this.value] || "A,B";
+				let secHtml = '<option value="">-- Select Section --</option>';
+				sc.split(",").forEach(s => secHtml += `<option value="${s.trim()}">${s.trim()}</option>`);
+				secDrop.innerHTML = secHtml;
+				secDrop.onchange = () => window.fetchLastRollNo();
+				window.fetchLastRollNo();
+			};
+		}
+	};
+
+	window.loadConfigRolesAndDesignations = async function(roleDropId, desigDropId) {
+		let cfg = await window.getConfigData(true);
+		if (!cfg) return;
+
+		if (roleDropId) {
+			const roleEl = document.getElementById(roleDropId);
+			if (roleEl && cfg.roles && cfg.roles.length > 0) {
+				let rHtml = '<option value="ALL">All Roles</option>';
+				cfg.roles.forEach(r => { if (r) rHtml += `<option value="${r.toUpperCase()}">${r}</option>`; });
+				roleEl.innerHTML = rHtml;
+			}
+		}
+
+		if (desigDropId) {
+			const desigEl = document.getElementById(desigDropId);
+			if (desigEl && cfg.designations && cfg.designations.length > 0) {
+				let dHtml = '<option value="ALL">All Designations</option>';
+				cfg.designations.forEach(d => { if (d) dHtml += `<option value="${d}">${d}</option>`; });
+				desigEl.innerHTML = dHtml;
+			}
+		}
+	};
+
     let userData = {};
     let ticketImagesQueue = [];
     let allFetchedTicketsCache = [];
