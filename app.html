@@ -43506,14 +43506,15 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     let currentCategory = "Session";
     let categoriesList = ["Session", "Class", "Role", "Designation"];
 
-    // ⚡ 1. INITIALIZE & DETECT ROUTE
+    // ⚡ 1. INITIALIZE & DETECT ROUTE (Extracts ManageSession / ManageClass)
     window.initMasterSettingsModule = async function() {
-      const p = (window.location.pathname || "").replace(/^\/+/, '').trim();
-      const h = (window.location.hash || "").replace(/^#\/?/, '').trim();
-      const current = p || h;
+      const p = (window.location.pathname || "").replace(/^\/+/, '').replace(/\/+$/, '').trim();
+      const lastPart = p.split('/').pop() || "";
 
-      if (current.includes("Manage")) {
-        currentCategory = current.replace(/.*Manage/, '') || "Session";
+      if (lastPart.startsWith("Manage")) {
+        currentCategory = lastPart.replace("Manage", "") || "Session";
+      } else {
+        currentCategory = "Session";
       }
 
       await window.loadDynamicConfigHub(false);
@@ -43542,7 +43543,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           }
         });
 
-        // Match current category
+        // Match current category case-insensitively
         const matched = categoriesList.find(c => c.toLowerCase() === currentCategory.toLowerCase());
         currentCategory = matched || "Session";
 
@@ -43580,13 +43581,34 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       bar.innerHTML = html;
     };
 
-    // ⚡ 4. SWITCH TAB
+    // ⚡ 4. SWITCH TAB (DYNAMIC URL & SIDEBAR SYNC)
     window.switchConfigCategoryTab = function(newCat) {
-      currentCategory = newCat;
-      
+      if (!newCat) return;
+
+      // Find matching category name from available list
+      const matched = categoriesList.find(c => c.toLowerCase() === newCat.toLowerCase());
+      currentCategory = matched || newCat;
+
+      // A. Update Active Horizontal Tab Button
       document.querySelectorAll('.cfg-tab-btn').forEach(b => {
-        const bText = b.innerText.trim();
-        b.classList.toggle('active', bText.toLowerCase().includes(newCat.toLowerCase()));
+        const bText = b.innerText.trim().toLowerCase();
+        b.classList.toggle('active', bText.includes(currentCategory.toLowerCase()));
+      });
+
+      // B. 🚀 DYNAMIC URL UPDATE (Changes URL to /app/ManageClass, /app/ManageRole etc.)
+      const host = window.location.hostname.toLowerCase();
+      const isSubdomain = host.startsWith("app.");
+      const routeName = `Manage${currentCategory}`;
+      const targetUrl = isSubdomain ? `/${routeName}` : `/app/${routeName}`;
+
+      if (window.location.pathname !== targetUrl) {
+        history.pushState({ page: routeName }, "", targetUrl);
+      }
+
+      // C. 🚀 SIDEBAR ACTIVE LINK SYNC (Highlights left sidebar menu)
+      document.querySelectorAll('.nav-link-custom, .nav-link-nested').forEach(link => {
+        const fn = link.getAttribute('onclick') || '';
+        link.classList.toggle('active-sub', fn.includes(routeName));
       });
 
       window.resetConfigItemForm();
@@ -43706,7 +43728,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       try {
         if (oldVal) {
-          // UPDATE
           const { error } = await db
             .from('School_Configs')
             .update({ Value: val, Sections: extra, Subjects: subjects })
@@ -43717,7 +43738,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           if (error) throw error;
           alert(`✅ ${currentCategory} updated successfully!`);
         } else {
-          // INSERT
           const { error } = await db
             .from('School_Configs')
             .insert([{
@@ -47460,11 +47480,14 @@ body.public-page-mode .main-content {
 
     window.navigateTo = async function(page) {
         let cleanPage = String(page || "").replace(/^#\/?/, "").trim();
-		// ⚙️ SMART SETTINGS ROUTER: Route all Manage... clicks to MasterSettings template
+        let displayRoute = cleanPage;
+
+        // ⚙️ SMART SETTINGS ROUTER
         let requestedSettingTab = "Session";
         if (cleanPage.startsWith("Manage") || cleanPage === "MasterSettings") {
             requestedSettingTab = cleanPage.replace("Manage", "") || "Session";
-            cleanPage = "MasterSettings"; // Load tpl-MasterSettings
+            displayRoute = "Manage" + requestedSettingTab;
+            cleanPage = "MasterSettings";
         }
 
         const dashStats = document.getElementById("dash-stats-row");
@@ -47474,7 +47497,8 @@ body.public-page-mode .main-content {
         const isSubdomain = host.startsWith("app.");
         let targetUrl = "";
 
-        if (!cleanPage || cleanPage.toLowerCase() === "dashboard" || cleanPage === "app" || cleanPage === "app.html") {
+        // Dashboard Handler
+        if (!displayRoute || displayRoute.toLowerCase() === "dashboard" || displayRoute === "app" || displayRoute === "app.html") {
             currentPage = "Dashboard";
             targetUrl = isSubdomain ? "/" : "/app";
 
@@ -47492,10 +47516,10 @@ body.public-page-mode .main-content {
         }
 
         currentPage = cleanPage;
-        targetUrl = isSubdomain ? `/${cleanPage}` : `/app/${cleanPage}`;
+        targetUrl = isSubdomain ? `/${displayRoute}` : `/app/${displayRoute}`;
         
         if (window.location.pathname !== targetUrl) {
-            history.pushState({ page: cleanPage }, "", targetUrl);
+            history.pushState({ page: displayRoute }, "", targetUrl);
         }
 
         if (window.innerWidth <= 992) {
