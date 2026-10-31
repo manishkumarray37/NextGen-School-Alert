@@ -47721,7 +47721,7 @@ window.finalSubmit = async function(btn) {
         // Highlight Sub-menu
         document.querySelectorAll('.nav-link-custom, .nav-link-nested').forEach(link => {
             const fn = link.getAttribute('onclick') || '';
-            link.classList.toggle('active-sub', fn.includes(cleanPage));
+            link.classList.toggle('active-sub', fn.includes(displayRoute));
         });
 
         if (!pageArea) return;
