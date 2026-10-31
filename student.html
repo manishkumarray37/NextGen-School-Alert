@@ -2522,11 +2522,21 @@
     };
 
     window.navigateToStudentView = function(pageName, el) {
-      if (el) {
-        document.querySelectorAll(".stu-nav-link").forEach(l => l.classList.remove("active-stu-tab"));
-        l.classList.add("active-stu-tab");
+      // 1. Remove active class from all tabs safely
+      var links = document.querySelectorAll(".stu-nav-link");
+      for (var i = 0; i < links.length; i++) {
+        links[i].classList.remove("active-stu-tab");
       }
-      window.navigateTo(pageName);
+
+      // 2. Add active class to clicked tab
+      if (el && el.classList) {
+        el.classList.add("active-stu-tab");
+      }
+
+      // 3. Render the selected module
+      if (typeof window.navigateTo === "function") {
+        window.navigateTo(pageName);
+      }
     };
 
     window.toggleStudentMoreMenu = function(e) {
