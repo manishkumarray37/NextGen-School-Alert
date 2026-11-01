@@ -47795,34 +47795,76 @@ window.finalSubmit = async function(btn) {
         document.getElementById('dynamic-menu').innerHTML = html;
     };
 
+    // Helper: Detect active route from URL on page reload
+    function getCleanRouteFromUrl() {
+        if (window.location.hash) {
+            const h = window.location.hash.replace(/^#\/?/, "").trim();
+            if (h && h.toLowerCase() !== "dashboard") return h;
+        }
+        let p = window.location.pathname.replace(/^\/+/, "").replace(/\/+$/, "").trim();
+
+        // Strip /app/ prefix while preserving original module name
+        if (p.toLowerCase().startsWith("app/")) {
+            p = p.substring(4).trim();
+        }
+
+        if (!p || p.toLowerCase() === "app" || p.toLowerCase() === "app.html" || p.toLowerCase() === "dashboard") {
+            return "Dashboard";
+        }
+        return p;
+    }
+
+    // Helper: Find which sidebar module contains the requested page
+    function findModuleByPage(pageName) {
+        if (!pageName) return "Students";
+        for (const mod in menuData) {
+            for (const group of menuData[mod]) {
+                for (const item of group.items) {
+                    if (typeof item === 'string' && item === pageName) return mod;
+                    if (typeof item === 'object' && item.subItems && item.subItems.includes(pageName)) return mod;
+                }
+            }
+        }
+        return "Students";
+    }
+
     function initDashboard() {
         const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
         userData = user;
 
-        // Force UI Unhide
+        // Ensure main UI is visible
         document.getElementById("login-overlay").style.setProperty("display", "none", "important");
         document.getElementById("main-app").style.setProperty("display", "block", "important");
 
-        const userName = user.name || "Principal Sharma";
-        const schoolName = user.schoolName || "Royal International Public School";
+        // 🚀 100% DYNAMIC: Strictly uses logged-in user & school data from database
+        const userName = user.name || "Administrator";
+        const schoolName = user.schoolName || "School Portal";
         const role = user.role || "ADMIN";
         const av = user.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
-        // Bind Data
+        // Bind Top Header & Profile Dropdown Elements
         document.getElementById("dropdownUserName").innerText = userName;
         document.getElementById("dropdownUserRole").innerText = role;
         document.getElementById("profile-school-name").innerText = schoolName;
         document.getElementById("dropdownSchoolName").innerText = schoolName;
-        
+
         document.getElementById("topHeaderUserAvatar").src = av;
         document.getElementById("dropdownUserAvatar").src = av;
 
-        // Load First Module
-        const activeIconEl = document.querySelector('.icon-item.active') || document.querySelector('.icon-item');
-        window.switchModule('Students', activeIconEl);
+        // Detect if refreshing on a specific module or root dashboard
+        const currentRoute = getCleanRouteFromUrl();
+        const activeMod = (currentRoute && currentRoute !== "Dashboard") ? findModuleByPage(currentRoute) : "Students";
+        const activeIconEl = document.querySelector(`.mod-${activeMod.toLowerCase()}`) || document.querySelector('.icon-item');
 
-        // Always show dashboard on initial open/refresh
-        window.navigateTo("Dashboard");
+        // Activate corresponding module in sidebar
+        window.switchModule(activeMod, activeIconEl);
+
+        // Keep current module open on reload, otherwise open Dashboard
+        if (currentRoute && currentRoute.toLowerCase() !== "dashboard") {
+            window.navigateTo(currentRoute);
+        } else {
+            window.navigateTo("Dashboard");
+        }
 
         startClock();
         window.checkUnreadTicketReplies();
