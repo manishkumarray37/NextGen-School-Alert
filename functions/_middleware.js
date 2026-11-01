@@ -25,16 +25,16 @@ export async function onRequest(context) {
     return context.env.ASSETS.fetch(url);
   }
 
-  // 5. Direct URL paths for testing on *.pages.dev or localhost
-  if (url.pathname === '/student' || url.pathname === '/student/') {
+  // 5. 🚀 Direct URL paths for testing on *.pages.dev or localhost (Supports all modules like /app/ViewStudent)
+  if (url.pathname === '/student' || url.pathname.startsWith('/student/')) {
     url.pathname = '/student.html';
     return context.env.ASSETS.fetch(url);
   }
-  if (url.pathname === '/app' || url.pathname === '/app/') {
+  if (url.pathname === '/app' || url.pathname.startsWith('/app/')) {
     url.pathname = '/app.html';
     return context.env.ASSETS.fetch(url);
   }
-  if (url.pathname === '/superadmin' || url.pathname === '/admin') {
+  if (url.pathname === '/superadmin' || url.pathname.startsWith('/superadmin/') || url.pathname === '/admin' || url.pathname.startsWith('/admin/')) {
     url.pathname = '/superadmin.html';
     return context.env.ASSETS.fetch(url);
   }
