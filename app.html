@@ -47719,9 +47719,33 @@ window.finalSubmit = async function(btn) {
 };
 
         // Highlight Sub-menu
+        // Highlight Sub-menu & Auto-Expand Parent Accordion Group
         document.querySelectorAll('.nav-link-custom, .nav-link-nested').forEach(link => {
             const fn = link.getAttribute('onclick') || '';
-            link.classList.toggle('active-sub', fn.includes(displayRoute));
+            const isMatched = fn.includes(displayRoute);
+            link.classList.toggle('active-sub', isMatched);
+
+            // Auto-open parent accordion group on page reload
+            if (isMatched) {
+                let prev = link.previousElementSibling;
+                while (prev) {
+                    if (prev.classList.contains('group-label')) {
+                        prev.classList.add('group-open');
+                        break;
+                    }
+                    prev = prev.previousElementSibling;
+                }
+
+                if (prev && prev.classList.contains('group-label')) {
+                    let curr = prev.nextElementSibling;
+                    while (curr && !curr.classList.contains('group-label')) {
+                        if (curr.classList.contains('nav-link-custom') || curr.classList.contains('subgroup-label')) {
+                            curr.classList.add('sub-open');
+                        }
+                        curr = curr.nextElementSibling;
+                    }
+                }
+            }
         });
 
         if (!pageArea) return;
