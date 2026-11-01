@@ -135,7 +135,27 @@
       }
 
       /* 1. LEFT ICON BAR */
-      .icon-bar { width: var(--icon-bar-w); height: 100vh; background: #ffffff; position: fixed; left: 0; top: 0; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; padding-top: 15px; z-index: 1060; overflow-y: auto; transition: 0.3s; }
+      .icon-bar { 
+          width: var(--icon-bar-w); 
+          height: 100vh; 
+          background: #ffffff; 
+          position: fixed; 
+          left: 0; 
+          top: 0; 
+          border-right: 1px solid #e2e8f0; 
+          display: flex; 
+          flex-direction: column; 
+          align-items: center; 
+          padding-top: 4px; 
+          z-index: 1060; 
+          overflow-y: auto; 
+          transition: 0.3s; 
+      }
+      .icon-bar .icon-item:first-child { 
+          margin-top: 4px !important; 
+      }
+	  
+	  
       .icon-item { 
           position: relative;
           width: 62px; 
