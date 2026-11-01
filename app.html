@@ -272,6 +272,58 @@
       body.sidebar-collapsed .text-sidebar { left: -300px; }
       body.sidebar-collapsed .main-content { margin-left: var(--icon-bar-w) !important; }
 
+		/* =======================================================
+         COMPACT WORKSPACE & NESTED BORDER REMOVER (ALL MODULES)
+         ======================================================= */
+
+      /* 1. Reduce outer page padding around the workspace */
+      .main-content > .p-4 { 
+          padding: 10px 14px 60px 14px !important; 
+      }
+
+      /* 2. Flatten outer module container card */
+      #page-area > div,
+      #page-area .card,
+      #page-area .card-modern,
+      #page-area .vs-card { 
+          border: 1px solid #e2e8f0 !important;
+          border-radius: 12px !important;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02) !important;
+          padding: 14px 16px !important;
+          margin-bottom: 12px !important;
+      }
+
+      /* 3. Remove nested double-borders & flatten inner filter box */
+      #page-area .card .card,
+      #page-area .filter-box,
+      #page-area .filter-box-compact,
+      #page-area .filter-panel,
+      #page-area div[class*="border"] { 
+          border: 1px solid #e2e8f0 !important;
+          border-radius: 10px !important;
+          background: #f8fafc !important;
+          box-shadow: none !important;
+          padding: 12px 14px !important;
+          margin-bottom: 10px !important;
+      }
+
+      /* 4. Compact vertical spacing between filter rows */
+      #page-area .mb-3,
+      #page-area .mb-4 {
+          margin-bottom: 0.65rem !important;
+      }
+
+      #page-area .row {
+          --bs-gutter-y: 0.5rem;
+      }
+
+      /* 5. Clean maximized table styling */
+      #page-area .table-responsive {
+          border: 1px solid #e2e8f0 !important;
+          border-radius: 8px !important;
+          background: #ffffff !important;
+      }
+		
       /* 3. MAIN DASHBOARD CONTENT */
       .main-content { margin-left: calc(var(--icon-bar-w) + var(--sidebar-w)); min-height: 100vh; transition: 0.3s; padding-bottom: 60px; }
       header { background: #ffffff; padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; min-height: 65px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
