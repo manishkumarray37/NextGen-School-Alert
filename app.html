@@ -47281,13 +47281,17 @@ body.public-page-mode .main-content {
         if (icon) icon.className = document.body.classList.contains('sidebar-collapsed') ? 'fas fa-expand-alt' : 'fas fa-compress-alt';
     };
 
-    // 3. ADMIN & STAFF LOGIN HANDLER
+    // 3. SECURE ADMIN & STAFF LOGIN HANDLER (RATE-LIMITED & PROTECTED)
     window.doAdminLogin = async function() {
         const id = document.getElementById("user_id").value.trim();
         const ps = document.getElementById("user_pass").value.trim();
         const btn = document.getElementById("loginBtn");
 
-        if (!id || !ps) { alert("Please enter User ID & Password"); return; }
+        if (!id || !ps) { 
+            alert("Please enter User ID & Password"); 
+            return; 
+        }
+
         btn.disabled = true; 
         btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Verifying Credentials...';
 
@@ -47295,25 +47299,44 @@ body.public-page-mode .main-content {
             let loggedUser = null;
             let userType = "";
 
-            // A. Check in "Users" table (Admin / Super Admin)
-            const { data: adminData } = await db
-                .from('Users')
-                .select('*')
-                .eq('LoginID', id)
-                .eq('Password', ps)
-                .maybeSingle();
+            // A. Check in Users table via Secure Server-Side RPC (Admin / Super Admin)
+            const { data: authResult, error: rpcError } = await db.rpc('verify_user_login', {
+                p_login_id: id,
+                p_password: ps
+            });
 
-            if (adminData) {
-                if (adminData.IsActive === false) {
-                    alert("⚠️ Your administrative account has been suspended.");
-                    btn.disabled = false; btn.innerHTML = "Login to Dashboard";
+            if (!rpcError && authResult) {
+                // Check if account is temporarily locked due to 5 failed attempts
+                if (authResult.status === 'locked') {
+                    alert("🔒 " + authResult.message);
+                    btn.disabled = false;
+                    btn.innerHTML = "Login to Dashboard";
                     return;
                 }
-                loggedUser = adminData;
-                userType = adminData.Role || "ADMIN";
+
+                // Check if suspended
+                if (authResult.status === 'suspended') {
+                    alert("⚠️ " + authResult.message);
+                    btn.disabled = false;
+                    btn.innerHTML = "Login to Dashboard";
+                    return;
+                }
+
+                // Wrong password counter alert
+                if (authResult.status === 'failed') {
+                    alert("❌ " + authResult.message);
+                    btn.disabled = false;
+                    btn.innerHTML = "Login to Dashboard";
+                    return;
+                }
+
+                if (authResult.status === 'success' && authResult.user) {
+                    loggedUser = authResult.user;
+                    userType = loggedUser.Role || "ADMIN";
+                }
             }
 
-            // B. Check in "Staff" table (Teachers / Staff)
+            // B. If not an Admin, check in Staff Table (Teachers, Accountants, Staff)
             if (!loggedUser) {
                 const { data: staffData } = await db
                     .from('Staff')
@@ -47325,7 +47348,8 @@ body.public-page-mode .main-content {
                 if (staffData) {
                     if (String(staffData.Status || "").toUpperCase() === "DEACTIVATED") {
                         alert("⚠️ Your staff account has been deactivated. Please contact school administration.");
-                        btn.disabled = false; btn.innerHTML = "Login to Dashboard";
+                        btn.disabled = false;
+                        btn.innerHTML = "Login to Dashboard";
                         return;
                     }
                     loggedUser = staffData;
@@ -47333,13 +47357,15 @@ body.public-page-mode .main-content {
                 }
             }
 
+            // C. If neither Admin nor Staff matched
             if (!loggedUser) {
                 alert("Invalid User ID or Password!");
-                btn.disabled = false; btn.innerHTML = "Login to Dashboard";
+                btn.disabled = false;
+                btn.innerHTML = "Login to Dashboard";
                 return;
             }
 
-            // Fetch School Info
+            // D. Fetch School Info & Build Session Payload
             let targetSchoolId = loggedUser.SchoolID || "";
             let targetSchoolName = "School Portal";
 
@@ -47367,6 +47393,7 @@ body.public-page-mode .main-content {
             userData = sessionData;
             localStorage.setItem("a2z_user", JSON.stringify(sessionData));
 
+            document.getElementById("login-overlay").style.display = "none";
             initDashboard();
 
         } catch (err) {
