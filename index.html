@@ -11,26 +11,25 @@
     <!-- CSS Dependencies -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Kalam:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Kalam:wght@700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --sc-primary: #2867b2;
-            --sc-primary-dark: #17467f;
-            --sc-navy: #0f1b33;
-            --sc-navy-strip: #0d1e38;
+            --sc-primary: #0284c7;
+            --sc-primary-dark: #0369a1;
+            --sc-navy-deep: #0b1f3a;
+            --sc-island: linear-gradient(90deg, #0b1f3a 0%, #154173 50%, #0e274a 100%);
             --sc-accent-pink: #d3236e;
             --sc-accent-purple: #5b3a8e;
-            --sc-light-bg: #fbf7f0;
-            --sc-border: rgba(15, 27, 51, 0.08);
+            --sc-light-bg: #f8fafc;
 
-            /* Antique Brass Palette for 3D Interlocking Chains */
-            --h1: #f3e6c4;
-            --h2: #c9a86a;
-            --h3: #7d6435;
-            --h4: #9c7e44;
-            --h5: #5a4520;
-            --hl: #ecd9a8;
+            /* Metallic Brass Colors for Chains */
+            --h1: #ffffff;
+            --h2: #fef08a;
+            --h3: #78350f;
+            --h4: #ca8a04;
+            --h5: #451a03;
+            --hl: #fde047;
         }
 
         * { box-sizing: border-box; }
@@ -45,48 +44,71 @@
         }
 
         /* ========================================================
-           1. TOP UTILITY STRIP (WITH LEFT MAIN MENUS)
+           1. TOP UTILITY STRIP (WITH STAR-GRID BLUE BACKGROUND)
            ======================================================== */
         .sc-utility-bar {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            height: 38px;
-            background: #091527;
+            height: 42px;
+            background: 
+                radial-gradient(rgba(255, 255, 255, 0.16) 1.2px, transparent 1.2px) 0 0 / 18px 18px,
+                linear-gradient(90deg, #08182e 0%, #0e2b4f 50%, #091a32 100%);
             color: #ffffff;
             z-index: 1070;
             display: flex;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
         }
         .sc-strip-inner {
             width: 100%;
             max-width: 1360px;
             margin: 0 auto;
-            padding: 0 24px;
+            padding: 0 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 12.5px;
+            font-size: 13px;
         }
         
-        /* Left Side Added Menus */
+        /* Left Navigation links */
         .sc-strip-left-nav {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 18px;
         }
         .sc-strip-left-nav a {
-            color: #cbd5e1;
+            color: #e2e8f0;
             text-decoration: none;
             font-weight: 500;
             font-size: 12.5px;
-            padding: 2px 4px;
+            padding: 2px 6px;
+            border-radius: 6px;
             transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
         .sc-strip-left-nav a:hover {
             color: #38bdf8;
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        /* Mobile Hamburger Trigger (Top Left) */
+        .sc-mobile-hamburger {
+            display: none;
+            background: transparent;
+            border: 0;
+            color: #ffffff;
+            font-size: 18px;
+            padding: 4px 8px;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+        .sc-mobile-hamburger:hover {
+            background: rgba(255, 255, 255, 0.15);
         }
 
         /* Right Side Links */
@@ -103,89 +125,108 @@
             transition: color 0.2s;
         }
         .sc-strip-right a:hover { color: #fff; }
-        .sc-strip-partner {
-            border: 1px solid rgba(255, 209, 102, 0.45);
-            padding: 2px 12px;
-            border-radius: 12px;
+        .sc-strip-admin {
+            border: 1.5px solid rgba(255, 209, 102, 0.5);
+            padding: 3px 12px;
+            border-radius: 20px;
             color: #ffd166 !important;
             font-weight: 600 !important;
             transition: all 0.2s ease;
+            background: rgba(255, 209, 102, 0.08);
         }
-        .sc-strip-partner:hover {
-            background: rgba(255, 209, 102, 0.15);
+        .sc-strip-admin:hover {
+            background: rgba(255, 209, 102, 0.2);
+            color: #ffffff !important;
         }
 
         /* ========================================================
-           2. HANGING METALLIC RINGS (CLEAN & NON-REPEATING)
+           2. REAL 3D METALLIC CHAINS WITH INTERLOCKING ANCHORS
            ======================================================== */
         .sc-hang-container {
             position: fixed;
-            top: 26px !important; /* Top strip ke andar 12px overlap karega */
+            top: 30px !important; /* Top strip ke andar 12px lock hogi */
             left: 50%;
             transform: translateX(-50%);
             width: min(1320px, calc(100% - 48px));
-            height: 36px !important;
+            height: 38px !important;
             pointer-events: none;
             z-index: 1062 !important;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.35s ease;
         }
         .sc-ring-unit {
             position: absolute;
             top: 0;
-            width: 40px;
-            height: 36px;
-            filter: drop-shadow(0 2px 3px rgba(5, 15, 30, 0.55));
+            width: 42px;
+            height: 38px;
+            filter: drop-shadow(0 4px 3px rgba(3, 10, 24, 0.65));
+            transform-origin: 21px 6px;
         }
-        .sc-ring-unit.ring-l { left: 21%; }
-        .sc-ring-unit.ring-r { right: 21%; }
+        .sc-ring-unit.ring-l { left: 19%; }
+        .sc-ring-unit.ring-r { right: 19%; }
         .sc-ring-unit svg { 
-            width: 40px; 
+            width: 42px; 
             height: 100%; 
             display: block; 
             overflow: visible; 
         }
 
+        /* FORWARD-BACKWARD (DEPTH / 3D TILT) PHYSICS SWAY */
+        .sc-island-host.sway-3d-active {
+            animation: forwardBackwardSway 2.2s ease-in-out;
+            transform-origin: 50% 0;
+        }
+        .sc-hang-container.sway-3d-active .sc-ring-unit {
+            animation: forwardBackwardRings 2.2s ease-in-out;
+        }
+
+        @keyframes forwardBackwardSway {
+            0% { transform: translateX(-50%) perspective(800px) rotateX(0deg); }
+            15% { transform: translateX(-50%) perspective(800px) rotateX(7deg); }
+            32% { transform: translateX(-50%) perspective(800px) rotateX(-5.5deg); }
+            50% { transform: translateX(-50%) perspective(800px) rotateX(3.5deg); }
+            70% { transform: translateX(-50%) perspective(800px) rotateX(-1.5deg); }
+            85% { transform: translateX(-50%) perspective(800px) rotateX(0.8deg); }
+            100% { transform: translateX(-50%) perspective(800px) rotateX(0deg); }
+        }
+
+        @keyframes forwardBackwardRings {
+            0% { transform: scaleY(1); }
+            15% { transform: scaleY(0.92); }
+            32% { transform: scaleY(1.06); }
+            50% { transform: scaleY(0.96); }
+            70% { transform: scaleY(1.02); }
+            100% { transform: scaleY(1); }
+        }
+
         /* ========================================================
-           3. FLOATING ISLAND BAR (THE CORE CONTAINER)
+           3. FLOATING ISLAND CONTAINER
            ======================================================== */
         .sc-island-host {
             position: fixed;
-            top: 50px;
+            top: 54px;
             left: 50%;
             transform: translateX(-50%);
             width: min(1320px, calc(100% - 48px));
             height: 74px;
-            background: radial-gradient(rgba(255,255,255,.16) 1.2px, transparent 1.2px) 0 0/18px 18px,
-                        radial-gradient(40% 180% at 0% 0%, rgba(40,103,178,.65), transparent 70%),
-                        radial-gradient(30% 160% at 100% 100%, rgba(91,42,134,.5), transparent 70%),
-                        linear-gradient(90deg, #102d52 0%, #17467f 50%, #12335c 100%) !important;
+            background: 
+                radial-gradient(rgba(255, 255, 255, 0.16) 1.2px, transparent 1.2px) 0 0 / 18px 18px,
+                radial-gradient(40% 180% at 0% 0%, rgba(2, 132, 199, 0.65), transparent 70%),
+                radial-gradient(30% 160% at 100% 100%, rgba(91, 42, 134, 0.55), transparent 70%),
+                linear-gradient(90deg, #0b1f3a 0%, #154173 50%, #0e274a 100%) !important;
             border: 1px solid rgba(255, 255, 255, 0.22);
             border-radius: 16px;
-            box-shadow: 0 22px 48px -22px rgba(18,58,106,.8);
+            box-shadow: 0 22px 48px -20px rgba(11, 31, 58, 0.85);
             z-index: 1060;
             overflow: hidden;
-            transition: width 0.5s cubic-bezier(.22,1,.36,1),
-                        height 0.5s cubic-bezier(.22,1,.36,1),
-                        top 0.4s ease,
+            transition: width 0.45s cubic-bezier(.22,1,.36,1),
+                        height 0.45s cubic-bezier(.22,1,.36,1),
+                        top 0.35s ease,
                         background 0.35s ease,
-                        border-radius 0.4s ease,
-                        box-shadow 0.4s ease;
+                        border-radius 0.35s ease,
+                        box-shadow 0.35s ease;
         }
 
-        /* Physics Sway on Hover */
-        .sc-island-host.sway-effect {
-            animation: scSway 1.8s ease-in-out;
-        }
-        @keyframes scSway {
-            0% { transform: translateX(-50%) rotate(0deg); }
-            15% { transform: translateX(calc(-50% + 2px)) rotate(0.4deg); }
-            30% { transform: translateX(calc(-50% - 2px)) rotate(-0.35deg); }
-            50% { transform: translateX(calc(-50% + 1px)) rotate(0.2deg); }
-            70% { transform: translateX(calc(-50% - 0.5px)) rotate(-0.1deg); }
-            100% { transform: translateX(-50%) rotate(0deg); }
-        }
-
-        /* THE ISLAND HEADER BAR ROW */
+        /* Main Island Bar Row */
         .sc-bar-row {
             height: 74px;
             padding: 0 16px 0 24px;
@@ -194,7 +235,7 @@
             justify-content: space-between;
         }
 
-        /* BRAND LOGO */
+        /* Brand Logo */
         .sc-brand-link {
             text-decoration: none;
             display: flex;
@@ -226,7 +267,7 @@
         }
         .dot-1 { background: #2ab77c; }
         .dot-2 { background: #ecb32d; }
-        .dot-3 { background: #2867b2; }
+        .dot-3 { background: #0284c7; }
         .dot-4 { background: #e01c5a; }
 
         /* CENTER DUAL SWITCHER TABS */
@@ -235,7 +276,7 @@
             align-items: center;
             gap: 10px;
             background: rgba(255, 255, 255, 0.08);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
             padding: 4px;
             border-radius: 14px;
         }
@@ -263,9 +304,10 @@
             font-size: 17px;
             color: #ffffff;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            flex-shrink: 0;
         }
         .sc-half-btn.btn-school .tile-badge {
-            background: linear-gradient(135deg, #3f8ae0, #2867b2);
+            background: linear-gradient(135deg, #0284c7, #0369a1);
         }
         .sc-half-btn.btn-student .tile-badge {
             background: linear-gradient(135deg, #d3236e, #6e1f78);
@@ -278,7 +320,7 @@
         }
         .sc-half-btn .btn-labels b { font-size: 14.5px; }
         .sc-half-btn .btn-labels small { font-size: 11.5px; opacity: 0.75; font-weight: 400; }
-        .sc-half-btn .btn-chev { font-size: 11px; margin-left: 2px; opacity: 0.6; transition: transform 0.3s ease; }
+        .sc-half-btn .btn-chev { font-size: 11px; margin-left: 2px; opacity: 0.7; transition: transform 0.3s ease; }
 
         /* HAND-DRAWN DPDP BADGE */
         .sc-dpdp-loop-btn {
@@ -319,27 +361,12 @@
             align-items: center;
             gap: 10px;
         }
-        .sc-action-circle {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.12);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
-            border: 0;
-            color: #ffffff;
-            display: grid;
-            place-items: center;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.2s;
-        }
-        .sc-action-circle:hover { background: rgba(255, 255, 255, 0.22); }
         .sc-login-white-btn {
             height: 44px;
-            padding: 0 20px;
+            padding: 0 24px;
             border-radius: 10px;
             background: #ffffff;
-            color: #102d52 !important;
+            color: #0b1f3a !important;
             font-weight: 700;
             font-size: 15px;
             text-decoration: none !important;
@@ -349,7 +376,7 @@
             box-shadow: 0 4px 14px rgba(0,0,0,0.25);
             transition: all 0.2s ease;
         }
-        .sc-login-white-btn:hover { background: #e8f0fa; transform: translateY(-1px); }
+        .sc-login-white-btn:hover { background: #e0f2fe; transform: translateY(-1px); }
         
         .sc-close-mega-btn {
             display: none;
@@ -364,7 +391,7 @@
         }
 
         /* ========================================================
-           4. MEGA MENU PANELS (EXPANDED STATE)
+           4. MEGA MENU DROPDOWN EXPANSION (OPEN IN PLACE)
            ======================================================== */
         .sc-mega-container {
             display: none;
@@ -384,15 +411,15 @@
         .sc-island-host.is-open .sc-bar-row {
             border-bottom: 1px solid rgba(15, 27, 51, 0.08);
         }
-        .sc-island-host.is-open .sc-brand-title { color: #0f1b33; }
+        .sc-island-host.is-open .sc-brand-title { color: #0b1f3a; }
         .sc-island-host.is-open .sc-halves-wrapper {
             background: rgba(15, 27, 51, 0.05);
             box-shadow: inset 0 0 0 1px rgba(15, 27, 51, 0.08);
         }
-        .sc-island-host.is-open .sc-half-btn { color: #0f1b33; }
+        .sc-island-host.is-open .sc-half-btn { color: #0b1f3a; }
         .sc-island-host.is-open .sc-half-btn .btn-labels small { color: #64748b; }
         .sc-island-host.is-open .sc-half-btn.active {
-            background: rgba(40, 103, 178, 0.12);
+            background: rgba(2, 132, 199, 0.12);
             box-shadow: inset 0 0 0 1.5px var(--sc-primary);
         }
         .sc-island-host.is-open .sc-half-btn.btn-student.active {
@@ -400,12 +427,7 @@
             box-shadow: inset 0 0 0 1.5px var(--sc-accent-pink);
         }
         .sc-island-host.is-open .sc-half-btn.active .btn-chev { transform: rotate(180deg); }
-        .sc-island-host.is-open .sc-dpdp-loop-btn { color: #0f1b33; }
-        .sc-island-host.is-open .sc-action-circle {
-            background: rgba(15, 27, 51, 0.06);
-            color: #0f1b33;
-            box-shadow: inset 0 0 0 1px rgba(15, 27, 51, 0.08);
-        }
+        .sc-island-host.is-open .sc-dpdp-loop-btn { color: #0b1f3a; }
         .sc-island-host.is-open .sc-login-white-btn {
             background: var(--sc-primary);
             color: #ffffff !important;
@@ -414,14 +436,14 @@
             display: grid;
             place-items: center;
             background: rgba(15, 27, 51, 0.06);
-            color: #0f1b33;
+            color: #0b1f3a;
         }
         .sc-island-host.is-open .sc-mega-container {
             display: block;
             opacity: 1;
         }
 
-        /* BACKDROP BLUR OVERLAY */
+        /* BACKDROP BLUR */
         .sc-backdrop-overlay {
             position: fixed;
             inset: 0;
@@ -433,12 +455,9 @@
             visibility: hidden;
             transition: all 0.3s ease;
         }
-        .sc-backdrop-overlay.show {
-            opacity: 1;
-            visibility: visible;
-        }
+        .sc-backdrop-overlay.show { opacity: 1; visibility: visible; }
 
-        /* 4A. SCHOOLS MEGA PANEL (8 SUITES + AUTOMATION PROMO) */
+        /* 4A. SCHOOLS PANE */
         .sc-pane-schools {
             display: grid;
             grid-template-columns: 1.8fr 1fr;
@@ -476,16 +495,16 @@
             transition: all 0.2s ease;
         }
         .sc-suite-card:hover {
-            background: #f1f6fc;
-            border-color: rgba(40,103,178,0.3);
+            background: #f0f9ff;
+            border-color: rgba(2, 132, 199, 0.3);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(40,103,178,0.1);
+            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.1);
         }
         .sc-suite-icon {
             width: 42px;
             height: 42px;
             border-radius: 10px;
-            background: #e8f2fc;
+            background: #e0f2fe;
             color: var(--sc-primary);
             display: grid;
             place-items: center;
@@ -494,19 +513,16 @@
         }
         .sc-suite-info b {
             display: block;
-            color: #0f1b33;
+            color: #0b1f3a;
             font-size: 14px;
             font-weight: 700;
             line-height: 1.2;
         }
-        .sc-suite-info span {
-            font-size: 12px;
-            color: #64748b;
-        }
+        .sc-suite-info span { font-size: 12px; color: #64748b; }
 
-        /* Automation Highlight Promo Card */
+        /* Right School Highlight Box */
         .sc-bell-promo-box {
-            background: linear-gradient(135deg, #09172c 0%, #154173 50%, #0369a1 100%);
+            background: linear-gradient(135deg, #0b1f3a 0%, #154173 50%, #0369a1 100%);
             border-radius: 18px;
             padding: 24px;
             color: #ffffff;
@@ -516,9 +532,8 @@
             flex-direction: column;
             justify-content: space-between;
         }
-        .sc-bell-promo-box .lms-badge {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(4px);
+        .sc-bell-promo-box .box-badge {
+            background: rgba(255, 255, 255, 0.18);
             display: inline-block;
             padding: 3px 10px;
             border-radius: 20px;
@@ -541,7 +556,7 @@
         }
         .sc-promo-cta-btn {
             background: #ffffff;
-            color: #09172c !important;
+            color: #0b1f3a !important;
             padding: 10px 18px;
             border-radius: 10px;
             font-weight: 700;
@@ -555,7 +570,7 @@
         }
         .sc-promo-cta-btn:hover { background: #e0f2fe; transform: translateX(3px); }
 
-        /* 4B. STUDENTS MEGA PANEL */
+        /* 4B. STUDENTS PANE */
         .sc-pane-students {
             display: none;
             grid-template-columns: 1fr 1.3fr;
@@ -603,7 +618,6 @@
             border-radius: 6px;
             font-size: 12px;
         }
-
         .sc-student-right-cards {
             display: flex;
             flex-direction: column;
@@ -630,18 +644,18 @@
             flex-shrink: 0;
             font-size: 18px;
         }
-        .sc-feature-card-item b { display: block; font-size: 15px; color: #0f1b33; }
+        .sc-feature-card-item b { display: block; font-size: 15px; color: #0b1f3a; }
         .sc-feature-card-item p { margin: 2px 0 0; font-size: 12.5px; color: #64748b; }
 
         /* ========================================================
-           5. SCROLLED STATE (OPTION 17 - FULL WIDTH WHITE NAVBAR)
+           5. SCROLLED STATE (OPTION 17 - FULL WIDTH WHITE FIXED BAR)
            ======================================================== */
         body.is-scrolled .sc-hang-container {
             opacity: 0;
             pointer-events: none;
         }
         body.is-scrolled .sc-island-host:not(.is-open) {
-            top: 38px !important;
+            top: 42px !important;
             width: 100% !important;
             max-width: 100% !important;
             height: 68px !important;
@@ -649,39 +663,88 @@
             background: #ffffff !important;
             border: 0 !important;
             border-bottom: 1px solid rgba(15, 27, 51, 0.12) !important;
-            box-shadow: 0 8px 24px -10px rgba(15, 27, 51, 0.25) !important;
+            box-shadow: 0 8px 24px -10px rgba(15, 27, 51, 0.22) !important;
             padding: 0 calc((100% - 1320px) / 2);
         }
-        body.is-scrolled .sc-island-host:not(.is-open) .sc-bar-row {
-            height: 68px;
-        }
-        body.is-scrolled .sc-island-host:not(.is-open) .sc-brand-title {
-            color: #0f1b33;
-        }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-bar-row { height: 68px; }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-brand-title { color: #0b1f3a; }
         body.is-scrolled .sc-island-host:not(.is-open) .sc-halves-wrapper {
             background: rgba(15, 27, 51, 0.05);
             box-shadow: inset 0 0 0 1px rgba(15, 27, 51, 0.08);
         }
-        body.is-scrolled .sc-island-host:not(.is-open) .sc-half-btn {
-            color: #0f1b33;
-        }
-        body.is-scrolled .sc-island-host:not(.is-open) .sc-half-btn .btn-labels small {
-            color: #64748b;
-        }
-        body.is-scrolled .sc-island-host:not(.is-open) .sc-dpdp-loop-btn {
-            color: #0f1b33;
-        }
-        body.is-scrolled .sc-island-host:not(.is-open) .sc-action-circle {
-            background: rgba(15, 27, 51, 0.06);
-            color: #0f1b33;
-            box-shadow: inset 0 0 0 1px rgba(15, 27, 51, 0.08);
-        }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-half-btn { color: #0b1f3a; }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-half-btn .btn-labels small { color: #64748b; }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-dpdp-loop-btn { color: #0b1f3a; }
         body.is-scrolled .sc-island-host:not(.is-open) .sc-login-white-btn {
             background: var(--sc-primary);
             color: #ffffff !important;
         }
 
-        /* Padding adjustment for hero section */
+        /* ========================================================
+           6. SLIDE-IN MOBILE MENU DRAWER (FOR SCREENSHOT 2 REQ)
+           ======================================================== */
+        .sc-mobile-drawer {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100vh;
+            background: #0b1f3a;
+            z-index: 1090;
+            box-shadow: 6px 0 25px rgba(0,0,0,0.5);
+            transition: left 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+            padding: 25px 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .sc-mobile-drawer.open {
+            left: 0;
+        }
+        .sc-drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .sc-drawer-header h5 {
+            color: #fff;
+            margin: 0;
+            font-weight: 700;
+        }
+        .sc-drawer-close {
+            background: transparent;
+            border: 0;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .sc-drawer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .sc-drawer-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sc-drawer-links a:hover {
+            background: rgba(2, 132, 199, 0.2);
+            color: #38bdf8;
+        }
+
+        /* ========================================================
+           7. HERO SECTION & BALANCED TYPOGRAPHY (NO WEIRD SIZES)
+           ======================================================== */
         .hero-section {
             padding-top: 155px;
             background: radial-gradient(circle at 80% 20%, #dbeafe 0%, #f0f4f9 60%, #ffffff 100%);
@@ -690,34 +753,45 @@
             padding-bottom: 60px;
         }
 
-        /* Existing Page Elements */
-        .text-3d-glow {
+        /* Proportional, Balanced Hero Title */
+        .sc-hero-h1 {
+            font-size: clamp(2.3rem, 4.2vw, 3.8rem);
             font-weight: 800;
-            text-shadow: 0 4px 15px rgba(13, 110, 253, 0.3), 0 1px 2px rgba(0,0,0,0.1);
+            line-height: 1.15;
+            letter-spacing: -0.025em;
+            color: #0f172a;
+            margin-bottom: 1rem;
         }
-        .title-3d {
-            font-weight: 800;
-            color: #1a202c;
-            text-shadow: 2px 2px 0px #e2e8f0, 4px 4px 8px rgba(0,0,0,0.08);
+        .sc-hero-h1 .text-highlight {
+            color: #0284c7;
+            text-shadow: 0 4px 18px rgba(2, 132, 199, 0.25);
         }
+        .sc-hero-lead {
+            font-size: clamp(1rem, 1.2vw, 1.15rem);
+            line-height: 1.7;
+            color: #475569;
+            max-width: 38rem;
+            margin-bottom: 1.75rem;
+        }
+
         section { padding: 80px 0; position: relative; }
         .main-hero-img {
-            filter: drop-shadow(0 25px 35px rgba(13, 110, 253, 0.25));
+            filter: drop-shadow(0 25px 35px rgba(2, 132, 199, 0.25));
             animation: floatImage 4s ease-in-out infinite;
             border-radius: 30px;
         }
         @keyframes floatImage {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-18px) rotate(1deg); }
+            50% { transform: translateY(-16px) rotate(1deg); }
         }
         .hero-image-wrapper { position: relative; padding: 20px; perspective: 1000px; }
         .floating-card {
             position: absolute;
-            background: rgba(255, 255, 255, 0.85) !important;
+            background: rgba(255, 255, 255, 0.9) !important;
             backdrop-filter: blur(6px);
             padding: 15px 22px;
             border-radius: 18px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -738,10 +812,9 @@
             transition: all 0.3s;
         }
         .feature-card:hover { transform: translateY(-8px); }
-        .bg-blue { background: linear-gradient(135deg, #4399bc 0%, #206382 100%) !important; }
-        .bg-teal { background: linear-gradient(135deg, #26a69a 0%, #00695c 100%) !important; }
-        .bg-orange { background: linear-gradient(135deg, #f29235 0%, #d84315 100%) !important; }
-
+        .bg-blue { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important; }
+        .bg-teal { background: linear-gradient(135deg, #0d9488 0%, #047857 100%) !important; }
+        .bg-orange { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; }
         .btn-demo {
             margin-top: auto;
             border: 2px solid #fff;
@@ -801,32 +874,58 @@
             width: 100%;
         }
 
-        /* Mobile Adjustments */
+        /* ========================================================
+           8. MOBILE RESPONSIVE OPTIMIZATIONS (SCREENSHOT 2 EXACT)
+           ======================================================== */
         @media (max-width: 991px) {
             .sc-hang-container, .sc-dpdp-loop-btn { display: none !important; }
-            .sc-island-host { width: calc(100% - 24px) !important; top: 46px; }
-            .hero-section { padding-top: 140px; }
+            .sc-island-host { width: calc(100% - 24px) !important; top: 48px; }
+            .hero-section { padding-top: 145px; }
             .sc-pane-schools, .sc-pane-students { grid-template-columns: 1fr; }
         }
         @media (max-width: 768px) {
-            .sc-strip-left-nav a:not(:first-child) { display: none; }
-        }
-        @media (max-width: 600px) {
-            .sc-halves-wrapper { display: none; }
+            /* Show 3-line Hamburger on Top Left */
+            .sc-mobile-hamburger { display: inline-flex; }
+            .sc-strip-left-nav { display: none; } /* Hide plain text desktop items */
+
+            /* Hanging Header: Show ONLY Icon + Arrow, HIDE long text labels */
+            .sc-half-btn { padding: 4px 8px 4px 4px; gap: 4px; }
+            .sc-half-btn .btn-labels { display: none !important; }
+            .sc-half-btn .tile-badge { width: 34px; height: 34px; font-size: 15px; }
+            .sc-login-white-btn { padding: 0 14px; font-size: 13px; height: 38px; }
+            .sc-brand-title { font-size: 20px; }
             .sc-island-host { height: 62px; }
-            .sc-bar-row { height: 62px; }
+            .sc-bar-row { height: 62px; padding: 0 12px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- BACKDROP BLUR OVERLAY FOR MEGA MENU -->
+    <!-- BACKDROP BLUR OVERLAY (FOR MEGA DROPDOWN & MOBILE DRAWER) -->
     <div class="sc-backdrop-overlay" id="megaBackdrop"></div>
 
-    <!-- 1. TOP UTILITY STRIP -->
+    <!-- MOBILE SLIDE-IN DRAWER MENU -->
+    <div class="sc-mobile-drawer" id="mobileDrawer">
+        <div class="sc-drawer-header">
+            <h5>Navigation</h5>
+            <button class="sc-drawer-close" onclick="closeMobileDrawer()">&times;</button>
+        </div>
+        <div class="sc-drawer-links">
+            <a href="#home" onclick="closeMobileDrawer()"><i class="fas fa-home"></i> Home</a>
+            <a href="#about" onclick="closeMobileDrawer()"><i class="fas fa-info-circle"></i> About us</a>
+            <a href="#features" onclick="closeMobileDrawer()"><i class="fas fa-th-large"></i> Features</a>
+            <a href="#pricing" onclick="closeMobileDrawer()"><i class="fas fa-tags"></i> Pricing</a>
+            <a href="#ceo-desk" onclick="closeMobileDrawer()"><i class="fas fa-user-tie"></i> Developer Desk</a>
+            <a href="#contact" onclick="closeMobileDrawer()"><i class="fas fa-envelope"></i> Contact</a>
+            <hr style="border-color: rgba(255,255,255,0.15); margin: 8px 0;">
+            <a href="/superadmin.html" style="color: #ffd166;"><i class="fas fa-shield-alt"></i> Super Admin</a>
+        </div>
+    </div>
+
+    <!-- 1. TOP UTILITY STRIP (WITH STAR-GRID BLUE BACKGROUND) -->
     <div class="sc-utility-bar">
         <div class="sc-strip-inner">
-            <!-- Left Side Original Menus -->
+            <!-- Left Side Menus (Desktop) & Hamburger (Mobile) -->
             <div class="sc-strip-left-nav">
                 <a href="#home"><i class="fas fa-home me-1"></i> Home</a>
                 <a href="#about">About us</a>
@@ -835,17 +934,20 @@
                 <a href="#ceo-desk">Developer Desk</a>
                 <a href="#contact">Contact</a>
             </div>
+            <button class="sc-mobile-hamburger" onclick="openMobileDrawer()" title="Open Menu">
+                <i class="fas fa-bars"></i>
+            </button>
 
-            <!-- Right Side Links -->
+            <!-- Right Side Helpline & Super Admin -->
             <div class="sc-strip-right">
                 <a href="tel:+917079090740"><i class="fas fa-phone-alt me-1 text-primary"></i> +91 7079090740</a>
                 <span>&bull;</span>
-                <a href="/superadmin.html" class="sc-strip-partner" id="strip-admin-link"><i class="fas fa-shield-alt me-1"></i> Super Admin</a>
+                <a href="/superadmin.html" class="sc-strip-admin" id="strip-admin-link"><i class="fas fa-shield-alt me-1"></i> Super Admin</a>
             </div>
         </div>
     </div>
 
-    <!-- 2. HIGH REALISTIC METALLIC CHAINS/RINGS (CLEAN & NON-REPEATING) -->
+    <!-- 2. ORIGINAL INTERLOCKING 3D METALLIC CHAINS -->
     <div class="sc-hang-container" aria-hidden="true" id="scHangRings">
         <!-- Left Chained Ring -->
         <span class="sc-ring-unit ring-l">
@@ -863,23 +965,23 @@
                     </linearGradient>
                     <clipPath id="mcaL"><rect x="0" y="6" width="40" height="18.5"/></clipPath>
                 </defs>
-                <!-- 1. Top Grommet (धंसा हुआ छेद) -->
+                <!-- 1. Top Grommet (स्ट्रिप के अंदर धंसा हुआ छेद) -->
                 <circle cx="20" cy="6" r="4.4" fill="url(#mtgL)"/>
                 <circle cx="20" cy="6" r="4.4" fill="none" stroke="var(--h5)" stroke-width=".5"/>
-                <circle cx="20" cy="6" r="2.1" fill="#061328"/>
+                <circle cx="20" cy="6" r="2.1" fill="#09182e"/>
                 
-                <!-- 2. Bottom Tab on Island (आइलैंड टैब) -->
+                <!-- 2. Bottom Tab on Island (आइलैंड के ऊपर ब्रास ब्रैकेट) -->
                 <path d="M14.6 31.2V25a5.4 5.4 0 0 1 10.8 0v6.2z" fill="url(#mttL)" stroke="var(--h3)" stroke-width=".55"/>
-                <path d="M15.6 25a4.4 4.4 0 0 1 8.8 0" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width=".5"/>
-                <circle cx="20" cy="24.5" r="2.2" fill="#061328"/>
+                <path d="M15.6 25a4.4 4.4 0 0 1 8.8 0" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width=".5"/>
+                <circle cx="20" cy="24.5" r="2.2" fill="#09182e"/>
                 <circle cx="16.6" cy="29.3" r=".55" fill="var(--h5)"/>
                 <circle cx="23.4" cy="29.3" r=".55" fill="var(--h5)"/>
 
                 <!-- 3. Real 3D Round Metallic Interlocking Ring -->
                 <g clip-path="url(#mcaL)" fill="none">
-                    <circle cx="20" cy="15.25" r="9.25" stroke="var(--h4)" stroke-width="2.5"/>
-                    <circle cx="20" cy="15.25" r="9.25" stroke="var(--hl)" stroke-width="1" stroke-dasharray="18 41" stroke-dashoffset="38" stroke-linecap="round"/>
-                    <circle cx="20" cy="15.25" r="10.25" stroke="var(--h5)" stroke-width=".6" stroke-dasharray="16 49" stroke-dashoffset="1" stroke-linecap="round"/>
+                    <circle cx="20" cy="15.25" r="9.25" stroke="var(--h4)" stroke-width="2.6"/>
+                    <circle cx="20" cy="15.25" r="9.25" stroke="var(--hl)" stroke-width="1.1" stroke-dasharray="18 41" stroke-dashoffset="38" stroke-linecap="round"/>
+                    <circle cx="20" cy="15.25" r="10.25" stroke="var(--h5)" stroke-width=".7" stroke-dasharray="16 49" stroke-dashoffset="1" stroke-linecap="round"/>
                 </g>
             </svg>
         </span>
@@ -903,20 +1005,20 @@
                 <!-- 1. Top Grommet -->
                 <circle cx="20" cy="6" r="4.4" fill="url(#mtgR)"/>
                 <circle cx="20" cy="6" r="4.4" fill="none" stroke="var(--h5)" stroke-width=".5"/>
-                <circle cx="20" cy="6" r="2.1" fill="#061328"/>
+                <circle cx="20" cy="6" r="2.1" fill="#09182e"/>
                 
                 <!-- 2. Bottom Tab on Island -->
                 <path d="M14.6 31.2V25a5.4 5.4 0 0 1 10.8 0v6.2z" fill="url(#mttR)" stroke="var(--h3)" stroke-width=".55"/>
-                <path d="M15.6 25a4.4 4.4 0 0 1 8.8 0" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width=".5"/>
-                <circle cx="20" cy="24.5" r="2.2" fill="#061328"/>
+                <path d="M15.6 25a4.4 4.4 0 0 1 8.8 0" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width=".5"/>
+                <circle cx="20" cy="24.5" r="2.2" fill="#09182e"/>
                 <circle cx="16.6" cy="29.3" r=".55" fill="var(--h5)"/>
                 <circle cx="23.4" cy="29.3" r=".55" fill="var(--h5)"/>
 
                 <!-- 3. Real 3D Round Metallic Interlocking Ring -->
                 <g clip-path="url(#mcaR)" fill="none">
-                    <circle cx="20" cy="15.25" r="9.25" stroke="var(--h4)" stroke-width="2.5"/>
-                    <circle cx="20" cy="15.25" r="9.25" stroke="var(--hl)" stroke-width="1" stroke-dasharray="18 41" stroke-dashoffset="38" stroke-linecap="round"/>
-                    <circle cx="20" cy="15.25" r="10.25" stroke="var(--h5)" stroke-width=".6" stroke-dasharray="16 49" stroke-dashoffset="1" stroke-linecap="round"/>
+                    <circle cx="20" cy="15.25" r="9.25" stroke="var(--h4)" stroke-width="2.6"/>
+                    <circle cx="20" cy="15.25" r="9.25" stroke="var(--hl)" stroke-width="1.1" stroke-dasharray="18 41" stroke-dashoffset="38" stroke-linecap="round"/>
+                    <circle cx="20" cy="15.25" r="10.25" stroke="var(--h5)" stroke-width=".7" stroke-dasharray="16 49" stroke-dashoffset="1" stroke-linecap="round"/>
                 </g>
             </svg>
         </span>
@@ -961,7 +1063,7 @@
             </div>
 
             <!-- Hand-drawn DPDP Badge -->
-            <a href="#contact" class="sc-dpdp-loop-btn" title="DPDP Ready">
+            <a href="#contact" class="sc-dpdp-loop-btn" title="DPDP Ready Cloud Security">
                 <svg viewBox="0 0 140 80">
                     <path d="M22 20 C58 3 124 6 132 33 C139 60 96 76 60 74 C22 72 4 55 9 37 C14 19 50 9 94 11 C112 12 125 16 133 22"/>
                 </svg>
@@ -969,11 +1071,8 @@
                 <span style="font-size: 14px;">ready</span>
             </a>
 
-            <!-- Right Tools & Login CTA -->
+            <!-- Right Tools & Login CTA (SEARCH BUTTON REMOVED) -->
             <div class="sc-actions-group">
-                <button class="sc-action-circle" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" title="Quick Search">
-                    <i class="fas fa-search"></i>
-                </button>
                 <a href="https://app.schoolalarm.online" class="sc-login-white-btn" id="nav-app-link">
                     <i class="fas fa-user-circle"></i> Login
                 </a>
@@ -1010,7 +1109,7 @@
                             <span class="sc-suite-icon"><i class="fas fa-coins"></i></span>
                             <div class="sc-suite-info">
                                 <b>Finance &amp; Fees</b>
-                                <span>UPI, accounts and Tally sync</span>
+                                <span>UPI, accounts &amp; Tally sync</span>
                             </div>
                         </a>
                         <a href="#features" class="sc-suite-card">
@@ -1054,9 +1153,9 @@
                 <!-- Right School Highlight Box (Automated Bell & Timetable) -->
                 <div class="sc-bell-promo-box">
                     <div>
-                        <span class="lms-badge">AUTOMATION SYSTEM</span>
+                        <span class="box-badge">ENTERPRISE AUTOMATION</span>
                         <h4>Automated School Bell &amp; Timetable</h4>
-                        <p>Multi-period talking bells, automated teacher substitutions, and smart lecture schedules with real-time cloud sync.</p>
+                        <p>Fully automated multi-period talking bells, teacher substitutions, and smart lecture schedules with cloud sync.</p>
                     </div>
                     <a href="#contact" class="sc-promo-cta-btn" onclick="closeMegaMenu()">
                         Request a Free Demo &rarr;
@@ -1068,7 +1167,7 @@
             <div class="sc-pane-students" id="paneStudents">
                 <div class="sc-student-left-box">
                     <div>
-                        <span class="badge bg-warning text-dark px-3 py-1 fw-bold">STUDENT &amp; PARENT APP</span>
+                        <span class="badge bg-warning text-dark px-3 py-1 fw-bold">STUDENT &amp; PARENT PORTAL</span>
                         <h3>Complete Academic &amp; Attendance Tracking</h3>
                         <p style="font-size:13.5px; opacity:0.9;">Stay connected with real-time class attendance, digital homework, fee alerts, and online report cards.</p>
                         <div class="sc-student-steps">
@@ -1078,11 +1177,11 @@
                             <span>4. Marks</span>
                         </div>
                         <div class="sc-class-chips">
-                            <span>Class 3–5</span><span>Class 6–8</span><span>Class 9 &amp; 10</span><span>Class 11 &amp; 12</span>
+                            <span>Pre-Primary</span><span>Primary</span><span>Middle School</span><span>Senior Secondary</span>
                         </div>
                     </div>
                     <a href="https://student.schoolalarm.online" class="sc-promo-cta-btn" id="nav-student-link">
-                        Explore Student Portal &rarr;
+                        Open Student Portal &rarr;
                     </a>
                 </div>
 
@@ -1114,25 +1213,29 @@
     </div>
 
     <!-- ========================================================
-         HERO SECTION
+         HERO SECTION (CLEAN BALANCED TYPOGRAPHY)
          ======================================================== -->
     <section class="hero-section" id="home">
         <div class="container">
-            <div class="row align-items-center" style="min-height: 80vh;">
+            <div class="row align-items-center" style="min-height: 75vh;">
                 <div class="col-lg-7 text-start">
                     <span class="badge rounded-pill bg-warning text-dark px-3 py-2 mb-3 shadow-sm fw-bold">🚀 Enterprise School Suite</span>
-                    <h1 class="display-3 fw-bold mb-3 title-3d" style="line-height: 1.15;">
-                        NextGen School Alert: <br/><span class="text-3d-glow" style="color: #0284c7;">Enterprise School ERP</span> &amp; Automation Platform.
+                    
+                    <!-- Clean, Perfectly Sized H1 -->
+                    <h1 class="sc-hero-h1">
+                        NextGen School Alert: <br/>
+                        <span class="text-highlight">Enterprise School ERP</span> &amp; Automation Platform.
                     </h1>
-                    <p class="lead fw-bold mb-3" style="color: #17467f;">From admissions to academics, fee collections to vehicle tracking.</p>
-                    <p class="text-secondary mb-4" style="font-size: 1.05rem; line-height: 1.7;">
-                        Automate your entire campus on a single cloud database. From student admissions to online fee collection, live GPS bus tracking, and exam generation—trusted by modern schools across India.
+                    
+                    <p class="sc-hero-lead">
+                        From admissions to academics, fee collections to vehicle tracking—automate your entire campus on a single cloud database trusted across India.
                     </p>
+                    
                     <div class="d-flex flex-wrap gap-3">
-                        <a class="btn btn-primary btn-lg px-4 shadow" href="#contact" style="border-radius: 12px; background: #0284c7; border: none;">
+                        <a class="btn btn-primary btn-lg px-4 shadow" href="#contact" style="border-radius: 12px; background: #0284c7; border: none; font-weight: 700;">
                             <i class="fas fa-calendar-check me-2"></i> Book a Free Demo
                         </a>
-                        <a class="btn btn-outline-dark btn-lg px-4" href="#pricing" style="border-radius: 12px;">
+                        <a class="btn btn-outline-dark btn-lg px-4" href="#pricing" style="border-radius: 12px; font-weight: 600;">
                             Start 1-Month Free Trial
                         </a>
                     </div>
@@ -1166,7 +1269,7 @@
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-5 mb-lg-0">
                     <span class="badge rounded-pill bg-warning text-dark px-3 py-2 mb-3 shadow-sm">ABOUT PLATFORM</span>
-                    <h2 class="fw-bold display-5 mb-4 title-3d">
+                    <h2 class="fw-bold display-5 mb-4" style="color: #0f172a;">
                         Enterprise <span style="color: #0d6efd;">ERP Provider</span> for Modern Schools
                     </h2>
                     <p class="text-secondary mb-4" style="line-height: 1.8; font-size: 1.05rem;">
@@ -1190,7 +1293,7 @@
     <section id="features" style="padding: 70px 0; background: #f8f9fa;">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="fw-bold title-3d">Core Features</h2>
+                <h2 class="fw-bold" style="color: #0f172a;">Core Features</h2>
                 <div class="mx-auto" style="width: 50px; height: 3px; background: #0284c7;"></div>
             </div>
             <div class="row g-4">
@@ -1198,7 +1301,7 @@
                     <div class="feature-card bg-orange shadow-sm h-100">
                         <i class="fas fa-school fa-3x mb-3"></i>
                         <h4>All-In-One School ERP</h4>
-                        <p>Single integrated cloud system containing all 8 operational suites. Paperless campus administration.</p>
+                        <p>Single integrated cloud system containing all 8 operational suites. Complete paperless campus administration.</p>
                         <a class="btn-demo" href="#contact">Request Demo</a>
                     </div>
                 </div>
@@ -1227,7 +1330,7 @@
         <div class="container">
             <div class="text-center mb-5">
                 <span class="badge rounded-pill bg-danger px-3 py-2 mb-2 shadow-sm">SIMPLE &amp; AFFORDABLE</span>
-                <h2 class="fw-bold display-6 title-3d">Choose the Right Plan for Your School</h2>
+                <h2 class="fw-bold display-6" style="color: #0f172a;">Choose the Right Plan for Your School</h2>
             </div>
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6 col-12">
@@ -1288,7 +1391,7 @@
             <div class="row g-5 align-items-center">
                 <div class="col-lg-5 text-start">
                     <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 mb-3 shadow-sm fw-bold">Book Free Demo</span>
-                    <h2 class="fw-bold display-6 title-3d mb-3">See Your School on Cloud in 7 Days</h2>
+                    <h2 class="fw-bold display-6 mb-3" style="color: #0f172a;">See Your School on Cloud in 7 Days</h2>
                     <p class="text-secondary mb-4" style="line-height: 1.7; font-size: 1.05rem;">
                         Our specialist will walk you through live report cards, fees collection, and the teacher app using your own school data.
                     </p>
@@ -1348,7 +1451,7 @@
     </section>
 
     <!-- FOOTER -->
-    <footer style="background: #091527; color: #ffffff; padding: 40px 0 20px;">
+    <footer style="background: #09172c; color: #ffffff; padding: 40px 0 20px;">
         <div class="container text-center text-md-start">
             <div class="row g-4">
                 <div class="col-lg-4 col-md-12">
@@ -1394,12 +1497,26 @@
     <!-- HEADER INTERACTION SCRIPT -->
     <script>
         const island = document.getElementById('scIsland');
+        const hangRings = document.getElementById('scHangRings');
         const backdrop = document.getElementById('megaBackdrop');
         const paneSchools = document.getElementById('paneSchools');
         const paneStudents = document.getElementById('paneStudents');
         const btnSchools = document.getElementById('btnMegaSchools');
         const btnStudents = document.getElementById('btnMegaStudents');
+        const mobileDrawer = document.getElementById('mobileDrawer');
         let currentTab = null;
+
+        // Mobile Drawer Controller
+        function openMobileDrawer() {
+            mobileDrawer.classList.add('open');
+            backdrop.classList.add('show');
+        }
+        function closeMobileDrawer() {
+            mobileDrawer.classList.remove('open');
+            if (!island.classList.contains('is-open')) {
+                backdrop.classList.remove('show');
+            }
+        }
 
         // Mega Menu Open/Toggle
         function toggleMegaMenu(tab) {
@@ -1434,21 +1551,29 @@
             currentTab = null;
         }
 
-        backdrop.addEventListener('click', closeMegaMenu);
-
-        // Escape Key Closes Menu
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeMegaMenu();
+        backdrop.addEventListener('click', () => {
+            closeMegaMenu();
+            closeMobileDrawer();
         });
 
-        // Hover Sway Effect on Hanging Island
+        // Escape Key Closes Everything
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeMegaMenu();
+                closeMobileDrawer();
+            }
+        });
+
+        // Forward-Backward Physics Sway on Mouseenter
         island.addEventListener('mouseenter', () => {
             if (!document.body.classList.contains('is-scrolled') && !island.classList.contains('is-open')) {
-                island.classList.add('sway-effect');
+                island.classList.add('sway-3d-active');
+                hangRings.classList.add('sway-3d-active');
             }
         });
         island.addEventListener('animationend', () => {
-            island.classList.remove('sway-effect');
+            island.classList.remove('sway-3d-active');
+            hangRings.classList.remove('sway-3d-active');
         });
 
         // Scroll Transformation: Option 17 (Converts to Fixed White Bar)
