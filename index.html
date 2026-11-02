@@ -15,13 +15,14 @@
 
     <style>
         :root {
-            --sc-primary: #0284c7;
-            --sc-primary-dark: #0369a1;
-            --sc-navy: #09172c;
-            --sc-island: linear-gradient(90deg, #0e274a 0%, #154173 50%, #0e274a 100%);
+            --sc-primary: #2867b2;
+            --sc-primary-dark: #17467f;
+            --sc-navy: #0f1b33;
+            --sc-navy-strip: #0d1e38;
             --sc-accent-pink: #d3236e;
             --sc-accent-purple: #5b3a8e;
-            --sc-light-bg: #f8fafc;
+            --sc-light-bg: #fbf7f0;
+            --sc-border: rgba(15, 27, 51, 0.08);
         }
 
         * { box-sizing: border-box; }
@@ -36,20 +37,20 @@
         }
 
         /* ========================================================
-           1. TOP UTILITY STRIP (WITH YOUR LEFT MENU ITEMS)
+           1. TOP UTILITY STRIP (FIXED AT VERY TOP)
            ======================================================== */
         .sc-utility-bar {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            height: 40px;
-            background: #09172c;
+            height: 38px;
+            background: #091527;
             color: #ffffff;
             z-index: 1070;
             display: flex;
             align-items: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
         }
         .sc-strip-inner {
             width: 100%;
@@ -59,56 +60,53 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 13px;
-        }
-        /* Left Menus */
-        .sc-left-nav {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        .sc-left-nav a {
-            color: #e2e8f0;
-            text-decoration: none;
-            font-weight: 500;
             font-size: 12.5px;
-            padding: 2px 6px;
+        }
+        .sc-strip-badge {
+            color: #fff;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        .sc-strip-badge .badge-tag {
+            background: #e11d48;
+            color: #fff;
+            padding: 1px 7px;
             border-radius: 4px;
-            transition: all 0.2s ease;
+            font-size: 10.5px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
         }
-        .sc-left-nav a:hover {
-            color: #38bdf8;
-            background: rgba(255, 255, 255, 0.08);
+        .sc-strip-ticker {
+            color: #ffd166;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
-
-        /* Right Quick Links */
-        .sc-strip-right {
+        .sc-strip-links {
             display: flex;
             align-items: center;
             gap: 16px;
         }
-        .sc-strip-right a {
+        .sc-strip-links a {
             color: #cbd5e1;
             text-decoration: none;
             font-weight: 500;
-            font-size: 12.5px;
             transition: color 0.2s;
         }
-        .sc-strip-right a:hover { color: #fff; }
-        .sc-strip-admin {
-            border: 1px solid rgba(255, 209, 102, 0.45);
-            padding: 3px 12px;
+        .sc-strip-links a:hover { color: #fff; }
+        .sc-strip-partner {
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 2px 12px;
             border-radius: 12px;
-            color: #ffd166 !important;
-            font-weight: 600 !important;
-            transition: all 0.2s ease;
-        }
-        .sc-strip-admin:hover {
-            background: rgba(255, 209, 102, 0.15);
+            color: #fff !important;
         }
 
         /* ========================================================
-           2. REALISTIC 3D METALLIC CHAINS & HANGING RINGS
+           2. HANGING METALLIC RINGS (ANIMATED)
            ======================================================== */
         .sc-hang-container {
             position: fixed;
@@ -116,73 +114,63 @@
             left: 50%;
             transform: translateX(-50%);
             width: min(1320px, calc(100% - 48px));
-            height: 38px;
+            height: 32px;
             pointer-events: none;
             z-index: 1065;
-            transition: opacity 0.35s ease;
+            transition: opacity 0.3s ease;
         }
-        .sc-metal-ring {
+        .sc-ring-unit {
             position: absolute;
             top: 0;
-            width: 44px;
-            height: 36px;
-            filter: drop-shadow(0 3px 3px rgba(5, 15, 30, 0.5));
-            transform-origin: 22px 6px;
+            width: 40px;
+            height: 32px;
+            filter: drop-shadow(0 3px 2px rgba(10,30,60,0.45));
         }
-        .sc-metal-ring.ring-l { left: 18%; }
-        .sc-metal-ring.ring-r { right: 18%; }
-        .sc-metal-ring svg { width: 44px; height: 100%; display: block; overflow: visible; }
-
-        /* Physics Sway when mouse touches the Island */
-        .sc-island-host.sway-active {
-            animation: islandSway 2s ease-in-out;
-        }
-        .sc-hang-container.sway-active .sc-metal-ring {
-            animation: ringSway 2s ease-in-out;
-        }
-
-        @keyframes islandSway {
-            0% { transform: translateX(-50%) rotate(0deg); }
-            15% { transform: translateX(calc(-50% - 2.5px)) rotate(-0.35deg); }
-            32% { transform: translateX(calc(-50% + 2px)) rotate(0.28deg); }
-            48% { transform: translateX(calc(-50% - 1.2px)) rotate(-0.16deg); }
-            68% { transform: translateX(calc(-50% + 0.6px)) rotate(0.08deg); }
-            100% { transform: translateX(-50%) rotate(0deg); }
-        }
-        @keyframes ringSway {
-            0% { transform: rotate(0deg); }
-            15% { transform: rotate(3.2deg); }
-            32% { transform: rotate(-2.6deg); }
-            48% { transform: rotate(1.6deg); }
-            68% { transform: rotate(-0.8deg); }
-            100% { transform: rotate(0deg); }
-        }
+        .sc-ring-unit.ring-l { left: 20%; }
+        .sc-ring-unit.ring-r { right: 20%; }
+        .sc-ring-unit svg { width: 40px; height: 100%; overflow: visible; }
 
         /* ========================================================
-           3. FLOATING ISLAND CONTAINER
+           3. FLOATING ISLAND BAR (THE CORE CONTAINER)
            ======================================================== */
         .sc-island-host {
             position: fixed;
-            top: 54px;
+            top: 50px;
             left: 50%;
             transform: translateX(-50%);
             width: min(1320px, calc(100% - 48px));
             height: 74px;
-            background: var(--sc-island);
-            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px) 0 0/18px 18px,
+                        radial-gradient(40% 180% at 0% 0%, rgba(40,103,178,.6), transparent 70%),
+                        radial-gradient(30% 160% at 100% 100%, rgba(91,42,134,.45), transparent 70%),
+                        linear-gradient(90deg, #102d52 0%, #17467f 50%, #12335c 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 16px;
-            box-shadow: 0 24px 50px -20px rgba(10, 30, 65, 0.85);
+            box-shadow: 0 22px 48px -22px rgba(18,58,106,.8);
             z-index: 1060;
             overflow: hidden;
-            transition: width 0.45s cubic-bezier(.22,1,.36,1),
-                        height 0.45s cubic-bezier(.22,1,.36,1),
-                        top 0.35s ease,
+            transition: width 0.5s cubic-bezier(.22,1,.36,1),
+                        height 0.5s cubic-bezier(.22,1,.36,1),
+                        top 0.4s ease,
                         background 0.35s ease,
-                        border-radius 0.35s ease,
-                        box-shadow 0.35s ease;
+                        border-radius 0.4s ease,
+                        box-shadow 0.4s ease;
         }
 
-        /* Main Island Bar Row */
+        /* Physics Sway on Hover (when un-scrolled & closed) */
+        .sc-island-host.sway-effect {
+            animation: scSway 1.8s ease-in-out;
+        }
+        @keyframes scSway {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            15% { transform: translateX(calc(-50% + 2px)) rotate(0.4deg); }
+            30% { transform: translateX(calc(-50% - 2px)) rotate(-0.35deg); }
+            50% { transform: translateX(calc(-50% + 1px)) rotate(0.2deg); }
+            70% { transform: translateX(calc(-50% - 0.5px)) rotate(-0.1deg); }
+            100% { transform: translateX(-50%) rotate(0deg); }
+        }
+
+        /* THE ISLAND HEADER BAR ROW */
         .sc-bar-row {
             height: 74px;
             padding: 0 16px 0 24px;
@@ -191,48 +179,48 @@
             justify-content: space-between;
         }
 
-        /* Logo Area */
-        .brand-container {
-            position: relative;
-            width: 190px;
-            height: 48px;
-            overflow: hidden;
+        /* BRAND LOGO */
+        .sc-brand-link {
+            text-decoration: none;
             display: flex;
             align-items: center;
+            gap: 10px;
         }
-        .brand-text, .brand-logo-1, .brand-logo-2 {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-            transition: opacity 1s ease-in-out;
-            display: block;
-            opacity: 0;
-            visibility: hidden;
-        }
-        .brand-logo-1 { height: 50px; width: auto; object-fit: contain; }
-        .brand-logo-2 { height: 42px; width: auto; object-fit: contain; }
-        @keyframes cycleAnimation {
-            0%, 30% { opacity: 1; visibility: visible; }
-            33%, 100% { opacity: 0; visibility: hidden; }
-        }
-        .brand-text { 
-            animation: cycleAnimation 15s infinite; 
-            color: #ffffff; 
-            font-size: 1.35rem;
+        .sc-brand-title {
+            font-family: 'Poppins', sans-serif;
             font-weight: 800;
+            font-size: 26px;
+            color: #ffffff;
             letter-spacing: -0.5px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 2px;
         }
-        .brand-logo-1 { animation: cycleAnimation 15s infinite 5s; }
-        .brand-logo-2 { animation: cycleAnimation 15s infinite 10s; }
+        .sc-brand-title span.dot-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 6px);
+            gap: 2px;
+            margin-left: 4px;
+        }
+        .sc-brand-title span.dot-grid b {
+            width: 6px;
+            height: 6px;
+            border-radius: 1.5px;
+            display: block;
+        }
+        .dot-1 { background: #2ab77c; }
+        .dot-2 { background: #ecb32d; }
+        .dot-3 { background: #2867b2; }
+        .dot-4 { background: #e01c5a; }
 
-        /* CENTER SEGMENTED TABS */
+        /* CENTER DUAL SWITCHER TABS */
         .sc-halves-wrapper {
             display: flex;
             align-items: center;
             gap: 10px;
             background: rgba(255, 255, 255, 0.08);
-            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
             padding: 4px;
             border-radius: 14px;
         }
@@ -262,7 +250,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         .sc-half-btn.btn-school .tile-badge {
-            background: linear-gradient(135deg, #0284c7, #0369a1);
+            background: linear-gradient(135deg, #3f8ae0, #2867b2);
         }
         .sc-half-btn.btn-student .tile-badge {
             background: linear-gradient(135deg, #d3236e, #6e1f78);
@@ -277,7 +265,7 @@
         .sc-half-btn .btn-labels small { font-size: 11.5px; opacity: 0.75; font-weight: 400; }
         .sc-half-btn .btn-chev { font-size: 11px; margin-left: 2px; opacity: 0.6; transition: transform 0.3s ease; }
 
-        /* HAND-DRAWN DPDP BADGE */
+        /* HAND-DRAWN BADGE */
         .sc-dpdp-loop-btn {
             position: relative;
             display: flex;
@@ -333,20 +321,20 @@
         .sc-action-circle:hover { background: rgba(255, 255, 255, 0.22); }
         .sc-login-white-btn {
             height: 44px;
-            padding: 0 22px;
+            padding: 0 20px;
             border-radius: 10px;
             background: #ffffff;
-            color: #0c203c !important;
+            color: #102d52 !important;
             font-weight: 700;
             font-size: 15px;
             text-decoration: none !important;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
             transition: all 0.2s ease;
         }
-        .sc-login-white-btn:hover { background: #e0f2fe; transform: translateY(-1px); }
+        .sc-login-white-btn:hover { background: #e8f0fa; transform: translateY(-1px); }
         
         .sc-close-mega-btn {
             display: none;
@@ -361,7 +349,7 @@
         }
 
         /* ========================================================
-           4. DROPDOWN MEGA EXPANSION (OPEN IN PLACE)
+           4. MEGA MENU PANELS (EXPANDED STATE)
            ======================================================== */
         .sc-mega-container {
             display: none;
@@ -381,15 +369,15 @@
         .sc-island-host.is-open .sc-bar-row {
             border-bottom: 1px solid rgba(15, 27, 51, 0.08);
         }
-        .sc-island-host.is-open .brand-text { color: #09172c; }
+        .sc-island-host.is-open .sc-brand-title { color: #0f1b33; }
         .sc-island-host.is-open .sc-halves-wrapper {
             background: rgba(15, 27, 51, 0.05);
             box-shadow: inset 0 0 0 1px rgba(15, 27, 51, 0.08);
         }
-        .sc-island-host.is-open .sc-half-btn { color: #09172c; }
+        .sc-island-host.is-open .sc-half-btn { color: #0f1b33; }
         .sc-island-host.is-open .sc-half-btn .btn-labels small { color: #64748b; }
         .sc-island-host.is-open .sc-half-btn.active {
-            background: rgba(2, 132, 199, 0.12);
+            background: rgba(40, 103, 178, 0.12);
             box-shadow: inset 0 0 0 1.5px var(--sc-primary);
         }
         .sc-island-host.is-open .sc-half-btn.btn-student.active {
@@ -397,10 +385,10 @@
             box-shadow: inset 0 0 0 1.5px var(--sc-accent-pink);
         }
         .sc-island-host.is-open .sc-half-btn.active .btn-chev { transform: rotate(180deg); }
-        .sc-island-host.is-open .sc-dpdp-loop-btn { color: #09172c; }
+        .sc-island-host.is-open .sc-dpdp-loop-btn { color: #0f1b33; }
         .sc-island-host.is-open .sc-action-circle {
             background: rgba(15, 27, 51, 0.06);
-            color: #09172c;
+            color: #0f1b33;
             box-shadow: inset 0 0 0 1px rgba(15, 27, 51, 0.08);
         }
         .sc-island-host.is-open .sc-login-white-btn {
@@ -411,14 +399,14 @@
             display: grid;
             place-items: center;
             background: rgba(15, 27, 51, 0.06);
-            color: #09172c;
+            color: #0f1b33;
         }
         .sc-island-host.is-open .sc-mega-container {
             display: block;
             opacity: 1;
         }
 
-        /* BACKDROP BLUR */
+        /* BACKDROP BLUR OVERLAY */
         .sc-backdrop-overlay {
             position: fixed;
             inset: 0;
@@ -430,9 +418,12 @@
             visibility: hidden;
             transition: all 0.3s ease;
         }
-        .sc-backdrop-overlay.show { opacity: 1; visibility: visible; }
+        .sc-backdrop-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
 
-        /* 4A. FOR SCHOOLS PANE */
+        /* 4A. SCHOOLS MEGA PANEL (8 SUITES + PROMO BOX) */
         .sc-pane-schools {
             display: grid;
             grid-template-columns: 1.8fr 1fr;
@@ -470,16 +461,16 @@
             transition: all 0.2s ease;
         }
         .sc-suite-card:hover {
-            background: #f0f9ff;
-            border-color: rgba(2, 132, 199, 0.3);
+            background: #f1f6fc;
+            border-color: rgba(40,103,178,0.3);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.1);
+            box-shadow: 0 6px 16px rgba(40,103,178,0.1);
         }
         .sc-suite-icon {
             width: 42px;
             height: 42px;
             border-radius: 10px;
-            background: #e0f2fe;
+            background: #e8f2fc;
             color: var(--sc-primary);
             display: grid;
             place-items: center;
@@ -488,16 +479,19 @@
         }
         .sc-suite-info b {
             display: block;
-            color: #09172c;
+            color: #0f1b33;
             font-size: 14px;
             font-weight: 700;
             line-height: 1.2;
         }
-        .sc-suite-info span { font-size: 12px; color: #64748b; }
+        .sc-suite-info span {
+            font-size: 12px;
+            color: #64748b;
+        }
 
-        /* Right School Highlight Box (Automated Bell & Timetable) */
-        .sc-bell-promo-box {
-            background: linear-gradient(135deg, #09172c 0%, #154173 50%, #0369a1 100%);
+        /* LMS Promo Card */
+        .sc-lms-promo-box {
+            background: linear-gradient(135deg, #2c1240 0%, #5b2a86 50%, #b8206f 100%);
             border-radius: 18px;
             padding: 24px;
             color: #ffffff;
@@ -507,8 +501,9 @@
             flex-direction: column;
             justify-content: space-between;
         }
-        .sc-bell-promo-box .box-badge {
-            background: rgba(255, 255, 255, 0.18);
+        .sc-lms-promo-box .lms-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
             display: inline-block;
             padding: 3px 10px;
             border-radius: 20px;
@@ -517,13 +512,13 @@
             letter-spacing: 0.5px;
             width: fit-content;
         }
-        .sc-bell-promo-box h4 {
-            font-size: 21px;
+        .sc-lms-promo-box h4 {
+            font-size: 22px;
             font-weight: 800;
             margin: 12px 0 6px;
             line-height: 1.25;
         }
-        .sc-bell-promo-box p {
+        .sc-lms-promo-box p {
             font-size: 13.5px;
             opacity: 0.9;
             line-height: 1.45;
@@ -531,7 +526,7 @@
         }
         .sc-promo-cta-btn {
             background: #ffffff;
-            color: #09172c !important;
+            color: #3b1548 !important;
             padding: 10px 18px;
             border-radius: 10px;
             font-weight: 700;
@@ -543,9 +538,9 @@
             width: fit-content;
             transition: all 0.2s;
         }
-        .sc-promo-cta-btn:hover { background: #e0f2fe; transform: translateX(3px); }
+        .sc-promo-cta-btn:hover { background: #fdf2f8; transform: translateX(3px); }
 
-        /* 4B. FOR STUDENTS PANE */
+        /* 4B. STUDENTS MEGA PANEL */
         .sc-pane-students {
             display: none;
             grid-template-columns: 1fr 1.3fr;
@@ -593,6 +588,7 @@
             border-radius: 6px;
             font-size: 12px;
         }
+
         .sc-student-right-cards {
             display: flex;
             flex-direction: column;
@@ -619,18 +615,18 @@
             flex-shrink: 0;
             font-size: 18px;
         }
-        .sc-feature-card-item b { display: block; font-size: 15px; color: #09172c; }
+        .sc-feature-card-item b { display: block; font-size: 15px; color: #0f1b33; }
         .sc-feature-card-item p { margin: 2px 0 0; font-size: 12.5px; color: #64748b; }
 
         /* ========================================================
-           5. SCROLLED WHITE FIXED HEADER (OPTION 17)
+           5. SCROLLED STATE (OPTION 17 - FULL WIDTH WHITE NAVBAR)
            ======================================================== */
         body.is-scrolled .sc-hang-container {
             opacity: 0;
             pointer-events: none;
         }
         body.is-scrolled .sc-island-host:not(.is-open) {
-            top: 40px !important;
+            top: 38px !important;
             width: 100% !important;
             max-width: 100% !important;
             height: 68px !important;
@@ -638,21 +634,31 @@
             background: #ffffff !important;
             border: 0 !important;
             border-bottom: 1px solid rgba(15, 27, 51, 0.12) !important;
-            box-shadow: 0 8px 24px -10px rgba(15, 27, 51, 0.22) !important;
+            box-shadow: 0 8px 24px -10px rgba(15, 27, 51, 0.25) !important;
             padding: 0 calc((100% - 1320px) / 2);
         }
-        body.is-scrolled .sc-island-host:not(.is-open) .sc-bar-row { height: 68px; }
-        body.is-scrolled .sc-island-host:not(.is-open) .brand-text { color: #09172c; }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-bar-row {
+            height: 68px;
+        }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-brand-title {
+            color: #0f1b33;
+        }
         body.is-scrolled .sc-island-host:not(.is-open) .sc-halves-wrapper {
             background: rgba(15, 27, 51, 0.05);
             box-shadow: inset 0 0 0 1px rgba(15, 27, 51, 0.08);
         }
-        body.is-scrolled .sc-island-host:not(.is-open) .sc-half-btn { color: #09172c; }
-        body.is-scrolled .sc-island-host:not(.is-open) .sc-half-btn .btn-labels small { color: #64748b; }
-        body.is-scrolled .sc-island-host:not(.is-open) .sc-dpdp-loop-btn { color: #09172c; }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-half-btn {
+            color: #0f1b33;
+        }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-half-btn .btn-labels small {
+            color: #64748b;
+        }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-dpdp-loop-btn {
+            color: #0f1b33;
+        }
         body.is-scrolled .sc-island-host:not(.is-open) .sc-action-circle {
             background: rgba(15, 27, 51, 0.06);
-            color: #09172c;
+            color: #0f1b33;
             box-shadow: inset 0 0 0 1px rgba(15, 27, 51, 0.08);
         }
         body.is-scrolled .sc-island-host:not(.is-open) .sc-login-white-btn {
@@ -660,43 +666,39 @@
             color: #ffffff !important;
         }
 
-        /* Hero padding adjustments */
+        /* Padding adjustment for first section */
         .hero-section {
-            padding-top: 155px;
-            background: radial-gradient(circle at 80% 20%, #dbeafe 0%, #f0f4f9 60%, #ffffff 100%);
-            overflow: hidden;
-            position: relative;
-            padding-bottom: 60px;
+            padding-top: 150px;
         }
 
-        /* 3D and Card Styles */
+        /* Existing Page Elements */
         .text-3d-glow {
             font-weight: 800;
-            text-shadow: 0 4px 15px rgba(2, 132, 199, 0.35);
+            text-shadow: 0 4px 15px rgba(13, 110, 253, 0.3), 0 1px 2px rgba(0,0,0,0.1);
         }
         .title-3d {
             font-weight: 800;
-            color: #0f172a;
-            text-shadow: 2px 2px 0px #e2e8f0;
+            color: #1a202c;
+            text-shadow: 2px 2px 0px #e2e8f0, 4px 4px 8px rgba(0,0,0,0.08);
         }
         section { padding: 80px 0; position: relative; }
         .main-hero-img {
-            filter: drop-shadow(0 25px 35px rgba(2, 132, 199, 0.25));
+            filter: drop-shadow(0 25px 35px rgba(13, 110, 253, 0.25));
             animation: floatImage 4s ease-in-out infinite;
             border-radius: 30px;
         }
         @keyframes floatImage {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-16px) rotate(1deg); }
+            50% { transform: translateY(-18px) rotate(1deg); }
         }
         .hero-image-wrapper { position: relative; padding: 20px; perspective: 1000px; }
         .floating-card {
             position: absolute;
-            background: rgba(255, 255, 255, 0.9) !important;
+            background: rgba(255, 255, 255, 0.85) !important;
             backdrop-filter: blur(6px);
             padding: 15px 22px;
             border-radius: 18px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -717,9 +719,10 @@
             transition: all 0.3s;
         }
         .feature-card:hover { transform: translateY(-8px); }
-        .bg-blue { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important; }
-        .bg-teal { background: linear-gradient(135deg, #0d9488 0%, #047857 100%) !important; }
-        .bg-orange { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; }
+        .bg-blue { background: linear-gradient(135deg, #4399bc 0%, #206382 100%) !important; }
+        .bg-teal { background: linear-gradient(135deg, #26a69a 0%, #00695c 100%) !important; }
+        .bg-orange { background: linear-gradient(135deg, #f29235 0%, #d84315 100%) !important; }
+
         .btn-demo {
             margin-top: auto;
             border: 2px solid #fff;
@@ -779,15 +782,12 @@
             width: 100%;
         }
 
-        /* Mobile Layout */
+        /* Mobile Adjustments */
         @media (max-width: 991px) {
-            .sc-hang-container, .sc-dpdp-loop-btn { display: none !important; }
-            .sc-island-host { width: calc(100% - 24px) !important; top: 48px; }
-            .hero-section { padding-top: 145px; }
+            .sc-strip-ticker, .sc-hang-container, .sc-dpdp-loop-btn { display: none !important; }
+            .sc-island-host { width: calc(100% - 24px) !important; top: 46px; }
+            .hero-section { padding-top: 140px; }
             .sc-pane-schools, .sc-pane-students { grid-template-columns: 1fr; }
-        }
-        @media (max-width: 768px) {
-            .sc-left-nav a:not(:first-child) { display: none; }
         }
         @media (max-width: 600px) {
             .sc-halves-wrapper { display: none; }
@@ -804,93 +804,79 @@
     <!-- 1. TOP UTILITY STRIP -->
     <div class="sc-utility-bar">
         <div class="sc-strip-inner">
-            <!-- Left Side Original Menus -->
-            <div class="sc-left-nav">
-                <a href="#home"><i class="fas fa-home me-1"></i> Home</a>
-                <a href="#about">About us</a>
-                <a href="#features">Features</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#ceo-desk">Developer Desk</a>
-                <a href="#contact">Contact</a>
+            <a class="sc-strip-badge" href="#features">
+                <span class="badge-tag">NEW</span> NextGen School Alert ERP &amp; AI LMS &rarr;
+            </a>
+            <div class="sc-strip-ticker">
+                <i class="fas fa-certificate"></i> 1000+ Schools &bull; 99% Renewal &bull; ISO Certified
             </div>
-
-            <!-- Right Side Links -->
-            <div class="sc-strip-right">
-                <a href="tel:+917079090740"><i class="fas fa-phone-alt me-1 text-primary"></i> +91 7079090740</a>
+            <div class="sc-strip-links">
+                <a href="#about">About us</a>
                 <span>&bull;</span>
-                <a href="/superadmin.html" class="sc-strip-admin" id="strip-admin-link"><i class="fas fa-shield-alt me-1"></i> Super Admin</a>
+                <a href="#contact">Contact</a>
+                <a href="/superadmin.html" class="sc-strip-partner" id="strip-admin-link">Super Admin</a>
             </div>
         </div>
     </div>
 
-    <!-- 2. HIGH REALISTIC METALLIC CHAINS & HANGING RINGS -->
     <div class="sc-hang-container" aria-hidden="true" id="scHangRings">
-        <!-- Left Realistic 3D Metal Ring (SVG with Gradients & Shading) -->
-        <span class="sc-metal-ring ring-l">
-            <svg viewBox="0 0 40 32">
-                <defs>
-                    <radialGradient id="ringGrommetL" cx="35%" cy="30%" r="80%">
-                        <stop offset="0%" stop-color="#fff9d6"/>
-                        <stop offset="55%" stop-color="#eab308"/>
-                        <stop offset="100%" stop-color="#713f12"/>
-                    </radialGradient>
-                    <linearGradient id="ringChainL" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#ffffff"/>
-                        <stop offset="30%" stop-color="#fef08a"/>
-                        <stop offset="70%" stop-color="#ca8a04"/>
-                        <stop offset="100%" stop-color="#422006"/>
-                    </linearGradient>
-                </defs>
-                <!-- Top Grommet Attached to Strip -->
-                <circle cx="20" cy="6" r="4.8" fill="url(#ringGrommetL)"/>
-                <circle cx="20" cy="6" r="2.2" fill="#09172c"/>
-                <!-- Connecting Metal Link -->
-                <path d="M14 10 Q14 26 20 27 Q26 26 26 10 Z" fill="none" stroke="url(#ringChainL)" stroke-width="3" stroke-linecap="round"/>
-                <path d="M15 11 Q15 24 20 25" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.8"/>
-                <!-- Bottom Pin inside Island Edge -->
-                <circle cx="20" cy="27" r="2" fill="#eab308"/>
-            </svg>
-        </span>
+    <!-- Left Ring -->
+    <span class="sc-metal-ring ring-l">
+        <svg viewBox="0 0 40 32" aria-hidden="true">
+            <defs>
+                <radialGradient id="mtg" cx=".35" cy=".3" r=".8">
+                    <stop offset="0" stop-color="#ffffff"/>
+                    <stop offset=".55" stop-color="#c9a86a"/>
+                    <stop offset="1" stop-color="#7d6435"/>
+                </radialGradient>
+                <linearGradient id="mtt" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0" stop-color="#ffffff"/>
+                    <stop offset=".5" stop-color="#c9a86a"/>
+                    <stop offset="1" stop-color="#7d6435"/>
+                </linearGradient>
+                <clipPath id="mca"><rect x="0" y="6" width="40" height="18.5"/></clipPath>
+            </defs>
+            <!-- Grommet (छेद) -->
+            <circle cx="20" cy="6" r="4.4" fill="url(#mtg)"/>
+            <circle cx="20" cy="6" r="4.4" fill="none" stroke="#5a4520" stroke-width=".5"/>
+            <circle cx="20" cy="6" r="2.1" fill="#061328"/>
+            <!-- Hanging Ring Body -->
+            <g clip-path="url(#mca)" fill="none">
+                <circle cx="20" cy="15.25" r="9.25" stroke="#9c7e44" stroke-width="2.5"/>
+                <circle cx="20" cy="15.25" r="9.25" stroke="#ecd9a8" stroke-width="1" stroke-dasharray="18 41" stroke-dashoffset="38" stroke-linecap="round"/>
+                <circle cx="20" cy="15.25" r="10.25" stroke="#5a4520" stroke-width=".6" stroke-dasharray="16 49" stroke-dashoffset="1" stroke-linecap="round"/>
+            </g>
+        </svg>
+    </span>
 
-        <!-- Right Realistic 3D Metal Ring -->
-        <span class="sc-metal-ring ring-r">
-            <svg viewBox="0 0 40 32">
-                <defs>
-                    <radialGradient id="ringGrommetR" cx="35%" cy="30%" r="80%">
-                        <stop offset="0%" stop-color="#fff9d6"/>
-                        <stop offset="55%" stop-color="#eab308"/>
-                        <stop offset="100%" stop-color="#713f12"/>
-                    </radialGradient>
-                    <linearGradient id="ringChainR" x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stop-color="#ffffff"/>
-                        <stop offset="30%" stop-color="#fef08a"/>
-                        <stop offset="70%" stop-color="#ca8a04"/>
-                        <stop offset="100%" stop-color="#422006"/>
-                    </linearGradient>
-                </defs>
-                <!-- Top Grommet Attached to Strip -->
-                <circle cx="20" cy="6" r="4.8" fill="url(#ringGrommetR)"/>
-                <circle cx="20" cy="6" r="2.2" fill="#09172c"/>
-                <!-- Connecting Metal Link -->
-                <path d="M14 10 Q14 26 20 27 Q26 26 26 10 Z" fill="none" stroke="url(#ringChainR)" stroke-width="3" stroke-linecap="round"/>
-                <path d="M15 11 Q15 24 20 25" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.8"/>
-                <!-- Bottom Pin inside Island Edge -->
-                <circle cx="20" cy="27" r="2" fill="#eab308"/>
-            </svg>
-        </span>
-    </div>
+    <!-- Right Ring -->
+    <span class="sc-metal-ring ring-r">
+        <svg viewBox="0 0 40 32" aria-hidden="true">
+            <circle cx="20" cy="6" r="4.4" fill="url(#mtg)"/>
+            <circle cx="20" cy="6" r="4.4" fill="none" stroke="#5a4520" stroke-width=".5"/>
+            <circle cx="20" cy="6" r="2.1" fill="#061328"/>
+            <g clip-path="url(#mca)" fill="none">
+                <circle cx="20" cy="15.25" r="9.25" stroke="#9c7e44" stroke-width="2.5"/>
+                <circle cx="20" cy="15.25" r="9.25" stroke="#ecd9a8" stroke-width="1" stroke-dasharray="18 41" stroke-dashoffset="38" stroke-linecap="round"/>
+                <circle cx="20" cy="15.25" r="10.25" stroke="#5a4520" stroke-width=".6" stroke-dasharray="16 49" stroke-dashoffset="1" stroke-linecap="round"/>
+            </g>
+        </svg>
+    </span>
+</div>
 
     <!-- 3. FLOATING ISLAND CONTAINER (HOST) -->
     <div class="sc-island-host" id="scIsland">
         <!-- Main Top Bar Inside Island -->
         <div class="sc-bar-row">
-            <!-- Brand Cycling Logo -->
-            <a href="/" style="text-decoration: none;">
-                <div class="brand-container">
-                    <span class="brand-text">School Alert</span>
-                    <img alt="Logo 1" class="brand-logo-1" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjz750omNvlH13soJKUck_8oUuyT05gRBRWCNcRgXE-VqXEMJBVK7ZQOZfJmSnSEkkx_GLoskmEMLWFqJsHOV_wsMF1tCtOixgkkBhmGgqcC1QxJPXZ1DAQ9-8Ay_YDt4q1N-XiTHhW-_eh0HtUS4DHmuxA67s-AzBFy0r2509YpVbv_ZUB3ZsEh9vJ6dKJ/s2075/file_000000006ec8820ba0956969337d1e9d.png">
-                    <img alt="Logo 2" class="brand-logo-2" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjGzdT3E0JGXM5EfpX-zJq0E2Fcl8s_OvPgTgF5SeR7N2QpJK6_nhevN9OIWq_eYvE214_5gsGOpFm2nuu_wgI00ZUHfpC9OwmdYDZAHx-p5DZ0wqHawLB7EIvSBHH4hIpwQaCLzWBTTkHE3tKJz_iTQsfRkyVnVrClJJl0GN-IC2muPNmNv12qhmpfqz3h/s1600/School.png">
-                </div>
+            <!-- Brand Logo -->
+            <a href="/" class="sc-brand-link">
+                <h1 class="sc-brand-title">
+                    schoolalert
+                    <span class="dot-grid">
+                        <b class="dot-1"></b><b class="dot-2"></b>
+                        <b class="dot-3"></b><b class="dot-4"></b>
+                    </span>
+                </h1>
             </a>
 
             <!-- Center Switching Halves -->
@@ -900,7 +886,7 @@
                     <span class="tile-badge"><i class="fas fa-school"></i></span>
                     <span class="btn-labels">
                         <b>For schools</b>
-                        <small>ERP &amp; Management</small>
+                        <small>ERP &amp; Assist</small>
                     </span>
                     <i class="fas fa-chevron-down btn-chev"></i>
                 </button>
@@ -910,14 +896,14 @@
                     <span class="tile-badge"><i class="fas fa-graduation-cap"></i></span>
                     <span class="btn-labels">
                         <b>For students</b>
-                        <small>Student &amp; Parent App</small>
+                        <small>Learn portal, app</small>
                     </span>
                     <i class="fas fa-chevron-down btn-chev"></i>
                 </button>
             </div>
 
             <!-- Hand-drawn DPDP Badge -->
-            <a href="#contact" class="sc-dpdp-loop-btn" title="DPDP Ready Cloud Security">
+            <a href="#contact" class="sc-dpdp-loop-btn" title="DPDP Ready">
                 <svg viewBox="0 0 140 80">
                     <path d="M22 20 C58 3 124 6 132 33 C139 60 96 76 60 74 C22 72 4 55 9 37 C14 19 50 9 94 11 C112 12 125 16 133 22"/>
                 </svg>
@@ -927,11 +913,11 @@
 
             <!-- Right Tools & Login CTA -->
             <div class="sc-actions-group">
-                <button class="sc-action-circle" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" title="Quick Inquiry">
+                <button class="sc-action-circle" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" title="Quick Search">
                     <i class="fas fa-search"></i>
                 </button>
                 <a href="https://app.schoolalarm.online" class="sc-login-white-btn" id="nav-app-link">
-                    <i class="fas fa-sign-in-alt"></i> Login
+                    <i class="fas fa-user-circle"></i> Login
                 </a>
                 <button class="sc-close-mega-btn" id="btnMegaClose" onclick="closeMegaMenu()" title="Close Menu">
                     <i class="fas fa-times"></i>
@@ -946,13 +932,13 @@
             <!-- 4A. FOR SCHOOLS PANE -->
             <div class="sc-pane-schools" id="paneSchools">
                 <div>
-                    <div class="sc-suites-label">NextGen School Alert ERP &bull; 8 Core Modules</div>
+                    <div class="sc-suites-label">NextGen School Alert ERP &bull; 8 Suites</div>
                     <div class="sc-suites-grid">
                         <a href="#features" class="sc-suite-card">
                             <span class="sc-suite-icon"><i class="fas fa-id-card"></i></span>
                             <div class="sc-suite-info">
                                 <b>Student Management</b>
-                                <span>Records, bio-data, TC</span>
+                                <span>Records, attendance, TC</span>
                             </div>
                         </a>
                         <a href="#features" class="sc-suite-card">
@@ -966,28 +952,28 @@
                             <span class="sc-suite-icon"><i class="fas fa-coins"></i></span>
                             <div class="sc-suite-info">
                                 <b>Finance &amp; Fees</b>
-                                <span>UPI, digital receipts &amp; Tally</span>
+                                <span>UPI, accounts and Tally sync</span>
                             </div>
                         </a>
                         <a href="#features" class="sc-suite-card">
                             <span class="sc-suite-icon"><i class="fas fa-file-signature"></i></span>
                             <div class="sc-suite-info">
                                 <b>Academics &amp; Exams</b>
-                                <span>HPC report cards &amp; results</span>
+                                <span>Timetable, exams, report cards</span>
                             </div>
                         </a>
                         <a href="#features" class="sc-suite-card">
                             <span class="sc-suite-icon"><i class="fas fa-user-plus"></i></span>
                             <div class="sc-suite-info">
-                                <b>Admissions Funnel</b>
-                                <span>Inquiry to direct enrollment</span>
+                                <b>Admissions</b>
+                                <span>Enquiries, online admission</span>
                             </div>
                         </a>
                         <a href="#features" class="sc-suite-card">
                             <span class="sc-suite-icon"><i class="fas fa-bus"></i></span>
                             <div class="sc-suite-info">
-                                <b>Transport Management</b>
-                                <span>Live GPS vehicle tracking</span>
+                                <b>Transport System</b>
+                                <span>Live GPS bus tracking</span>
                             </div>
                         </a>
                         <a href="#features" class="sc-suite-card">
@@ -1000,22 +986,22 @@
                         <a href="#features" class="sc-suite-card">
                             <span class="sc-suite-icon"><i class="fas fa-puzzle-piece"></i></span>
                             <div class="sc-suite-info">
-                                <b>Add-on Features</b>
-                                <span>Hostel, inventory &amp; library</span>
+                                <b>Add-on Modules</b>
+                                <span>Hostel, branded school app</span>
                             </div>
                         </a>
                     </div>
                 </div>
 
-                <!-- Right School Highlight Box (Automated Bell & Timetable) -->
-                <div class="sc-bell-promo-box">
+                <!-- Right LMS Promotion Box -->
+                <div class="sc-lms-promo-box">
                     <div>
-                        <span class="box-badge">ENTERPRISE AUTOMATION</span>
-                        <h4>Automated School Bell &amp; Timetable</h4>
-                        <p>Fully automated multi-period talking bells, teacher substitutions, and smart lecture planning with cloud sync.</p>
+                        <span class="lms-badge">NEW LMS</span>
+                        <h4>Assist: AI Powered Teacher LMS</h4>
+                        <p>Ready lessons, auto worksheets, online exam creator, and 10+ AI tools designed for CBSE, ICSE, and State Boards.</p>
                     </div>
                     <a href="#contact" class="sc-promo-cta-btn" onclick="closeMegaMenu()">
-                        Request a Free Demo &rarr;
+                        Book an Assist Demo &rarr;
                     </a>
                 </div>
             </div>
@@ -1024,44 +1010,44 @@
             <div class="sc-pane-students" id="paneStudents">
                 <div class="sc-student-left-box">
                     <div>
-                        <span class="badge bg-warning text-dark px-3 py-1 fw-bold">STUDENT &amp; PARENT PORTAL</span>
-                        <h3>Complete Academic &amp; Attendance Tracking</h3>
-                        <p style="font-size:13.5px; opacity:0.9;">Stay connected with real-time class attendance, digital homework, fee alerts, and online report cards.</p>
+                        <span class="badge bg-warning text-dark px-3 py-1 fw-bold">STUDENT &amp; PARENT APP</span>
+                        <h3>One Connected Path from Doubts to Exams</h3>
+                        <p style="font-size:13.5px; opacity:0.9;">Complete curriculum for Class 3 to 12. Instant practice, homework solver, and board exam series.</p>
                         <div class="sc-student-steps">
-                            <span>1. Attendance</span>
-                            <span>2. Homework</span>
-                            <span>3. Fees</span>
-                            <span>4. Marks</span>
+                            <span>1. Learn</span>
+                            <span>2. Practise</span>
+                            <span>3. Exam</span>
+                            <span>4. Revise</span>
                         </div>
                         <div class="sc-class-chips">
-                            <span>Pre-Primary</span><span>Primary</span><span>Middle School</span><span>Senior Secondary</span>
+                            <span>Class 3–5</span><span>Class 6–8</span><span>Class 9 &amp; 10</span><span>Class 11 &amp; 12</span>
                         </div>
                     </div>
                     <a href="https://student.schoolalarm.online" class="sc-promo-cta-btn" id="nav-student-link">
-                        Open Student Portal &rarr;
+                        Explore Student Portal &rarr;
                     </a>
                 </div>
 
                 <div class="sc-student-right-cards">
                     <div class="sc-feature-card-item">
-                        <div class="icon-box" style="background: linear-gradient(135deg, #0284c7, #0369a1);"><i class="fas fa-mobile-alt"></i></div>
+                        <div class="icon-box" style="background: linear-gradient(135deg, #0284c7, #0369a1);"><i class="fas fa-search"></i></div>
                         <div>
-                            <b>Live Parent Updates</b>
-                            <p>Real-time notifications whenever a child boards the bus or is marked absent in morning assembly.</p>
+                            <b>Smart Practice AI</b>
+                            <p>Finds weak spots in mathematics and science and prepares revision drills automatically.</p>
                         </div>
                     </div>
                     <div class="sc-feature-card-item">
-                        <div class="icon-box" style="background: linear-gradient(135deg, #d3236e, #6e1f78);"><i class="fas fa-receipt"></i></div>
+                        <div class="icon-box" style="background: linear-gradient(135deg, #d3236e, #6e1f78);"><i class="fas fa-magic"></i></div>
                         <div>
-                            <b>Single-Click Fee Payments</b>
-                            <p>UPI, QR code, and Debit Card support with instant fee receipts downloaded directly to the phone.</p>
+                            <b>Guruji 24/7 AI Doubt Solver</b>
+                            <p>Snap a picture or type questions. Receive step-by-step verified explanations in Hindi &amp; English.</p>
                         </div>
                     </div>
                     <div class="sc-feature-card-item">
-                        <div class="icon-box" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fas fa-chart-line"></i></div>
+                        <div class="icon-box" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fas fa-mobile-alt"></i></div>
                         <div>
-                            <b>Digital Report Cards &amp; Progress</b>
-                            <p>Download term-wise marks sheets, teacher observations, and attendance percentage seamlessly.</p>
+                            <b>Parent View &amp; Fee Payments</b>
+                            <p>Live attendance reports, circulars, report cards, and single-click UPI fee payments.</p>
                         </div>
                     </div>
                 </div>
@@ -1078,11 +1064,11 @@
                 <div class="col-lg-7 text-start">
                     <span class="badge rounded-pill bg-warning text-dark px-3 py-2 mb-3 shadow-sm fw-bold">🚀 Enterprise School Suite</span>
                     <h1 class="display-3 fw-bold mb-3 title-3d" style="line-height: 1.15;">
-                        NextGen School Alert: <br/><span class="text-3d-glow" style="color: #0284c7;">Enterprise School ERP</span> &amp; Automation Platform.
+                        The all-in-one super app for your school: <span class="text-3d-glow" style="color: #0284c7;">School ERP</span> and <span style="color: #d3236e;">AI LMS.</span>
                     </h1>
-                    <p class="lead fw-bold mb-3" style="color: #17467f;">From admissions to academics, fee collections to vehicle tracking.</p>
+                    <p class="lead fw-bold mb-3" style="color: #17467f;">From administration to academics, truly everything automated.</p>
                     <p class="text-secondary mb-4" style="font-size: 1.05rem; line-height: 1.7;">
-                        Automate your entire campus on a single cloud database. From student admissions to online fee collection, live GPS bus tracking, and exam generation—trusted by modern schools across Bihar and India.
+                        Automate your entire campus on a single cloud database. From student admissions to online fee collection, live GPS bus tracking, and exam generation—trusted by modern schools across India.
                     </p>
                     <div class="d-flex flex-wrap gap-3">
                         <a class="btn btn-primary btn-lg px-4 shadow" href="#contact" style="border-radius: 12px; background: #0284c7; border: none;">
@@ -1154,7 +1140,7 @@
                     <div class="feature-card bg-orange shadow-sm h-100">
                         <i class="fas fa-school fa-3x mb-3"></i>
                         <h4>All-In-One School ERP</h4>
-                        <p>Single integrated cloud system containing all 8 operational suites. Complete paperless campus administration.</p>
+                        <p>Single integrated cloud system containing all 8 operational suites. Paperless campus administration.</p>
                         <a class="btn-demo" href="#contact">Request Demo</a>
                     </div>
                 </div>
@@ -1173,33 +1159,6 @@
                         <p>Complete solution from inquiry logging to document verification, digital registration, and roll numbering.</p>
                         <a class="btn-demo" href="#contact">Request Demo</a>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- DEVELOPER / CEO DESK -->
-    <section id="ceo-desk" style="padding: 70px 0; background-color: #ffffff;">
-        <div class="container">
-            <div class="text-center mb-5">
-                <p class="mb-1 text-muted fw-bold" style="letter-spacing: 2px;">NextGen School Alert Suite</p>
-                <h2 class="fw-bold display-5 title-3d">Developer &amp; CEO Desk</h2>
-            </div>
-            <div class="row align-items-center mt-4">
-                <div class="col-lg-7">
-                    <h2 class="fw-bold mb-1 title-3d" style="font-size: 2.5rem; color: #1a202c;">Manish Kumar Ray</h2>
-                    <h5 class="text-dark fw-bold mb-4">Founder &amp; Lead Architect</h5>
-                    <div class="ceo-text" style="line-height: 1.8; color: #4a5568; font-size: 1.05rem;">
-                        <p class="mb-3">
-                            Manish is the Founder of <b>A2Z Online Services Pvt Ltd</b>. With a vision to digitalize schools across India, he has been leading engineering in automated institution management.
-                        </p>
-                        <p>
-                            NextGen School Alert has been built as one of the most reliable and intuitive platforms to make campus operations simple for teachers, accountants, and principals alike.
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-5 text-center mt-5 mt-lg-0">
-                    <img alt="CEO Manish Kumar" class="img-fluid" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi1uA4m8OdNcdJdTjI_kHdQyxMY9zDbdZriT8bHHAB_DcBPT0hZWOgt81-30ihMGzbXziL0XXNYfqlt1BwZ1AKBllMPJseHVB73Hq8Hpqfb4Oku7fum9KTS2Hg5zMjQ5r7vYL1mIqvz9VpgXR9Q-LSTAjjCST1ZJdaNpOW_4581wkkuAtPIJExpQckSGWld/s1600/file_00000000bf5081fa8f69b5c6aa300719.png" style="width: 100%; max-width: 280px; height: auto; display: inline-block; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));">
                 </div>
             </div>
         </div>
@@ -1331,7 +1290,7 @@
     </section>
 
     <!-- FOOTER -->
-    <footer style="background: #09172c; color: #ffffff; padding: 40px 0 20px;">
+    <footer style="background: #091527; color: #ffffff; padding: 40px 0 20px;">
         <div class="container text-center text-md-start">
             <div class="row g-4">
                 <div class="col-lg-4 col-md-12">
@@ -1374,10 +1333,11 @@
     <!-- Supabase JS Client for Demo Booking -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- HEADER INTERACTION SCRIPT -->
+    <!-- ========================================================
+         HEADER INTERACTION & TRANSFORMATION SCRIPTS
+         ======================================================== -->
     <script>
         const island = document.getElementById('scIsland');
-        const hangRings = document.getElementById('scHangRings');
         const backdrop = document.getElementById('megaBackdrop');
         const paneSchools = document.getElementById('paneSchools');
         const paneStudents = document.getElementById('paneStudents');
@@ -1385,7 +1345,7 @@
         const btnStudents = document.getElementById('btnMegaStudents');
         let currentTab = null;
 
-        // Mega Menu Open/Toggle
+        // Mega Menu In-Place Open/Toggle
         function toggleMegaMenu(tab) {
             if (island.classList.contains('is-open') && currentTab === tab) {
                 closeMegaMenu();
@@ -1425,16 +1385,14 @@
             if (e.key === 'Escape') closeMegaMenu();
         });
 
-        // Hover Sway Effect on Hanging Island & Rings
+        // Hover Sway Effect on Hanging Island
         island.addEventListener('mouseenter', () => {
             if (!document.body.classList.contains('is-scrolled') && !island.classList.contains('is-open')) {
-                island.classList.add('sway-active');
-                hangRings.classList.add('sway-active');
+                island.classList.add('sway-effect');
             }
         });
         island.addEventListener('animationend', () => {
-            island.classList.remove('sway-active');
-            hangRings.classList.remove('sway-active');
+            island.classList.remove('sway-effect');
         });
 
         // Scroll Transformation: Option 17 (Converts to Fixed White Bar)
