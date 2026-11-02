@@ -12,7 +12,7 @@
     <!-- CSS Dependencies -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Kalam:wght@700&display=swap" rel="stylesheet">
 
     <style>
         .feed-links, .subscribe-wrapper {
@@ -23,7 +23,7 @@
             scroll-behavior: smooth;
             padding: 0;
             margin: 0;
-            background-color: #f0f4f9;
+            background-color: #f8fafc;
             background-image: radial-gradient(#d3e0ea 1px, transparent 1px);
             background-size: 20px 20px;
         }
@@ -39,185 +39,325 @@
             text-shadow: 2px 2px 0px #e2e8f0, 4px 4px 8px rgba(0,0,0,0.08);
         }
 
-        .navbar {
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.95) !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.06) !important;
-        }
-
         section {
             padding: 80px 0;
             position: relative;
         }
 
-        .nav-link {
+        /* =========================================================
+           PREMIUM FLOATING ISLAND & TOP STRIP STYLES (NEW HEADER)
+           ========================================================= */
+        :root {
+            --island-blue: #123a6a;
+            --island-grad: linear-gradient(90deg, #0b1f3a 0%, #17467f 50%, #123a6a 100%);
+        }
+
+        .header-outer-container {
+            position: sticky;
+            top: 0;
+            z-index: 1050;
+            width: 100%;
+        }
+
+        /* 1. TOP UTILITY STRIP */
+        .sc-top-strip {
+            background-color: #0b1728;
+            color: #ffffff;
+            font-size: 13px;
+            padding: 7px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .sc-strip-inner {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .sc-new-pill {
+            text-decoration: none;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             font-weight: 600;
-            color: #333 !important;
+            font-size: 12px;
+        }
+        .sc-new-pill span {
+            background: #e11d48;
+            color: #fff;
+            padding: 1px 7px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+        }
+        .sc-strip-ticker {
+            font-size: 12px;
+            color: #ffd166;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sc-strip-links {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .sc-strip-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            font-size: 12.5px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .sc-strip-links a:hover {
+            color: #38bdf8;
+        }
+        .sc-strip-admin {
+            border: 1px solid rgba(255, 209, 102, 0.4);
+            padding: 2px 10px;
+            border-radius: 14px;
+            color: #ffd166 !important;
+            font-weight: 600 !important;
+        }
+        .sc-strip-admin:hover {
+            background: rgba(255, 209, 102, 0.15);
+        }
+
+        /* 2. HANGING RINGS */
+        .sc-hanging-rings {
+            position: absolute;
+            top: 26px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(1320px, 94%);
+            display: flex;
+            justify-content: space-around;
+            pointer-events: none;
+            z-index: 1060;
+        }
+        .sc-ring {
+            width: 14px;
+            height: 22px;
+            border: 3px solid #d4af37;
+            border-radius: 7px;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.35);
+            background: linear-gradient(180deg, #fef08a, #ca8a04);
+        }
+
+        /* 3. FLOATING ISLAND NAVBAR */
+        .sc-island-bar {
+            position: relative;
+            max-width: 1320px;
+            width: 94%;
+            margin: 6px auto 10px;
+            height: 72px;
+            background: var(--island-grad);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 16px 36px -12px rgba(11, 23, 40, 0.55);
+            box-sizing: border-box;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .sc-island-bar:hover {
+            transform: translateY(1px);
+        }
+
+        /* Logo Area */
+        .brand-container {
+            position: relative;
+            width: 190px;
+            height: 48px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+        .brand-text, .brand-logo-1, .brand-logo-2 {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            transition: opacity 1s ease-in-out;
+            display: block;
+            opacity: 0;
+            visibility: hidden;
+        }
+        .brand-logo-1 { height: 50px; width: auto; object-fit: contain; }
+        .brand-logo-2 { height: 42px; width: auto; object-fit: contain; }
+        @keyframes cycleAnimation {
+            0%, 30% { opacity: 1; visibility: visible; }
+            33%, 100% { opacity: 0; visibility: hidden; }
+        }
+        .brand-text { 
+            animation: cycleAnimation 15s infinite; 
+            color: #ffffff; 
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .brand-logo-1 { animation: cycleAnimation 15s infinite 5s; }
+        .brand-logo-2 { animation: cycleAnimation 15s infinite 10s; }
+
+        /* Navigation Links / Section jumps */
+        .sc-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sc-menu-link {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 10px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        .sc-menu-link:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Center Segmented Tiles */
+        .sc-portal-tiles {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sc-tile {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            padding: 5px 12px 5px 6px;
+            border-radius: 12px;
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+        .sc-tile:hover {
+            background: rgba(255, 255, 255, 0.16);
+            color: #fff;
+            transform: translateY(-1.5px);
+        }
+        .sc-tile-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            display: grid;
+            place-items: center;
+            font-size: 16px;
+            color: #fff;
+        }
+        .sc-tile-school .sc-tile-icon { background: #0284c7; }
+        .sc-tile-student .sc-tile-icon { background: linear-gradient(135deg, #d3236e, #6e1f78); }
+
+        .sc-tile-txt b {
+            display: block;
+            font-size: 13.5px;
+            font-weight: 700;
+            line-height: 1.1;
+        }
+        .sc-tile-txt small {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        /* Hand Drawn DPDP / Verified Badge */
+        .sc-dpdp-badge {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 14px;
+            color: #ffffff;
+            font-family: 'Kalam', cursive;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+        .sc-dpdp-badge svg {
+            position: absolute;
+            width: 115%;
+            height: 125%;
+            pointer-events: none;
+        }
+
+        /* Right Actions */
+        .sc-nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sc-search-btn {
+            background: rgba(255, 255, 255, 0.12);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            color: #ffffff;
             cursor: pointer;
-            transition: all 0.3s ease;
+            display: grid;
+            place-items: center;
+            transition: background 0.2s;
         }
+        .sc-search-btn:hover { background: rgba(255, 255, 255, 0.2); }
 
-        /* DYNAMIC NAVBAR */
-        .navbar-nav {
-            display: flex !important;
-            align-items: center !important;
-            flex-direction: row !important;
-            gap: 5px !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        .navbar-nav .nav-item {
-            display: inline-flex !important;
-            align-items: center !important;
-        }
-
-        .navbar-nav .nav-link {
-            font-size: 13.5px !important;
-            font-weight: 700 !important;
-            color: #475569 !important;
-            padding: 7px 14px !important;
-            border-radius: 8px !important;
-            white-space: nowrap !important;
-            display: inline-flex !important;
-            align-items: center !important;
+        .sc-login-btn {
+            background: #ffffff;
+            color: #0b1f3a !important;
+            padding: 8px 18px;
+            border-radius: 10px;
             text-decoration: none !important;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-            border: 1.5px solid transparent;
+            font-size: 14px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
         }
-		.navbar-nav {
-		gap: 2px !important;
-		}
-		.navbar-nav .nav-link {
-		padding: 6px 10px !important;
-		font-size: 13px !important;
-		}
-
-        .navbar-nav .nav-link[href="#"], 
-        .navbar-nav .nav-link[href="#home"],
-        .navbar-nav .nav-item:nth-child(1) .nav-link:hover,
-        .navbar-nav .nav-item:nth-child(1) .nav-link.active {
-            color: #0284c7 !important;
-            background: #f0f9ff !important;
-            border-color: #bae6fd !important;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15) !important;
+        .sc-login-btn:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
         }
 
-        .navbar-nav .nav-link[href*="about"]:hover,
-        .navbar-nav .nav-link[href*="about"].active,
-        .navbar-nav .nav-item:nth-child(2) .nav-link:hover,
-        .navbar-nav .nav-item:nth-child(2) .nav-link.active {
-            color: #7c3aed !important;
-            background: #f5f3ff !important;
-            border-color: #ddd6fe !important;
-            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15) !important;
+        /* MOBILE RESPONSIVENESS FOR HEADER */
+        .sc-mobile-toggle {
+            display: none;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
         }
 
-        .navbar-nav .nav-link[href*="feature"]:hover,
-        .navbar-nav .nav-link[href*="feature"].active,
-        .navbar-nav .nav-item:nth-child(3) .nav-link:hover,
-        .navbar-nav .nav-item:nth-child(3) .nav-link.active {
-            color: #d97706 !important;
-            background: #fffbeb !important;
-            border-color: #fde68a !important;
-            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.15) !important;
+        @media (max-width: 1200px) {
+            .sc-nav-links { display: none; }
         }
-
-        .navbar-nav .nav-link[href*="ceo-desk"]:hover,
-        .navbar-nav .nav-link[href*="ceo-desk"].active,
-        .navbar-nav .nav-item:nth-child(4) .nav-link:hover,
-        .navbar-nav .nav-item:nth-child(4) .nav-link.active {
-            color: #e11d48 !important;
-            background: #fff1f2 !important;
-            border-color: #fecdd3 !important;
-            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15) !important;
+        @media (max-width: 991px) {
+            .sc-strip-ticker, .sc-hanging-rings, .sc-dpdp-badge, .sc-search-btn { display: none !important; }
+            .sc-island-bar { height: 64px; }
+            .sc-portal-tiles { gap: 6px; }
+            .sc-tile { padding: 4px 8px 4px 4px; }
+            .sc-tile-txt small { display: none; }
+            .sc-tile-icon { width: 30px; height: 30px; font-size: 14px; }
+            .brand-container { width: 140px; }
         }
-
-        .navbar-nav .nav-link[href*="pricing"]:hover,
-        .navbar-nav .nav-link[href*="pricing"].active,
-        .navbar-nav .nav-item:nth-child(5) .nav-link:hover,
-        .navbar-nav .nav-item:nth-child(5) .nav-link.active {
-            color: #0284c7 !important;
-            background: #f0f9ff !important;
-            border-color: #bae6fd !important;
-            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15) !important;
-        }
-
-        .navbar-nav .nav-link[href*="contact"]:hover,
-        .navbar-nav .nav-link[href*="contact"].active,
-        .navbar-nav .nav-item:nth-child(6) .nav-link:hover,
-        .navbar-nav .nav-item:nth-child(6) .nav-link.active {
-            color: #059669 !important;
-            background: #ecfdf5 !important;
-            border-color: #a7f3d0 !important;
-            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.18) !important;
-        }
-
-        /* =========================================
-           UNIFORM CAPSULE BUTTONS FOR NAVBAR
-           ========================================= */
-
-        .btn-student-capsule, 
-        .btn-school-login, 
-        .btn-admin-nav {
-            /* Exact Same Shape, Height & Padding for All Three */
-            height: 38px !important;
-            padding: 0 16px !important;
-            border-radius: 20px !important;
-            font-size: 13px !important;
-            font-weight: 700 !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            white-space: nowrap !important;
-            margin-left: 5px !important;
-            text-decoration: none !important;
-            transition: all 0.2s ease-in-out !important;
-            border: 1.5px solid transparent !important;
-        }
-
-        /* 1. STUDENT PORTAL (Teal Theme) */
-        .btn-student-capsule {
-            color: #ffffff !important;
-            border-color: #1e293b !important;
-            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
-        }
-        .btn-student-capsule:hover {
-            background: #0d9488 !important;
-            color: #ffffff !important;
-            border-color: #0d9488 !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
-        }
-
-        /* 2. SCHOOL LOGIN (Dark / Blue 3D Theme) */
-        .btn-school-login {
-            color: #ffffff !important;
-            border-color: #1e293b !important;
-            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
-        }
-        .btn-school-login:hover {
-            background: linear-gradient(135deg, #0284c7, #0369a1) !important;
-            color: #ffffff !important;
-            border-color: #0284c7 !important;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
-        }
-
-        /* 3. SUPER ADMIN (Amber / Gold Theme) */
-        .btn-admin-nav {
-            color: #ffffff !important;
-            border-color: #1e293b !important;
-            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
-        }
-        .btn-admin-nav:hover {
-            background: linear-gradient(135deg, #d97706, #b45309) !important;
-            color: #ffffff !important;
-            border-color: #d97706 !important;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35);
+        @media (max-width: 640px) {
+            .sc-portal-tiles { display: none; }
+            .sc-strip-links { gap: 8px; font-size: 11px; }
+            .sc-login-btn { padding: 6px 12px; font-size: 13px; }
         }
 
         /* Hero Section */
@@ -225,13 +365,10 @@
             background: radial-gradient(circle at 80% 20%, #dbeafe 0%, #f0f4f9 60%, #ffffff 100%);
             overflow: hidden;
             position: relative;
-            padding: 10px 0;
+            padding: 40px 0 60px;
         }
 
-        .animate-fade-in {
-            animation: fadeInUp 1s ease-out;
-        }
-
+        .animate-fade-in { animation: fadeInUp 1s ease-out; }
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -242,7 +379,6 @@
             animation: floatImage 4s ease-in-out infinite;
             border-radius: 30px;
         }
-
         @keyframes floatImage {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-18px) rotate(1deg); }
@@ -269,25 +405,10 @@
             border: 1px solid rgba(255, 255, 255, 0.8);
             transition: transform 0.3s ease;
         }
-        .floating-card:hover {
-            transform: scale(1.08) translateZ(20px);
-        }
-
-        .card-1 {
-            top: 6%;
-            left: -8%;
-            animation: floatImage 3.5s ease-in-out infinite reverse;
-        }
-
-        .card-2 {
-            bottom: 32%;
-            right: -20%;
-            animation: floatImage 5s ease-in-out infinite;
-        }
-
-        .floating-card i {
-            font-size: 1.6rem;
-        }
+        .floating-card:hover { transform: scale(1.08) translateZ(20px); }
+        .card-1 { top: 6%; left: -8%; animation: floatImage 3.5s ease-in-out infinite reverse; }
+        .card-2 { bottom: 32%; right: -20%; animation: floatImage 5s ease-in-out infinite; }
+        .floating-card i { font-size: 1.6rem; }
 
         #about { background: #ffffff; }
         #features { background: #f8f9fa; }
@@ -310,7 +431,6 @@
             box-shadow: 0 15px 30px rgba(0,0,0,0.12);
             position: relative;
         }
-
         .feature-card:hover {
             transform: translateY(-12px) scale(1.02);
             box-shadow: 0 25px 45px rgba(0,0,0,0.22);
@@ -330,7 +450,6 @@
             box-shadow: inset 0 0 15px rgba(255,255,255,0.3);
             animation: pulseIcon 3s infinite ease-in-out;
         }
-
         @keyframes pulseIcon {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.08); }
@@ -348,7 +467,6 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
-
         .btn-demo:hover {
             background: #fff;
             color: #333;
@@ -366,7 +484,6 @@
             box-shadow: 0 8px 16px rgba(13, 110, 253, 0.08);
             animation: bgColorChange 5s infinite alternate; 
         }
-
         @keyframes bgColorChange {
             0% { background-color: #ffffff; color: #333; }
             25% { background-color: #e3f2fd; color: #0d47a1; }
@@ -374,17 +491,13 @@
             75% { background-color: #fff3e0; color: #e65100; }
             100% { background-color: #fce4ec; color: #880e4f; }
         }
-
         .animated-box:hover {
             transform: scale(1.04) translateY(-3px);
             border-color: #0b5ed7;
             box-shadow: 0 12px 24px rgba(13, 110, 253, 0.2);
         }
 
-        .ceo-text p {
-            text-align: justify;
-        }
-
+        .ceo-text p { text-align: justify; }
         @media (max-width: 1200px) {
             .ceo-text p { text-align: center; }
             .ceo-desk .text-lg-start { text-align: center !important; }
@@ -401,7 +514,6 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.04);
             transition: all 0.3s ease;
         }
-
         .tab-btn.active {
             background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%) !important;
             color: #ffffff !important;
@@ -409,74 +521,18 @@
             box-shadow: 0 8px 20px rgba(13, 110, 253, 0.35);
             transform: translateY(-2px);
         }
-
         .tab-btn:hover:not(.active) {
             background: #eef2f6;
             transform: translateY(-2px);
         }
-
-        .tab-panel {
-            animation: fadeIn 0.5s ease-in;
-        }
-
+        .tab-panel { animation: fadeIn 0.5s ease-in; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .brand-container {
-            position: relative;
-            width: 200px;
-            height: 50px;
-            overflow: hidden;
-        }
-
-        .brand-text, .brand-logo-1, .brand-logo-2 {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-            transition: opacity 1s ease-in-out;
-            display: block;
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .brand-logo-1 {
-            height: 60px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .brand-logo-2 {
-            height: 45px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        @keyframes cycleAnimation {
-            0%, 30% { opacity: 1; visibility: visible; }
-            33%, 100% { opacity: 0; visibility: hidden; }
-        }
-
-        .brand-text { 
-            animation: cycleAnimation 15s infinite; 
-            color: #0d6efd; 
-            font-size: 1.25rem;
-            font-weight: 800;
-        }
-        .brand-logo-1 { 
-            animation: cycleAnimation 15s infinite 5s; 
-        }
-        .brand-logo-2 { 
-            animation: cycleAnimation 15s infinite 10s; 
-        }
-
         /* SAAS PRICING SECTION STYLES */
-        .pricing-section {
-            padding: 70px 0;
-            background: #ffffff;
-        }
+        .pricing-section { padding: 70px 0; background: #ffffff; }
         .pricing-card {
             background: #ffffff;
             border: 1.5px solid #e2e8f0;
@@ -512,17 +568,8 @@
             letter-spacing: 0.5px;
             box-shadow: 0 4px 10px rgba(255, 51, 102, 0.3);
         }
-        .pricing-title {
-            font-weight: 800;
-            font-size: 1.4rem;
-            color: #1a202c;
-            margin-bottom: 5px;
-        }
-        .pricing-subtitle {
-            font-size: 0.88rem;
-            color: #64748b;
-            margin-bottom: 25px;
-        }
+        .pricing-title { font-weight: 800; font-size: 1.4rem; color: #1a202c; margin-bottom: 5px; }
+        .pricing-subtitle { font-size: 0.88rem; color: #64748b; margin-bottom: 25px; }
         .price-tag {
             font-size: 2.6rem;
             font-weight: 800;
@@ -533,11 +580,7 @@
             justify-content: center;
             gap: 2px;
         }
-        .price-tag span {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #64748b;
-        }
+        .price-tag span { font-size: 0.95rem; font-weight: 600; color: #64748b; }
         .pricing-features-list {
             list-style: none;
             padding: 0;
@@ -553,10 +596,7 @@
             align-items: center;
             gap: 10px;
         }
-        .pricing-features-list li i {
-            color: #16a34a;
-            font-size: 1rem;
-        }
+        .pricing-features-list li i { color: #16a34a; font-size: 1rem; }
         .btn-pricing-outline {
             background: #f1f5f9;
             color: #0f172a;
@@ -655,37 +695,6 @@
             font-size: 11px;
         }
 
-        /* MOBILE NAVBAR OVERFLOW FIX */
-        @media (max-width: 991px) {
-            .navbar-collapse {
-                background: #ffffff;
-                padding: 15px 20px;
-                border-radius: 12px;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-                margin-top: 15px;
-                border: 1px solid #e2e8f0;
-            }
-            .navbar-nav {
-                flex-direction: column !important;
-                align-items: flex-start !important;
-                gap: 8px !important;
-                width: 100%;
-            }
-            .navbar-nav .nav-item {
-                width: 100%;
-            }
-            .navbar-nav .nav-link {
-                width: 100%;
-                text-align: left;
-            }
-            .navbar-nav .nav-item:nth-last-child(2) .nav-link,
-            .navbar-nav .nav-item:last-child .nav-link {
-                margin-left: 0 !important;
-                text-align: center !important;
-                justify-content: center !important;
-            }
-        }
-
         /* RAINBOW TOP LOADER */
         #global-top-loader {
             position: fixed;
@@ -702,7 +711,6 @@
             opacity: 0;
             animation: rainbowWaveFlow 1.8s linear infinite;
         }
-
         @keyframes rainbowWaveFlow {
             0% { background-position: 0% 50%; }
             100% { background-position: 100% 50%; }
@@ -713,53 +721,100 @@
     <!-- Top Progress Bar -->
     <div id="global-top-loader"></div>
 
-    <!-- NAVBAR -->
-    <nav class="navbar navbar-expand-lg navbar-light sticky-top shadow-sm">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="/" style="padding: 0;">
+    <!-- ========================================================
+         NEW FLOATING ISLAND HEADER
+         ======================================================== -->
+    <div class="header-outer-container">
+        <!-- 1. Top Utility Strip -->
+        <div class="sc-top-strip">
+            <div class="sc-strip-inner">
+                <a class="sc-new-pill" href="#features">
+                    <span>NEW</span> AI Powered Automated Timetable & Bell System →
+                </a>
+                <div class="sc-strip-ticker">
+                    <i class="fas fa-star"></i> 10+ Schools Powered Across Bihar & India
+                </div>
+                <div class="sc-strip-links">
+                    <a href="#about">About</a>
+                    <a href="#contact">Contact</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="/superadmin.html" class="sc-strip-admin" id="strip-admin-link">Super Admin</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Hanging Metal Rings Effect -->
+        <div class="sc-hanging-rings" aria-hidden="true">
+            <span class="sc-ring"></span>
+            <span class="sc-ring"></span>
+        </div>
+
+        <!-- 3. Floating Island Main Navigation Bar -->
+        <header class="sc-island-bar">
+            <!-- Brand Cycling Logo -->
+            <a href="/" style="text-decoration: none;">
                 <div class="brand-container">
-                    <span class="brand-text">NextGen Alarm</span>
+                    <span class="brand-text">School Alert</span>
                     <img alt="Logo 1" class="brand-logo-1" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjz750omNvlH13soJKUck_8oUuyT05gRBRWCNcRgXE-VqXEMJBVK7ZQOZfJmSnSEkkx_GLoskmEMLWFqJsHOV_wsMF1tCtOixgkkBhmGgqcC1QxJPXZ1DAQ9-8Ay_YDt4q1N-XiTHhW-_eh0HtUS4DHmuxA67s-AzBFy0r2509YpVbv_ZUB3ZsEh9vJ6dKJ/s2075/file_000000006ec8820ba0956969337d1e9d.png">
                     <img alt="Logo 2" class="brand-logo-2" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjGzdT3E0JGXM5EfpX-zJq0E2Fcl8s_OvPgTgF5SeR7N2QpJK6_nhevN9OIWq_eYvE214_5gsGOpFm2nuu_wgI00ZUHfpC9OwmdYDZAHx-p5DZ0wqHawLB7EIvSBHH4hIpwQaCLzWBTTkHE3tKJz_iTQsfRkyVnVrClJJl0GN-IC2muPNmNv12qhmpfqz3h/s1600/School.png">
                 </div>
             </a>
 
-            <button aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbarNav" data-bs-toggle="collapse" style="border: none;" type="button">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#about">About Us</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#ceo-desk">Developer Message</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                    <li class="nav-item">
-                        <a class="nav-link btn-student-capsule" id="nav-student-link" href="https://student.schoolalarm.online">
-                            <i class="fas fa-graduation-cap me-1"></i> Student Portal
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link btn-school-login" id="nav-app-link" href="https://app.schoolalarm.online">
-                            <i class="fas fa-sign-in-alt me-1"></i> School Login
-                        </a>
-                    </li>
-					<li class="nav-item">
-						<a class="nav-link btn-admin-nav" id="nav-admin-link" href="/superadmin.html" style="color: #f59e0b !important; background: #fffbeb !important; border: 1.5px solid #fde68a !important; border-radius: 20px !important; padding: 7px 16px !important; margin-left: 4px !important;">
-							<i class="fas fa-shield-alt me-1"></i> Super Admin
-						</a>
-					</li>
-                </ul>
+            <!-- Section Jump Links (Desktop) -->
+            <nav class="sc-nav-links">
+                <a class="sc-menu-link" href="#home">Home</a>
+                <a class="sc-menu-link" href="#about">About</a>
+                <a class="sc-menu-link" href="#features">Features</a>
+                <a class="sc-menu-link" href="#ceo-desk">CEO Message</a>
+                <a class="sc-menu-link" href="#pricing">Pricing</a>
+                <a class="sc-menu-link" href="#contact">Demo</a>
+            </nav>
+
+            <!-- Center Segmented Audience Buttons -->
+            <div class="sc-portal-tiles">
+                <!-- School Portal -->
+                <a href="https://app.schoolalarm.online" class="sc-tile sc-tile-school" id="nav-app-link">
+                    <span class="sc-tile-icon"><i class="fas fa-school"></i></span>
+                    <div class="sc-tile-txt">
+                        <b>For Schools</b>
+                        <small>ERP Portal</small>
+                    </div>
+                </a>
+
+                <!-- Student Portal -->
+                <a href="https://student.schoolalarm.online" class="sc-tile sc-tile-student" id="nav-student-link">
+                    <span class="sc-tile-icon"><i class="fas fa-graduation-cap"></i></span>
+                    <div class="sc-tile-txt">
+                        <b>For Students</b>
+                        <small>Student Portal</small>
+                    </div>
+                </a>
             </div>
-        </div>
-    </nav>
+
+            <!-- Hand-drawn Style DPDP / Cloud Security Badge -->
+            <a href="#contact" class="sc-dpdp-badge" title="Data Protection Compliant">
+                <svg viewBox="0 0 100 45">
+                    <path d="M10,23 C10,6 90,6 90,23 C90,40 15,40 15,23 C15,13 85,13 85,23" fill="none" stroke="#f43f5e" stroke-width="2.6" stroke-linecap="round"/>
+                </svg>
+                <span>🛡️ DPDP Ready</span>
+            </a>
+
+            <!-- Right Tools & Login CTA -->
+            <div class="sc-nav-actions">
+                <button class="sc-search-btn" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})" title="Search or Quick Inquiry">
+                    <i class="fas fa-search"></i>
+                </button>
+                <a href="https://app.schoolalarm.online" class="sc-login-btn" id="nav-login-cta">
+                    <i class="fas fa-user-circle"></i> Login
+                </a>
+            </div>
+        </header>
+    </div>
 
     <!-- HERO SECTION -->
     <section class="hero-section" id="home">
         <div class="container">
-            <div class="row align-items-center" style="min-height: 85vh;">
+            <div class="row align-items-center" style="min-height: 80vh;">
                 <div class="col-lg-7 text-start animate-fade-in">
                     <span class="badge rounded-pill bg-warning text-dark px-3 py-2 mb-3 shadow-sm">🚀 Next-Gen School ERP</span>
                     <h1 class="display-3 fw-bold mb-3 title-3d" style="line-height: 1.2;">
@@ -770,17 +825,17 @@
                         Automate your entire school using a single platform. From admission to certificate generation, fee-collection, and academic analysis—automate workflows in minutes with our 360-degree solution.
                     </p>
                     <div class="d-flex flex-wrap gap-3">
-					<a class="btn btn-primary btn-lg px-4 shadow" id="hero-app-link" href="https://app.schoolalarm.online" style="border-radius: 12px; box-shadow: 0 10px 20px rgba(13,110,253,0.3);">
-						<i class="fas fa-school me-2"></i> School Portal
-					</a>
-					<a class="btn btn-outline-dark btn-lg px-4" id="hero-student-link" href="https://student.schoolalarm.online" style="border-radius: 12px;">
-						<i class="fas fa-user-graduate me-2"></i> Student Portal
-					</a>
-					<!-- New Super Admin Button -->
-					<a class="btn btn-warning btn-lg px-4 fw-bold text-dark shadow-sm" id="hero-admin-link" href="/superadmin.html" style="border-radius: 12px; background-color: #f59e0b; border: none;">
-						<i class="fas fa-shield-alt me-2"></i> Super Admin
-					</a>
-				</div>
+                        <a class="btn btn-primary btn-lg px-4 shadow" id="hero-app-link" href="https://app.schoolalarm.online" style="border-radius: 12px; box-shadow: 0 10px 20px rgba(13,110,253,0.3);">
+                            <i class="fas fa-school me-2"></i> School Portal
+                        </a>
+                        <a class="btn btn-outline-dark btn-lg px-4" id="hero-student-link" href="https://student.schoolalarm.online" style="border-radius: 12px;">
+                            <i class="fas fa-user-graduate me-2"></i> Student Portal
+                        </a>
+                        <!-- New Super Admin Button -->
+                        <a class="btn btn-warning btn-lg px-4 fw-bold text-dark shadow-sm" id="hero-admin-link" href="/superadmin.html" style="border-radius: 12px; background-color: #f59e0b; border: none;">
+                            <i class="fas fa-shield-alt me-2"></i> Super Admin
+                        </a>
+                    </div>
                 </div>
 
                 <div class="col-lg-5 d-none d-lg-block">
@@ -1301,7 +1356,6 @@
         const host = window.location.hostname.toLowerCase();
         const protocol = window.location.protocol;
 
-        // Helper: Extracts root apex domain (e.g., schoolalarm.online, domain.co.in)
         function getBaseDomain(hostname) {
             const parts = hostname.split('.');
             if (parts.length <= 2) return hostname;
@@ -1313,7 +1367,6 @@
             return parts.slice(-2).join('.');
         }
 
-        // 1. Check if running on Cloudflare Pages default (*.pages.dev) or Localhost
         const isDirectHost = host.endsWith('.pages.dev') || 
                              host.endsWith('.workers.dev') || 
                              host === 'localhost' || 
@@ -1323,7 +1376,6 @@
         let studentUrl = "/student.html";
         let adminUrl = "/superadmin.html";
 
-        // 2. If running on ANY live Custom Domain
         if (!isDirectHost) {
             const baseDomain = getBaseDomain(host);
             appUrl = `${protocol}//app.${baseDomain}`;
@@ -1331,26 +1383,10 @@
             adminUrl = `${protocol}//admin.${baseDomain}`;
         }
 
-        // Update all buttons, nav links & footer links dynamically
-        document.querySelectorAll("#nav-app-link, #hero-app-link, #footer-app-link, a[href*='app.schoolalarm']").forEach(el => el.href = appUrl);
+        // Connect dynamic links to updated Header & Footer IDs
+        document.querySelectorAll("#nav-app-link, #nav-login-cta, #hero-app-link, #footer-app-link, a[href*='app.schoolalarm']").forEach(el => el.href = appUrl);
         document.querySelectorAll("#nav-student-link, #hero-student-link, #footer-student-link, a[href*='student.schoolalarm']").forEach(el => el.href = studentUrl);
-		document.querySelectorAll("#nav-admin-link, #hero-admin-link, #footer-admin-link, a[href*='admin.schoolalarm']").forEach(el => el.href = adminUrl);
-        document.querySelectorAll("#footer-admin-link, a[href*='admin.schoolalarm']").forEach(el => el.href = adminUrl);
-
-        // Mobile navbar auto-close on link click
-        const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-        const navbarCollapse = document.getElementById('navbarNav');
-        if (navbarCollapse) {
-            const bsCollapse = new bootstrap.Collapse(navbarCollapse, { toggle: false });
-            navLinks.forEach(function(link) {
-                link.addEventListener('click', function() {
-                    const toggler = document.querySelector('.navbar-toggler');
-                    if (window.getComputedStyle(toggler).display !== 'none') {
-                        bsCollapse.hide();
-                    }
-                });
-            });
-        }
+        document.querySelectorAll("#strip-admin-link, #hero-admin-link, #footer-admin-link, a[href*='admin.schoolalarm']").forEach(el => el.href = adminUrl);
     });
 
     // Rainbow Loader Controller
