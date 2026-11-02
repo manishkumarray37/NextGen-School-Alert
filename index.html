@@ -7,7 +7,6 @@
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="apple-touch-icon" href="favicon.png">
     
     <!-- CSS Dependencies -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
@@ -15,86 +14,72 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Kalam:wght@700&display=swap" rel="stylesheet">
 
     <style>
-        .feed-links, .subscribe-wrapper {
-            display: none !important;
+        :root {
+            --sc-primary: #2867b2;
+            --sc-primary-dark: #17467f;
+            --sc-navy: #0f1b33;
+            --sc-navy-strip: #0d1e38;
+            --sc-accent-pink: #d3236e;
+            --sc-accent-purple: #5b3a8e;
+            --sc-light-bg: #fbf7f0;
+            --sc-border: rgba(15, 27, 51, 0.08);
         }
+
+        * { box-sizing: border-box; }
         body {
             font-family: 'Poppins', sans-serif;
             scroll-behavior: smooth;
             padding: 0;
             margin: 0;
-            background-color: #f8fafc;
-            background-image: radial-gradient(#d3e0ea 1px, transparent 1px);
-            background-size: 20px 20px;
+            background-color: var(--sc-light-bg);
+            color: #1e293b;
+            overflow-x: hidden;
         }
 
-        /* 3D AUTOMATION STYLES */
-        .text-3d-glow {
-            font-weight: 800;
-            text-shadow: 0 4px 15px rgba(13, 110, 253, 0.3), 0 1px 2px rgba(0,0,0,0.1);
-        }
-        .title-3d {
-            font-weight: 800;
-            color: #1a202c;
-            text-shadow: 2px 2px 0px #e2e8f0, 4px 4px 8px rgba(0,0,0,0.08);
-        }
-
-        section {
-            padding: 80px 0;
-            position: relative;
-        }
-
-        /* =========================================================
-           PREMIUM FLOATING ISLAND & TOP STRIP STYLES (NEW HEADER)
-           ========================================================= */
-        :root {
-            --island-blue: #123a6a;
-            --island-grad: linear-gradient(90deg, #0b1f3a 0%, #17467f 50%, #123a6a 100%);
-        }
-
-        .header-outer-container {
-            position: sticky;
+        /* ========================================================
+           1. TOP UTILITY STRIP (FIXED AT VERY TOP)
+           ======================================================== */
+        .sc-utility-bar {
+            position: fixed;
             top: 0;
-            z-index: 1050;
-            width: 100%;
-        }
-
-        /* 1. TOP UTILITY STRIP */
-        .sc-top-strip {
-            background-color: #0b1728;
+            left: 0;
+            right: 0;
+            height: 38px;
+            background: #091527;
             color: #ffffff;
-            font-size: 13px;
-            padding: 7px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 1070;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
         }
         .sc-strip-inner {
-            max-width: 1320px;
+            width: 100%;
+            max-width: 1360px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            font-size: 12.5px;
         }
-        .sc-new-pill {
+        .sc-strip-badge {
+            color: #fff;
             text-decoration: none;
-            color: #ffffff;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            font-weight: 600;
-            font-size: 12px;
+            font-weight: 500;
         }
-        .sc-new-pill span {
+        .sc-strip-badge .badge-tag {
             background: #e11d48;
             color: #fff;
             padding: 1px 7px;
             border-radius: 4px;
-            font-size: 10px;
+            font-size: 10.5px;
             font-weight: 800;
             letter-spacing: 0.5px;
         }
         .sc-strip-ticker {
-            font-size: 12px;
             color: #ffd166;
             font-weight: 600;
             display: flex;
@@ -104,276 +89,599 @@
         .sc-strip-links {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
         }
         .sc-strip-links a {
-            color: #e2e8f0;
+            color: #cbd5e1;
             text-decoration: none;
-            font-size: 12.5px;
             font-weight: 500;
             transition: color 0.2s;
         }
-        .sc-strip-links a:hover {
-            color: #38bdf8;
-        }
-        .sc-strip-admin {
-            border: 1px solid rgba(255, 209, 102, 0.4);
-            padding: 2px 10px;
-            border-radius: 14px;
-            color: #ffd166 !important;
-            font-weight: 600 !important;
-        }
-        .sc-strip-admin:hover {
-            background: rgba(255, 209, 102, 0.15);
+        .sc-strip-links a:hover { color: #fff; }
+        .sc-strip-partner {
+            border: 1px solid rgba(255,255,255,0.25);
+            padding: 2px 12px;
+            border-radius: 12px;
+            color: #fff !important;
         }
 
-        /* 2. HANGING RINGS */
-        .sc-hanging-rings {
-            position: absolute;
-            top: 26px;
+        /* ========================================================
+           2. HANGING METALLIC RINGS (ANIMATED)
+           ======================================================== */
+        .sc-hang-container {
+            position: fixed;
+            top: 28px;
             left: 50%;
             transform: translateX(-50%);
-            width: min(1320px, 94%);
-            display: flex;
-            justify-content: space-around;
+            width: min(1320px, calc(100% - 48px));
+            height: 32px;
             pointer-events: none;
-            z-index: 1060;
+            z-index: 1065;
+            transition: opacity 0.3s ease;
         }
-        .sc-ring {
-            width: 14px;
-            height: 22px;
-            border: 3px solid #d4af37;
-            border-radius: 7px;
-            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.35);
-            background: linear-gradient(180deg, #fef08a, #ca8a04);
+        .sc-ring-unit {
+            position: absolute;
+            top: 0;
+            width: 40px;
+            height: 32px;
+            filter: drop-shadow(0 3px 2px rgba(10,30,60,0.45));
+        }
+        .sc-ring-unit.ring-l { left: 20%; }
+        .sc-ring-unit.ring-r { right: 20%; }
+        .sc-ring-unit svg { width: 40px; height: 100%; overflow: visible; }
+
+        /* ========================================================
+           3. FLOATING ISLAND BAR (THE CORE CONTAINER)
+           ======================================================== */
+        .sc-island-host {
+            position: fixed;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(1320px, calc(100% - 48px));
+            height: 74px;
+            background: radial-gradient(rgba(255,255,255,.07) 1px, transparent 1px) 0 0/18px 18px,
+                        radial-gradient(40% 180% at 0% 0%, rgba(40,103,178,.6), transparent 70%),
+                        radial-gradient(30% 160% at 100% 100%, rgba(91,42,134,.45), transparent 70%),
+                        linear-gradient(90deg, #102d52 0%, #17467f 50%, #12335c 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 22px 48px -22px rgba(18,58,106,.8);
+            z-index: 1060;
+            overflow: hidden;
+            transition: width 0.5s cubic-bezier(.22,1,.36,1),
+                        height 0.5s cubic-bezier(.22,1,.36,1),
+                        top 0.4s ease,
+                        background 0.35s ease,
+                        border-radius 0.4s ease,
+                        box-shadow 0.4s ease;
         }
 
-        /* 3. FLOATING ISLAND NAVBAR */
-        .sc-island-bar {
-            position: relative;
-            max-width: 1320px;
-            width: 94%;
-            margin: 6px auto 10px;
-            height: 72px;
-            background: var(--island-grad);
-            border-radius: 16px;
+        /* Physics Sway on Hover (when un-scrolled & closed) */
+        .sc-island-host.sway-effect {
+            animation: scSway 1.8s ease-in-out;
+        }
+        @keyframes scSway {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            15% { transform: translateX(calc(-50% + 2px)) rotate(0.4deg); }
+            30% { transform: translateX(calc(-50% - 2px)) rotate(-0.35deg); }
+            50% { transform: translateX(calc(-50% + 1px)) rotate(0.2deg); }
+            70% { transform: translateX(calc(-50% - 0.5px)) rotate(-0.1deg); }
+            100% { transform: translateX(-50%) rotate(0deg); }
+        }
+
+        /* THE ISLAND HEADER BAR ROW */
+        .sc-bar-row {
+            height: 74px;
+            padding: 0 16px 0 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            box-shadow: 0 16px 36px -12px rgba(11, 23, 40, 0.55);
-            box-sizing: border-box;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .sc-island-bar:hover {
-            transform: translateY(1px);
         }
 
-        /* Logo Area */
-        .brand-container {
-            position: relative;
-            width: 190px;
-            height: 48px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-        }
-        .brand-text, .brand-logo-1, .brand-logo-2 {
-            position: absolute;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-            transition: opacity 1s ease-in-out;
-            display: block;
-            opacity: 0;
-            visibility: hidden;
-        }
-        .brand-logo-1 { height: 50px; width: auto; object-fit: contain; }
-        .brand-logo-2 { height: 42px; width: auto; object-fit: contain; }
-        @keyframes cycleAnimation {
-            0%, 30% { opacity: 1; visibility: visible; }
-            33%, 100% { opacity: 0; visibility: hidden; }
-        }
-        .brand-text { 
-            animation: cycleAnimation 15s infinite; 
-            color: #ffffff; 
-            font-size: 1.25rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-        }
-        .brand-logo-1 { animation: cycleAnimation 15s infinite 5s; }
-        .brand-logo-2 { animation: cycleAnimation 15s infinite 10s; }
-
-        /* Navigation Links / Section jumps */
-        .sc-nav-links {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .sc-menu-link {
-            color: #cbd5e1;
+        /* BRAND LOGO */
+        .sc-brand-link {
             text-decoration: none;
-            font-size: 13px;
-            font-weight: 600;
-            padding: 6px 10px;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
-        .sc-menu-link:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        /* Center Segmented Tiles */
-        .sc-portal-tiles {
             display: flex;
             align-items: center;
             gap: 10px;
         }
-        .sc-tile {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.16);
-            padding: 5px 12px 5px 6px;
-            border-radius: 12px;
+        .sc-brand-title {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 26px;
             color: #ffffff;
-            text-decoration: none;
+            letter-spacing: -0.5px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .sc-brand-title span.dot-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 6px);
+            gap: 2px;
+            margin-left: 4px;
+        }
+        .sc-brand-title span.dot-grid b {
+            width: 6px;
+            height: 6px;
+            border-radius: 1.5px;
+            display: block;
+        }
+        .dot-1 { background: #2ab77c; }
+        .dot-2 { background: #ecb32d; }
+        .dot-3 { background: #2867b2; }
+        .dot-4 { background: #e01c5a; }
+
+        /* CENTER DUAL SWITCHER TABS */
+        .sc-halves-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+            padding: 4px;
+            border-radius: 14px;
+        }
+        .sc-half-btn {
+            border: 0;
+            background: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 14px 5px 6px;
+            border-radius: 10px;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
             transition: all 0.25s ease;
         }
-        .sc-tile:hover {
-            background: rgba(255, 255, 255, 0.16);
-            color: #fff;
-            transform: translateY(-1.5px);
-        }
-        .sc-tile-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 9px;
-            display: grid;
-            place-items: center;
-            font-size: 16px;
-            color: #fff;
-        }
-        .sc-tile-school .sc-tile-icon { background: #0284c7; }
-        .sc-tile-student .sc-tile-icon { background: linear-gradient(135deg, #d3236e, #6e1f78); }
-
-        .sc-tile-txt b {
-            display: block;
-            font-size: 13.5px;
-            font-weight: 700;
-            line-height: 1.1;
-        }
-        .sc-tile-txt small {
-            font-size: 11px;
-            color: #94a3b8;
-            font-weight: 400;
-        }
-
-        /* Hand Drawn DPDP / Verified Badge */
-        .sc-dpdp-badge {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 6px 14px;
-            color: #ffffff;
-            font-family: 'Kalam', cursive;
-            font-size: 15px;
-            font-weight: 700;
-            text-decoration: none;
-            white-space: nowrap;
-        }
-        .sc-dpdp-badge svg {
-            position: absolute;
-            width: 115%;
-            height: 125%;
-            pointer-events: none;
-        }
-
-        /* Right Actions */
-        .sc-nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .sc-search-btn {
-            background: rgba(255, 255, 255, 0.12);
-            border: none;
+        .sc-half-btn:hover { background: rgba(255, 255, 255, 0.12); }
+        .sc-half-btn .tile-badge {
             width: 40px;
             height: 40px;
             border-radius: 10px;
-            color: #ffffff;
-            cursor: pointer;
             display: grid;
             place-items: center;
+            font-size: 17px;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .sc-half-btn.btn-school .tile-badge {
+            background: linear-gradient(135deg, #3f8ae0, #2867b2);
+        }
+        .sc-half-btn.btn-student .tile-badge {
+            background: linear-gradient(135deg, #d3236e, #6e1f78);
+        }
+        .sc-half-btn .btn-labels {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            line-height: 1.15;
+        }
+        .sc-half-btn .btn-labels b { font-size: 14.5px; }
+        .sc-half-btn .btn-labels small { font-size: 11.5px; opacity: 0.75; font-weight: 400; }
+        .sc-half-btn .btn-chev { font-size: 11px; margin-left: 2px; opacity: 0.6; transition: transform 0.3s ease; }
+
+        /* HAND-DRAWN BADGE */
+        .sc-dpdp-loop-btn {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 116px;
+            height: 58px;
+            text-decoration: none;
+            color: #ffffff;
+            font-family: 'Kalam', cursive;
+            line-height: 0.95;
+            font-size: 18px;
+            font-weight: 700;
+            transform: rotate(-4deg);
+            margin: 0 4px;
+        }
+        .sc-dpdp-loop-btn svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            pointer-events: none;
+        }
+        .sc-dpdp-loop-btn svg path {
+            fill: none;
+            stroke: #ff4071;
+            stroke-width: 2.8;
+            stroke-linecap: round;
+        }
+
+        /* RIGHT ACTIONS */
+        .sc-actions-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sc-action-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
+            border: 0;
+            color: #ffffff;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            font-size: 16px;
             transition: background 0.2s;
         }
-        .sc-search-btn:hover { background: rgba(255, 255, 255, 0.2); }
-
-        .sc-login-btn {
-            background: #ffffff;
-            color: #0b1f3a !important;
-            padding: 8px 18px;
+        .sc-action-circle:hover { background: rgba(255, 255, 255, 0.22); }
+        .sc-login-white-btn {
+            height: 44px;
+            padding: 0 20px;
             border-radius: 10px;
-            text-decoration: none !important;
-            font-size: 14px;
+            background: #ffffff;
+            color: #102d52 !important;
             font-weight: 700;
+            font-size: 15px;
+            text-decoration: none !important;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
             transition: all 0.2s ease;
         }
-        .sc-login-btn:hover {
-            background: #e2e8f0;
-            transform: translateY(-1px);
-        }
-
-        /* MOBILE RESPONSIVENESS FOR HEADER */
-        .sc-mobile-toggle {
+        .sc-login-white-btn:hover { background: #e8f0fa; transform: translateY(-1px); }
+        
+        .sc-close-mega-btn {
             display: none;
-            background: transparent;
-            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 0;
             color: #fff;
-            font-size: 22px;
             cursor: pointer;
+            font-size: 18px;
         }
 
-        @media (max-width: 1200px) {
-            .sc-nav-links { display: none; }
+        /* ========================================================
+           4. MEGA MENU PANELS (EXPANDED STATE)
+           ======================================================== */
+        .sc-mega-container {
+            display: none;
+            padding: 8px 26px 24px;
+            height: calc(100% - 74px);
+            overflow-y: auto;
+            opacity: 0;
+            transition: opacity 0.3s ease 0.15s;
         }
-        @media (max-width: 991px) {
-            .sc-strip-ticker, .sc-hanging-rings, .sc-dpdp-badge, .sc-search-btn { display: none !important; }
-            .sc-island-bar { height: 64px; }
-            .sc-portal-tiles { gap: 6px; }
-            .sc-tile { padding: 4px 8px 4px 4px; }
-            .sc-tile-txt small { display: none; }
-            .sc-tile-icon { width: 30px; height: 30px; font-size: 14px; }
-            .brand-container { width: 140px; }
+        .sc-island-host.is-open {
+            height: 520px !important;
+            background: #ffffff !important;
+            border-radius: 24px !important;
+            box-shadow: 0 35px 80px -20px rgba(15, 27, 51, 0.45) !important;
+            border: 1px solid rgba(15, 27, 51, 0.12) !important;
         }
-        @media (max-width: 640px) {
-            .sc-portal-tiles { display: none; }
-            .sc-strip-links { gap: 8px; font-size: 11px; }
-            .sc-login-btn { padding: 6px 12px; font-size: 13px; }
+        .sc-island-host.is-open .sc-bar-row {
+            border-bottom: 1px solid rgba(15, 27, 51, 0.08);
+        }
+        .sc-island-host.is-open .sc-brand-title { color: #0f1b33; }
+        .sc-island-host.is-open .sc-halves-wrapper {
+            background: rgba(15, 27, 51, 0.05);
+            box-shadow: inset 0 0 0 1px rgba(15, 27, 51, 0.08);
+        }
+        .sc-island-host.is-open .sc-half-btn { color: #0f1b33; }
+        .sc-island-host.is-open .sc-half-btn .btn-labels small { color: #64748b; }
+        .sc-island-host.is-open .sc-half-btn.active {
+            background: rgba(40, 103, 178, 0.12);
+            box-shadow: inset 0 0 0 1.5px var(--sc-primary);
+        }
+        .sc-island-host.is-open .sc-half-btn.btn-student.active {
+            background: rgba(211, 35, 110, 0.12);
+            box-shadow: inset 0 0 0 1.5px var(--sc-accent-pink);
+        }
+        .sc-island-host.is-open .sc-half-btn.active .btn-chev { transform: rotate(180deg); }
+        .sc-island-host.is-open .sc-dpdp-loop-btn { color: #0f1b33; }
+        .sc-island-host.is-open .sc-action-circle {
+            background: rgba(15, 27, 51, 0.06);
+            color: #0f1b33;
+            box-shadow: inset 0 0 0 1px rgba(15, 27, 51, 0.08);
+        }
+        .sc-island-host.is-open .sc-login-white-btn {
+            background: var(--sc-primary);
+            color: #ffffff !important;
+        }
+        .sc-island-host.is-open .sc-close-mega-btn {
+            display: grid;
+            place-items: center;
+            background: rgba(15, 27, 51, 0.06);
+            color: #0f1b33;
+        }
+        .sc-island-host.is-open .sc-mega-container {
+            display: block;
+            opacity: 1;
         }
 
-        /* Hero Section */
-        .hero-section {
-            background: radial-gradient(circle at 80% 20%, #dbeafe 0%, #f0f4f9 60%, #ffffff 100%);
-            overflow: hidden;
+        /* BACKDROP BLUR OVERLAY */
+        .sc-backdrop-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 27, 51, 0.45);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1055;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        .sc-backdrop-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 4A. SCHOOLS MEGA PANEL (8 SUITES + PROMO BOX) */
+        .sc-pane-schools {
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 24px;
+            padding-top: 14px;
+        }
+        .sc-suites-label {
+            font-size: 11.5px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--sc-primary);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sc-suites-label::before {
+            content: ""; width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+        }
+        .sc-suites-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .sc-suite-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            background: #ffffff;
+            border: 1px solid #eef2f6;
+            transition: all 0.2s ease;
+        }
+        .sc-suite-card:hover {
+            background: #f1f6fc;
+            border-color: rgba(40,103,178,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(40,103,178,0.1);
+        }
+        .sc-suite-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: #e8f2fc;
+            color: var(--sc-primary);
+            display: grid;
+            place-items: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .sc-suite-info b {
+            display: block;
+            color: #0f1b33;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .sc-suite-info span {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* LMS Promo Card */
+        .sc-lms-promo-box {
+            background: linear-gradient(135deg, #2c1240 0%, #5b2a86 50%, #b8206f 100%);
+            border-radius: 18px;
+            padding: 24px;
+            color: #ffffff;
             position: relative;
-            padding: 40px 0 60px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .sc-lms-promo-box .lms-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(4px);
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            width: fit-content;
+        }
+        .sc-lms-promo-box h4 {
+            font-size: 22px;
+            font-weight: 800;
+            margin: 12px 0 6px;
+            line-height: 1.25;
+        }
+        .sc-lms-promo-box p {
+            font-size: 13.5px;
+            opacity: 0.9;
+            line-height: 1.45;
+            margin-bottom: 20px;
+        }
+        .sc-promo-cta-btn {
+            background: #ffffff;
+            color: #3b1548 !important;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+            transition: all 0.2s;
+        }
+        .sc-promo-cta-btn:hover { background: #fdf2f8; transform: translateX(3px); }
+
+        /* 4B. STUDENTS MEGA PANEL */
+        .sc-pane-students {
+            display: none;
+            grid-template-columns: 1fr 1.3fr;
+            gap: 24px;
+            padding-top: 14px;
+            height: 100%;
+        }
+        .sc-student-left-box {
+            background: linear-gradient(135deg, #3a1648, #6e1f78);
+            border-radius: 18px;
+            padding: 26px;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .sc-student-left-box h3 {
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin: 12px 0 8px;
+        }
+        .sc-student-steps {
+            display: flex;
+            gap: 6px;
+            margin: 14px 0;
+        }
+        .sc-student-steps span {
+            background: rgba(255,255,255,0.14);
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .sc-class-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .sc-class-chips span {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
         }
 
-        .animate-fade-in { animation: fadeInUp 1s ease-out; }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        .sc-student-right-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            justify-content: center;
+        }
+        .sc-feature-card-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 16px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+        .sc-feature-card-item .icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            flex-shrink: 0;
+            font-size: 18px;
+        }
+        .sc-feature-card-item b { display: block; font-size: 15px; color: #0f1b33; }
+        .sc-feature-card-item p { margin: 2px 0 0; font-size: 12.5px; color: #64748b; }
+
+        /* ========================================================
+           5. SCROLLED STATE (OPTION 17 - FULL WIDTH WHITE NAVBAR)
+           ======================================================== */
+        body.is-scrolled .sc-hang-container {
+            opacity: 0;
+            pointer-events: none;
+        }
+        body.is-scrolled .sc-island-host:not(.is-open) {
+            top: 38px !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            height: 68px !important;
+            border-radius: 0 !important;
+            background: #ffffff !important;
+            border: 0 !important;
+            border-bottom: 1px solid rgba(15, 27, 51, 0.12) !important;
+            box-shadow: 0 8px 24px -10px rgba(15, 27, 51, 0.25) !important;
+            padding: 0 calc((100% - 1320px) / 2);
+        }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-bar-row {
+            height: 68px;
+        }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-brand-title {
+            color: #0f1b33;
+        }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-halves-wrapper {
+            background: rgba(15, 27, 51, 0.05);
+            box-shadow: inset 0 0 0 1px rgba(15, 27, 51, 0.08);
+        }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-half-btn {
+            color: #0f1b33;
+        }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-half-btn .btn-labels small {
+            color: #64748b;
+        }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-dpdp-loop-btn {
+            color: #0f1b33;
+        }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-action-circle {
+            background: rgba(15, 27, 51, 0.06);
+            color: #0f1b33;
+            box-shadow: inset 0 0 0 1px rgba(15, 27, 51, 0.08);
+        }
+        body.is-scrolled .sc-island-host:not(.is-open) .sc-login-white-btn {
+            background: var(--sc-primary);
+            color: #ffffff !important;
         }
 
+        /* Padding adjustment for first section */
+        .hero-section {
+            padding-top: 150px;
+        }
+
+        /* Existing Page Elements */
+        .text-3d-glow {
+            font-weight: 800;
+            text-shadow: 0 4px 15px rgba(13, 110, 253, 0.3), 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .title-3d {
+            font-weight: 800;
+            color: #1a202c;
+            text-shadow: 2px 2px 0px #e2e8f0, 4px 4px 8px rgba(0,0,0,0.08);
+        }
+        section { padding: 80px 0; position: relative; }
         .main-hero-img {
             filter: drop-shadow(0 25px 35px rgba(13, 110, 253, 0.25));
             animation: floatImage 4s ease-in-out infinite;
@@ -383,41 +691,23 @@
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-18px) rotate(1deg); }
         }
-
-        .hero-image-wrapper {
-            position: relative;
-            padding: 20px;
-            perspective: 1000px;
-        }
-
+        .hero-image-wrapper { position: relative; padding: 20px; perspective: 1000px; }
         .floating-card {
             position: absolute;
-            background: rgba(255, 255, 255, 0.8) !important;
-            backdrop-filter: blur(4px);
+            background: rgba(255, 255, 255, 0.85) !important;
+            backdrop-filter: blur(6px);
             padding: 15px 22px;
             border-radius: 18px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.12), 0 5px 15px rgba(13, 110, 253, 0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
             display: flex;
             align-items: center;
             gap: 10px;
             z-index: 2;
             font-weight: bold;
             border: 1px solid rgba(255, 255, 255, 0.8);
-            transition: transform 0.3s ease;
         }
-        .floating-card:hover { transform: scale(1.08) translateZ(20px); }
-        .card-1 { top: 6%; left: -8%; animation: floatImage 3.5s ease-in-out infinite reverse; }
-        .card-2 { bottom: 32%; right: -20%; animation: floatImage 5s ease-in-out infinite; }
-        .floating-card i { font-size: 1.6rem; }
-
-        #about { background: #ffffff; }
-        #features { background: #f8f9fa; }
-        #contact { background: #ffffff; }
-
-        .bg-blue { background: linear-gradient(135deg, #4399bc 0%, #206382 100%) !important; }
-        .bg-teal { background: linear-gradient(135deg, #26a69a 0%, #00695c 100%) !important; }
-        .bg-orange { background: linear-gradient(135deg, #f29235 0%, #d84315 100%) !important; }
-
+        .card-1 { top: 6%; left: -8%; }
+        .card-2 { bottom: 32%; right: -20%; }
         .feature-card {
             border-radius: 20px;
             text-align: center;
@@ -425,35 +715,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            border: none;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-style: preserve-3d;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
-            position: relative;
+            padding: 30px;
+            transition: all 0.3s;
         }
-        .feature-card:hover {
-            transform: translateY(-12px) scale(1.02);
-            box-shadow: 0 25px 45px rgba(0,0,0,0.22);
-        }
-
-        .icon-circle {
-            background: rgba(255, 255, 255, 0.25);
-            width: 70px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            margin-bottom: 20px;
-            font-size: 28px;
-            border: 2px solid rgba(255,255,255,0.6);
-            box-shadow: inset 0 0 15px rgba(255,255,255,0.3);
-            animation: pulseIcon 3s infinite ease-in-out;
-        }
-        @keyframes pulseIcon {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-        }
+        .feature-card:hover { transform: translateY(-8px); }
+        .bg-blue { background: linear-gradient(135deg, #4399bc 0%, #206382 100%) !important; }
+        .bg-teal { background: linear-gradient(135deg, #26a69a 0%, #00695c 100%) !important; }
+        .bg-orange { background: linear-gradient(135deg, #f29235 0%, #d84315 100%) !important; }
 
         .btn-demo {
             margin-top: auto;
@@ -464,183 +732,35 @@
             text-decoration: none;
             font-size: 14px;
             font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
-        .btn-demo:hover {
-            background: #fff;
-            color: #333;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255,255,255,0.4);
-        }
+        .btn-demo:hover { background: #fff; color: #333; }
 
-        .animated-box {
-            padding: 12px 18px;
-            border-radius: 12px;
-            border: 2px solid #0d6efd;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            width: 100%;
-            box-shadow: 0 8px 16px rgba(13, 110, 253, 0.08);
-            animation: bgColorChange 5s infinite alternate; 
-        }
-        @keyframes bgColorChange {
-            0% { background-color: #ffffff; color: #333; }
-            25% { background-color: #e3f2fd; color: #0d47a1; }
-            50% { background-color: #f1f8e9; color: #1b5e20; }
-            75% { background-color: #fff3e0; color: #e65100; }
-            100% { background-color: #fce4ec; color: #880e4f; }
-        }
-        .animated-box:hover {
-            transform: scale(1.04) translateY(-3px);
-            border-color: #0b5ed7;
-            box-shadow: 0 12px 24px rgba(13, 110, 253, 0.2);
-        }
-
-        .ceo-text p { text-align: justify; }
-        @media (max-width: 1200px) {
-            .ceo-text p { text-align: center; }
-            .ceo-desk .text-lg-start { text-align: center !important; }
-        }
-
-        .tab-btn {
-            padding: 12px 28px;
-            border: 1px solid #dee2e6;
-            background: #ffffff;
-            border-radius: 12px;
-            font-weight: 600;
-            color: #6c757d;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-            transition: all 0.3s ease;
-        }
-        .tab-btn.active {
-            background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%) !important;
-            color: #ffffff !important;
-            border-color: #0d6efd;
-            box-shadow: 0 8px 20px rgba(13, 110, 253, 0.35);
-            transform: translateY(-2px);
-        }
-        .tab-btn:hover:not(.active) {
-            background: #eef2f6;
-            transform: translateY(-2px);
-        }
-        .tab-panel { animation: fadeIn 0.5s ease-in; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* SAAS PRICING SECTION STYLES */
-        .pricing-section { padding: 70px 0; background: #ffffff; }
         .pricing-card {
             background: #ffffff;
             border: 1.5px solid #e2e8f0;
             border-radius: 20px;
             padding: 35px 25px;
-            position: relative;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
             height: 100%;
             display: flex;
             flex-direction: column;
-        }
-        .pricing-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
         }
         .pricing-card.popular {
             border: 2px solid #ff3366;
             box-shadow: 0 15px 35px rgba(255, 51, 102, 0.12);
         }
-        .popular-badge {
-            position: absolute;
-            top: -14px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #ff3366;
-            color: #ffffff;
-            font-size: 11.5px;
-            font-weight: 700;
-            padding: 4px 16px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 10px rgba(255, 51, 102, 0.3);
-        }
-        .pricing-title { font-weight: 800; font-size: 1.4rem; color: #1a202c; margin-bottom: 5px; }
-        .pricing-subtitle { font-size: 0.88rem; color: #64748b; margin-bottom: 25px; }
         .price-tag {
             font-size: 2.6rem;
             font-weight: 800;
             color: #0f172a;
             margin-bottom: 25px;
-            display: flex;
-            align-items: baseline;
-            justify-content: center;
-            gap: 2px;
         }
         .price-tag span { font-size: 0.95rem; font-weight: 600; color: #64748b; }
-        .pricing-features-list {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 30px 0;
-            text-align: left;
-            flex-grow: 1;
-        }
-        .pricing-features-list li {
-            font-size: 0.92rem;
-            color: #334155;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .pricing-features-list li i { color: #16a34a; font-size: 1rem; }
-        .btn-pricing-outline {
-            background: #f1f5f9;
-            color: #0f172a;
-            border: none;
-            font-weight: 700;
-            font-size: 0.92rem;
-            padding: 12px;
-            border-radius: 12px;
-            width: 100%;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            display: block;
-            text-align: center;
-        }
-        .btn-pricing-outline:hover {
-            background: #0284c7;
-            color: #ffffff;
-            box-shadow: 0 6px 15px rgba(2, 132, 199, 0.25);
-        }
-        .btn-pricing-solid {
-            background: #ff3366;
-            color: #ffffff;
-            border: none;
-            font-weight: 700;
-            font-size: 0.92rem;
-            padding: 12px;
-            border-radius: 12px;
-            width: 100%;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            display: block;
-            text-align: center;
-            box-shadow: 0 6px 15px rgba(255, 51, 102, 0.3);
-        }
-        .btn-pricing-solid:hover {
-            background: #e61e51;
-            color: #ffffff;
-            box-shadow: 0 8px 20px rgba(255, 51, 102, 0.4);
-        }
+        .pricing-features-list { list-style: none; padding: 0; margin-bottom: 25px; flex-grow: 1; }
+        .pricing-features-list li { margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-size: 0.95rem; }
+        .pricing-features-list li i { color: #16a34a; }
 
-        /* DEMO BOOKING FORM STYLES */
         .demo-form-card {
             background: #ffffff;
-            border: none;
             border-radius: 24px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.06);
             padding: 40px;
@@ -652,189 +772,294 @@
             border: 1.5px solid #cbd5e1;
             background: #f8fafc;
         }
-        .demo-input:focus, .demo-select:focus {
-            border-color: #0284c7;
-            background: #ffffff;
-            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.12);
-        }
         .demo-submit-btn {
             background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
             color: #ffffff;
             font-weight: 700;
-            font-size: 15px;
             padding: 14px;
             border-radius: 12px;
             border: none;
             width: 100%;
-            box-shadow: 0 10px 20px rgba(2, 132, 199, 0.25);
-            transition: all 0.2s ease;
-        }
-        .demo-submit-btn:hover {
-            background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
-            transform: translateY(-2px);
-            box-shadow: 0 15px 25px rgba(2, 132, 199, 0.35);
-        }
-        .perk-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.92rem;
-            color: #334155;
-            margin-bottom: 14px;
-            font-weight: 600;
-        }
-        .perk-item i {
-            color: #16a34a;
-            background: #dcfce7;
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
         }
 
-        /* RAINBOW TOP LOADER */
-        #global-top-loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 3.5px;
-            background: linear-gradient(90deg, #ff0055, #ff5500, #ffcc00, #00e676, #00b0ff, #7c4dff, #ff0055);
-            background-size: 300% 100%;
-            z-index: 999999999 !important;
-            transition: width 0.3s ease, opacity 0.3s ease;
-            box-shadow: 0 0 12px rgba(255, 0, 85, 0.8), 0 0 8px rgba(0, 176, 255, 0.7);
-            pointer-events: none;
-            opacity: 0;
-            animation: rainbowWaveFlow 1.8s linear infinite;
+        /* Mobile Adjustments */
+        @media (max-width: 991px) {
+            .sc-strip-ticker, .sc-hang-container, .sc-dpdp-loop-btn { display: none !important; }
+            .sc-island-host { width: calc(100% - 24px) !important; top: 46px; }
+            .hero-section { padding-top: 140px; }
+            .sc-pane-schools, .sc-pane-students { grid-template-columns: 1fr; }
         }
-        @keyframes rainbowWaveFlow {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
+        @media (max-width: 600px) {
+            .sc-halves-wrapper { display: none; }
+            .sc-island-host { height: 62px; }
+            .sc-bar-row { height: 62px; }
         }
     </style>
 </head>
 <body>
-    <!-- Top Progress Bar -->
-    <div id="global-top-loader"></div>
 
-    <!-- ========================================================
-         NEW FLOATING ISLAND HEADER
-         ======================================================== -->
-    <div class="header-outer-container">
-        <!-- 1. Top Utility Strip -->
-        <div class="sc-top-strip">
-            <div class="sc-strip-inner">
-                <a class="sc-new-pill" href="#features">
-                    <span>NEW</span> AI Powered Automated Timetable & Bell System →
-                </a>
-                <div class="sc-strip-ticker">
-                    <i class="fas fa-star"></i> 10+ Schools Powered Across Bihar & India
-                </div>
-                <div class="sc-strip-links">
-                    <a href="#about">About</a>
-                    <a href="#contact">Contact</a>
-                    <a href="#pricing">Pricing</a>
-                    <a href="/superadmin.html" class="sc-strip-admin" id="strip-admin-link">Super Admin</a>
-                </div>
+    <!-- BACKDROP BLUR OVERLAY FOR MEGA MENU -->
+    <div class="sc-backdrop-overlay" id="megaBackdrop"></div>
+
+    <!-- 1. TOP UTILITY STRIP -->
+    <div class="sc-utility-bar">
+        <div class="sc-strip-inner">
+            <a class="sc-strip-badge" href="#features">
+                <span class="badge-tag">NEW</span> NextGen School Alert ERP &amp; AI LMS &rarr;
+            </a>
+            <div class="sc-strip-ticker">
+                <i class="fas fa-certificate"></i> 1000+ Schools &bull; 99% Renewal &bull; ISO Certified
+            </div>
+            <div class="sc-strip-links">
+                <a href="#about">About us</a>
+                <span>&bull;</span>
+                <a href="#contact">Contact</a>
+                <a href="/superadmin.html" class="sc-strip-partner" id="strip-admin-link">Super Admin</a>
             </div>
         </div>
+    </div>
 
-        <!-- 2. Hanging Metal Rings Effect -->
-        <div class="sc-hanging-rings" aria-hidden="true">
-            <span class="sc-ring"></span>
-            <span class="sc-ring"></span>
-        </div>
+    <!-- 2. HANGING METALLIC CHAINS/RINGS -->
+    <div class="sc-hang-container" aria-hidden="true" id="scHangRings">
+        <!-- Left Metallic Ring SVG -->
+        <span class="sc-ring-unit ring-l">
+            <svg viewBox="0 0 40 32">
+                <circle cx="20" cy="6" r="4.5" fill="#fef08a" stroke="#ca8a04" stroke-width="1"/>
+                <circle cx="20" cy="6" r="2.2" fill="#091527"/>
+                <rect x="15" y="10" width="10" height="18" rx="5" fill="none" stroke="#d4af37" stroke-width="3"/>
+                <rect x="16" y="11" width="8" height="16" rx="4" fill="none" stroke="#ffffff" stroke-width="0.8" opacity="0.8"/>
+            </svg>
+        </span>
 
-        <!-- 3. Floating Island Main Navigation Bar -->
-        <header class="sc-island-bar">
-            <!-- Brand Cycling Logo -->
-            <a href="/" style="text-decoration: none;">
-                <div class="brand-container">
-                    <span class="brand-text">School Alert</span>
-                    <img alt="Logo 1" class="brand-logo-1" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjz750omNvlH13soJKUck_8oUuyT05gRBRWCNcRgXE-VqXEMJBVK7ZQOZfJmSnSEkkx_GLoskmEMLWFqJsHOV_wsMF1tCtOixgkkBhmGgqcC1QxJPXZ1DAQ9-8Ay_YDt4q1N-XiTHhW-_eh0HtUS4DHmuxA67s-AzBFy0r2509YpVbv_ZUB3ZsEh9vJ6dKJ/s2075/file_000000006ec8820ba0956969337d1e9d.png">
-                    <img alt="Logo 2" class="brand-logo-2" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjGzdT3E0JGXM5EfpX-zJq0E2Fcl8s_OvPgTgF5SeR7N2QpJK6_nhevN9OIWq_eYvE214_5gsGOpFm2nuu_wgI00ZUHfpC9OwmdYDZAHx-p5DZ0wqHawLB7EIvSBHH4hIpwQaCLzWBTTkHE3tKJz_iTQsfRkyVnVrClJJl0GN-IC2muPNmNv12qhmpfqz3h/s1600/School.png">
-                </div>
+        <!-- Right Metallic Ring SVG -->
+        <span class="sc-ring-unit ring-r">
+            <svg viewBox="0 0 40 32">
+                <circle cx="20" cy="6" r="4.5" fill="#fef08a" stroke="#ca8a04" stroke-width="1"/>
+                <circle cx="20" cy="6" r="2.2" fill="#091527"/>
+                <rect x="15" y="10" width="10" height="18" rx="5" fill="none" stroke="#d4af37" stroke-width="3"/>
+                <rect x="16" y="11" width="8" height="16" rx="4" fill="none" stroke="#ffffff" stroke-width="0.8" opacity="0.8"/>
+            </svg>
+        </span>
+    </div>
+
+    <!-- 3. FLOATING ISLAND CONTAINER (HOST) -->
+    <div class="sc-island-host" id="scIsland">
+        <!-- Main Top Bar Inside Island -->
+        <div class="sc-bar-row">
+            <!-- Brand Logo -->
+            <a href="/" class="sc-brand-link">
+                <h1 class="sc-brand-title">
+                    schoolalert
+                    <span class="dot-grid">
+                        <b class="dot-1"></b><b class="dot-2"></b>
+                        <b class="dot-3"></b><b class="dot-4"></b>
+                    </span>
+                </h1>
             </a>
 
-            <!-- Section Jump Links (Desktop) -->
-            <nav class="sc-nav-links">
-                <a class="sc-menu-link" href="#home">Home</a>
-                <a class="sc-menu-link" href="#about">About</a>
-                <a class="sc-menu-link" href="#features">Features</a>
-                <a class="sc-menu-link" href="#ceo-desk">CEO Message</a>
-                <a class="sc-menu-link" href="#pricing">Pricing</a>
-                <a class="sc-menu-link" href="#contact">Demo</a>
-            </nav>
+            <!-- Center Switching Halves -->
+            <div class="sc-halves-wrapper">
+                <!-- For Schools Tab -->
+                <button class="sc-half-btn btn-school" id="btnMegaSchools" onclick="toggleMegaMenu('schools')">
+                    <span class="tile-badge"><i class="fas fa-school"></i></span>
+                    <span class="btn-labels">
+                        <b>For schools</b>
+                        <small>ERP &amp; Assist</small>
+                    </span>
+                    <i class="fas fa-chevron-down btn-chev"></i>
+                </button>
 
-            <!-- Center Segmented Audience Buttons -->
-            <div class="sc-portal-tiles">
-                <!-- School Portal -->
-                <a href="https://app.schoolalarm.online" class="sc-tile sc-tile-school" id="nav-app-link">
-                    <span class="sc-tile-icon"><i class="fas fa-school"></i></span>
-                    <div class="sc-tile-txt">
-                        <b>For Schools</b>
-                        <small>ERP Portal</small>
-                    </div>
-                </a>
-
-                <!-- Student Portal -->
-                <a href="https://student.schoolalarm.online" class="sc-tile sc-tile-student" id="nav-student-link">
-                    <span class="sc-tile-icon"><i class="fas fa-graduation-cap"></i></span>
-                    <div class="sc-tile-txt">
-                        <b>For Students</b>
-                        <small>Student Portal</small>
-                    </div>
-                </a>
+                <!-- For Students Tab -->
+                <button class="sc-half-btn btn-student" id="btnMegaStudents" onclick="toggleMegaMenu('students')">
+                    <span class="tile-badge"><i class="fas fa-graduation-cap"></i></span>
+                    <span class="btn-labels">
+                        <b>For students</b>
+                        <small>Learn portal, app</small>
+                    </span>
+                    <i class="fas fa-chevron-down btn-chev"></i>
+                </button>
             </div>
 
-            <!-- Hand-drawn Style DPDP / Cloud Security Badge -->
-            <a href="#contact" class="sc-dpdp-badge" title="Data Protection Compliant">
-                <svg viewBox="0 0 100 45">
-                    <path d="M10,23 C10,6 90,6 90,23 C90,40 15,40 15,23 C15,13 85,13 85,23" fill="none" stroke="#f43f5e" stroke-width="2.6" stroke-linecap="round"/>
+            <!-- Hand-drawn DPDP Badge -->
+            <a href="#contact" class="sc-dpdp-loop-btn" title="DPDP Ready">
+                <svg viewBox="0 0 140 80">
+                    <path d="M22 20 C58 3 124 6 132 33 C139 60 96 76 60 74 C22 72 4 55 9 37 C14 19 50 9 94 11 C112 12 125 16 133 22"/>
                 </svg>
-                <span>🛡️ DPDP Ready</span>
+                <span>🛡️ DPDP</span>
+                <span style="font-size: 14px;">ready</span>
             </a>
 
             <!-- Right Tools & Login CTA -->
-            <div class="sc-nav-actions">
-                <button class="sc-search-btn" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})" title="Search or Quick Inquiry">
+            <div class="sc-actions-group">
+                <button class="sc-action-circle" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})" title="Quick Search">
                     <i class="fas fa-search"></i>
                 </button>
-                <a href="https://app.schoolalarm.online" class="sc-login-btn" id="nav-login-cta">
+                <a href="https://app.schoolalarm.online" class="sc-login-white-btn" id="nav-app-link">
                     <i class="fas fa-user-circle"></i> Login
                 </a>
+                <button class="sc-close-mega-btn" id="btnMegaClose" onclick="closeMegaMenu()" title="Close Menu">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-        </header>
+        </div>
+
+        <!-- ========================================================
+             4. MEGA MENU BODY (OPENS IN-PLACE)
+             ======================================================== -->
+        <div class="sc-mega-container" id="scMegaContainer">
+            <!-- 4A. FOR SCHOOLS PANE -->
+            <div class="sc-pane-schools" id="paneSchools">
+                <div>
+                    <div class="sc-suites-label">NextGen School Alert ERP &bull; 8 Suites</div>
+                    <div class="sc-suites-grid">
+                        <a href="#features" class="sc-suite-card">
+                            <span class="sc-suite-icon"><i class="fas fa-id-card"></i></span>
+                            <div class="sc-suite-info">
+                                <b>Student Management</b>
+                                <span>Records, attendance, TC</span>
+                            </div>
+                        </a>
+                        <a href="#features" class="sc-suite-card">
+                            <span class="sc-suite-icon"><i class="fas fa-comments"></i></span>
+                            <div class="sc-suite-info">
+                                <b>Communication</b>
+                                <span>WhatsApp, SMS, Voice calls</span>
+                            </div>
+                        </a>
+                        <a href="#features" class="sc-suite-card">
+                            <span class="sc-suite-icon"><i class="fas fa-coins"></i></span>
+                            <div class="sc-suite-info">
+                                <b>Finance &amp; Fees</b>
+                                <span>UPI, accounts and Tally sync</span>
+                            </div>
+                        </a>
+                        <a href="#features" class="sc-suite-card">
+                            <span class="sc-suite-icon"><i class="fas fa-file-signature"></i></span>
+                            <div class="sc-suite-info">
+                                <b>Academics &amp; Exams</b>
+                                <span>Timetable, exams, report cards</span>
+                            </div>
+                        </a>
+                        <a href="#features" class="sc-suite-card">
+                            <span class="sc-suite-icon"><i class="fas fa-user-plus"></i></span>
+                            <div class="sc-suite-info">
+                                <b>Admissions</b>
+                                <span>Enquiries, online admission</span>
+                            </div>
+                        </a>
+                        <a href="#features" class="sc-suite-card">
+                            <span class="sc-suite-icon"><i class="fas fa-bus"></i></span>
+                            <div class="sc-suite-info">
+                                <b>Transport System</b>
+                                <span>Live GPS bus tracking</span>
+                            </div>
+                        </a>
+                        <a href="#features" class="sc-suite-card">
+                            <span class="sc-suite-icon"><i class="fas fa-users-cog"></i></span>
+                            <div class="sc-suite-info">
+                                <b>HR &amp; Payroll</b>
+                                <span>Biometric to auto payslips</span>
+                            </div>
+                        </a>
+                        <a href="#features" class="sc-suite-card">
+                            <span class="sc-suite-icon"><i class="fas fa-puzzle-piece"></i></span>
+                            <div class="sc-suite-info">
+                                <b>Add-on Modules</b>
+                                <span>Hostel, branded school app</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right LMS Promotion Box -->
+                <div class="sc-lms-promo-box">
+                    <div>
+                        <span class="lms-badge">NEW LMS</span>
+                        <h4>Assist: AI Powered Teacher LMS</h4>
+                        <p>Ready lessons, auto worksheets, online exam creator, and 10+ AI tools designed for CBSE, ICSE, and State Boards.</p>
+                    </div>
+                    <a href="#contact" class="sc-promo-cta-btn" onclick="closeMegaMenu()">
+                        Book an Assist Demo &rarr;
+                    </a>
+                </div>
+            </div>
+
+            <!-- 4B. FOR STUDENTS PANE -->
+            <div class="sc-pane-students" id="paneStudents">
+                <div class="sc-student-left-box">
+                    <div>
+                        <span class="badge bg-warning text-dark px-3 py-1 fw-bold">STUDENT &amp; PARENT APP</span>
+                        <h3>One Connected Path from Doubts to Exams</h3>
+                        <p style="font-size:13.5px; opacity:0.9;">Complete curriculum for Class 3 to 12. Instant practice, homework solver, and board exam series.</p>
+                        <div class="sc-student-steps">
+                            <span>1. Learn</span>
+                            <span>2. Practise</span>
+                            <span>3. Exam</span>
+                            <span>4. Revise</span>
+                        </div>
+                        <div class="sc-class-chips">
+                            <span>Class 3–5</span><span>Class 6–8</span><span>Class 9 &amp; 10</span><span>Class 11 &amp; 12</span>
+                        </div>
+                    </div>
+                    <a href="https://student.schoolalarm.online" class="sc-promo-cta-btn" id="nav-student-link">
+                        Explore Student Portal &rarr;
+                    </a>
+                </div>
+
+                <div class="sc-student-right-cards">
+                    <div class="sc-feature-card-item">
+                        <div class="icon-box" style="background: linear-gradient(135deg, #0284c7, #0369a1);"><i class="fas fa-search"></i></div>
+                        <div>
+                            <b>Smart Practice AI</b>
+                            <p>Finds weak spots in mathematics and science and prepares revision drills automatically.</p>
+                        </div>
+                    </div>
+                    <div class="sc-feature-card-item">
+                        <div class="icon-box" style="background: linear-gradient(135deg, #d3236e, #6e1f78);"><i class="fas fa-magic"></i></div>
+                        <div>
+                            <b>Guruji 24/7 AI Doubt Solver</b>
+                            <p>Snap a picture or type questions. Receive step-by-step verified explanations in Hindi &amp; English.</p>
+                        </div>
+                    </div>
+                    <div class="sc-feature-card-item">
+                        <div class="icon-box" style="background: linear-gradient(135deg, #10b981, #059669);"><i class="fas fa-mobile-alt"></i></div>
+                        <div>
+                            <b>Parent View &amp; Fee Payments</b>
+                            <p>Live attendance reports, circulars, report cards, and single-click UPI fee payments.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- HERO SECTION -->
+    <!-- ========================================================
+         HERO SECTION
+         ======================================================== -->
     <section class="hero-section" id="home">
         <div class="container">
             <div class="row align-items-center" style="min-height: 80vh;">
-                <div class="col-lg-7 text-start animate-fade-in">
-                    <span class="badge rounded-pill bg-warning text-dark px-3 py-2 mb-3 shadow-sm">🚀 Next-Gen School ERP</span>
-                    <h1 class="display-3 fw-bold mb-3 title-3d" style="line-height: 1.2;">
-                        NextGen School Alert <br/><span class="text-3d-glow" style="color: #0d6efd;">Enterprise Cloud ERP</span>
+                <div class="col-lg-7 text-start">
+                    <span class="badge rounded-pill bg-warning text-dark px-3 py-2 mb-3 shadow-sm fw-bold">🚀 Enterprise School Suite</span>
+                    <h1 class="display-3 fw-bold mb-3 title-3d" style="line-height: 1.15;">
+                        The all-in-one super app for your school: <span class="text-3d-glow" style="color: #0284c7;">School ERP</span> and <span style="color: #d3236e;">AI LMS.</span>
                     </h1>
-                    <p class="lead fw-bold text-primary mb-2">Automate Anything and Everything!</p>
-                    <p class="text-secondary mb-4" style="font-size: 1.1rem; line-height: 1.7;">
-                        Automate your entire school using a single platform. From admission to certificate generation, fee-collection, and academic analysis—automate workflows in minutes with our 360-degree solution.
+                    <p class="lead fw-bold mb-3" style="color: #17467f;">From administration to academics, truly everything automated.</p>
+                    <p class="text-secondary mb-4" style="font-size: 1.05rem; line-height: 1.7;">
+                        Automate your entire campus on a single cloud database. From student admissions to online fee collection, live GPS bus tracking, and exam generation—trusted by modern schools across India.
                     </p>
                     <div class="d-flex flex-wrap gap-3">
-                        <a class="btn btn-primary btn-lg px-4 shadow" id="hero-app-link" href="https://app.schoolalarm.online" style="border-radius: 12px; box-shadow: 0 10px 20px rgba(13,110,253,0.3);">
-                            <i class="fas fa-school me-2"></i> School Portal
+                        <a class="btn btn-primary btn-lg px-4 shadow" href="#contact" style="border-radius: 12px; background: #0284c7; border: none;">
+                            <i class="fas fa-calendar-check me-2"></i> Book a Free Demo
                         </a>
-                        <a class="btn btn-outline-dark btn-lg px-4" id="hero-student-link" href="https://student.schoolalarm.online" style="border-radius: 12px;">
-                            <i class="fas fa-user-graduate me-2"></i> Student Portal
+                        <a class="btn btn-outline-dark btn-lg px-4" href="#pricing" style="border-radius: 12px;">
+                            Start 1-Month Free Trial
                         </a>
-                        <!-- New Super Admin Button -->
-                        <a class="btn btn-warning btn-lg px-4 fw-bold text-dark shadow-sm" id="hero-admin-link" href="/superadmin.html" style="border-radius: 12px; background-color: #f59e0b; border: none;">
-                            <i class="fas fa-shield-alt me-2"></i> Super Admin
-                        </a>
+                    </div>
+                    <div class="d-flex gap-3 mt-4 text-muted small fw-bold">
+                        <span><i class="fas fa-check text-success me-1"></i> Free Data Migration</span>
+                        <span><i class="fas fa-check text-success me-1"></i> Support in 5 Minutes</span>
+                        <span><i class="fas fa-check text-success me-1"></i> DPDP-Ready</span>
                     </div>
                 </div>
 
@@ -856,271 +1081,121 @@
     </section>
 
     <!-- ABOUT SECTION -->
-    <section id="about" style="padding: 60px 0; background: #ffffff;">
+    <section id="about" style="padding: 70px 0; background: #ffffff;">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6 mb-5 mb-lg-0">
-                    <div class="pe-lg-5">
-                        <span class="badge rounded-pill bg-warning text-dark px-3 py-2 mb-3 shadow-sm" style="font-size: 0.85rem; letter-spacing: 1px;">ABOUT US</span>
-                        <h2 class="fw-bold display-5 mb-4 title-3d">
-                            <span style="color: #0d6efd;">ERP Provider</span> for Modern Schools
-                        </h2>
-                        <div class="row g-3 mb-4">
-                            <div class="col-sm-6 mb-3">
-                                <div class="d-flex align-items-center animated-box">
-                                    <i class="fas fa-check-circle text-primary me-2"></i>
-                                    <span class="fw-bold">Student Data Management</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 mb-3">
-                                <div class="d-flex align-items-center animated-box">
-                                    <i class="fas fa-check-circle text-primary me-2"></i>
-                                    <span class="fw-bold">Staff Data Management</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 mb-3">
-                                <div class="d-flex align-items-center animated-box">
-                                    <i class="fas fa-check-circle text-primary me-2"></i>
-                                    <span class="fw-bold">Fee Collection & Reminders</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-6 mb-3">
-                                <div class="d-flex align-items-center animated-box">
-                                    <i class="fas fa-check-circle text-primary me-2"></i>
-                                    <span class="fw-bold">Standard Messaging Service</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center p-3 rounded-4 shadow-sm" style="background: #f8f9fa; border-left: 8px solid #0d6efd;">
-                            <div class="ms-3">
-                                <h5 class="mb-0 fw-bold">Manish Kumar Ray</h5>
-                                <small class="text-muted">Founder, NextGen School Alert</small>
-                            </div>
+                    <span class="badge rounded-pill bg-warning text-dark px-3 py-2 mb-3 shadow-sm">ABOUT PLATFORM</span>
+                    <h2 class="fw-bold display-5 mb-4 title-3d">
+                        Enterprise <span style="color: #0d6efd;">ERP Provider</span> for Modern Schools
+                    </h2>
+                    <p class="text-secondary mb-4" style="line-height: 1.8; font-size: 1.05rem;">
+                        Empowering schools with intelligence and speed, <b>NextGen School Alert</b> is built to redefine how schools connect with families. Our automation platform delivers instant attendance tracking, live bus tracking, and hassle-free fee collection right at your fingertips.
+                    </p>
+                    <div class="d-flex align-items-center p-3 rounded-4 shadow-sm" style="background: #f8f9fa; border-left: 8px solid #0d6efd;">
+                        <div class="ms-3">
+                            <h5 class="mb-0 fw-bold">Manish Kumar Ray</h5>
+                            <small class="text-muted">Founder &amp; CEO, NextGen School Alert</small>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <div style="display: flex; gap: 0px; align-items: center; justify-content: center; width: 100%;">
-                        <div style="flex: 1; overflow: hidden; border-radius: 12px 0 0 12px;">
-                            <img alt="School Management Software 1" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiAp-GEYbeTXsznzMWmZDHHe6HWanZn5mfA5tpSTVK3rv2fCHWboHPwzt83ioJhAWFQKlbT8SktXAF6Ht6zXhubrKsZ1UyM2bJAF3WzH3lVY7XSXsxNj8t20iic5R1bmrhf2eFMevcldFXjxwoUQ49kDCRmpdqQIf8U5EXTSBwe-I2t-vpOvGlplf_Z7I3/s1600/file_00000000a92c81fa8bc75abf7a577d38.png" style="width: 100%; height: 500px; object-fit: cover; display: block;">
-                        </div>
-                        <div style="flex: 1; overflow: hidden; border-radius: 0 12px 12px 0;">
-                            <img alt="School Management Software 2" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh4DLD5CBLrBuJ1KwwblocT_7DA2YizPe6dJQit-FiiTQ2CfIl7l-GIS8-Yq7WwcguQ42kTJselbrK9OZug8MyLP8KzsM0L3dBaZ3Izxqn0KciJKHzWfbX6fN29kQz0TgdZdu5MlczBEKBx6QS-UkFIlL8IYw_XZrdfdSDBpmP1Xxu3n-Lday8u12L2ti85/s1600/file_00000000c17881fb8acba35b93980e56.png" style="width: 100%; height: 500px; object-fit: cover; display: block;">
-                        </div>
-                    </div>
+                    <img alt="School Management Software" class="img-fluid rounded-4 shadow" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiAp-GEYbeTXsznzMWmZDHHe6HWanZn5mfA5tpSTVK3rv2fCHWboHPwzt83ioJhAWFQKlbT8SktXAF6Ht6zXhubrKsZ1UyM2bJAF3WzH3lVY7XSXsxNj8t20iic5R1bmrhf2eFMevcldFXjxwoUQ49kDCRmpdqQIf8U5EXTSBwe-I2t-vpOvGlplf_Z7I3/s1600/file_00000000a92c81fa8bc75abf7a577d38.png" style="width: 100%; height: 420px; object-fit: cover;">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FEATURES SECTION -->
-    <section id="features" style="padding: 60px 0; background: #f8f9fa;">
+    <!-- CORE FEATURES SECTION -->
+    <section id="features" style="padding: 70px 0; background: #f8f9fa;">
         <div class="container">
             <div class="text-center mb-5">
-                <h2 class="fw-bold title-3d">Our Core Features</h2>
-                <div class="mx-auto" style="width: 50px; height: 3px; background: #4399bc;"></div>
+                <h2 class="fw-bold title-3d">Core Features</h2>
+                <div class="mx-auto" style="width: 50px; height: 3px; background: #0284c7;"></div>
             </div>
             <div class="row g-4">
                 <div class="col-md-4">
-                    <div class="feature-card bg-orange shadow-sm p-4 h-100">
-                        <div class="icon-circle">
-                            <i class="fas fa-school"></i>
-                        </div>
+                    <div class="feature-card bg-orange shadow-sm h-100">
+                        <i class="fas fa-school fa-3x mb-3"></i>
                         <h4>All-In-One School ERP</h4>
-                        <p>Single bundle solution including all our modules for modern school automation. Complete Paperless Solutions.</p>
+                        <p>Single integrated cloud system containing all 8 operational suites. Paperless campus administration.</p>
                         <a class="btn-demo" href="#contact">Request Demo</a>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="feature-card bg-blue shadow-sm p-4 h-100">
-                        <div class="icon-circle">
-                            <i class="fas fa-file-invoice-dollar"></i>
-                        </div>
-                        <h4>Fee Collection Software</h4>
-                        <p>Automate end-to-end fee collection including payment receipts, tracking, and dues reminders.</p>
+                    <div class="feature-card bg-blue shadow-sm h-100">
+                        <i class="fas fa-file-invoice-dollar fa-3x mb-3"></i>
+                        <h4>Fee Collection System</h4>
+                        <p>Automate fee collection, instant digital receipts, WhatsApp dues reminders, and automatic Tally sync.</p>
                         <a class="btn-demo" href="#contact">Request Demo</a>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="feature-card bg-teal shadow-sm p-4 h-100">
-                        <div class="icon-circle">
-                            <i class="fas fa-user-plus"></i>
-                        </div>
-                        <h4>Admission Management</h4>
-                        <p>Complete solution for managing Enquiry to Enrollment funnel with customizable digital admission workflows.</p>
+                    <div class="feature-card bg-teal shadow-sm h-100">
+                        <i class="fas fa-user-plus fa-3x mb-3"></i>
+                        <h4>Admission Funnel</h4>
+                        <p>Complete solution from inquiry logging to document verification, digital registration, and roll numbering.</p>
                         <a class="btn-demo" href="#contact">Request Demo</a>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- CEO / DEVELOPER DESK -->
-    <section id="ceo-desk" style="padding: 60px 0; background-color: #ffffff;">
-        <div class="container">
-            <div class="text-center mb-5">
-                <p class="mb-1 text-muted fw-bold" style="letter-spacing: 2px;">NextGen School Alert Suite</p>
-                <h2 class="fw-bold display-5 title-3d">CEO Desk</h2>
-            </div>
-
-            <div class="row align-items-center mt-4">
-                <div class="col-lg-7">
-                    <h2 class="fw-bold mb-1 title-3d" style="font-size: 2.5rem; color: #1a202c;">Manish Kumar Ray</h2>
-                    <h5 class="text-dark fw-bold mb-4">Founder & CEO</h5>
-                    
-                    <div class="ceo-text" style="line-height: 1.8; color: #4a5568; font-size: 1.05rem;">
-                        <p class="mb-3">
-                            Manish is the Founder & CEO of <b>A2Z Online Services Pvt Ltd</b>. With a vision to digitalize the education system, he has been leading innovation in school automation.
-                        </p>
-                        <p class="mb-3">
-                            His entrepreneurial zeal and management skills keep the entire technical team motivated to deliver excellence daily.
-                        </p>
-                        <p>
-                            NextGen School Alert has been engineered as one of the most advanced, scalable, and intuitive platforms to simplify institutional administration.
-                        </p>
-                    </div>
-                </div>
-                <div class="col-lg-5 text-center mt-5 mt-lg-0">
-                    <img alt="CEO Manish Kumar" class="img-fluid" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi1uA4m8OdNcdJdTjI_kHdQyxMY9zDbdZriT8bHHAB_DcBPT0hZWOgt81-30ihMGzbXziL0XXNYfqlt1BwZ1AKBllMPJseHVB73Hq8Hpqfb4Oku7fum9KTS2Hg5zMjQ5r7vYL1mIqvz9VpgXR9Q-LSTAjjCST1ZJdaNpOW_4581wkkuAtPIJExpQckSGWld/s1600/file_00000000bf5081fa8f69b5c6aa300719.png" style="width: 100%; max-width: 300px; height: auto; display: inline-block; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- OUR STORY TABS SECTION -->
-    <section id="our-story-tabs" style="padding: 60px 0; background: #ffffff;">
-        <div class="container text-center">
-            <p class="mb-1 text-muted fw-bold">Platform Overview</p>
-            <h2 class="fw-bold display-5 mb-2 title-3d">Welcome to School Canvas</h2>
-            <div class="d-flex justify-content-center flex-wrap gap-3 mb-5 mt-4">
-                <button class="tab-btn active" onclick="openTab(event, 'story')">Our Story</button>
-                <button class="tab-btn" onclick="openTab(event, 'vision')">Our Vision</button>
-                <button class="tab-btn" onclick="openTab(event, 'mission')">Our Mission</button>
-                <button class="tab-btn" onclick="openTab(event, 'refund')">Refund Policy</button>
-            </div>
-            
-            <div class="tab-content-container text-start shadow-sm p-4 p-md-5 rounded-4 border bg-white">
-                <div class="tab-panel" id="story" style="display: block;">
-                    <h3 class="fw-bold mb-4 text-primary">Dear Parents & Educators,</h3>
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <p class="text-secondary" style="line-height: 1.9; font-size: 1.02rem; text-align: justify;">
-                                Empowering modern education with intelligence and speed, <b style="color: #0d6efd;">NextGen School Alert</b> is built to redefine how schools connect with families. Our automation platform delivers instant attendance tracking, live academic updates, and hassle-free online fee collection right at your fingertips.
-                            </p>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="text-secondary" style="line-height: 1.9; font-size: 1.02rem; text-align: justify;">
-                                Driven by innovation under <b>A2Z Online Services Pvt. Ltd.</b>, NextGen School Alert delivers seamless 360-degree control over school operations, ensuring parents and educators stay perfectly synchronized.
-                            </p>
-                        </div> 
-                    </div> 
-                </div>
-
-                <div class="tab-panel" id="vision" style="display: none;">
-                    <div class="row align-items-center">
-                        <div class="col-md-6 mb-4 mb-md-0">
-                            <img alt="Vision" class="img-fluid" src="https://schoolcanvas.com/assets/img/screen/widget-8.png" style="width: 100%; border-radius: 20px;">
-                        </div>
-                        <div class="col-md-6 ps-lg-4">
-                            <h2 class="fw-bold mb-4 title-3d" style="color: #1a202c;">Our Vision</h2>
-                            <p class="text-secondary mb-4" style="line-height: 1.8; font-size: 1.05rem;">
-                                We envision providing the best software experience to educational institutes using technology as innovation, bringing all stakeholders of the education system closer.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-panel" id="mission" style="display: none;">
-                    <div class="row align-items-center">
-                        <div class="col-md-6">
-                            <h3 class="fw-bold mb-4 title-3d" style="color: #1a202c;">Our Mission</h3>
-                            <p class="text-secondary mb-4" style="line-height: 1.8; font-size: 1.05rem; text-align: justify;">
-                                Our dedicated, experienced and expert professionals are continuously striving to add new features and tools ensuring uniqueness and high quality to our offerings.
-                            </p>
-                        </div>
-                        <div class="col-md-6 mt-4 mt-md-0">
-                            <img alt="Our Mission" class="img-fluid w-100 rounded-4" src="https://schoolcanvas.com/assets/img/screen/widget-11.png" style="object-fit: cover;">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="tab-panel" id="refund" style="display: none;">
-                    <h3 class="fw-bold mb-4 title-3d" style="color: #1a202c;">Refund Policy</h3>
-                    <ul class="text-secondary ps-4" style="line-height: 2;">
-                        <li><b>Subscription Basis:</b> Services are provided on a subscription basis; once activated, cannot be cancelled for current cycle.</li>
-                        <li><b>No Refunds:</b> No refunds for payments made, as we provide a full demo period before purchase.</li>
-                        <li><b>Cancellation:</b> Inform us 15 days in advance to cancel subsequent renewal cycles.</li>
-                    </ul>
-                </div>
-            </div>     
         </div>
     </section>
 
     <!-- PRICING SECTION -->
-    <section class="pricing-section" id="pricing" style="padding: 70px 0; background-color: #ffffff;">
+    <section class="pricing-section" id="pricing">
         <div class="container">
             <div class="text-center mb-5">
-                <span class="badge rounded-pill px-3 py-2 mb-2 shadow-sm" style="font-size: 0.8rem; font-weight: 700; letter-spacing: 0.5px; background-color: #dc3545; color: #ffffff;">SIMPLE & AFFORDABLE</span>
+                <span class="badge rounded-pill bg-danger px-3 py-2 mb-2 shadow-sm">SIMPLE &amp; AFFORDABLE</span>
                 <h2 class="fw-bold display-6 title-3d">Choose the Right Plan for Your School</h2>
-                <p class="text-muted">All plans include core features with secure cloud access.</p>
             </div>
-
-            <div class="row g-4 align-items-stretch">
-                <!-- 1. BASIC PLAN -->
+            <div class="row g-4">
                 <div class="col-lg-4 col-md-6 col-12">
                     <div class="pricing-card">
                         <div class="text-center">
-                            <h3 class="pricing-title">Basic</h3>
-                            <p class="pricing-subtitle">Perfect for small schools</p>
-                            <div class="price-tag">₹699<span>/month</span></div>
+                            <h3>Basic</h3>
+                            <p class="text-muted">Perfect for small campuses</p>
+                            <div class="price-tag">&#8377;699<span>/month</span></div>
                         </div>
                         <ul class="pricing-features-list">
                             <li><i class="fas fa-check"></i> Student Management</li>
                             <li><i class="fas fa-check"></i> Fees Management</li>
                             <li><i class="fas fa-check"></i> Basic Reports</li>
-                            <li><i class="fas fa-check"></i> Email Support</li>
                         </ul>
-                        <a class="btn-pricing-outline" href="#contact">Book Free Demo</a>
+                        <a class="btn btn-outline-dark w-100 py-2 rounded-3 fw-bold" href="#contact">Book Free Demo</a>
                     </div>
                 </div>
-
-                <!-- 2. STANDARD PLAN -->
                 <div class="col-lg-4 col-md-6 col-12">
                     <div class="pricing-card popular">
-                        <div class="popular-badge">Most Popular</div>
                         <div class="text-center">
-                            <h3 class="pricing-title">Standard</h3>
-                            <p class="pricing-subtitle">Best for growing schools</p>
-                            <div class="price-tag">₹999<span>/month</span></div>
+                            <span class="badge bg-danger mb-2">MOST POPULAR</span>
+                            <h3>Standard</h3>
+                            <p class="text-muted">Best for growing institutions</p>
+                            <div class="price-tag">&#8377;999<span>/month</span></div>
                         </div>
                         <ul class="pricing-features-list">
                             <li><i class="fas fa-check"></i> All Basic Features</li>
-                            <li><i class="fas fa-check"></i> Attendance Management</li>
-                            <li><i class="fas fa-check"></i> Exam & Academic</li>
-                            <li><i class="fas fa-check"></i> Accounts Management</li>
-                            <li><i class="fas fa-check"></i> Priority Support</li>
+                            <li><i class="fas fa-check"></i> Attendance Tracking</li>
+                            <li><i class="fas fa-check"></i> Exam &amp; Report Cards</li>
+                            <li><i class="fas fa-check"></i> WhatsApp Alerts</li>
                         </ul>
-                        <a class="btn-pricing-solid" href="#contact">Book Free Demo</a>
+                        <a class="btn btn-danger w-100 py-2 rounded-3 fw-bold" href="#contact">Book Free Demo</a>
                     </div>
                 </div>
-
-                <!-- 3. PREMIUM PLAN -->
                 <div class="col-lg-4 col-md-6 col-12">
                     <div class="pricing-card">
                         <div class="text-center">
-                            <h3 class="pricing-title">Premium</h3>
-                            <p class="pricing-subtitle">Complete solution for all needs</p>
-                            <div class="price-tag">₹1499<span>/month</span></div>
+                            <h3>Premium</h3>
+                            <p class="text-muted">Comprehensive multi-branch suite</p>
+                            <div class="price-tag">&#8377;1499<span>/month</span></div>
                         </div>
                         <ul class="pricing-features-list">
                             <li><i class="fas fa-check"></i> All Standard Features</li>
-                            <li><i class="fas fa-check"></i> Auto Bell & Talking Timetable</li>
-                            <li><i class="fas fa-check"></i> Parent & Teacher Portal</li>
-                            <li><i class="fas fa-check"></i> Staff & Payroll Management</li>
-                            <li><i class="fas fa-check"></i> Transport Management</li>
-                            <li><i class="fas fa-check"></i> Advanced Reports</li>
+                            <li><i class="fas fa-check"></i> Auto Bell &amp; Timetable</li>
+                            <li><i class="fas fa-check"></i> Parent &amp; Teacher Portal</li>
+                            <li><i class="fas fa-check"></i> GPS Bus Tracking</li>
                         </ul>
-                        <a class="btn-pricing-outline" href="#contact">Book Free Demo</a>
+                        <a class="btn btn-outline-dark w-100 py-2 rounded-3 fw-bold" href="#contact">Book Free Demo</a>
                     </div>
                 </div>
             </div>
@@ -1131,99 +1206,57 @@
     <section id="contact" style="padding: 70px 0; background: linear-gradient(to bottom, #f1f5f9, #e2e8f0);">
         <div class="container">
             <div class="row g-5 align-items-center">
-                <!-- LEFT COLUMN: BENEFITS -->
                 <div class="col-lg-5 text-start">
-                    <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 mb-3 shadow-sm" style="font-weight: 700;">Book My Free Demo</span>
-                    <h2 class="fw-bold display-6 title-3d mb-3" style="line-height: 1.2;">
-                        See your student records on <span style="color: #0284c7;">School Alarm</span>.
-                    </h2>
+                    <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 mb-3 shadow-sm fw-bold">Book Free Demo</span>
+                    <h2 class="fw-bold display-6 title-3d mb-3">See Your School on Cloud in 7 Days</h2>
                     <p class="text-secondary mb-4" style="line-height: 1.7; font-size: 1.05rem;">
-                        A tailored demo for your school, with your certificate formats, classes, and reports. We will call you within 4 working hours to fix a time.
+                        Our specialist will walk you through live report cards, fees collection, and the teacher app using your own school data.
                     </p>
-
                     <div class="bg-white p-4 rounded-4 shadow-sm border mb-4">
-                        <h6 class="fw-bold text-dark mb-3" style="font-size: 0.9rem; text-transform: uppercase;">Your Free Demo Covers:</h6>
-                        <div class="perk-item"><i class="fas fa-check"></i><span>Your own data, formats and processes</span></div>
-                        <div class="perk-item"><i class="fas fa-check"></i><span>Modules needed: from admissions to fees</span></div>
-                        <div class="perk-item"><i class="fas fa-check"></i><span>Dedicated portal access for teachers and students</span></div>
-                        <div class="perk-item"><i class="fas fa-check"></i><span>Smart Attendance & Cloud Automation</span></div>
-                        <div class="perk-item mb-0"><i class="fas fa-check"></i><span>Free setup plan and quotation</span></div>
-                    </div>
-
-                    <div class="d-flex gap-2 flex-wrap">
-                        <span class="badge bg-white text-success border px-3 py-2 shadow-sm fw-bold"><i class="fas fa-clock me-1"></i> Call back in 4 hours</span>
-                        <span class="badge bg-white text-success border px-3 py-2 shadow-sm fw-bold"><i class="fas fa-sync me-1"></i> Free data migration</span>
+                        <div class="mb-2"><i class="fas fa-check text-success me-2"></i> Free historical data migration</div>
+                        <div class="mb-2"><i class="fas fa-check text-success me-2"></i> Call back guaranteed in 4 hours</div>
+                        <div><i class="fas fa-check text-success me-2"></i> 30-Day trial with dedicated manager</div>
                     </div>
                 </div>
 
-                <!-- RIGHT COLUMN: INTERACTIVE FORM -->
                 <div class="col-lg-7">
                     <div class="demo-form-card">
-                        <div class="mb-4">
-                            <h4 class="fw-bold text-dark m-0">Book my free demo</h4>
-                            <p class="text-muted small m-0">Takes 30 seconds. No commitment.</p>
-                        </div>
+                        <h4 class="fw-bold text-dark mb-1">Schedule Your 45-Min Walkthrough</h4>
+                        <p class="text-muted small mb-4">Takes 30 seconds. No credit card required.</p>
 
                         <form id="formBookDemo" onsubmit="window.submitSchoolInquiry(event)">
                             <div class="row g-3">
-                                <div class="col-md-6 col-12">
-                                    <label class="form-label small fw-bold text-dark">Your Name *</label>
-                                    <input type="text" class="form-control demo-input" id="demoContactPerson" placeholder="Enter full name" required>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Your Name *</label>
+                                    <input type="text" class="form-control demo-input" id="demoContactPerson" placeholder="Full name" required>
                                 </div>
-
-                                <div class="col-md-6 col-12">
-                                    <label class="form-label small fw-bold text-dark">Mobile Number *</label>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Mobile Number *</label>
                                     <input type="tel" class="form-control demo-input" id="demoMobile" placeholder="+91 9876543210" required>
                                 </div>
-
                                 <div class="col-12">
-                                    <label class="form-label small fw-bold text-dark">School Name *</label>
-                                    <input type="text" class="form-control demo-input" id="demoSchoolName" placeholder="e.g., Royal International Public School" required>
+                                    <label class="form-label small fw-bold">School Name *</label>
+                                    <input type="text" class="form-control demo-input" id="demoSchoolName" placeholder="School Name" required>
                                 </div>
-
-                                <div class="col-md-6 col-12">
-                                    <label class="form-label small fw-bold text-dark">Your Role *</label>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">Role *</label>
                                     <select class="form-select demo-select" id="demoRole" required>
-                                        <option value="Principal" selected>Principal / Director</option>
-                                        <option value="Administrator">School Administrator</option>
+                                        <option value="Principal">Principal / Director</option>
+                                        <option value="Administrator">Administrator</option>
                                         <option value="Teacher">Teacher / Coordinator</option>
-                                        <option value="IT Manager">IT / Technical Head</option>
-                                        <option value="Other">Other Management</option>
                                     </select>
                                 </div>
-
-                                <div class="col-md-6 col-12">
-                                    <label class="form-label small fw-bold text-dark">City & State *</label>
-                                    <input type="text" class="form-control demo-input" id="demoCity" placeholder="e.g., Patna, Bihar" required>
+                                <div class="col-md-6">
+                                    <label class="form-label small fw-bold">City &amp; State *</label>
+                                    <input type="text" class="form-control demo-input" id="demoCity" placeholder="City" required>
                                 </div>
-
-                                <div class="col-md-6 col-12">
-                                    <label class="form-label small fw-bold text-dark">E-mail Address</label>
+                                <div class="col-12">
+                                    <label class="form-label small fw-bold">Email Address</label>
                                     <input type="email" class="form-control demo-input" id="demoEmail" placeholder="principal@school.com">
                                 </div>
-
-                                <div class="col-md-6 col-12">
-                                    <label class="form-label small fw-bold text-dark">Student Strength *</label>
-                                    <select class="form-select demo-select" id="demoStrength" required>
-                                        <option value="Under 300">Under 300 Students</option>
-                                        <option value="300 - 600" selected>300 - 600 Students</option>
-                                        <option value="600 - 1200">600 - 1200 Students</option>
-                                        <option value="1200+">1200+ Students (Large Campus)</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-12">
-                                    <label class="form-label small fw-bold text-dark"><i class="fas fa-tags text-primary me-1"></i> Selected Plan *</label>
-                                    <select class="form-select demo-select fw-bold text-primary" id="demoInterestedPlan" required style="background: #f0fdf4; border-color: #86efac;">
-                                        <option value="Basic Plan (₹699/mo)">Basic Plan (₹699/mo) - Perfect for small schools</option>
-                                        <option value="Standard Plan (₹999/mo)" selected>⭐ Standard Plan (₹999/mo) - Most Popular</option>
-                                        <option value="Premium Plan (₹1499/mo)">Premium Plan (₹1499/mo) - Complete solution</option>
-                                    </select>
-                                </div>
-
                                 <div class="col-12 pt-2">
-                                    <button type="submit" class="demo-submit-btn shadow-sm" id="btnSubmitDemo">
-                                        Book my free demo <i class="fas fa-arrow-right ms-2"></i>
+                                    <button type="submit" class="demo-submit-btn" id="btnSubmitDemo">
+                                        Book My Free Demo &rarr;
                                     </button>
                                 </div>
                             </div>
@@ -1235,184 +1268,183 @@
     </section>
 
     <!-- FOOTER -->
-    <footer style="background: #1a202c; color: #ffffff; padding: 40px 0 20px 0;">
-        <div class="container">
+    <footer style="background: #091527; color: #ffffff; padding: 40px 0 20px;">
+        <div class="container text-center text-md-start">
             <div class="row g-4">
-                <div class="col-lg-4 col-md-12 text-start">
-                    <h6 class="fw-bold mb-3 text-white">NextGen School Alert</h6>
-                    <p class="text-secondary" style="font-size: 0.85rem; line-height: 1.6;">
-                        Complete multi-school ERP suite built for modern educational administration, fee collections, attendance logging, and parent communications.
-                    </p>
+                <div class="col-lg-4 col-md-12">
+                    <h5 class="fw-bold mb-3 text-white">NextGen School Alert</h5>
+                    <p class="text-secondary small">Comprehensive multi-school ERP suite built for modern educational administration, fee collections, attendance logging, and parent communications.</p>
                 </div>
-
-                <div class="col-lg-5 col-md-6">
-                    <div class="row">
-                        <div class="col-12 mb-3 text-start">
-                            <h5 class="fw-bold mb-3 text-white" style="font-size: 1rem;">Direct Portals</h5>
-                            <div class="row g-0">
-                                <div class="col-6">
-                                    <ul class="list-unstyled mb-0" style="font-size: 0.85rem;">
-                                        <li class="mb-2"><a href="#home" style="color: #a0aec0; text-decoration: none;">Home</a></li>
-                                        <li class="mb-2"><a href="#about" style="color: #a0aec0; text-decoration: none;">About Us</a></li>
-                                        <li class="mb-2"><a href="#features" style="color: #a0aec0; text-decoration: none;">Features</a></li>
-                                        <li class="mb-2"><a href="#pricing" style="color: #a0aec0; text-decoration: none;">Pricing</a></li>
-                                    </ul>
-                                </div>
-                                <div class="col-6">
-                                    <ul class="list-unstyled mb-0" style="font-size: 0.85rem;">
-                                        <li class="mb-2"><a href="https://student.schoolalarm.online" id="footer-student-link" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-graduation-cap me-1 text-success"></i> Student Portal</a></li>
-                                        <li class="mb-2"><a href="https://app.schoolalarm.online" id="footer-app-link" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-school me-1 text-primary"></i> School Login</a></li>
-                                        <li class="mb-2"><a href="https://admin.schoolalarm.online" id="footer-admin-link" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-shield-alt me-1 text-warning"></i> Super Admin</a></li>
-                                    </ul>
-                                </div>
-                            </div>
+                <div class="col-lg-4 col-md-6">
+                    <h6 class="fw-bold text-white mb-3">Quick Navigation</h6>
+                    <div class="row small">
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="#home" class="text-secondary text-decoration-none">Home</a></li>
+                                <li><a href="#about" class="text-secondary text-decoration-none">About</a></li>
+                                <li><a href="#features" class="text-secondary text-decoration-none">Features</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-6">
+                            <ul class="list-unstyled">
+                                <li><a href="https://app.schoolalarm.online" id="footer-app-link" class="text-secondary text-decoration-none">School Login</a></li>
+                                <li><a href="https://student.schoolalarm.online" id="footer-student-link" class="text-secondary text-decoration-none">Student Portal</a></li>
+                                <li><a href="https://admin.schoolalarm.online" id="footer-admin-link" class="text-secondary text-decoration-none">Super Admin</a></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
-
-                <div class="col-lg-3 col-md-6 text-start">
-                    <h5 class="fw-bold mb-3 text-white" style="font-size: 1rem;">Contact Us</h5>
-                    <p class="mb-1 text-secondary" style="font-size: 0.85rem;"><i class="fas fa-map-marker-alt text-primary me-2"></i> Hajipur, Bihar, India</p>
-                    <p class="mb-1 text-secondary" style="font-size: 0.85rem;"><i class="fas fa-phone-alt text-primary me-2"></i> +91 7079090740</p>
-                    <p class="mb-0 text-secondary" style="font-size: 0.85rem;"><i class="fas fa-envelope text-primary me-2"></i> manishkumarray37@gmail.com</p>
+                <div class="col-lg-4 col-md-6">
+                    <h6 class="fw-bold text-white mb-3">Support Office</h6>
+                    <p class="small text-secondary mb-1"><i class="fas fa-map-marker-alt me-2 text-primary"></i> Hajipur, Bihar, India</p>
+                    <p class="small text-secondary mb-1"><i class="fas fa-phone-alt me-2 text-primary"></i> +91 7079090740</p>
+                    <p class="small text-secondary"><i class="fas fa-envelope me-2 text-primary"></i> manishkumarray37@gmail.com</p>
                 </div>
             </div>
-
-            <hr class="my-4" style="border-color: rgba(255,255,255,0.1);"/>
-
-            <div class="text-center">
-                <p class="mb-0 text-secondary" style="font-size: 0.75rem;">
-                    &copy; 2026 <b>School Alarm</b>. All Rights Reserved. Powered by Cloudflare Pages & Supabase.
-                </p>
+            <hr class="my-4 border-secondary opacity-25"/>
+            <div class="text-center small text-secondary">
+                &copy; 2026 NextGen School Alert. Powered by Cloudflare &amp; Supabase.
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap Bundle JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
     <!-- Supabase JS Client for Demo Booking -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <script type="text/javascript">
-    // Tab Switcher
-    function openTab(evt, tabName) {
-        var tabContent = document.getElementsByClassName("tab-panel");
-        for (var i = 0; i < tabContent.length; i++) {
-            tabContent[i].style.display = "none";
-        }
-        var tabBtns = document.getElementsByClassName("tab-btn");
-        for (var i = 0; i < tabBtns.length; i++) {
-            tabBtns[i].className = tabBtns[i].className.replace(" active", "");
-        }
-        document.getElementById(tabName).style.display = "block";
-        evt.currentTarget.className += " active";
-    }
+    <!-- ========================================================
+         HEADER INTERACTION & TRANSFORMATION SCRIPTS
+         ======================================================== -->
+    <script>
+        const island = document.getElementById('scIsland');
+        const backdrop = document.getElementById('megaBackdrop');
+        const paneSchools = document.getElementById('paneSchools');
+        const paneStudents = document.getElementById('paneStudents');
+        const btnSchools = document.getElementById('btnMegaSchools');
+        const btnStudents = document.getElementById('btnMegaStudents');
+        let currentTab = null;
 
-    // Direct Supabase Demo Booking
-    async function submitSchoolInquiry(e) {
-        e.preventDefault();
-        const btn = document.getElementById('btnSubmitDemo');
-        btn.disabled = true;
-        btn.innerHTML = `<i class='fas fa-spinner fa-spin me-2'></i>Booking your demo...`;
-
-        try {
-            const SUPABASE_URL = "https://yanzstgfsvnlspbrminc.supabase.co";
-            const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnpzdGdmc3ZubHNwYnJtaW5jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4NjEyNjAsImV4cCI6MjEwNjQzNzI2MH0.mFYUSJio3AlPwkideCDMHCjg1Ek5hNhZkgW_x92Kmjo";
-            
-            const landDb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-            const payload = {
-                ContactPerson: document.getElementById('demoContactPerson').value.trim(),
-                MobileNo: document.getElementById('demoMobile').value.trim(),
-                SchoolName: document.getElementById('demoSchoolName').value.trim(),
-                UserRole: document.getElementById('demoRole').value,
-                City: document.getElementById('demoCity').value.trim(),
-                Email: document.getElementById('demoEmail').value.trim(),
-                StudentStrength: document.getElementById('demoStrength').value,
-                InterestedIn: document.getElementById('demoInterestedPlan').value,
-                Status: 'PENDING',
-                AdminRemarks: 'Web Demo Booking'
-            };
-
-            const { error } = await landDb.from('School_Inquiries').insert([payload]);
-            if (error) throw error;
-
-            alert("🎉 Success! Your demo request has been submitted. Our team will contact you within 4 hours.");
-            document.getElementById('formBookDemo').reset();
-
-        } catch (err) {
-            console.error("Demo Booking Error:", err);
-            alert(`Failed to book demo: ${err.message}`);
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = `Book my free demo <i class='fas fa-arrow-right ms-2'></i>`;
-        }
-    }
-    window.submitSchoolInquiry = submitSchoolInquiry;
-
-    // Universal Dynamic Subdomain & Routing Detection (Localhost, *.pages.dev & Custom Domains)
-    document.addEventListener("DOMContentLoaded", function() {
-        const host = window.location.hostname.toLowerCase();
-        const protocol = window.location.protocol;
-
-        function getBaseDomain(hostname) {
-            const parts = hostname.split('.');
-            if (parts.length <= 2) return hostname;
-            const secondTld = parts[parts.length - 2];
-            const commonTlds = ['co', 'edu', 'org', 'ac', 'gov', 'net', 'com'];
-            if (parts.length >= 3 && commonTlds.includes(secondTld) && parts[parts.length - 1].length === 2) {
-                return parts.slice(-3).join('.');
+        // Mega Menu In-Place Open/Toggle
+        function toggleMegaMenu(tab) {
+            if (island.classList.contains('is-open') && currentTab === tab) {
+                closeMegaMenu();
+                return;
             }
-            return parts.slice(-2).join('.');
+
+            island.classList.add('is-open');
+            backdrop.classList.add('show');
+            currentTab = tab;
+
+            if (tab === 'schools') {
+                paneSchools.style.display = 'grid';
+                paneStudents.style.display = 'none';
+                btnSchools.classList.add('active');
+                btnStudents.classList.remove('active');
+            } else {
+                paneSchools.style.display = 'none';
+                paneStudents.style.display = 'grid';
+                btnStudents.classList.add('active');
+                btnSchools.classList.remove('active');
+            }
         }
 
-        const isDirectHost = host.endsWith('.pages.dev') || 
-                             host.endsWith('.workers.dev') || 
-                             host === 'localhost' || 
-                             host === '127.0.0.1';
-
-        let appUrl = "/app.html";
-        let studentUrl = "/student.html";
-        let adminUrl = "/superadmin.html";
-
-        if (!isDirectHost) {
-            const baseDomain = getBaseDomain(host);
-            appUrl = `${protocol}//app.${baseDomain}`;
-            studentUrl = `${protocol}//student.${baseDomain}`;
-            adminUrl = `${protocol}//admin.${baseDomain}`;
+        // Close Mega Menu
+        function closeMegaMenu() {
+            island.classList.remove('is-open');
+            backdrop.classList.remove('show');
+            btnSchools.classList.remove('active');
+            btnStudents.classList.remove('active');
+            currentTab = null;
         }
 
-        // Connect dynamic links to updated Header & Footer IDs
-        document.querySelectorAll("#nav-app-link, #nav-login-cta, #hero-app-link, #footer-app-link, a[href*='app.schoolalarm']").forEach(el => el.href = appUrl);
-        document.querySelectorAll("#nav-student-link, #hero-student-link, #footer-student-link, a[href*='student.schoolalarm']").forEach(el => el.href = studentUrl);
-        document.querySelectorAll("#strip-admin-link, #hero-admin-link, #footer-admin-link, a[href*='admin.schoolalarm']").forEach(el => el.href = adminUrl);
-    });
+        backdrop.addEventListener('click', closeMegaMenu);
 
-    // Rainbow Loader Controller
-    (function() {
-        var loader = document.getElementById('global-top-loader');
-        window.startTopLoader = function() {
-            if (loader) {
-                loader.style.opacity = '1';
-                loader.style.width = '35%';
-            }
-        };
-        window.stopTopLoader = function() {
-            if (loader) {
-                loader.style.width = '100%';
-                setTimeout(function() {
-                    loader.style.opacity = '0';
-                    setTimeout(function() { loader.style.width = '0%'; }, 250);
-                }, 200);
-            }
-        };
-
-        window.startTopLoader();
-        window.addEventListener('load', function() {
-            window.stopTopLoader();
+        // Escape Key Closes Menu
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeMegaMenu();
         });
-    })();
+
+        // Hover Sway Effect on Hanging Island
+        island.addEventListener('mouseenter', () => {
+            if (!document.body.classList.contains('is-scrolled') && !island.classList.contains('is-open')) {
+                island.classList.add('sway-effect');
+            }
+        });
+        island.addEventListener('animationend', () => {
+            island.classList.remove('sway-effect');
+        });
+
+        // Scroll Transformation: Option 17 (Converts to Fixed White Bar)
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 40) {
+                document.body.classList.add('is-scrolled');
+            } else {
+                document.body.classList.remove('is-scrolled');
+            }
+        }, { passive: true });
+
+        // Supabase Demo Form Logic
+        async function submitSchoolInquiry(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmitDemo');
+            btn.disabled = true;
+            btn.innerHTML = `<i class='fas fa-spinner fa-spin me-2'></i>Submitting...`;
+
+            try {
+                const SUPABASE_URL = "https://yanzstgfsvnlspbrminc.supabase.co";
+                const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnpzdGdmc3ZubHNwYnJtaW5jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4NjEyNjAsImV4cCI6MjEwNjQzNzI2MH0.mFYUSJio3AlPwkideCDMHCjg1Ek5hNhZkgW_x92Kmjo";
+                
+                const landDb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+                const payload = {
+                    ContactPerson: document.getElementById('demoContactPerson').value.trim(),
+                    MobileNo: document.getElementById('demoMobile').value.trim(),
+                    SchoolName: document.getElementById('demoSchoolName').value.trim(),
+                    UserRole: document.getElementById('demoRole').value,
+                    City: document.getElementById('demoCity').value.trim(),
+                    Email: document.getElementById('demoEmail').value.trim(),
+                    Status: 'PENDING',
+                    AdminRemarks: 'Web Island Booking'
+                };
+
+                const { error } = await landDb.from('School_Inquiries').insert([payload]);
+                if (error) throw error;
+
+                alert("🎉 Demo requested! Our team will contact you within 4 hours.");
+                document.getElementById('formBookDemo').reset();
+            } catch (err) {
+                alert(`Error: ${err.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `Book My Free Demo &rarr;`;
+            }
+        }
+        window.submitSchoolInquiry = submitSchoolInquiry;
+
+        // Subdomain Dynamic Router
+        document.addEventListener("DOMContentLoaded", function() {
+            const host = window.location.hostname.toLowerCase();
+            const protocol = window.location.protocol;
+
+            function getBaseDomain(h) {
+                const p = h.split('.');
+                if (p.length <= 2) return h;
+                return p.slice(-2).join('.');
+            }
+
+            const isDirect = host.endsWith('.pages.dev') || host === 'localhost' || host === '127.0.0.1';
+            let appUrl = "/app.html", studentUrl = "/student.html", adminUrl = "/superadmin.html";
+
+            if (!isDirect) {
+                const base = getBaseDomain(host);
+                appUrl = `${protocol}//app.${base}`;
+                studentUrl = `${protocol}//student.${base}`;
+                adminUrl = `${protocol}//admin.${base}`;
+            }
+
+            document.querySelectorAll("#nav-app-link, #footer-app-link").forEach(el => el.href = appUrl);
+            document.querySelectorAll("#nav-student-link, #footer-student-link").forEach(el => el.href = studentUrl);
+            document.querySelectorAll("#strip-admin-link, #footer-admin-link").forEach(el => el.href = adminUrl);
+        });
     </script>
 </body>
 </html>
