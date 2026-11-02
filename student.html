@@ -5885,7 +5885,7 @@
       setInterval(updateClock, 1000);
     }
 
-    // 🔐 Bulletproof Student Login Handler
+    // 🔐 SECURE RATE-LIMITED STUDENT LOGIN (SUPABASE RPC NATIVE)
     window.doStudentLogin = async function() {
       const id = document.getElementById("user_id").value.trim();
       const ps = document.getElementById("user_pass").value.trim();
@@ -5900,54 +5900,81 @@
       btn.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i> Verifying Student Account...`;
 
       try {
-        const { data: studentData, error } = await db
-          .from('Students')
-          .select('*')
-          .or(`LogInId.eq.${id},StudId.eq.${id},AdmissionNo.eq.${id}`)
-          .eq('LoginPassword', ps)
-          .maybeSingle();
+        // 1. Call Secure Database Function (Rate-limited inside Postgres)
+        const { data: authResult, error: rpcError } = await db.rpc('verify_student_login', {
+          p_student_id: id,
+          p_password: ps
+        });
 
-        if (error) throw error;
+        if (rpcError) throw rpcError;
 
-        if (!studentData) {
-          alert("Invalid Admission Number or Password. Please verify your credentials.");
+        // 2. Handle 15-Minute Account Lockout
+        if (authResult.status === 'locked') {
+          alert("🔒 " + authResult.message);
           btn.disabled = false;
           btn.innerHTML = "Login to Student Portal";
           return;
         }
 
-        if (String(studentData.Status || "").toUpperCase() === "DEACTIVATED") {
-          alert(`⚠️ ADMISSION DEACTIVATED\n\nYour student portal access has been suspended.\nReason: ${studentData.DeactivateRemarks || 'Administrative Action'}\nPlease contact school administration.`);
+        // 3. Handle Deactivated Student
+        if (authResult.status === 'suspended') {
+          alert("⚠️ " + authResult.message);
           btn.disabled = false;
           btn.innerHTML = "Login to Student Portal";
           return;
         }
 
-        let schoolName = "School Portal";
-        if (studentData.SchoolID) {
-          const { data: sch } = await db.from('Schools').select('SchoolName').eq('SchoolID', studentData.SchoolID).maybeSingle();
-          if (sch && sch.SchoolName) schoolName = sch.SchoolName;
+        // 4. Handle Failed Attempt with Remaining Countdown
+        if (authResult.status === 'failed' || authResult.status === 'error') {
+          alert("❌ " + authResult.message);
+          btn.disabled = false;
+          btn.innerHTML = "Login to Student Portal";
+          return;
         }
 
-        const fullName = `${studentData.StudentName || ''} ${studentData.LastName || ''}`.trim() || studentData.AdmissionNo;
+        // 5. SUCCESSFUL LOGIN
+        if (authResult.status === 'success' && authResult.user) {
+          const loggedUser = authResult.user;
 
-        const sessionPayload = {
-          role: "STUDENT",
-          schoolId: studentData.SchoolID,
-          schoolName: schoolName,
-          loginId: studentData.AdmissionNo || studentData.StudId || id,
-          sessionPassword: ps,
-          name: fullName,
-          avatar: studentData.StudentPhoto || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-          studentProfile: studentData
-        };
+          // Fetch Full Student Record for 60+ fields dossier
+          const { data: fullProfile } = await db
+            .from('Students')
+            .select('*')
+            .eq('SchoolID', loggedUser.SchoolID)
+            .eq('StudId', loggedUser.StudId)
+            .maybeSingle();
 
-        localStorage.setItem("a2z_user", JSON.stringify(sessionPayload));
-        window.initStudentPortal();
+          // Fetch School Display Name
+          let schoolName = "School Portal";
+          if (loggedUser.SchoolID) {
+            const { data: sch } = await db
+              .from('Schools')
+              .select('SchoolName')
+              .eq('SchoolID', loggedUser.SchoolID)
+              .maybeSingle();
+            if (sch && sch.SchoolName) schoolName = sch.SchoolName;
+          }
+
+          const fullName = `${loggedUser.StudentName || ''} ${loggedUser.LastName || ''}`.trim() || loggedUser.AdmissionNo || loggedUser.StudId;
+
+          const sessionPayload = {
+            role: "STUDENT",
+            schoolId: loggedUser.SchoolID,
+            schoolName: schoolName,
+            loginId: loggedUser.AdmissionNo || loggedUser.StudId || id,
+            sessionPassword: ps,
+            name: fullName,
+            avatar: loggedUser.StudentPhoto || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            studentProfile: fullProfile || loggedUser
+          };
+
+          localStorage.setItem("a2z_user", JSON.stringify(sessionPayload));
+          window.initStudentPortal();
+        }
 
       } catch (err) {
-        console.error("Login Error:", err);
-        alert("Connection Error: " + err.message);
+        console.error("Student Login Error:", err);
+        alert("Connection Error: " + (err.message || "Failed to connect to database"));
       } finally {
         btn.disabled = false;
         btn.innerHTML = "Login to Student Portal";

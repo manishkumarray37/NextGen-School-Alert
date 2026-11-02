@@ -1898,63 +1898,84 @@
       }
     });
 
+    // 🔐 BULLETPROOF RATE-LIMITED SUPER ADMIN LOGIN (SUPABASE RPC NATIVE)
     window.doSuperAdminLogin = async function() {
       const id = document.getElementById("saLoginId").value.trim();
       const pass = document.getElementById("saPassword").value.trim();
       const btn = document.getElementById("saLoginBtn");
 
+      if (!id || !pass) {
+        alert("Please enter Super Admin ID and Password.");
+        return;
+      }
+
       btn.disabled = true;
       btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Verifying Master Access...`;
 
       try {
-        // 1. Check in database
-        const { data, error } = await db
-          .from('Users')
-          .select('*')
-          .eq('LoginID', id)
-          .eq('Password', pass)
-          .maybeSingle();
+        // 1. Call Secure Database Function (Bypasses RLS internally with rate-limiting)
+        const { data: authResult, error: rpcError } = await db.rpc('verify_user_login', {
+          p_login_id: id,
+          p_password: pass
+        });
 
-        if (error) throw error;
+        if (rpcError) throw rpcError;
 
-        // 2. STRICT CHECK: Must exist AND Role must be strictly 'SUPERADMIN' 
-        // (Optional: you can also lock it to your specific LoginID like id === 'manish')
-        if (data && String(data.Role || "").toUpperCase().replace(/\s+/g, '') === 'SUPERADMIN') {
-          
-          const sessionPayload = {
-            role: "SUPERADMIN",
-            loginId: data.LoginID,
-            name: data.FullName || "Super Administrator",
-            avatar: data.ProfileAvatarUrl || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-          };
-          localStorage.setItem("a2z_user", JSON.stringify(sessionPayload));
-          window.location.reload();
-
-        } else {
-          // If a normal school admin tries to login here, reject them completely!
-          alert("Access Denied! This portal is restricted to Super Administrators only.");
+        // 2. Handle 15-Minute Account Lockout (5 Failed Attempts)
+        if (authResult.status === 'locked') {
+          alert("🔒 " + authResult.message);
           btn.disabled = false;
           btn.innerHTML = `Secure Login <i class="fas fa-arrow-right ms-1"></i>`;
+          return;
+        }
+
+        // 3. Handle Suspended Superadmin Account
+        if (authResult.status === 'suspended') {
+          alert("⚠️ " + authResult.message);
+          btn.disabled = false;
+          btn.innerHTML = `Secure Login <i class="fas fa-arrow-right ms-1"></i>`;
+          return;
+        }
+
+        // 4. Handle Incorrect Password with Remaining Attempts Countdown
+        if (authResult.status === 'failed' || authResult.status === 'error') {
+          alert("❌ " + authResult.message);
+          btn.disabled = false;
+          btn.innerHTML = `Secure Login <i class="fas fa-arrow-right ms-1"></i>`;
+          return;
+        }
+
+        // 5. STRICT ACCESS CONTROL: Must have SUPERADMIN role
+        if (authResult.status === 'success' && authResult.user) {
+          const user = authResult.user;
+          const cleanRole = String(user.Role || "").toUpperCase().replace(/\s+/g, '');
+
+          if (cleanRole !== "SUPERADMIN") {
+            // Normal school admins attempting to enter Super Admin portal are strictly rejected
+            alert("⛔ Access Denied! This portal is strictly restricted to Super Administrators.");
+            btn.disabled = false;
+            btn.innerHTML = `Secure Login <i class="fas fa-arrow-right ms-1"></i>`;
+            return;
+          }
+
+          // Build Superadmin Master Session Payload
+          const sessionPayload = {
+            role: "SUPERADMIN",
+            loginId: user.LoginID,
+            name: user.FullName || "Super Administrator",
+            avatar: user.ProfileAvatarUrl || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+          };
+
+          localStorage.setItem("a2z_user", JSON.stringify(sessionPayload));
+          window.location.reload();
         }
 
       } catch (err) {
-        console.error("Login error:", err);
-        
-        // Master Emergency Bypass (Aapka apna fix ID & Password jo sirf aapko pata ho)
-        if (id === "manish" && pass === "YOUR_SECRET_MASTER_PASSWORD") {
-          const sessionPayload = {
-            role: "SUPERADMIN",
-            loginId: "manish",
-            name: "Manish Kumar Ray",
-            avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-          };
-          localStorage.setItem("a2z_user", JSON.stringify(sessionPayload));
-          window.location.reload();
-        } else {
-          alert("Access Denied: Invalid Master Credentials.");
-          btn.disabled = false;
-          btn.innerHTML = `Secure Login <i class="fas fa-arrow-right ms-1"></i>`;
-        }
+        console.error("Super Admin Login Error:", err);
+        alert("Authentication failed: " + (err.message || "Network Error"));
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `Secure Login <i class="fas fa-arrow-right ms-1"></i>`;
       }
     };
   </script>
