@@ -887,6 +887,54 @@
             width: 100%;
         }
 
+.tab-btn {
+        padding: 12px 28px;
+        border: 1px solid #dee2e6;
+        background: #ffffff;
+        border-radius: 12px;
+        font-weight: 600;
+        color: #6c757d;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+        transition: all 0.3s ease;
+    }
+
+    .tab-btn.active {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+        color: #ffffff !important;
+        border-color: #0284c7;
+        box-shadow: 0 8px 20px rgba(2, 132, 199, 0.35);
+        transform: translateY(-2px);
+    }
+
+    .tab-btn:hover:not(.active) {
+        background: #eef2f6;
+        transform: translateY(-2px);
+    }
+
+    .tab-panel {
+        animation: fadeInTab 0.4s ease-in;
+    }
+
+    @keyframes fadeInTab {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .neon-glow-bar {
+        width: 160px;
+        height: 6px;
+        background: linear-gradient(90deg, #00e5ff, #0284c7);
+        border-radius: 10px;
+        margin: 10px auto 0;
+        box-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
+    }
+
+    @media (max-width: 991px) {
+        .ceo-text p { text-align: left !important; }
+        .tab-btn { padding: 8px 16px; font-size: 13px; }
+    }
+	
         /* ========================================================
            8. MOBILE RESPONSIVE OPTIMIZATIONS (SCREENSHOT 2 EXACT)
            ======================================================== */
@@ -1068,7 +1116,7 @@
         <div class="sc-bar-row">
             <!-- Brand Logo -->
             <a href="/" class="sc-brand-link">
-                <img src="favicon.png" alt="Schoolalert Logo" style="width: 28px; height: 28px; object-fit: contain; flex-shrink: 0;">
+                <img src="https://yanzstgfsvnlspbrminc.supabase.co/storage/v1/object/public/School_Data/ADMIN%20DATA/favicon.png" alt="Schoolalert Logo" style="width: 28px; height: 28px; object-fit: contain; flex-shrink: 0;">
                 <h1 class="sc-brand-title">
                     Schoolalert
                 </h1>
@@ -1359,6 +1407,165 @@
             </div>
         </div>
     </section>
+
+<!-- ========================================================
+     1. CEO / DEVELOPER DESK SECTION
+     ======================================================== -->
+<section id='ceo-desk' style='padding: 60px 0; background-color: #ffffff;'>
+    <div class='container'>
+        <div class='text-center mb-5'>
+            <p class='mb-1 text-muted fw-bold' style='letter-spacing: 2px;'>NextGen School Alert | School Alarm Info</p>
+            <h2 class='fw-bold display-5 title-3d'>CEO Desk</h2>
+            <p class='text-muted'>Formerly Known as <span style='color: #28a745; font-weight: bold;'>schoolalarm.online</span></p>
+        </div>
+
+        <div class='row align-items-center mt-4'>
+            <div class='col-lg-7'>
+                <h2 class='fw-bold mb-1 title-3d' style='font-size: 2.5rem; color: #1a202c;'>Manish Kumar Ray</h2>
+                <h5 class='text-dark fw-bold mb-4'>Founder &amp; CEO</h5>
+                
+                <div class='ceo-text' style='line-height: 1.8; color: #4a5568; font-size: 1.05rem;'>
+                    <p class='mb-3'>
+                        Manish is the Founder &amp; CEO of <b>A2Z Online Services Pvt Ltd</b>, the company behind schoolalarm.online. With a vision to digitalize the education system, he has been leading the innovation in school automation.
+                    </p>
+                    <p class='mb-3'>
+                        His dynamic capabilities, entrepreneurial zeal, and management skills are the key factors which keep the entire team motivated to deliver excellence every day.
+                    </p>
+                    <p class='mb-3'>
+                        Manish leads the company&#8217;s business development initiatives as well as overall execution excellence, ensuring that every school gets the best-in-class service.
+                    </p>
+                    <p>
+                        His constant innovation has made our platform one of the most advanced, scalable, and intuitive applications which eases the life of parents and school administrators.
+                    </p>
+                </div>
+            </div>
+            <div class='col-lg-5 text-center mt-5 mt-lg-0'>
+                <div style='background: transparent !important; border: none !important; box-shadow: none !important; padding: 0;'>
+                    <img alt='CEO Manish Kumar' class='img-fluid' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi1uA4m8OdNcdJdTjI_kHdQyxMY9zDbdZriT8bHHAB_DcBPT0hZWOgt81-30ihMGzbXziL0XXNYfqlt1BwZ1AKBllMPJseHVB73Hq8Hpqfb4Oku7fum9KTS2Hg5zMjQ5r7vYL1mIqvz9VpgXR9Q-LSTAjjCST1ZJdaNpOW_4581wkkuAtPIJExpQckSGWld/s1600/file_00000000bf5081fa8f69b5c6aa300719.png' style='width: 100%; max-width: 300px; height: auto; display: inline-block; background: transparent; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));'>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========================================================
+     2. OUR STORY TABS SECTION
+     ======================================================== -->
+<section id='our-story-tabs' style='padding: 60px 0; background: #f8fafc;'>
+    <div class='container text-center'>
+        <p class='mb-1 text-muted fw-bold'>Platform Overview</p>
+        <h2 class='fw-bold display-5 mb-2 title-3d'>Welcome to School Canvas</h2>
+        <p class='mb-4 text-muted'>Formerly Known as <span style='color: #28a745; font-weight: bold;'>schoolalarm.online</span></p>
+        
+        <div class='d-flex justify-content-center flex-wrap gap-3 mb-5'>
+            <button class='tab-btn active' onclick='switchStoryTab(event, "story")'>Our Story</button>
+            <button class='tab-btn' onclick='switchStoryTab(event, "vision")'>Our Vision</button>
+            <button class='tab-btn' onclick='switchStoryTab(event, "mission")'>Our Mission</button>
+            <button class='tab-btn' onclick='switchStoryTab(event, "refund")'>Refund Policy</button>
+        </div>
+
+        <div class='tab-content-container text-start shadow-sm p-4 p-md-5 rounded-4 border bg-white'>
+            <!-- Tab 1: Story -->
+            <div class='tab-panel' id='tab-story' style='display: block;'>
+                <h3 class='fw-bold mb-4 text-primary'>Dear Parents &amp; Educators,</h3>
+                <div class='row'>
+                    <div class='col-md-6 mb-4'>
+                        <p class='text-secondary' style='line-height: 1.9; font-size: 1.02rem; text-align: justify;'>
+                            Empowering modern education with intelligence and speed, <b style='color: #0284c7;'>NextGen School Alert</b> is built to redefine how schools connect with families. Our next-generation automation platform bridges the communication gap by delivering instant attendance tracking, live academic updates, homework notifications, and hassle-free online fee collection right at your fingertips. Designed specifically for visionary institutions, we eliminate manual paperwork and elevate administrative productivity to international standards.
+                            <b> We proudly empower forward-thinking schools, thousands of teachers, and over 10,000+ students with reliable, secure, and future-ready educational automation.</b>
+                        </p>
+                    </div>
+                    <div class='col-md-6'>
+                        <p class='text-secondary' style='line-height: 1.9; font-size: 1.02rem; text-align: justify;'>
+                            Driven by innovation under <b>A2Z Online Services Pvt. Ltd.</b>, NextGen School Alert delivers seamless 360-degree control over school operations, ensuring parents and educators stay perfectly in sync. With a robust track record of <b>5+ years of digital excellence</b>.
+                        </p>
+                        <div class='mt-4 position-relative text-center'>
+                            <div style='background: transparent !important; border: none !important; box-shadow: none !important; position: relative; z-index: 2;'>
+                                <img alt='Parents Alarm' class='img-fluid' src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjz750omNvlH13soJKUck_8oUuyT05gRBRWCNcRgXE-VqXEMJBVK7ZQOZfJmSnSEkkx_GLoskmEMLWFqJsHOV_wsMF1tCtOixgkkBhmGgqcC1QxJPXZ1DAQ9-8Ay_YDt4q1N-XiTHhW-_eh0HtUS4DHmuxA67s-AzBFy0r2509YpVbv_ZUB3ZsEh9vJ6dKJ/s1600/file_000000006ec8820ba0956969337d1e9d.png' style='max-width: 100%; height: auto; display: inline-block; filter: drop-shadow(0 10px 20px rgba(0, 229, 255, 0.25));'>
+                            </div>
+                            <div class='neon-glow-bar'></div>
+                        </div>
+                    </div> 
+                </div> 
+            </div>
+
+            <!-- Tab 2: Vision -->
+            <div class='tab-panel' id='tab-vision' style='display: none;'>
+                <div class='row align-items-center'>
+                    <div class='col-md-6 mb-4 mb-md-0'>
+                        <div class='vision-image-wrapper p-3'>
+                            <img alt='School Canvas Vision' class='img-fluid' src='https://schoolcanvas.com/assets/img/screen/widget-8.png' style='width: 100%; border-radius: 20px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));'>
+                        </div>
+                    </div>
+                    <div class='col-md-6 ps-lg-4'>
+                        <h2 class='fw-bold mb-4 title-3d' style='color: #1a202c;'>Our Vision</h2>
+                        <p class='text-secondary mb-4' style='line-height: 1.8; font-size: 1.05rem;'>
+                            <span style='color: #0284c7; font-weight: bold;'>schoolalarm.online</span> envisions providing the best software experience to educational institutes using technology as innovation. We are here to bring all the stakeholders of the education system closer.
+                        </p>
+                        <div class='mt-4'>
+                            <div class='d-flex align-items-center mb-2'>
+                                <i class='fa-solid fa-lightbulb text-warning me-2'></i>
+                                <span class='fw-bold text-dark'>Innovation Driven</span>
+                            </div>
+                            <div class='d-flex align-items-center'>
+                                <i class='fa-solid fa-shield-halved text-primary me-2'></i>
+                                <span class='fw-bold text-dark'>Secure and Scalable</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Mission -->
+            <div class='tab-panel' id='tab-mission' style='display: none;'>
+                <div class='row align-items-center'>
+                    <div class='col-md-6'>
+                        <h3 class='fw-bold mb-4 title-3d' style='color: #1a202c;'>Our Mission</h3>
+                        <p class='text-secondary mb-4' style='line-height: 1.8; font-size: 1.05rem; text-align: justify;'>
+                            At <b>schoolalarm.online</b> our dedicated, experienced and expert professionals are continuously striving to add new features and tools ensuring uniqueness to our offerings.
+                        </p>
+                        <div class='mt-4'>
+                            <span class='badge rounded-pill bg-light text-primary border p-2 px-3 shadow-sm'>
+                                <i class='fa-solid fa-user-tie me-2'></i>Founder - Manish Kumar Ray
+                            </span>
+                        </div>
+                    </div>
+                    <div class='col-md-6 mt-4 mt-md-0'>
+                        <div class='mission-image-box shadow-lg rounded-4 overflow-hidden border border-white border-4'>
+                            <img alt='Our Mission' class='img-fluid w-100' src='https://schoolcanvas.com/assets/img/screen/widget-11.png' style='display: block; object-fit: cover; min-height: 300px;'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 4: Refund -->
+            <div class='tab-panel' id='tab-refund' style='display: none;'>
+                <div class='row'>
+                    <div class='col-md-12 text-start'>
+                        <h3 class='fw-bold mb-4 title-3d' style='color: #1a202c;'>Refund Policy</h3>
+                        
+                        <p class='text-secondary mb-4' style='line-height: 1.8; font-size: 1.05rem;'>
+                            At <b>schoolalarm.online</b> (Royal Master ERP), we value our customers. Please read our refund policy carefully:
+                        </p>
+                        
+                        <ul class='text-secondary ps-4' style='line-height: 2;'>
+                            <li><b>Subscription Basis:</b> Services are provided on a subscription basis; once activated, cannot be cancelled for current cycle.</li>
+                            <li><b>No Refunds:</b> No refunds for payments made, as we provide a full demo period before purchase.</li>
+                            <li><b>Technical Issues:</b> Glitches longer than 7 working days may be considered for pro-rata credit.</li>
+                            <li><b>Cancellation:</b> Inform us 15 days in advance to stop the next renewal cycle.</li>
+                        </ul>
+                        
+                        <div class='mt-4 p-3 bg-light rounded-3 border-start border-primary border-4 d-flex align-items-center shadow-sm'>
+                            <i class='fa-solid fa-envelope text-primary me-2'></i>
+                            <span class='text-muted'>Contact Us: <b>manishkumarray37@gmail.com</b></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>     
+    </div>
+</section>
+
 
     <!-- PRICING SECTION -->
     <section class="pricing-section" id="pricing">
@@ -1684,5 +1891,25 @@
             document.querySelectorAll("#strip-admin-link, #footer-admin-link").forEach(el => el.href = adminUrl);
         });
     </script>
+	<script>
+    function switchStoryTab(evt, tabKey) {
+        // Hide all tabs
+        const panels = document.querySelectorAll('#our-story-tabs .tab-panel');
+        panels.forEach(p => p.style.display = 'none');
+
+        // Remove active class from buttons
+        const btns = document.querySelectorAll('#our-story-tabs .tab-btn');
+        btns.forEach(b => b.classList.remove('active'));
+
+        // Show target tab
+        const targetPanel = document.getElementById('tab-' + tabKey);
+        if (targetPanel) {
+            targetPanel.style.display = 'block';
+        }
+
+        // Add active class to clicked button
+        evt.currentTarget.classList.add('active');
+    }
+</script>
 </body>
 </html>
