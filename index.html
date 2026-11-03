@@ -799,21 +799,40 @@
         }
         .hero-image-wrapper { position: relative; padding: 20px; perspective: 1000px; }
         .floating-card {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.9) !important;
-            backdrop-filter: blur(6px);
-            padding: 15px 22px;
-            border-radius: 18px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            z-index: 2;
-            font-weight: bold;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-        }
-        .card-1 { top: 6%; left: -8%; }
-        .card-2 { bottom: 32%; right: -20%; }
+			position: absolute;
+			background: transparent !important;
+			backdrop-filter: blur(2px);
+			padding: 15px 22px;
+			border-radius: 18px;
+			box-shadow: 0 15px 35px rgba(0,0,0,0.12), 0 5px 15px rgba(13, 110, 253, 0.1);
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			z-index: 2;
+			font-weight: bold;
+			border: 1px solid rgba(255, 255, 255, 0.8);
+			transition: transform 0.3s ease;
+		}
+		.floating-card:hover {
+			transform: scale(1.08) translateZ(20px);
+		}
+
+		.card-1 {
+			top: 6%;
+			left: -8%;
+			animation: floatImage 3.5s ease-in-out infinite reverse;
+		}
+
+		.card-2 {
+			bottom: 32%;
+			right: -20%;
+			animation: floatImage 5s ease-in-out infinite;
+		}
+
+		.floating-card i {
+			font-size: 1.6rem;
+		}
+		
         .feature-card {
             border-radius: 20px;
             text-align: center;
@@ -1018,7 +1037,7 @@
                 <a href="#about">About us</a>
                 <a href="#features">Features</a>
                 <a href="#pricing">Pricing</a>
-                <a href="#about">Developer Desk</a>
+                <a href="#ceo-desk">Ceo Desk</a>
                 <a href="#contact">Contact</a>
             </div>
             <button class="sc-mobile-hamburger" onclick="openMobileDrawer()" title="Open Menu">
