@@ -2042,11 +2042,19 @@
             }
         }, { passive: true });
 
-        // ===================================================================
-    // SUPABASE DIRECT DEMO INQUIRY SUBMISSION (FULL FIELDS & COMPLIANT)
-    // ===================================================================
+    // DEMO INQUIRY SUBMISSION 
+    let isSubmittingInquiry = false;
+
     async function submitSchoolInquiry(e) {
-      if (e) e.preventDefault();
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      // Prevent accidental double clicks or duplicate triggers
+      if (isSubmittingInquiry) return;
+      isSubmittingInquiry = true;
+
       const btn = document.getElementById('btnSubmitDemo');
       const originalBtnHtml = btn ? btn.innerHTML : "Book my free demo";
 
@@ -2075,7 +2083,7 @@
           StudentStrength: strengthInput ? strengthInput.value : "Under 300",
           InterestedIn: planInput ? planInput.value : "Standard Plan (₹999/mo)",
           Status: 'PENDING',
-          AdminRemarks: 'Web Demo Booking'
+          AdminRemarks: 'Web Island Booking'
         };
 
         const { error } = await landDb.from('School_Inquiries').insert([payload]);
@@ -2090,6 +2098,7 @@
         console.error("Demo Booking Error:", err);
         alert(`Failed to book demo: ${err.message}`);
       } finally {
+        isSubmittingInquiry = false;
         if (btn) {
           btn.disabled = false;
           btn.innerHTML = originalBtnHtml;
@@ -2097,16 +2106,9 @@
       }
     }
 
-    // Bind both names to guarantee execution
+    // Bind function to window so onsubmit handles it cleanly once
     window.submitSchoolInquiry = submitSchoolInquiry;
     window.submitSchoolDemoInquiry = submitSchoolInquiry;
-
-    document.addEventListener('DOMContentLoaded', function() {
-      const demoForm = document.getElementById('formBookDemo');
-      if (demoForm) {
-        demoForm.addEventListener('submit', submitSchoolInquiry);
-      }
-    });
 
         // Subdomain Dynamic Router
         document.addEventListener("DOMContentLoaded", function() {
