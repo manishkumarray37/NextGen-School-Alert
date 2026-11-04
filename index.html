@@ -1571,7 +1571,7 @@
     }
 </style>
 
-<!-- SUPABASE TICKER SCRIPT (WITH LOGO & INITIALS SUPPORT) -->
+<!-- SUPABASE TICKER SCRIPT (UPDATED WITH HeaderLogoUrl) -->
 <script>
     document.addEventListener("DOMContentLoaded", async function() {
         const track1 = document.getElementById('tickerRow1');
@@ -1605,14 +1605,13 @@
                 const name = school.SchoolName || school.name || school.school_name || "Partner School";
                 const city = school.City || school.city || school.Address || "India";
                 
-                // Check if logo column exists in your database table (e.g. LogoUrl, logo, image)
-                const logoUrl = school.LogoUrl || school.logo || school.image || school.avatar || null;
+                // Direct mapping to your database column HeaderLogoUrl
+                const logoUrl = school.HeaderLogoUrl || school.LogoUrl || school.logo || school.image || null;
                 const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
-                // If logo exists, render <img> tag, else render text initials inside crest
                 let crestHTML = '';
                 if (logoUrl) {
-                    crestHTML = `<span class="v2-crest" style="background:#fff; padding:2px;"><img src="${logoUrl}" alt="${name}" style="width:100%; height:100%; object-fit:contain; border-radius:7px;"></span>`;
+                    crestHTML = `<span class="v2-crest" style="background:#ffffff; padding:2px; display:grid; place-items:center;"><img src="${logoUrl}" alt="${name}" style="width:100%; height:100%; object-fit:contain; border-radius:6px;"></span>`;
                 } else {
                     crestHTML = `<span class="v2-crest">${initials}</span>`;
                 }
