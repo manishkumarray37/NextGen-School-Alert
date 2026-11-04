@@ -279,7 +279,7 @@
       
       <div class="d-flex align-items-center">
         <div>
-          <h5 class="fw-bold m-0 text-dark" style="letter-spacing: -0.3px;">SCHOOL <span class="text-primary">ALARM</span></h5>
+          <h5 class="fw-bold m-0 text-dark" style="letter-spacing: -0.3px;">NextGen School <span class="text-primary">Alert</span></h5>
           <small class="text-muted" style="font-size: 10px; font-weight: 600;">Smart Technology for Smart School's</small>
         </div>
       </div>
@@ -2024,73 +2024,6 @@
         btn.innerHTML = `Secure Login <i class="fas fa-arrow-right ms-1"></i>`;
       }
     };
-	
-	<!-- ========================================================
-     CYBER WAVE ANIMATION & STYLES FOR SUPER ADMIN LOGIN
-     ======================================================== -->
-	<style>
-    #sa-login-overlay {
-        position: relative;
-        overflow: hidden;
-    }
-
-    #sa-login-overlay::before {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 180px;
-        background: linear-gradient(0deg, rgba(2, 132, 199, 0.15), transparent);
-        pointer-events: none;
-        z-index: 1;
-    }
-
-    /* Moving Cyber Wave Animation at Bottom */
-    .cyber-wave-container {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        overflow: hidden;
-        line-height: 0;
-        pointer-events: none;
-        z-index: 1;
-        opacity: 0.4;
-    }
-
-    .cyber-wave-container svg {
-        position: relative;
-        display: block;
-        width: calc(100% + 1.3px);
-        height: 90px;
-        animation: waveMove 8s ease-in-out infinite alternate;
-    }
-
-    @keyframes waveMove {
-        0% { transform: translateX(0) scaleY(1); }
-        50% { transform: translateX(-25px) scaleY(1.2); }
-        100% { transform: translateX(0) scaleY(1); }
-    }
-
-    /* Glowing Pulsing Shield Effect */
-    .fa-shield-alt {
-        animation: shieldGlow 3s ease-in-out infinite alternate;
-    }
-
-    @keyframes shieldGlow {
-        0% { filter: drop-shadow(0 0 5px rgba(234, 179, 8, 0.4)); transform: scale(1); }
-        100% { filter: drop-shadow(0 0 20px rgba(234, 179, 8, 0.8)); transform: scale(1.05); }
-    }
-	</style>
-
-	<!-- Animated Cyber Wave Effect at Bottom (Insert inside #sa-login-overlay) -->
-	<div class="cyber-wave-container">
-		<svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-			<path d="M0,0 C150,90 350,-40 500,60 C650,160 900,10 1200,40 L1200,120 L0,120 Z" fill="rgba(2, 132, 199, 0.25)"></path>
-			<path d="M0,30 C200,110 400,0 650,70 C900,140 1050,20 1200,60 L1200,120 L0,120 Z" fill="rgba(5, 150, 105, 0.2)"></path>
-		</svg>
-	</div>
   </script>
 </body>
 </html>
