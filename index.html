@@ -1430,7 +1430,7 @@
 <!-- DYNAMIC SCHOOLS TICKER SECTION -->
 <section class="lg2-section" aria-labelledby="lg2-title">
     <div class="lg2-head text-center">
-        <span class="lg2-kicker">From Hajipur to All Over India</span>
+        <span class="lg2-kicker">From Hajipur to All Over Bihar</span>
         <h2 class="lg2-title" id="lg2-title"><span class="lg2-num" id="totalSchoolsCount">10+ Schools</span> start their day on NextGen School Alert.</h2>
         <p class="lg2-sub text-muted">CBSE, ICSE and state board schools, from single campuses to large school groups, trusting our automation daily.</p>
     </div>
@@ -1458,7 +1458,6 @@
         position: relative;
         overflow: hidden;
         padding: 65px 0;
-        /* हल्का ब्लू प्रीमियम ग्रेडिएंट बैकग्राउंड */
         background: radial-gradient(circle at 50% 0%, #e0f2fe 0%, #bae6fd 40%, #f0fdf4 100%);
         color: #0f172a;
     }
@@ -1572,7 +1571,7 @@
     }
 </style>
 
-<!-- SUPABASE TICKER SCRIPT (SELF-CONTAINED & DYNAMIC) -->
+<!-- SUPABASE TICKER SCRIPT (WITH LOGO & INITIALS SUPPORT) -->
 <script>
     document.addEventListener("DOMContentLoaded", async function() {
         const track1 = document.getElementById('tickerRow1');
@@ -1580,7 +1579,6 @@
         const countBadge = document.getElementById('totalSchoolsCount');
 
         try {
-            // Initialize Supabase client if not globally available
             let supabaseClient = window.db;
             if (!supabaseClient && typeof supabase !== 'undefined') {
                 const SUPABASE_URL = "https://yanzstgfsvnlspbrminc.supabase.co";
@@ -1588,22 +1586,13 @@
                 supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             }
 
-            if (!supabaseClient) {
-                console.error("Supabase initialization failed.");
-                return;
-            }
+            if (!supabaseClient) return;
 
-            // Fetch schools from the 'Schools' table
             const { data: schools, error } = await supabaseClient
                 .from('Schools')
                 .select('*');
 
-            if (error || !schools || schools.length === 0) {
-                console.warn("No schools found or table error:", error);
-                if(track1) track1.innerHTML = `<span class="v2-school"><span>No active schools found in database</span></span>`;
-                if(track2) track2.innerHTML = track1.innerHTML;
-                return;
-            }
+            if (error || !schools || schools.length === 0) return;
 
             if (countBadge) {
                 countBadge.innerText = `${schools.length}+ Schools`;
@@ -1615,11 +1604,22 @@
             schools.forEach((school, index) => {
                 const name = school.SchoolName || school.name || school.school_name || "Partner School";
                 const city = school.City || school.city || school.Address || "India";
+                
+                // Check if logo column exists in your database table (e.g. LogoUrl, logo, image)
+                const logoUrl = school.LogoUrl || school.logo || school.image || school.avatar || null;
                 const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+                // If logo exists, render <img> tag, else render text initials inside crest
+                let crestHTML = '';
+                if (logoUrl) {
+                    crestHTML = `<span class="v2-crest" style="background:#fff; padding:2px;"><img src="${logoUrl}" alt="${name}" style="width:100%; height:100%; object-fit:contain; border-radius:7px;"></span>`;
+                } else {
+                    crestHTML = `<span class="v2-crest">${initials}</span>`;
+                }
 
                 const itemHTML = `
                     <span class="v2-school">
-                        <span class="v2-crest">${initials}</span>
+                        ${crestHTML}
                         <span>${name}<small>${city}</small></span>
                     </span>
                 `;
