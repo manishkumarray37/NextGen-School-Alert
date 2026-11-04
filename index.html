@@ -1572,6 +1572,7 @@
     }
 </style>
 
+<!-- SUPABASE TICKER SCRIPT (SELF-CONTAINED & DYNAMIC) -->
 <script>
     document.addEventListener("DOMContentLoaded", async function() {
         const track1 = document.getElementById('tickerRow1');
@@ -1579,22 +1580,31 @@
         const countBadge = document.getElementById('totalSchoolsCount');
 
         try {
-            if (!window.db) {
-                console.error("Supabase client window.db not found!");
+            // Initialize Supabase client if not globally available
+            let supabaseClient = window.db;
+            if (!supabaseClient && typeof supabase !== 'undefined') {
+                const SUPABASE_URL = "https://yanzstgfsvnlspbrminc.supabase.co";
+                const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnpzdGdmc3ZubHNwYnJtaW5jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4NjEyNjAsImV4cCI6MjEwNjQzNzI2MH0.mFYUSJio3AlPwkideCDMHCjg1Ek5hNhZkgW_x92Kmjo";
+                supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+
+            if (!supabaseClient) {
+                console.error("Supabase initialization failed.");
                 return;
             }
 
-
-            const { data: schools, error } = await window.db
+            // Fetch schools from the 'Schools' table
+            const { data: schools, error } = await supabaseClient
                 .from('Schools')
                 .select('*');
 
             if (error || !schools || schools.length === 0) {
-                track1.innerHTML = `<span class="v2-school" style="border-color:#eab308; background:#fff; padding:10px 20px;"><span>Connecting to Cloud Database...<small>Please add schools in Supabase</small></span></span>`;
-                track2.innerHTML = track1.innerHTML;
+                console.warn("No schools found or table error:", error);
+                if(track1) track1.innerHTML = `<span class="v2-school"><span>No active schools found in database</span></span>`;
+                if(track2) track2.innerHTML = track1.innerHTML;
                 return;
             }
-			
+
             if (countBadge) {
                 countBadge.innerText = `${schools.length}+ Schools`;
             }
@@ -1625,8 +1635,7 @@
             if (track2 && html2) track2.innerHTML = html2 + html2 + html2;
 
         } catch (err) {
-            console.error("Ticker Error:", err);
-            if (track1) track1.innerHTML = `<span class="v2-school"><span>Database Error<small>Check Supabase connection</small></span></span>`;
+            console.error("Ticker Execution Error:", err);
         }
     });
 </script>
