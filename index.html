@@ -2042,43 +2042,71 @@
             }
         }, { passive: true });
 
-        // Supabase Demo Form Logic
-        async function submitSchoolInquiry(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btnSubmitDemo');
-            btn.disabled = true;
-            btn.innerHTML = `<i class='fas fa-spinner fa-spin me-2'></i>Submitting...`;
+        // ===================================================================
+    // SUPABASE DIRECT DEMO INQUIRY SUBMISSION (FULL FIELDS & COMPLIANT)
+    // ===================================================================
+    async function submitSchoolInquiry(e) {
+      if (e) e.preventDefault();
+      const btn = document.getElementById('btnSubmitDemo');
+      const originalBtnHtml = btn ? btn.innerHTML : "Book my free demo";
 
-            try {
-                const SUPABASE_URL = "https://yanzstgfsvnlspbrminc.supabase.co";
-                const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnpzdGdmc3ZubHNwYnJtaW5jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4NjEyNjAsImV4cCI6MjEwNjQzNzI2MH0.mFYUSJio3AlPwkideCDMHCjg1Ek5hNhZkgW_x92Kmjo";
-                
-                const landDb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class='fas fa-spinner fa-spin me-2'></i>Booking your demo...`;
+      }
 
-                const payload = {
-                    ContactPerson: document.getElementById('demoContactPerson').value.trim(),
-                    MobileNo: document.getElementById('demoMobile').value.trim(),
-                    SchoolName: document.getElementById('demoSchoolName').value.trim(),
-                    UserRole: document.getElementById('demoRole').value,
-                    City: document.getElementById('demoCity').value.trim(),
-                    Email: document.getElementById('demoEmail').value.trim(),
-                    Status: 'PENDING',
-                    AdminRemarks: 'Web Island Booking'
-                };
+      try {
+        const SUPABASE_URL = "https://yanzstgfsvnlspbrminc.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlhbnpzdGdmc3ZubHNwYnJtaW5jIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA4NjEyNjAsImV4cCI6MjEwNjQzNzI2MH0.mFYUSJio3AlPwkideCDMHCjg1Ek5hNhZkgW_x92Kmjo";
+        
+        const { createClient } = supabase;
+        const landDb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-                const { error } = await landDb.from('School_Inquiries').insert([payload]);
-                if (error) throw error;
+        const strengthInput = document.getElementById('demoStrength');
+        const planInput = document.getElementById('demoInterestedPlan');
 
-                alert("🎉 Demo requested! Our team will contact you within 4 hours.");
-                document.getElementById('formBookDemo').reset();
-            } catch (err) {
-                alert(`Error: ${err.message}`);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = `Book My Free Demo &rarr;`;
-            }
+        const payload = {
+          ContactPerson: document.getElementById('demoContactPerson').value.trim(),
+          MobileNo: document.getElementById('demoMobile').value.trim(),
+          SchoolName: document.getElementById('demoSchoolName').value.trim(),
+          UserRole: document.getElementById('demoRole').value,
+          City: document.getElementById('demoCity').value.trim(),
+          Email: document.getElementById('demoEmail') ? document.getElementById('demoEmail').value.trim() : "",
+          StudentStrength: strengthInput ? strengthInput.value : "Under 300",
+          InterestedIn: planInput ? planInput.value : "Standard Plan (₹999/mo)",
+          Status: 'PENDING',
+          AdminRemarks: 'Web Demo Booking'
+        };
+
+        const { error } = await landDb.from('School_Inquiries').insert([payload]);
+        if (error) throw error;
+
+        alert("🎉 Success! Your demo request has been booked successfully. Our team will call you within 4 working hours.");
+        
+        const formEl = document.getElementById('formBookDemo');
+        if (formEl) formEl.reset();
+
+      } catch (err) {
+        console.error("Demo Booking Error:", err);
+        alert(`Failed to book demo: ${err.message}`);
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = originalBtnHtml;
         }
-        window.submitSchoolInquiry = submitSchoolInquiry;
+      }
+    }
+
+    // Bind both names to guarantee execution
+    window.submitSchoolInquiry = submitSchoolInquiry;
+    window.submitSchoolDemoInquiry = submitSchoolInquiry;
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const demoForm = document.getElementById('formBookDemo');
+      if (demoForm) {
+        demoForm.addEventListener('submit', submitSchoolInquiry);
+      }
+    });
 
         // Subdomain Dynamic Router
         document.addEventListener("DOMContentLoaded", function() {
