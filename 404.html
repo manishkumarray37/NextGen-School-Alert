@@ -237,7 +237,7 @@
         <!-- Bottom Row -->
         <div class="bottom-hud">
             <div class="jump-hint-text">
-                Press <span class="key-tag">Space</span> or <span class="key-tag">Tap</span> to Jump &bull; <span class="key-tag">Double Tap</span> for Flip Jump
+                Press <span class="key-tag">Space</span> or <span class="key-tag">Tap</span> to Jump &bull; <span class="key-tag">Double Tap</span> for Flip Jump <span class="key-tag">Powered by A2Z Online Services PVT. LTD.</span><span class="key-tag">Run by NextGen School Alert. </span>
             </div>
             <div class="action-tools">
                 <button class="btn-circle" id="btnRestart" title="Restart Run">&#8635;</button>
@@ -557,34 +557,126 @@
             ctx.restore();
         }
 
-        // Draw Obstacles (School Book Stacks & Benches)
+        // Draw Dynamic Obstacles (Computer, WiFi, USB, TV, Server, Books)
         function drawObstacle(obs) {
             ctx.save();
             ctx.translate(obs.x, obs.y);
 
-            if (obs.type === "books") {
-                // Stack of Educational Textbooks (Different Colors)
-                const bookColors = ["#ef4444", "#3b82f6", "#10b981", "#8b5cf6"];
-                const layerH = Math.floor(obs.h / obs.layers);
-                for (let i = 0; i < obs.layers; i++) {
-                    const by = obs.h - (i + 1) * layerH;
-                    ctx.fillStyle = bookColors[i % bookColors.length];
-                    ctx.fillRect(0, by, obs.w, layerH - 1);
-                    // Book Spine Highlight
+            switch (obs.type) {
+                case "computer":
+                    // 🖥️ Desktop PC Monitor
+                    ctx.fillStyle = "#1e293b";
+                    ctx.fillRect(0, 0, obs.w, obs.h - 10); // Screen frame
+                    ctx.fillStyle = "#38bdf8";
+                    ctx.fillRect(3, 3, obs.w - 6, obs.h - 16); // Glowing screen
+                    // Code lines on screen
                     ctx.fillStyle = "#ffffff";
-                    ctx.fillRect(2, by + 1, 3, layerH - 3);
-                    ctx.fillStyle = "#fde047";
-                    ctx.fillRect(obs.w - 4, by + 2, 2, layerH - 5);
-                }
-            } else {
-                // School Hurdle / Study Desk Bench
-                ctx.fillStyle = "#f97316";
-                ctx.fillRect(0, 0, obs.w, 8); // Desk Top
-                ctx.fillStyle = "#94a3b8";
-                ctx.fillRect(4, 8, 4, obs.h - 8); // Leg Left
-                ctx.fillRect(obs.w - 8, 8, 4, obs.h - 8); // Leg Right
-                ctx.fillStyle = "#fde047";
-                ctx.fillRect(2, obs.h * 0.45, obs.w - 4, 4); // Crossbar
+                    ctx.fillRect(6, 7, 16, 2);
+                    ctx.fillRect(6, 12, 22, 2);
+                    ctx.fillRect(6, 17, 12, 2);
+                    // Stand & Base
+                    ctx.fillStyle = "#64748b";
+                    ctx.fillRect(obs.w / 2 - 3, obs.h - 10, 6, 7);
+                    ctx.fillRect(obs.w / 2 - 12, obs.h - 3, 24, 3);
+                    break;
+
+                case "wifi":
+                    // 📡 WiFi Router with Antennas & Glowing Signals
+                    // Antennas
+                    ctx.strokeStyle = "#94a3b8";
+                    ctx.lineWidth = 2.5;
+                    ctx.beginPath();
+                    ctx.moveTo(6, 14); ctx.lineTo(3, 0); // Left antenna
+                    ctx.moveTo(obs.w - 6, 14); ctx.lineTo(obs.w - 3, 0); // Right antenna
+                    ctx.stroke();
+                    // Router Body
+                    ctx.fillStyle = "#0f172a";
+                    ctx.roundRect(0, 14, obs.w, obs.h - 14, 4);
+                    ctx.fill();
+                    // LED Lights
+                    ctx.fillStyle = "#22c55e";
+                    ctx.fillRect(5, obs.h - 6, 3, 3);
+                    ctx.fillRect(11, obs.h - 6, 3, 3);
+                    ctx.fillStyle = "#38bdf8";
+                    ctx.fillRect(17, obs.h - 6, 3, 3);
+                    // WiFi Signal Arcs in air
+                    ctx.strokeStyle = "rgba(56, 189, 248, 0.8)";
+                    ctx.lineWidth = 1.8;
+                    ctx.beginPath();
+                    ctx.arc(obs.w / 2, 8, 7, Math.PI * 1.2, Math.PI * 1.8);
+                    ctx.stroke();
+                    break;
+
+                case "usb":
+                    // 💾 USB Flash Drive
+                    // Metal Connector
+                    ctx.fillStyle = "#cbd5e1";
+                    ctx.fillRect(5, 0, obs.w - 10, 12);
+                    ctx.fillStyle = "#0f172a";
+                    ctx.fillRect(8, 3, 3, 4);
+                    ctx.fillRect(obs.w - 11, 3, 3, 4);
+                    // Plastic Body
+                    ctx.fillStyle = "#ec4899";
+                    ctx.roundRect(0, 12, obs.w, obs.h - 12, 4);
+                    ctx.fill();
+                    // Grip Stripes
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.4)";
+                    ctx.fillRect(3, 18, obs.w - 6, 2);
+                    ctx.fillRect(3, 24, obs.w - 6, 2);
+                    break;
+
+                case "tv":
+                    // 📺 Smart Board / Digital Screen on Rolling Stand
+                    ctx.fillStyle = "#020617";
+                    ctx.fillRect(0, 0, obs.w, obs.h - 14); // Screen
+                    ctx.fillStyle = "#10b981";
+                    ctx.fillRect(3, 3, obs.w - 6, obs.h - 20); // Green Smartboard Display
+                    // Classroom Chart Line
+                    ctx.strokeStyle = "#ffffff";
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(6, obs.h - 26);
+                    ctx.lineTo(14, obs.h - 32);
+                    ctx.lineTo(24, obs.h - 28);
+                    ctx.lineTo(34, obs.h - 34);
+                    ctx.stroke();
+                    // Wheels Stand
+                    ctx.fillStyle = "#475569";
+                    ctx.fillRect(obs.w / 2 - 3, obs.h - 14, 6, 10);
+                    ctx.fillRect(4, obs.h - 4, obs.w - 8, 4);
+                    break;
+
+                case "server":
+                    // 🖧 ERP Cloud Server Rack
+                    ctx.fillStyle = "#1e1b4b";
+                    ctx.roundRect(0, 0, obs.w, obs.h, 3);
+                    ctx.fill();
+                    // Server Blade Slots
+                    ctx.fillStyle = "#312e81";
+                    for (let y = 4; y < obs.h - 6; y += 9) {
+                        ctx.fillRect(3, y, obs.w - 6, 6);
+                        // Blinking Server LEDs
+                        ctx.fillStyle = (Math.random() > 0.3) ? "#22c55e" : "#ef4444";
+                        ctx.fillRect(6, y + 2, 2.5, 2.5);
+                        ctx.fillStyle = "#38bdf8";
+                        ctx.fillRect(11, y + 2, 2.5, 2.5);
+                        ctx.fillStyle = "#312e81";
+                    }
+                    break;
+
+                default:
+                case "books":
+                    // 📚 School Books Stack
+                    const bookColors = ["#ef4444", "#3b82f6", "#10b981", "#8b5cf6", "#f59e0b"];
+                    const layerH = Math.floor(obs.h / obs.layers);
+                    for (let i = 0; i < obs.layers; i++) {
+                        const by = obs.h - (i + 1) * layerH;
+                        ctx.fillStyle = bookColors[i % bookColors.length];
+                        ctx.fillRect(0, by, obs.w, layerH - 1);
+                        ctx.fillStyle = "#ffffff";
+                        ctx.fillRect(2, by + 1, 3, layerH - 3);
+                    }
+                    break;
             }
 
             ctx.restore();
@@ -596,12 +688,20 @@
             ctx.fillStyle = "rgba(9, 3, 20, 0.82)";
             ctx.fillRect(0, 0, width, height);
 
-            ctx.textAlign = "center";
+			ctx.textAlign = "center";
             ctx.fillStyle = "#f43f5e";
             ctx.font = "900 clamp(32px, 6vw, 56px) sans-serif";
-            ctx.shadowColor = "#f43f5e";
+            ctx.shadowColor = "#3664B5";
             ctx.shadowBlur = 25;
-            ctx.fillText("OUT OF BOUNDS", width / 2, height / 2 - 25);
+            ctx.fillText("GAME OVER", width / 2, height / 2 - 100);
+            ctx.shadowBlur = 0;
+
+            ctx.textAlign = "center";
+            ctx.fillStyle = "#f43f5e";
+            ctx.font = "900 clamp(25px, 6vw, 50px) sans-serif";
+            ctx.shadowColor = "#3664B5";
+            ctx.shadowBlur = 25;
+            ctx.fillText("Powered by : NextGen School alert", width / 2, height / 2 - 20);
             ctx.shadowBlur = 0;
 
             ctx.fillStyle = "#ffffff";
@@ -645,25 +745,48 @@
                 speed = Math.min(14, 7 + (score * 0.006)); // Speed ramps up smoothly
                 updateScoreUI();
 
-                // Spawn Obstacles (Book Stacks or Desks)
+                // Spawn Random ERP & Tech Obstacles
                 nextObstacleTimer--;
                 if (nextObstacleTimer <= 0) {
-                    const isDesk = Math.random() > 0.55;
-                    const layers = 2 + Math.floor(Math.random() * 3); // 2 to 4 books tall
-                    const obsW = isDesk ? 42 : (26 + Math.floor(Math.random() * 10));
-                    const obsH = isDesk ? 44 : (layers * 11);
+                    const itemTypes = ["computer", "wifi", "usb", "tv", "server", "books"];
+                    const chosen = itemTypes[Math.floor(Math.random() * itemTypes.length)];
+
+                    let obsW = 32;
+                    let obsH = 42;
+                    let layers = 3;
+
+                    if (chosen === "computer") {
+                        obsW = 36;
+                        obsH = 44;
+                    } else if (chosen === "wifi") {
+                        obsW = 34;
+                        obsH = 38;
+                    } else if (chosen === "usb") {
+                        obsW = 20;
+                        obsH = 36;
+                    } else if (chosen === "tv") {
+                        obsW = 46;
+                        obsH = 48; // Tall hurdle (needs Double Jump!)
+                    } else if (chosen === "server") {
+                        obsW = 30;
+                        obsH = 46;
+                    } else if (chosen === "books") {
+                        layers = 2 + Math.floor(Math.random() * 3);
+                        obsW = 28;
+                        obsH = layers * 12;
+                    }
 
                     obstacles.push({
                         x: width + 20,
                         y: groundY - obsH,
                         w: obsW,
                         h: obsH,
-                        type: isDesk ? "desk" : "books",
+                        type: chosen,
                         layers: layers
                     });
 
-                    // Distance between hurdles adjusts with speed
-                    nextObstacleTimer = Math.floor(55 + Math.random() * 60 - (speed * 1.8));
+                    // Distance between hurdles adjusts automatically as speed increases
+                    nextObstacleTimer = Math.floor(50 + Math.random() * 55 - (speed * 1.6));
                 }
 
                 // Move & Collision Check
