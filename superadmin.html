@@ -1866,28 +1866,74 @@
   // ]]>
   </script>
   <!-- Super Admin Login Overlay HTML -->
-  <div id="sa-login-overlay" style="display: none;">
-    <div class="sa-login-card">
-      <div class="mb-3">
-        <i class="fas fa-shield-alt fa-3x text-primary mb-2"></i>
-        <h4 class="fw-bold text-dark">Super Admin Portal</h4>
-        <p class="text-muted small">Enter master credentials to access SaaS control panel</p>
-      </div>
-      <form onsubmit="event.preventDefault(); window.doSuperAdminLogin();">
-        <div class="mb-3 text-start">
-          <label class="form-label small fw-bold text-secondary">Username / Login ID</label>
-          <input type="text" class="form-control" id="saLoginId" placeholder="e.g. manish" required>
+  <div id="sa-login-overlay">
+    <div class="container-fluid">
+        <div class="row align-items-center justify-content-center" style="min-height: 100vh; background: radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);">
+            
+            <!-- LEFT SIDE COLUMN (DESKTOP VIEW) -->
+            <div class="col-lg-3 side-content text-end d-none d-lg-block pe-4">
+                <div class="mb-3"><i class="fas fa-shield-alt fa-4x text-warning"></i></div>
+                <div class="badge bg-primary text-white p-2 mb-2 fw-bold shadow-sm">SaaS Master Control</div>
+                <h2 class="fw-bold text-white">Super Admin Hub</h2>
+                <p class="text-white-50 small">Global Multi-School SaaS Management &amp; Configuration Panel.</p>
+                <div class="badge bg-light text-dark p-2 fw-bold">Security Tier: Level-1 Master</div>
+            </div>
+
+            <!-- CENTER LOGIN CARD -->
+            <div class="col-lg-4 col-md-8 col-sm-12 px-3">
+                <div class="login-card mx-auto shadow-lg bg-white p-4 p-md-5 rounded-4 border-0" style="backdrop-filter: blur(10px);">
+                    
+                    <!-- LOGO HEADER -->
+                    <div class="mb-3 text-center">
+                        <img alt="School Alarm Logo" src="https://yanzstgfsvnlspbrminc.supabase.co/storage/v1/object/public/School_Data/ADMIN%20DATA/schoolalarm%20header.png" style="max-width: 100%; height: auto; max-height: 60px; object-fit: contain;">
+                    </div>
+                    
+                    <h3 class="fw-bold mb-1 text-primary text-center" style="color: #0284c7 !important; font-size: 1.5rem;">Super Admin Portal</h3>
+                    <p class="small text-muted mb-3 text-center">Enter master credentials to access SaaS control panel</p>
+
+                    <!-- ANDROID APP DOWNLOAD BUTTON -->
+                    <div class="mb-4 text-center">
+                        <a class="btn btn-outline-dark btn-sm px-3 py-2 rounded-pill shadow-sm d-inline-flex align-items-center gap-2 text-decoration-none" download="School_Alarm.apk" href="https://www.dropbox.com/scl/fi/3wgstrdozahtdwbnljn0b/School_Alarm.apk?rlkey=eorbkf7gmf5hkxajtgik0yld0&st=oje3ex1h&dl=1">
+                            <i class="fab fa-android text-warning fs-5"></i>
+                            <span class="fw-bold text-dark small">Download Mobile App</span>
+                        </a>
+                    </div>                       
+
+                    <!-- LOGIN FORM (Retaining original JS functions and IDs) -->
+                    <form onsubmit="event.preventDefault(); window.doSuperAdminLogin();">
+                        <div class="text-start mb-3">
+                            <label class="form-label small fw-bold text-secondary">Username / Login ID *</label>
+                            <input autocomplete="username" class="form-control form-control-lg" id="saLoginId" placeholder="e.g. manish" required type="text" style="font-size: 14px; border-radius: 10px;">
+                        </div>
+                        
+                        <div class="text-start mb-4">
+                            <label class="form-label small fw-bold text-secondary">Password *</label>
+                            <input autocomplete="current-password" class="form-control form-control-lg" id="saPassword" placeholder="Enter password" required type="password" style="font-size: 14px; border-radius: 10px;">
+                        </div>
+                        
+                        <button class="btn btn-primary w-100 py-3 fw-bold rounded-pill shadow" id="saLoginBtn" style="background: linear-gradient(135deg, #0284c7, #0369a1); border: none;" type="submit">
+                            Secure Login <i class="fas fa-arrow-right ms-1"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDE COLUMN - FEATURES LIST (DESKTOP VIEW) -->
+            <div class="col-lg-3 side-content text-start d-none d-lg-block ps-4">
+                <h3 class="fw-bold text-white fs-5 mb-3">Master Controls</h3>
+                <ul class="list-unstyled text-white small" style="line-height: 1.8;">
+                    <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> Multi-School Provisioning</li>
+                    <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> Global Subscription Manager</li>
+                    <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> Database &amp; Cloud Analytics</li>
+                    <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> Security Logs &amp; Audit Trail</li>
+                    <li class="mb-2"><i class="fas fa-check-circle me-2 text-warning"></i> Master API Configurations</li>
+                    <li class="mb-2"><i class="fas fa-envelope me-2 text-warning"></i> info@schoolalarm.online</li>
+                    <li class="mb-2"><i class="fas fa-envelope me-2 text-warning"></i> help@schoolalarm.online</li>
+                </ul>
+            </div>
         </div>
-        <div class="mb-4 text-start">
-          <label class="form-label small fw-bold text-secondary">Password</label>
-          <input type="password" class="form-control" id="saPassword" placeholder="Enter password" required>
-        </div>
-        <button type="submit" class="btn btn-primary w-100 py-2.5 fw-bold shadow-sm" id="saLoginBtn">
-          Secure Login <i class="fas fa-arrow-right ms-1"></i>
-        </button>
-      </form>
     </div>
-  </div>
+</div>
 
   <script type="text/javascript">
     // Show login overlay if not logged in
