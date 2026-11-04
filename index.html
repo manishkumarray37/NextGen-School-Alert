@@ -1427,6 +1427,210 @@
         </div>
     </section>
 
+<!-- DYNAMIC SCHOOLS TICKER SECTION -->
+<section class="lg2-section" aria-labelledby="lg2-title">
+    <div class="lg2-head text-center">
+        <span class="lg2-kicker">From Hajipur to All Over India</span>
+        <h2 class="lg2-title" id="lg2-title"><span class="lg2-num" id="totalSchoolsCount">10+ Schools</span> start their day on NextGen School Alert.</h2>
+        <p class="lg2-sub text-muted">CBSE, ICSE and state board schools, from single campuses to large school groups, trusting our automation daily.</p>
+    </div>
+
+    <!-- Scrolling Marquee Ticker Rows -->
+    <div class="lg2-rows">
+        <!-- Row 1 (Left to Right) -->
+        <div class="v2-logos">
+            <div class="v2-logos-track" id="tickerRow1">
+                <!-- Dynamically loaded from Supabase only -->
+            </div>
+        </div>
+        <!-- Row 2 (Right to Left) -->
+        <div class="v2-logos v2-logos--rev">
+            <div class="v2-logos-track" id="tickerRow2">
+                <!-- Dynamically loaded from Supabase only -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STYLES WITH LIGHT BLUE BG & GOLDEN BORDER -->
+<style>
+    .lg2-section {
+        position: relative;
+        overflow: hidden;
+        padding: 65px 0;
+        /* हल्का ब्लू प्रीमियम ग्रेडिएंट बैकग्राउंड */
+        background: radial-gradient(circle at 50% 0%, #e0f2fe 0%, #bae6fd 40%, #f0fdf4 100%);
+        color: #0f172a;
+    }
+    .lg2-head {
+        max-width: 60rem;
+        margin: 0 auto 2.5rem;
+        padding-inline: 1.25rem;
+    }
+    .lg2-kicker {
+        display: inline-flex;
+        gap: 0.6rem;
+        align-items: center;
+        margin-bottom: 0.8rem;
+        color: #b45309;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+    .lg2-title {
+        color: #0f172a;
+        font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+        font-weight: 800;
+        margin: 0;
+    }
+    .lg2-num {
+        color: #0284c7;
+    }
+    .lg2-sub {
+        margin: 0.8rem auto 0;
+        max-width: 44rem;
+        color: #475569 !important;
+        font-size: 0.95rem;
+    }
+    .lg2-rows {
+        display: grid;
+        gap: 1.2rem;
+    }
+    .v2-logos {
+        display: flex;
+        overflow: hidden;
+        width: 100%;
+        -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+        mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+    }
+    .v2-logos-track {
+        display: flex;
+        width: max-content;
+        animation: scrollTicker 40s linear infinite;
+    }
+    .v2-logos--rev .v2-logos-track {
+        animation-direction: reverse;
+        animation-duration: 45s;
+    }
+    .lg2-rows:hover .v2-logos-track {
+        animation-play-state: paused;
+    }
+    @keyframes scrollTicker {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+    .v2-school {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-right: 1.2rem;
+        padding: 0.7rem 1.3rem 0.7rem 0.7rem;
+        /* गोल्डन बॉर्डर */
+        border: 1.5px solid #eab308;
+        border-radius: 14px;
+        background: #ffffff;
+        color: #0f172a;
+        font-size: 0.9rem;
+        font-weight: 600;
+        white-space: nowrap;
+        box-shadow: 0 10px 25px -10px rgba(234, 179, 8, 0.25);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .v2-school:hover {
+        border-color: #ca8a04;
+        box-shadow: 0 12px 28px -8px rgba(234, 179, 8, 0.4);
+        transform: translateY(-3px);
+    }
+    .v2-crest {
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 9px;
+        background: linear-gradient(135deg, #0284c7, #0369a1);
+        display: grid;
+        place-items: center;
+        color: #fff;
+        font-weight: 800;
+        font-size: 0.85rem;
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4);
+    }
+    .v2-school small {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-top: 2px;
+        font-size: 0.75rem;
+        color: #64748b;
+        font-weight: 500;
+    }
+    .v2-school small::before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #eab308;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        const track1 = document.getElementById('tickerRow1');
+        const track2 = document.getElementById('tickerRow2');
+        const countBadge = document.getElementById('totalSchoolsCount');
+
+        try {
+            if (!window.db) {
+                console.error("Supabase client window.db not found!");
+                return;
+            }
+
+
+            const { data: schools, error } = await window.db
+                .from('Schools')
+                .select('*');
+
+            if (error || !schools || schools.length === 0) {
+                track1.innerHTML = `<span class="v2-school" style="border-color:#eab308; background:#fff; padding:10px 20px;"><span>Connecting to Cloud Database...<small>Please add schools in Supabase</small></span></span>`;
+                track2.innerHTML = track1.innerHTML;
+                return;
+            }
+			
+            if (countBadge) {
+                countBadge.innerText = `${schools.length}+ Schools`;
+            }
+
+            let html1 = '';
+            let html2 = '';
+
+            schools.forEach((school, index) => {
+                const name = school.SchoolName || school.name || school.school_name || "Partner School";
+                const city = school.City || school.city || school.Address || "India";
+                const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+                const itemHTML = `
+                    <span class="v2-school">
+                        <span class="v2-crest">${initials}</span>
+                        <span>${name}<small>${city}</small></span>
+                    </span>
+                `;
+
+                if (index % 2 === 0) {
+                    html1 += itemHTML;
+                } else {
+                    html2 += itemHTML;
+                }
+            });
+
+            if (track1 && html1) track1.innerHTML = html1 + html1 + html1;
+            if (track2 && html2) track2.innerHTML = html2 + html2 + html2;
+
+        } catch (err) {
+            console.error("Ticker Error:", err);
+            if (track1) track1.innerHTML = `<span class="v2-school"><span>Database Error<small>Check Supabase connection</small></span></span>`;
+        }
+    });
+</script>
+
 <!-- ========================================================
      1. CEO / DEVELOPER DESK SECTION
      ======================================================== -->
