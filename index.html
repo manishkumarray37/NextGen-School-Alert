@@ -1503,29 +1503,31 @@
         -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
         mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
     }
+    
+    /* Ticker Track & Dual Infinite Scroll Animation */
     .v2-logos-track {
         display: flex;
         width: max-content;
-        animation: scrollTicker 40s linear infinite;
+        animation: scrollTickerLinear 35s linear infinite;
     }
     .v2-logos--rev .v2-logos-track {
         animation-direction: reverse;
-        animation-duration: 45s;
+        animation-duration: 35s;
     }
     .lg2-rows:hover .v2-logos-track {
         animation-play-state: paused;
     }
-    @keyframes scrollTicker {
+    @keyframes scrollTickerLinear {
         0% { transform: translateX(0); }
-        100% { transform: translateX(-50%); }
+        100% { transform: translateX(-25%); }
     }
+
     .v2-school {
         display: inline-flex;
         align-items: center;
         gap: 0.8rem;
         margin-right: 1.2rem;
         padding: 0.7rem 1.3rem 0.7rem 0.7rem;
-        /* गोल्डन बॉर्डर */
         border: 1.5px solid #eab308;
         border-radius: 14px;
         background: #ffffff;
@@ -1598,40 +1600,50 @@
                 countBadge.innerText = `${schools.length}+ Schools`;
             }
 
+            // Generate HTML for Row 1 (1st to Last order)
             let html1 = '';
-            let html2 = '';
-
-            schools.forEach((school, index) => {
+            schools.forEach((school) => {
                 const name = school.SchoolName || school.name || school.school_name || "Partner School";
                 const city = school.City || school.city || school.Address || "India";
-                
-                // Direct mapping to your database column HeaderLogoUrl
                 const logoUrl = school.HeaderLogoUrl || school.LogoUrl || school.logo || school.image || null;
                 const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
 
-                let crestHTML = '';
-                if (logoUrl) {
-                    crestHTML = `<span class="v2-crest" style="background:#ffffff; padding:2px; display:grid; place-items:center;"><img src="${logoUrl}" alt="${name}" style="width:100%; height:100%; object-fit:contain; border-radius:6px;"></span>`;
-                } else {
-                    crestHTML = `<span class="v2-crest">${initials}</span>`;
-                }
+                let crestHTML = logoUrl 
+                    ? `<span class="v2-crest" style="background:#ffffff; padding:2px; display:grid; place-items:center;"><img src="${logoUrl}" alt="${name}" style="width:100%; height:100%; object-fit:contain; border-radius:6px;"></span>`
+                    : `<span class="v2-crest">${initials}</span>`;
 
-                const itemHTML = `
+                html1 += `
                     <span class="v2-school">
                         ${crestHTML}
                         <span>${name}<small>${city}</small></span>
                     </span>
                 `;
-
-                if (index % 2 === 0) {
-                    html1 += itemHTML;
-                } else {
-                    html2 += itemHTML;
-                }
             });
 
-            if (track1 && html1) track1.innerHTML = html1 + html1 + html1;
-            if (track2 && html2) track2.innerHTML = html2 + html2 + html2;
+            // Generate HTML for Row 2 (Last to 1st order - Reversed array)
+            let html2 = '';
+            const reversedSchools = [...schools].reverse();
+            reversedSchools.forEach((school) => {
+                const name = school.SchoolName || school.name || school.school_name || "Partner School";
+                const city = school.City || school.city || school.Address || "India";
+                const logoUrl = school.HeaderLogoUrl || school.LogoUrl || school.logo || school.image || null;
+                const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+                let crestHTML = logoUrl 
+                    ? `<span class="v2-crest" style="background:#ffffff; padding:2px; display:grid; place-items:center;"><img src="${logoUrl}" alt="${name}" style="width:100%; height:100%; object-fit:contain; border-radius:6px;"></span>`
+                    : `<span class="v2-crest">${initials}</span>`;
+
+                html2 += `
+                    <span class="v2-school">
+                        ${crestHTML}
+                        <span>${name}<small>${city}</small></span>
+                    </span>
+                `;
+            });
+
+            // Replicate content 4 times to ensure seamless infinite scrolling loop without gaps
+            if (track1) track1.innerHTML = html1 + html1 + html1 + html1;
+            if (track2) track2.innerHTML = html2 + html2 + html2 + html2;
 
         } catch (err) {
             console.error("Ticker Execution Error:", err);
