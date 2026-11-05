@@ -1165,7 +1165,7 @@
             </div>
 
             <!-- Hand-drawn DPDP Badge -->
-            <a href="/legal/dpdp.html" class="sc-dpdp-loop-btn" title="DPDP Ready Cloud Security">
+            <a href="dpdp.html" class="sc-dpdp-loop-btn" title="DPDP Ready Cloud Security">
 				<svg viewBox="0 0 140 80">
 					<path pathLength="1" d="M22 20 C58 3 124 6 132 33 C139 60 96 76 60 74 C22 72 4 55 9 37 C14 19 50 9 94 11 C112 12 125 16 133 22"/>
 				</svg>
@@ -2135,23 +2135,17 @@
             </div>
         </div>
     </div>
-</div>
 </section>
+</div>
 
-<!-- DYNAMIC LEGAL CONTENT CONTAINER -->
-<div id="dynamicLegalContainer" style="display: none; padding-top: 40px; padding-bottom: 80px;">
+<!-- DYNAMIC IN-PAGE LEGAL CONTAINER (Replaces iframe with direct fetch) -->
+<div id="inPageLegalContainer" style="display: none; padding-top: 40px; padding-bottom: 80px;">
     <div class="container">
-        <div class="policy-wrapper" id="policyContentBox" style="background: #ffffff; border-radius: 24px; padding: 50px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-            <!-- Injected content appears here -->
+        <div class="policy-wrapper" id="inPageLegalContentBox" style="background: #ffffff; border-radius: 24px; padding: 50px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+            <!-- Fetched content loads here -->
         </div>
     </div>
 </div>
-		<script>
-		function loadLegalContent(pageUrl) {
-				// Direct clean navigation to the separate legal HTML files
-				window.location.href = pageUrl;
-			}
-		</script>
 
     <!-- FOOTER -->
     <footer style="background: #09172c; color: #ffffff; padding: 40px 0 20px;">
@@ -2173,11 +2167,9 @@
                         </div>
                         <div class="col-6">
 						<ul class="list-unstyled mb-0" style="font-size: 0.85rem;">
-							<ul class="list-unstyled mb-0" style="font-size: 0.85rem;">
-							<li class="mb-2"><a href="#privacy" onclick="loadLegalContent('privacy.html')" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-shield-alt me-1 text-success"></i> Privacy Policy</a></li>
-							<li class="mb-2"><a href="#terms" onclick="loadLegalContent('terms.html')" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-file-contract me-1 text-primary"></i> Terms of Use</a></li>
-							<li class="mb-2"><a href="#dpdp" onclick="loadLegalContent('dpdp.html')" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-user-shield me-1 text-warning"></i> DPDP &amp; Data Protection</a></li>
-						</ul>
+							<li class="mb-2"><a href="privacy.html" onclick="openInPageLegal('privacy.html', event)" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-shield-alt me-1 text-success"></i> Privacy Policy</a></li>
+							<li class="mb-2"><a href="terms.html" onclick="openInPageLegal('terms.html', event)" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-file-contract me-1 text-primary"></i> Terms of Use</a></li>
+							<li class="mb-2"><a href="dpdp.html" onclick="openInPageLegal('dpdp.html', event)" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-user-shield me-1 text-warning"></i> DPDP &amp; Data Protection</a></li>
 						</ul>
 					</div>
                     </div>
@@ -2291,6 +2283,56 @@
             }
         }, { passive: true });
 
+        // AJAX IN-PAGE LEGAL LOADER (Fixes 404 & Open inside main page)
+        async function openInPageLegal(pageUrl, event) {
+            if (event) event.preventDefault();
+
+            try {
+                const landingContent = document.getElementById('mainLandingContent');
+                const legalContainer = document.getElementById('inPageLegalContainer');
+                const contentBox = document.getElementById('inPageLegalContentBox');
+
+                const response = await fetch(pageUrl);
+                if (!response.ok) throw new Error('Network response was not ok');
+
+                const htmlText = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+
+                // Extract the policy/dpdp inner contents
+                const extractedContent = doc.querySelector('.policy-wrapper') || doc.querySelector('.dpdp-wrapper') || doc.body;
+
+                if (extractedContent && landingContent && legalContainer && contentBox) {
+                    landingContent.style.display = 'none';
+                    legalContainer.style.display = 'block';
+
+                    contentBox.innerHTML = `
+                        ${extractedContent.innerHTML}
+                        <div class="mt-5 text-center">
+                            <button onclick="closeInPageLegal()" class="btn btn-dark px-5 py-2.5 rounded-pill fw-bold shadow-sm" style="background: #0b1f3a; border: none;">
+                                <i class="fas fa-arrow-left me-2"></i> Back to Home
+                            </button>
+                        </div>
+                    `;
+                    window.scrollTo({ top: 120, behavior: 'smooth' });
+                }
+            } catch (err) {
+                console.error("Failed to load legal page dynamically:", err);
+                window.location.href = pageUrl; // Fallback to direct navigation if fetch fails
+            }
+        }
+
+        function closeInPageLegal() {
+            const landingContent = document.getElementById('mainLandingContent');
+            const legalContainer = document.getElementById('inPageLegalContainer');
+
+            if (legalContainer && landingContent) {
+                legalContainer.style.display = 'none';
+                landingContent.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
     // DEMO INQUIRY SUBMISSION 
     let isSubmittingInquiry = false;
 
@@ -2386,22 +2428,27 @@
         });
     </script>
 	<script>
+    // DPDP loop button link handler for in-page loading
+    document.addEventListener("DOMContentLoaded", function() {
+        const dpdpBtn = document.querySelector('.sc-dpdp-loop-btn');
+        if (dpdpBtn) {
+            dpdpBtn.addEventListener('click', function(e) {
+                openInPageLegal('dpdp.html', e);
+            });
+        }
+    });
+
     function switchStoryTab(evt, tabKey) {
-        // Hide all tabs
         const panels = document.querySelectorAll('#our-story-tabs .tab-panel');
         panels.forEach(p => p.style.display = 'none');
 
-        // Remove active class from buttons
         const btns = document.querySelectorAll('#our-story-tabs .tab-btn');
         btns.forEach(b => b.classList.remove('active'));
 
-        // Show target tab
         const targetPanel = document.getElementById('tab-' + tabKey);
         if (targetPanel) {
             targetPanel.style.display = 'block';
         }
-
-        // Add active class to clicked button
         evt.currentTarget.classList.add('active');
     }
 </script>
