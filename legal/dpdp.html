@@ -11,110 +11,153 @@
     <!-- CSS Dependencies -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Kalam:wght@700&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --sc-primary: #0284c7;
+            --sc-primary-dark: #0369a1;
+            --sc-navy-deep: #0b1f3a;
+            --sc-island: linear-gradient(90deg, #0b1f3a 0%, #154173 50%, #0e274a 100%);
+            --sc-accent-pink: #d3236e;
+            --sc-accent-purple: #5b3a8e;
+            --sc-light-bg: #f8fafc;
+        }
+
+        * { box-sizing: border-box; }
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f8fafc;
+            background: radial-gradient(circle at 80% 20%, #dbeafe 0%, #f0f4f9 60%, #f8fafc 100%);
             color: #1e293b;
-            padding-top: 100px;
+            padding-top: 140px; /* Space for fixed floating header */
+            padding-bottom: 80px;
             scroll-behavior: smooth;
+            margin: 0;
         }
+
+        /* --- FLOATING ISLAND HEADER STYLES --- */
+        .sc-utility-bar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 42px;
+            background: radial-gradient(rgba(255, 255, 255, 0.16) 1.2px, transparent 1.2px) 0 0 / 18px 18px, linear-gradient(90deg, #08182e 0%, #0e2b4f 50%, #091a32 100%);
+            color: #ffffff;
+            z-index: 1070;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+        }
+        .sc-strip-inner {
+            width: 100%; max-width: 1360px; margin: 0 auto; padding: 0 20px;
+            display: flex; justify-content: space-between; align-items: center; font-size: 13px;
+        }
+        .sc-strip-left-nav { display: flex; align-items: center; gap: 18px; }
+        .sc-strip-left-nav a { color: #e2e8f0; text-decoration: none; font-weight: 500; font-size: 12.5px; padding: 2px 6px; border-radius: 6px; transition: all 0.2s; }
+        .sc-strip-left-nav a:hover { color: #38bdf8; background: rgba(255, 255, 255, 0.12); }
+        .sc-strip-right { display: flex; align-items: center; gap: 16px; }
+        .sc-strip-right a { color: #cbd5e1; text-decoration: none; font-weight: 500; font-size: 12.5px; }
+        .sc-strip-admin { border: 1.5px solid rgba(255, 209, 102, 0.5); padding: 3px 12px; border-radius: 20px; color: #ffd166 !important; font-weight: 600 !important; background: rgba(255, 209, 102, 0.08); }
+
+        .sc-island-host {
+            position: fixed;
+            top: 54px; left: 50%; transform: translateX(-50%);
+            width: min(1320px, calc(100% - 48px)); height: 74px;
+            background: radial-gradient(rgba(255, 255, 255, 0.16) 1.2px, transparent 1.2px) 0 0 / 18px 18px, radial-gradient(40% 180% at 0% 0%, rgba(2, 132, 199, 0.65), transparent 70%), radial-gradient(30% 160% at 100% 100%, rgba(91, 42, 134, 0.55), transparent 70%), linear-gradient(90deg, #0b1f3a 0%, #154173 50%, #0e274a 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 16px;
+            box-shadow: 0 22px 48px -20px rgba(11, 31, 58, 0.85);
+            z-index: 1060; display: flex; align-items: center; justify-content: space-between; padding: 0 16px 0 24px;
+        }
+        .sc-brand-title { font-family: 'Poppins', sans-serif; font-weight: 800; font-size: 26px; color: #ffffff; margin: 0; text-decoration: none; }
+        .sc-login-white-btn { height: 44px; padding: 0 24px; border-radius: 10px; background: #ffffff; color: #0b1f3a !important; font-weight: 700; font-size: 15px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(0,0,0,0.25); }
+
+        /* --- DPDP PAGE STYLES --- */
+        .dpdp-hero-banner {
+            background: radial-gradient(rgba(255, 255, 255, 0.16) 1.2px, transparent 1.2px) 0 0 / 18px 18px, radial-gradient(40% 180% at 0% 0%, rgba(2, 132, 199, 0.65), transparent 70%), linear-gradient(90deg, #0b1f3a 0%, #154173 50%, #0e274a 100%) !important;
+            color: #ffffff; border-radius: 24px; padding: 50px 40px; margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(11, 31, 58, 0.2); border: 1px solid rgba(255, 255, 255, 0.22);
+        }
+        .dpdp-hero-banner .badge-top {
+            background: rgba(255, 255, 255, 0.15); color: #38bdf8; font-weight: 700; font-size: 0.75rem;
+            letter-spacing: 1px; text-transform: uppercase; padding: 6px 14px; border-radius: 20px; display: inline-block; margin-bottom: 15px;
+        }
+        .dpdp-hero-banner h1 { font-weight: 800; font-size: 2.5rem; margin-bottom: 15px; color: #ffffff; }
+        .dpdp-hero-banner p { color: #cbd5e1; font-size: 1.05rem; max-width: 750px; margin: 0; line-height: 1.7; }
+
         .dpdp-wrapper {
-            max-width: 1000px;
-            margin: 0 auto 80px auto;
-            background: #ffffff;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
-            padding: 50px;
-            border: 1px solid #e2e8f0;
+            max-width: 1000px; margin: 0 auto; background: #ffffff;
+            border-radius: 24px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            padding: 50px; border: 1px solid #e2e8f0;
         }
-        .dpdp-header {
-            border-bottom: 2px solid #f1f5f9;
-            padding-bottom: 25px;
-            margin-bottom: 35px;
-        }
-        .dpdp-header h1 {
-            font-weight: 800;
-            color: #0f172a;
-            font-size: 2.3rem;
-        }
-        .dpdp-header p {
-            color: #64748b;
-            font-size: 0.95rem;
-        }
-        h2 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin-top: 40px;
-            margin-bottom: 15px;
-        }
-        h3 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #0284c7;
-            margin-top: 25px;
-            margin-bottom: 10px;
-        }
-        p, li {
-            color: #475569;
-            line-height: 1.8;
-            font-size: 0.98rem;
-        }
-        ul, ol {
-            padding-left: 20px;
-            margin-bottom: 20px;
-        }
-        li {
-            margin-bottom: 8px;
-        }
-        .commit-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin: 25px 0;
-        }
-        .commit-item {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            padding: 20px;
-        }
-        .commit-item b {
-            color: #0f172a;
-            font-size: 1.05rem;
-            display: block;
-            margin-bottom: 5px;
-        }
-        .roadmap-box {
-            background: #f0fdf4;
-            border-left: 5px solid #16a34a;
-            padding: 25px;
-            border-radius: 12px;
-            margin-top: 30px;
-        }
+        
+        h2 { font-size: 1.35rem; font-weight: 700; color: #0f172a; margin-top: 40px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        h2 i { color: #0284c7; font-size: 1.1rem; }
+        
+        p, li { color: #475569; line-height: 1.8; font-size: 0.98rem; }
+        ul { padding-left: 20px; margin-bottom: 20px; }
+        li { margin-bottom: 8px; }
+        
+        .commit-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin: 30px 0; }
+        .commit-item { background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 22px; transition: all 0.2s ease; }
+        .commit-item:hover { border-color: #0284c7; box-shadow: 0 10px 25px rgba(2, 132, 199, 0.08); transform: translateY(-2px); }
+        .commit-item b { color: #0f172a; font-size: 1.1rem; display: block; margin-bottom: 6px; }
+        .commit-item p { margin: 0; font-size: 0.9rem; color: #64748b; }
+
+        .roadmap-box { background: #f0fdf4; border-left: 6px solid #16a34a; padding: 25px; border-radius: 16px; margin-top: 40px; box-shadow: 0 10px 25px rgba(22, 163, 74, 0.06); }
         .roadmap-box b { color: #166534; }
-        @media(max-width: 768px) {
+
+        @media(max-width: 991px) {
+            .sc-utility-bar { display: none; }
+            .sc-island-host { width: calc(100% - 24px); top: 12px; height: 62px; }
+            body { padding-top: 90px; }
             .commit-grid { grid-template-columns: 1fr; }
             .dpdp-wrapper { padding: 25px; }
+            .dpdp-hero-banner { padding: 35px 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="dpdp-wrapper">
-            <div class="dpdp-header">
-                <h1>DPDP Act &amp; Data Protection for Schools</h1>
-                <p>Children's data deserves the highest care. Compliance with India's Digital Personal Data Protection (DPDP) Act, 2023.</p>
+    <!-- TOP UTILITY STRIP -->
+    <div class="sc-utility-bar">
+        <div class="sc-strip-inner">
+            <div class="sc-strip-left-nav">
+                <a href="/#home"><i class="fas fa-home me-1"></i> Home</a>
+                <a href="/#about">About us</a>
+                <a href="/#features">Features</a>
+                <a href="/#pricing">Pricing</a>
+                <a href="/#contact">Contact</a>
             </div>
+            <div class="sc-strip-right">
+                <a href="tel:+917079090740"><i class="fas fa-phone-alt me-1 text-primary"></i> +91 7079090740</a>
+                <span>&bull;</span>
+                <a href="/superadmin.html" class="sc-strip-admin"><i class="fas fa-shield-alt me-1"></i> Super Admin</a>
+            </div>
+        </div>
+    </div>
 
+    <!-- FLOATING ISLAND HEADER -->
+    <div class="sc-island-host">
+        <a href="/" class="sc-brand-title">Schoolalert</a>
+        <div class="sc-actions-group">
+            <a href="https://app.schoolalarm.online" class="sc-login-white-btn" id="nav-app-link">
+                <i class="fas fa-user-circle"></i> Login
+            </a>
+        </div>
+    </div>
+
+    <!-- MAIN DPDP CONTAINER -->
+    <div class="container">
+        <div class="dpdp-hero-banner">
+            <span class="badge-top"><i class="fas fa-shield-alt me-1"></i> DPDP Act for Schools</span>
+            <h1>Children's data deserves the highest care.</h1>
+            <p>The Digital Personal Data Protection (DPDP) Act changes how every school handles student, parent, and staff data. Discover our absolute commitments and compliance framework.</p>
+        </div>
+
+        <div class="dpdp-wrapper">
             <div class="dpdp-content">
-                <p>The Digital Personal Data Protection (DPDP) Act changes how every school handles student, parent, and staff data. Here is what the DPDP Act for schools means in practice, exactly what <strong>NextGen School Alert</strong> commits to, what we already do, and our published roadmap to full compliance.</p>
+                <p>The Digital Personal Data Protection Act, 2023 is India's premier comprehensive data protection legislation. Schools handle some of the most sensitive digital data in existence—children's data. Here is what the DPDP Act for schools means in practice, exactly what <strong>NextGen School Alert</strong> commits to, and how we ensure absolute institutional readiness.</p>
 
-                <h2>1. How We Look After School Data</h2>
+                <h2><i class="fas fa-database"></i> 1. How We Look After School Data</h2>
                 <p>We provide absolute security and operational transparency with our core commitments:</p>
                 <ul>
                     <li><strong>Stored in India:</strong> 100% of school production data, backups, and operational logs reside on secure Indian infrastructure (Supabase &amp; Cloudflare).</li>
@@ -124,8 +167,8 @@
                     <li><strong>Your Data, Your School:</strong> Your school owns its records completely. We act strictly as an authorized data processor.</li>
                 </ul>
 
-                <h2>2. The Law in Plain Words: What the DPDP Act Asks of You</h2>
-                <p>The DPDP Act, 2023 is India's premier comprehensive data protection legislation. Schools handle some of the most sensitive digital data in existence—children's data.</p>
+                <h2><i class="fas fa-balance-scale"></i> 2. The Law in Plain Words: What the DPDP Act Asks of You</h2>
+                <p>Compliance applies to all digital personal data. Educational institutions must adhere strictly to statutory rules:</p>
                 <ul>
                     <li><strong>Scope:</strong> Covers all digital personal data (names, photos, phone numbers, marks, attendance, fee records, medical notes).</li>
                     <li><strong>Parental Consent:</strong> For students under 18, schools must secure verifiable parental or guardian consent. Tracking or behavioral monitoring aimed at minors is strictly restricted.</li>
@@ -133,64 +176,64 @@
                     <li><strong>Mandatory Security &amp; Breach Reporting:</strong> Strict security safeguards (encryption, role-based access, access logging for 1 year) are required, and any security breach must be reported to the Data Protection Board without delay.</li>
                 </ul>
 
-                <h2>3. Our 8 Written Commitments to Every School</h2>
+                <h2><i class="fas fa-file-contract"></i> 3. Our 8 Written Commitments to Every School</h2>
                 <p>We are fully prepared to incorporate these 8 standing commitments into your institutional Data Processing Agreement (DPA):</p>
                 
                 <div class="commit-grid">
                     <div class="commit-item">
                         <b>01. Your Instructions Only</b>
-                        <p class="m-0 small">We process school records strictly on your documented instructions, never for our own commercial use.</p>
+                        <p>We process school records strictly on your documented instructions, never for our own commercial use.</p>
                     </div>
                     <div class="commit-item">
                         <b>02. Never Used to Train AI</b>
-                        <p class="m-0 small">Institutional data is never sent or used for external machine learning or AI model training.</p>
+                        <p>Institutional data is never sent or used for external machine learning or AI model training.</p>
                     </div>
                     <div class="commit-item">
                         <b>03. Never Sold or Shared</b>
-                        <p class="m-0 small">We never sell, rent, or license school data to any third party for marketing or research purposes.</p>
+                        <p>We never sell, rent, or license school data to any third party for marketing or research purposes.</p>
                     </div>
                     <div class="commit-item">
                         <b>04. No Ads, No Adtech</b>
-                        <p class="m-0 small">Zero ad networks, zero ad tracking SDKs, and zero commercial monetization anywhere on the platform.</p>
+                        <p>Zero ad networks, zero ad tracking SDKs, and zero commercial monetization anywhere on the platform.</p>
                     </div>
                     <div class="commit-item">
                         <b>05. Stored in India</b>
-                        <p class="m-0 small">All active databases, system backups, and traffic logs remain securely on Indian cloud infrastructure.</p>
+                        <p>All active databases, system backups, and traffic logs remain securely on Indian cloud infrastructure.</p>
                     </div>
                     <div class="commit-item">
                         <b>06. Every School Separate</b>
-                        <p class="m-0 small">Multi-tenant architecture ensures strict data isolation; no school can access another institution's records.</p>
+                        <p>Multi-tenant architecture ensures strict data isolation; no school can access another institution's records.</p>
                     </div>
                     <div class="commit-item">
                         <b>07. Transparent Sub-processors</b>
-                        <p class="m-0 small">We maintain full transparency regarding infrastructure partners and provide advance notice for any updates.</p>
+                        <p>We maintain full transparency regarding infrastructure partners and provide advance notice for any updates.</p>
                     </div>
                     <div class="commit-item">
                         <b>08. Your Data Back, Then Deleted</b>
-                        <p class="m-0 small">If you exit our platform, you receive a full structured export, followed by verifiable permanent data deletion.</p>
+                        <p>If you exit our platform, you receive a full structured export, followed by verifiable permanent data deletion.</p>
                     </div>
                 </div>
 
-                <h2>4. Division of Responsibilities (Roles)</h2>
+                <h2><i class="fas fa-users-cog"></i> 4. Division of Responsibilities (Roles)</h2>
                 <p>Under the DPDP Act, compliance responsibilities are shared between the educational institution and the technology provider:</p>
                 <ul>
                     <li><strong>Your School (Data Fiduciary):</strong> Decides what data is collected, establishes the lawful purpose, provides privacy notices to parents, and handles stakeholder grievances.</li>
                     <li><strong>NextGen School Alert (Data Processor):</strong> Stores and secures institutional data, executes processing tasks strictly on your instructions, and provides robust administrative tools.</li>
                 </ul>
 
-                <h2>5. Children First: Extra Care for Minor Data</h2>
+                <h2><i class="fas fa-child"></i> 5. Children First: Extra Care for Minor Data</h2>
                 <p>Since the majority of school records belong to minors, the DPDP Act provides special protections. NextGen School Alert embeds child-safety principles directly into system architecture—ensuring strict parental consent workflows, hidden contact details, and absolute data segregation.</p>
 
                 <div class="roadmap-box">
-                    <h5 class="fw-bold mb-2"><i class="fas fa-shield-alt text-success me-2"></i> Compliance Assistance &amp; Support</h5>
-                    <p class="mb-1">We assist our partner schools with smooth data governance, DPA documentation, and compliance readiness.</p>
+                    <h5 class="fw-bold mb-3" style="color: #166534;"><i class="fas fa-headset me-2"></i> Compliance Assistance &amp; Support</h5>
+                    <p class="mb-2">We assist our partner schools with smooth data governance, DPA documentation, and compliance readiness.</p>
                     <p class="mb-1"><b>Official Support Emails:</b> help@schoolalarm.online | info@schoolalarm.online</p>
                     <p class="mb-0"><b>Helpline:</b> +91 7079090740 | <b>Location:</b> Hajipur, Bihar, India</p>
                 </div>
             </div>
             
             <div class="mt-5 text-center">
-                <a href="/" class="btn btn-dark px-4 py-2 rounded-pill fw-bold" style="font-size: 0.9rem;"><i class="fas fa-arrow-left me-2"></i> Back to Home</a>
+                <a href="/" class="btn btn-dark px-5 py-2.5 rounded-pill fw-bold shadow-sm" style="font-size: 0.95rem; background: #0b1f3a; border: none;"><i class="fas fa-arrow-left me-2"></i> Back to Home</a>
             </div>
         </div>
     </div>
