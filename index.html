@@ -1165,7 +1165,7 @@
             </div>
 
             <!-- Hand-drawn DPDP Badge -->
-            <a href="dpdp.html" class="sc-dpdp-loop-btn" title="DPDP Ready Cloud Security">
+            <a href="/legal/dpdp.html" class="sc-dpdp-loop-btn" title="DPDP Ready Cloud Security">
 				<svg viewBox="0 0 140 80">
 					<path pathLength="1" d="M22 20 C58 3 124 6 132 33 C139 60 96 76 60 74 C22 72 4 55 9 37 C14 19 50 9 94 11 C112 12 125 16 133 22"/>
 				</svg>
@@ -1317,7 +1317,6 @@
     <!-- ========================================================
          HERO SECTION (CLEAN BALANCED TYPOGRAPHY)
          ======================================================== -->
-	<div id="mainLandingContent">
     <section class="hero-section" id="home">
         <div class="container">
             <div class="row align-items-center" style="min-height: 75vh;">
@@ -2136,16 +2135,7 @@
         </div>
     </div>
 </section>
-</div>
 
-<!-- DYNAMIC IN-PAGE LEGAL CONTAINER (Replaces iframe with direct fetch) -->
-<div id="inPageLegalContainer" style="display: none; padding-top: 40px; padding-bottom: 80px;">
-    <div class="container">
-        <div class="policy-wrapper" id="inPageLegalContentBox" style="background: #ffffff; border-radius: 24px; padding: 50px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-            <!-- Fetched content loads here -->
-        </div>
-    </div>
-</div>
 
     <!-- FOOTER -->
     <footer style="background: #09172c; color: #ffffff; padding: 40px 0 20px;">
@@ -2167,9 +2157,9 @@
                         </div>
                         <div class="col-6">
 						<ul class="list-unstyled mb-0" style="font-size: 0.85rem;">
-							<li class="mb-2"><a href="/legal/privacy.html" onclick="openInPageLegal('privacy.html', event)" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-shield-alt me-1 text-success"></i> Privacy Policy</a></li>
-							<li class="mb-2"><a href="/legal/terms.html" onclick="openInPageLegal('terms.html', event)" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-file-contract me-1 text-primary"></i> Terms of Use</a></li>
-							<li class="mb-2"><a href="/legal/dpdp.html" onclick="openInPageLegal('dpdp.html', event)" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-user-shield me-1 text-warning"></i> DPDP &amp; Data Protection</a></li>
+							<li class="mb-2"><a href="/legal/privacy.html" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-shield-alt me-1 text-success"></i> Privacy Policy</a></li>
+							<li class="mb-2"><a href="/legal/terms.html" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-file-contract me-1 text-primary"></i> Terms of Use</a></li>
+							<li class="mb-2"><a href="/legal/dpdp.html" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-user-shield me-1 text-warning"></i> DPDP &amp; Data Protection</a></li>
 						</ul>
 					</div>
                     </div>
@@ -2283,62 +2273,6 @@
             }
         }, { passive: true });
 
-// ADVANCED DYNAMIC HTML LOADER (Fetches clean inner content and injects it smoothly)
-        async function openInPageLegal(pageUrl, event) {
-            if (event) event.preventDefault();
-
-            try {
-                const landingContent = document.getElementById('mainLandingContent');
-                const legalContainer = document.getElementById('inPageLegalContainer');
-                const contentBox = document.getElementById('inPageLegalContentBox');
-
-                // Show loading spinner inside container
-                if (landingContent && legalContainer && contentBox) {
-                    landingContent.style.display = 'none';
-                    legalContainer.style.display = 'block';
-                    contentBox.innerHTML = `<div class="text-center py-5"><i class="fas fa-spinner fa-spin fa-2x text-primary"></i><p class="mt-2 text-muted">Loading...</p></div>`;
-                    window.scrollTo({ top: 120, behavior: 'smooth' });
-                }
-
-                const response = await fetch(pageUrl);
-                if (!response.ok) throw new Error('Page load failed');
-
-                const htmlText = await response.text();
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(htmlText, 'text/html');
-
-                // Extract the hero banner and policy wrapper from the fetched file
-                const heroBanner = doc.querySelector('.dpdp-hero-banner') || doc.querySelector('.policy-hero-banner') || doc.querySelector('.terms-hero-banner');
-                const policyWrapper = doc.querySelector('.dpdp-wrapper') || doc.querySelector('.policy-wrapper');
-
-                if ((heroBanner || policyWrapper) && contentBox) {
-                    contentBox.innerHTML = `
-                        ${heroBanner ? heroBanner.outerHTML : ''}
-                        ${policyWrapper ? policyWrapper.outerHTML : ''}
-                        <div class="mt-5 text-center">
-                            <button onclick="closeInPageLegal()" class="btn btn-dark px-5 py-2.5 rounded-pill fw-bold shadow-sm" style="background: #0b1f3a; border: none;">
-                                <i class="fas fa-arrow-left me-2"></i> Back to Home
-                            </button>
-                        </div>
-                    `;
-                    
-                    // Fix Back button inside the injected container to use our close function instead of root '/'
-                    const backBtn = contentBox.querySelector('.mt-5.text-center a, .mt-5.text-center button');
-                    if(backBtn) {
-                        backBtn.removeAttribute('href');
-                        backBtn.setAttribute('onclick', 'closeInPageLegal()');
-                    }
-
-                    window.scrollTo({ top: 120, behavior: 'smooth' });
-                } else {
-                    throw new Error('Required content containers not found');
-                }
-            } catch (err) {
-                console.error("AJAX Load Error:", err);
-                window.location.href = pageUrl; // Fallback to direct page load if error occurs
-            }
-        }
-
     // DEMO INQUIRY SUBMISSION 
     let isSubmittingInquiry = false;
 
@@ -2434,27 +2368,22 @@
         });
     </script>
 	<script>
-    // DPDP loop button link handler for in-page loading
-    document.addEventListener("DOMContentLoaded", function() {
-        const dpdpBtn = document.querySelector('.sc-dpdp-loop-btn');
-        if (dpdpBtn) {
-            dpdpBtn.addEventListener('click', function(e) {
-                openInPageLegal('dpdp.html', e);
-            });
-        }
-    });
-
     function switchStoryTab(evt, tabKey) {
+        // Hide all tabs
         const panels = document.querySelectorAll('#our-story-tabs .tab-panel');
         panels.forEach(p => p.style.display = 'none');
 
+        // Remove active class from buttons
         const btns = document.querySelectorAll('#our-story-tabs .tab-btn');
         btns.forEach(b => b.classList.remove('active'));
 
+        // Show target tab
         const targetPanel = document.getElementById('tab-' + tabKey);
         if (targetPanel) {
             targetPanel.style.display = 'block';
         }
+
+        // Add active class to clicked button
         evt.currentTarget.classList.add('active');
     }
 </script>
