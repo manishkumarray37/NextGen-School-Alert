@@ -51,7 +51,14 @@ export async function onRequest(context) {
     return context.next();
   }
 
-  // 🚀 7. CATCH-ALL 404: If any unknown URL like /mkkk is requested on apex domain, show 404.html!
+  // 🚀 7. DYNAMIC FILE CHECK: Try fetching the requested asset/page first.
+  // If the file actually exists on server (e.g. /privacy.html, /about.html, etc.), serve it automatically!
+  const assetResponse = await context.env.ASSETS.fetch(context.request);
+  if (assetResponse.status !== 404) {
+    return assetResponse;
+  }
+
+  // ❌ 8. REAL 404: If the file does not exist anywhere, show 404.html page.
   url.pathname = '/404.html';
   return context.env.ASSETS.fetch(url);
 }
