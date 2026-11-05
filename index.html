@@ -1657,7 +1657,400 @@
         }
     });
 </script>
+<!-- ========================================================
+     ROLES & BEFORE/AFTER SECTION (COMPACT & PARTICLES EFFECT)
+     ======================================================== -->
+<section class="v2-section" id="roles-section">
+    <!-- Interactive Canvas Background for Stars, Fog & Particles Animation -->
+    <canvas id="particleCanvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1;"></canvas>
 
+    <div class="container-fluid px-3 px-lg-5" data-v2-tabs>
+        <!-- Section Header -->
+        <div class="text-center mx-auto mb-4" style="max-width: 900px;">
+            <span class="badge rounded-pill px-3 py-1.5 mb-2 shadow-sm role-badge-glow">For everyone in your school</span>
+            <h2 class="fw-bold role-main-title mb-0">
+                Built around the people who run your school.
+            </h2>
+        </div>
+
+        <!-- Role Pills Navigation -->
+        <div class="d-flex justify-content-center flex-wrap gap-2 mb-4 role-tabs-nav" role="tablist">
+            <button type="button" role="tab" class="role-pill-btn active" onclick="switchRoleTab(event, 'parent')" aria-selected="true">Parents</button>
+            <button type="button" role="tab" class="role-pill-btn" onclick="switchRoleTab(event, 'teacher')" aria-selected="false">Teachers</button>
+            <button type="button" role="tab" class="role-pill-btn" onclick="switchRoleTab(event, 'principal')" aria-selected="false">Principals</button>
+            <button type="button" role="tab" class="role-pill-btn" onclick="switchRoleTab(event, 'office')" aria-selected="false">Office &amp; accounts</button>
+            <button type="button" role="tab" class="role-pill-btn" onclick="switchRoleTab(event, 'owner')" aria-selected="false">Owners &amp; trustees</button>
+        </div>
+
+        <!-- Role Content Panels Box -->
+        <div class="role-content-card shadow-lg p-4 p-md-5 rounded-4 bg-white border mx-auto" style="max-width: 1400px;">
+            
+            <!-- Panel 1: Parents -->
+            <div class="role-tab-pane" id="role-parent" style="display: block;">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-6 pe-lg-4">
+                        <h3 class="fw-bold mb-3" style="font-size: clamp(1.5rem, 2.2vw, 2rem); color: #2254A8; line-height: 1.2;">
+                            Know what's happening, as it happens.
+                        </h3>
+                        <p class="text-secondary mb-4" style="line-height: 1.8; font-size: 1rem;">
+                            Parents want to know their child is safe, learning and on track, without chasing the school. The Schoolalarm app keeps them connected every day, in their language.
+                        </p>
+                        <a class="btn btn-primary px-4 py-3 fw-bold rounded-pill shadow-sm" href="#contact" style="background: #2867b2; border: none;">
+                            See it for your role <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="p-4 rounded-4" style="background: #fdf2f4; border: 1px solid #fce7ec;">
+                                    <span class="text-uppercase fw-bold mb-2 d-block" style="font-size: 11px; color: #9f1239; letter-spacing: 0.5px;">Before</span>
+                                    <ul class="list-unstyled mb-0 small text-secondary" style="line-height: 1.7;">
+                                        <li class="mb-2">• Circulars lost in the school bag</li>
+                                        <li class="mb-2">• Calling the office to ask where the bus is</li>
+                                        <li>• Queuing at the counter to pay fees</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-4 rounded-4" style="background: #ecfdf5; border: 1px solid #d1fae5;">
+                                    <span class="text-uppercase fw-bold mb-2 d-block" style="font-size: 11px; color: #065f46; letter-spacing: 0.5px;">With Schoolalarm</span>
+                                    <ul class="list-unstyled mb-0 small text-secondary" style="line-height: 1.7;">
+                                        <li class="mb-2">• Homework, notices and marks on the app</li>
+                                        <li class="mb-2">• Live bus location in the app</li>
+                                        <li>• Pay fees in seconds by UPI or card</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel 2: Teachers -->
+            <div class="role-tab-pane" id="role-teacher" style="display: none;">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-6 pe-lg-4">
+                        <h3 class="fw-bold mb-3" style="font-size: clamp(1.5rem, 2.2vw, 2rem); color: #0f1b33; line-height: 1.2;">
+                            Teach more. Type less.
+                        </h3>
+                        <p class="text-secondary mb-4" style="line-height: 1.8; font-size: 1rem;">
+                            Teachers should spend their time with students, not registers. Schoolalarm takes care of attendance, homework, marks and preparation.
+                        </p>
+                        <a class="btn btn-primary px-4 py-3 fw-bold rounded-pill shadow-sm" href="#contact" style="background: #2867b2; border: none;">
+                            See it for your role <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="p-4 rounded-4" style="background: #fdf2f4; border: 1px solid #fce7ec;">
+                                    <span class="text-uppercase fw-bold mb-2 d-block" style="font-size: 11px; color: #9f1239; letter-spacing: 0.5px;">Before</span>
+                                    <ul class="list-unstyled mb-0 small text-secondary" style="line-height: 1.7;">
+                                        <li class="mb-2">• Totalling the attendance register each month</li>
+                                        <li class="mb-2">• Entering the same marks in three places</li>
+                                        <li>• Sundays spent making worksheets</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-4 rounded-4" style="background: #ecfdf5; border: 1px solid #d1fae5;">
+                                    <span class="text-uppercase fw-bold mb-2 d-block" style="font-size: 11px; color: #065f46; letter-spacing: 0.5px;">With Schoolalarm</span>
+                                    <ul class="list-unstyled mb-0 small text-secondary" style="line-height: 1.7;">
+                                        <li class="mb-2">• Mark only absentees in the teacher app</li>
+                                        <li class="mb-2">• Enter marks once; report cards build themselves</li>
+                                        <li>• Ready lessons and smart teaching tools</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel 3: Principals -->
+            <div class="role-tab-pane" id="role-principal" style="display: none;">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-6 pe-lg-4">
+                        <h3 class="fw-bold mb-3" style="font-size: clamp(1.5rem, 2.2vw, 2rem); color: #0f1b33; line-height: 1.2;">
+                            Spend your day on learning, not logistics.
+                        </h3>
+                        <p class="text-secondary mb-4" style="line-height: 1.8; font-size: 1rem;">
+                            Substitutions, attendance, exams, complaints and inspections compete for your time. Schoolalarm handles the logistics, so you can observe classes, support teachers and talk to parents.
+                        </p>
+                        <a class="btn btn-primary px-4 py-3 fw-bold rounded-pill shadow-sm" href="#contact" style="background: #2867b2; border: none;">
+                            See it for your role <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="p-4 rounded-4" style="background: #fdf2f4; border: 1px solid #fce7ec;">
+                                    <span class="text-uppercase fw-bold mb-2 d-block" style="font-size: 11px; color: #9f1239; letter-spacing: 0.5px;">Before</span>
+                                    <ul class="list-unstyled mb-0 small text-secondary" style="line-height: 1.7;">
+                                        <li class="mb-2">• Morning phone calls to arrange substitutions</li>
+                                        <li class="mb-2">• Report cards that take weeks of late nights</li>
+                                        <li>• Complaints that land on your desk unannounced</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-4 rounded-4" style="background: #ecfdf5; border: 1px solid #d1fae5;">
+                                    <span class="text-uppercase fw-bold mb-2 d-block" style="font-size: 11px; color: #065f46; letter-spacing: 0.5px;">With Schoolalarm</span>
+                                    <ul class="list-unstyled mb-0 small text-secondary" style="line-height: 1.7;">
+                                        <li class="mb-2">• Same-subject substitutes suggested from attendance</li>
+                                        <li class="mb-2">• Report cards and result analysis generated from marks</li>
+                                        <li>• Complaints tracked with owners and deadlines</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel 4: Office & Accounts -->
+            <div class="role-tab-pane" id="role-office" style="display: none;">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-6 pe-lg-4">
+                        <h3 class="fw-bold mb-3" style="font-size: clamp(1.5rem, 2.2vw, 2rem); color: #0f1b33; line-height: 1.2;">
+                            Finish today's work today.
+                        </h3>
+                        <p class="text-secondary mb-4" style="line-height: 1.8; font-size: 1rem;">
+                            Fee counters, certificates, admission forms, couriers and visitors all pass through your office. Schoolalarm turns hours of registers and retyping into a few clicks.
+                        </p>
+                        <a class="btn btn-primary px-4 py-3 fw-bold rounded-pill shadow-sm" href="#contact" style="background: #2867b2; border: none;">
+                            See it for your role <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="p-4 rounded-4" style="background: #fdf2f4; border: 1px solid #fce7ec;">
+                                    <span class="text-uppercase fw-bold mb-2 d-block" style="font-size: 11px; color: #9f1239; letter-spacing: 0.5px;">Before</span>
+                                    <ul class="list-unstyled mb-0 small text-secondary" style="line-height: 1.7;">
+                                        <li class="mb-2">• Queues at the fee counter on due dates</li>
+                                        <li class="mb-2">• TCs and certificates retyped from old files</li>
+                                        <li>• Everything entered again in Tally</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-4 rounded-4" style="background: #ecfdf5; border: 1px solid #d1fae5;">
+                                    <span class="text-uppercase fw-bold mb-2 d-block" style="font-size: 11px; color: #065f46; letter-spacing: 0.5px;">With Schoolalarm</span>
+                                    <ul class="list-unstyled mb-0 small text-secondary" style="line-height: 1.7;">
+                                        <li class="mb-2">• Most parents pay online with a reminder link</li>
+                                        <li class="mb-2">• Certificates generated in your format in minutes</li>
+                                        <li>• Fees and expenses posted to Tally automatically</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel 5: Owners -->
+            <div class="role-tab-pane" id="role-owner" style="display: none;">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-6 pe-lg-4">
+                        <h3 class="fw-bold mb-3" style="font-size: clamp(1.5rem, 2.2vw, 2rem); color: #0f1b33; line-height: 1.2;">
+                            Know your school, or every school, without waiting for a report.
+                        </h3>
+                        <p class="text-secondary mb-4" style="line-height: 1.8; font-size: 1rem;">
+                            You carry the financial risk and the reputation. Schoolalarm gives you a live view of students, fees, admissions and staff for every campus, approvals on your phone with the limits you set, and 500+ reports for every trustee question.
+                        </p>
+                        <a class="btn btn-primary px-4 py-3 fw-bold rounded-pill shadow-sm" href="#contact" style="background: #2867b2; border: none;">
+                            See it for your role <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="p-4 rounded-4" style="background: #fdf2f4; border: 1px solid #fce7ec;">
+                                    <span class="text-uppercase fw-bold mb-2 d-block" style="font-size: 11px; color: #9f1239; letter-spacing: 0.5px;">Before</span>
+                                    <ul class="list-unstyled mb-0 small text-secondary" style="line-height: 1.7;">
+                                        <li class="mb-2">• Fee position known only at month-end</li>
+                                        <li class="mb-2">• Expenses approved on paper, if at all</li>
+                                        <li>• Each branch reports in its own format</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-4 rounded-4" style="background: #ecfdf5; border: 1px solid #d1fae5;">
+                                    <span class="text-uppercase fw-bold mb-2 d-block" style="font-size: 11px; color: #065f46; letter-spacing: 0.5px;">With Schoolalarm</span>
+                                    <ul class="list-unstyled mb-0 small text-secondary" style="line-height: 1.7;">
+                                        <li class="mb-2">• Live dashboard across every campus</li>
+                                        <li class="mb-2">• Expense approvals with limits, on your phone</li>
+                                        <li>• Consistent, consolidated multi-school reports</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ========================================================
+     CSS & PARTICLES ANIMATION SCRIPT
+     ======================================================== -->
+<style>
+    #roles-section {
+        position: relative;
+        padding: 50px 0; 
+        background-color: #050e18;
+        background-image: url('https://yanzstgfsvnlspbrminc.supabase.co/storage/v1/object/public/School_Data/ADMIN%20DATA/Generated%20Image%20November%2005,%202026%20-%209_18PM.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        overflow: hidden;
+    }
+
+    #roles-section .container-fluid {
+        position: relative;
+        z-index: 2;
+    }
+
+    .role-badge-glow {
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: #38bdf8 !important;
+        border: 1px solid rgba(56, 189, 248, 0.3) !important;
+        font-weight: 600;
+        backdrop-filter: blur(6px);
+    }
+
+    .role-main-title {
+        color: #ffffff !important;
+        font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+        letter-spacing: -0.025em;
+        line-height: 1.15;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.6);
+        white-space: nowrap;
+    }
+
+    .role-pill-btn {
+        padding: 8px 22px;
+        border: 1.5px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(8px);
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #e2e8f0;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+
+    .role-pill-btn.active {
+        background: linear-gradient(135deg, #0284c7, #0369a1) !important;
+        color: #ffffff !important;
+        border-color: #38bdf8 !important;
+        box-shadow: 0 6px 20px rgba(2, 132, 199, 0.5);
+        transform: translateY(-2px);
+    }
+
+    .role-pill-btn:hover:not(.active) {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.4);
+        color: #ffffff;
+    }
+
+    .role-content-card {
+        background: rgba(255, 255, 255, 0.97) !important;
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.4) !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .role-tab-pane {
+        animation: fadeInRole 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes fadeInRole {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 991px) {
+        .role-main-title {
+            white-space: normal;
+        }
+    }
+</style>
+
+<script>
+    function switchRoleTab(evt, roleKey) {
+        const panes = document.querySelectorAll('.role-tab-pane');
+        panes.forEach(p => p.style.display = 'none');
+
+        const pills = document.querySelectorAll('.role-pill-btn');
+        pills.forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+        });
+
+        const targetPane = document.getElementById('role-' + roleKey);
+        if (targetPane) {
+            targetPane.style.display = 'block';
+        }
+
+        evt.currentTarget.classList.add('active');
+        evt.currentTarget.setAttribute('aria-selected', 'true');
+    }
+
+    // Dynamic Star Dust & Floating Particles Animation Script
+    document.addEventListener("DOMContentLoaded", function () {
+        const canvas = document.getElementById('particleCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const particles = [];
+        const particleCount = 45;
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 2 + 0.5,
+                color: Math.random() > 0.5 ? 'rgba(56, 189, 248, ' : 'rgba(255, 255, 255, ',
+                alpha: Math.random() * 0.7 + 0.2,
+                speedX: (Math.random() - 0.5) * 0.4,
+                speedY: (Math.random() - 0.5) * 0.4 - 0.2
+            });
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = canvas.height;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color + p.alpha + ')';
+                ctx.fill();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+    });
+</script>
 <!-- ========================================================
      1. CEO / DEVELOPER DESK SECTION
      ======================================================== -->
@@ -2386,6 +2779,130 @@
         // Add active class to clicked button
         evt.currentTarget.classList.add('active');
     }
+</script>
+
+<style id="multi-dir-scroll-animations">
+  /* Base state: Sare directions ke transitions */
+  .erp-dir-anim {
+    opacity: 0;
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+
+  /* Direction 1: Niche se Upar (Up) */
+  .erp-dir-anim.erp-dir-up {
+    transform: translate3d(0, 45px, 0);
+  }
+
+  /* Direction 2: Upar se Niche (Down) */
+  .erp-dir-anim.erp-dir-down {
+    transform: translate3d(0, -45px, 0);
+  }
+
+  /* Direction 3: Left se Right (Left) */
+  .erp-dir-anim.erp-dir-left {
+    transform: translate3d(-50px, 0, 0);
+  }
+
+  /* Direction 4: Right se Left (Right) */
+  .erp-dir-anim.erp-dir-right {
+    transform: translate3d(50px, 0, 0);
+  }
+
+  /* Active visible state: Jab element screen me aayega (IN / ON) */
+  .erp-dir-anim.erp-in-view {
+    opacity: 1 !important;
+    transform: translate3d(0, 0, 0) scale(1) !important;
+  }
+
+  /* Hover Lift Effect: Cards par smooth interactive feel */
+  .erp-dir-anim.erp-in-view[class*="card"]:hover {
+    transform: translate3d(0, -6px, 0) !important;
+  }
+
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .erp-dir-anim {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+<script>
+  (() => {
+    const initDirectionalAnimations = () => {
+      const selectors = [
+        '.card', 
+        '[class*="card"]', 
+        'section > div',
+        '.page', 
+        '[class*="page-"]', 
+        'img:not([alt*="logo"]):not(.logo)'
+      ].join(', ');
+
+      const elements = document.querySelectorAll(selectors);
+      const directions = ['up', 'left', 'down', 'right'];
+      const activeTargets = [];
+
+      elements.forEach((el, index) => {
+        // 1. Purane animation safety check (Pehle se animated items ko chhod dega)
+        const hasExistingAttr = el.hasAttribute('data-aos') || 
+                                el.hasAttribute('data-wow') || 
+                                el.closest('[data-aos], [data-wow]');
+        
+        const classStr = el.className || '';
+        const hasExistingClass = /\b(animated|animate__|wow|aos-|fadeIn|bounce|slide|zoom)\b/i.test(classStr);
+
+        const computed = window.getComputedStyle(el);
+        const hasExistingKeyframe = computed.animationName && computed.animationName !== 'none';
+
+        if (hasExistingAttr || hasExistingClass || hasExistingKeyframe) {
+          return;
+        }
+
+        // 2. Custom direction check: data-dir="left|right|up|down"
+        const customDir = el.getAttribute('data-dir');
+        const assignedDir = customDir && directions.includes(customDir) 
+          ? customDir 
+          : directions[index % directions.length]; // Automatic alternating sequence
+
+        el.classList.add('erp-dir-anim', `erp-dir-${assignedDir}`);
+
+        // 3. Natural staggering delay
+        const delay = (index % 4) * 80;
+        if (delay > 0) {
+          el.style.transitionDelay = `${delay}ms`;
+        }
+
+        activeTargets.push(el);
+      });
+
+      // 4. Bi-directional Observer (In on viewport enter, Out on viewport leave)
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('erp-in-view');
+          } else {
+            entry.target.classList.remove('erp-in-view');
+          }
+        });
+      }, {
+        root: null,
+        threshold: 0.15,
+        rootMargin: '0px 0px -30px 0px'
+      });
+
+      activeTargets.forEach((el) => observer.observe(el));
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initDirectionalAnimations);
+    } else {
+      initDirectionalAnimations();
+    }
+  })();
 </script>
 </body>
 </html>
