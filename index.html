@@ -2135,6 +2135,7 @@
             </div>
         </div>
     </div>
+</div>
 </section>
 
 <!-- DYNAMIC LEGAL CONTENT CONTAINER -->
@@ -2145,52 +2146,12 @@
         </div>
     </div>
 </div>
-<script>
-    async function loadLegalContent(pageUrl) {
-        try {
-            const landing = document.getElementById('mainLandingContent');
-            const dynamicBox = document.getElementById('dynamicLegalContainer');
-            const contentBox = document.getElementById('policyContentBox');
-
-            const response = await fetch(pageUrl);
-            if (!response.ok) throw new Error('Page load failed');
-            
-            const htmlText = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(htmlText, 'text/html');
-            
-            // Extract inner policy content from the target file
-            const extracted = doc.querySelector('.policy-wrapper') || doc.querySelector('.dpdp-wrapper') || doc.body;
-
-            if (extracted) {
-                if (landing) landing.style.display = 'none';
-                if (dynamicBox) dynamicBox.style.display = 'block';
-
-                contentBox.innerHTML = `
-                    ${extracted.innerHTML}
-                    <div class="mt-5 text-center">
-                        <button onclick="returnToLanding()" class="btn btn-dark px-5 py-2.5 rounded-pill fw-bold shadow-sm" style="background: #0b1f3a; border: none;">
-                            <i class="fas fa-arrow-left me-2"></i> Back to Home
-                        </button>
-                    </div>
-                `;
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
-        } catch (err) {
-            console.error("AJAX Load Error:", err);
-            window.location.href = pageUrl; // Fallback to normal navigation
-        }
-    }
-
-    function returnToLanding() {
-        const landing = document.getElementById('mainLandingContent');
-        const dynamicBox = document.getElementById('dynamicLegalContainer');
-
-        if (dynamicBox) dynamicBox.style.display = 'none';
-        if (landing) landing.style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-</script>
+		<script>
+		function loadLegalContent(pageUrl) {
+				// Direct clean navigation to the separate legal HTML files
+				window.location.href = pageUrl;
+			}
+		</script>
 
     <!-- FOOTER -->
     <footer style="background: #09172c; color: #ffffff; padding: 40px 0 20px;">
