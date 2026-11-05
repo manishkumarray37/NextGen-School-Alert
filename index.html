@@ -2406,9 +2406,25 @@
             const host = window.location.hostname.toLowerCase();
             const protocol = window.location.protocol;
 
-            `if` (host.endsWith('.pages.dev') || host === 'localhost' || host === '127.0.0.1') {
-                // handle direct dev environments
+            function getBaseDomain(h) {
+                const p = h.split('.');
+                if (p.length <= 2) return h;
+                return p.slice(-2).join('.');
             }
+
+            const isDirect = host.endsWith('.pages.dev') || host === 'localhost' || host === '127.0.0.1';
+            let appUrl = "/app.html", studentUrl = "/student.html", adminUrl = "/superadmin.html";
+
+            if (!isDirect) {
+                const base = getBaseDomain(host);
+                appUrl = `${protocol}//app.${base}`;
+                studentUrl = `${protocol}//student.${base}`;
+                adminUrl = `${protocol}//admin.${base}`;
+            }
+
+            document.querySelectorAll("#nav-app-link, #footer-app-link").forEach(el => el.href = appUrl);
+            document.querySelectorAll("#nav-student-link, #footer-student-link").forEach(el => el.href = studentUrl);
+            document.querySelectorAll("#strip-admin-link, #footer-admin-link").forEach(el => el.href = adminUrl);
         });
     </script>
 	<script>
