@@ -1317,6 +1317,7 @@
     <!-- ========================================================
          HERO SECTION (CLEAN BALANCED TYPOGRAPHY)
          ======================================================== -->
+	<div id="mainLandingContent">
     <section class="hero-section" id="home">
         <div class="container">
             <div class="row align-items-center" style="min-height: 75vh;">
@@ -2134,8 +2135,63 @@
             </div>
         </div>
     </div>
+</div>
 </section>
 
+<!-- DYNAMIC LEGAL CONTENT CONTAINER -->
+<div id="dynamicLegalContainer" style="display: none; padding-top: 40px; padding-bottom: 80px;">
+    <div class="container">
+        <div class="policy-wrapper" id="policyContentBox" style="background: #ffffff; border-radius: 24px; padding: 50px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+            <!-- Injected content appears here -->
+        </div>
+    </div>
+</div>
+<script>
+    async function loadLegalContent(pageUrl) {
+        try {
+            const landing = document.getElementById('mainLandingContent');
+            const dynamicBox = document.getElementById('dynamicLegalContainer');
+            const contentBox = document.getElementById('policyContentBox');
+
+            const response = await fetch(pageUrl);
+            if (!response.ok) throw new Error('Page load failed');
+            
+            const htmlText = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlText, 'text/html');
+            
+            // Extract inner policy content from the target file
+            const extracted = doc.querySelector('.policy-wrapper') || doc.querySelector('.dpdp-wrapper') || doc.body;
+
+            if (extracted) {
+                if (landing) landing.style.display = 'none';
+                if (dynamicBox) dynamicBox.style.display = 'block';
+
+                contentBox.innerHTML = `
+                    ${extracted.innerHTML}
+                    <div class="mt-5 text-center">
+                        <button onclick="returnToLanding()" class="btn btn-dark px-5 py-2.5 rounded-pill fw-bold shadow-sm" style="background: #0b1f3a; border: none;">
+                            <i class="fas fa-arrow-left me-2"></i> Back to Home
+                        </button>
+                    </div>
+                `;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        } catch (err) {
+            console.error("AJAX Load Error:", err);
+            window.location.href = pageUrl; // Fallback to normal navigation
+        }
+    }
+
+    function returnToLanding() {
+        const landing = document.getElementById('mainLandingContent');
+        const dynamicBox = document.getElementById('dynamicLegalContainer');
+
+        if (dynamicBox) dynamicBox.style.display = 'none';
+        if (landing) landing.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
 
     <!-- FOOTER -->
     <footer style="background: #09172c; color: #ffffff; padding: 40px 0 20px;">
@@ -2157,9 +2213,11 @@
                         </div>
                         <div class="col-6">
 						<ul class="list-unstyled mb-0" style="font-size: 0.85rem;">
-							<li class="mb-2"><a href="/legal/privacy.html" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-shield-alt me-1 text-success"></i> Privacy Policy</a></li>
-							<li class="mb-2"><a href="/legal/terms.html" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-file-contract me-1 text-primary"></i> Terms of Use</a></li>
-							<li class="mb-2"><a href="/legal/dpdp.html" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-user-shield me-1 text-warning"></i> DPDP &amp; Data Protection</a></li>
+							<ul class="list-unstyled mb-0" style="font-size: 0.85rem;">
+							<li class="mb-2"><a href="#privacy" onclick="loadLegalContent('privacy.html')" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-shield-alt me-1 text-success"></i> Privacy Policy</a></li>
+							<li class="mb-2"><a href="#terms" onclick="loadLegalContent('terms.html')" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-file-contract me-1 text-primary"></i> Terms of Use</a></li>
+							<li class="mb-2"><a href="#dpdp" onclick="loadLegalContent('dpdp.html')" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-user-shield me-1 text-warning"></i> DPDP &amp; Data Protection</a></li>
+						</ul>
 						</ul>
 					</div>
                     </div>
