@@ -2283,7 +2283,7 @@
             }
         }, { passive: true });
 
-// ADVANCED AJAX LEGAL LOADER (Extracts only inner card content, avoids double headers)
+// ADVANCED DYNAMIC HTML LOADER (Fetches clean inner content and injects it smoothly)
         async function openInPageLegal(pageUrl, event) {
             if (event) event.preventDefault();
 
@@ -2292,11 +2292,11 @@
                 const legalContainer = document.getElementById('inPageLegalContainer');
                 const contentBox = document.getElementById('inPageLegalContentBox');
 
-                // Show loading placeholder text
+                // Show loading spinner inside container
                 if (landingContent && legalContainer && contentBox) {
                     landingContent.style.display = 'none';
                     legalContainer.style.display = 'block';
-                    contentBox.innerHTML = `<div class="text-center py-5"><i class="fas fa-spinner fa-spin fa-2x text-primary"></i><p class="mt-2 text-muted">Loading policy details...</p></div>`;
+                    contentBox.innerHTML = `<div class="text-center py-5"><i class="fas fa-spinner fa-spin fa-2x text-primary"></i><p class="mt-2 text-muted">Loading...</p></div>`;
                     window.scrollTo({ top: 120, behavior: 'smooth' });
                 }
 
@@ -2307,40 +2307,35 @@
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(htmlText, 'text/html');
 
-                // Look for the main policy card wrapper inside privacy.html/terms.html/dpdp.html
-                const extractedContent = doc.querySelector('.policy-wrapper') || doc.querySelector('.dpdp-wrapper') || doc.querySelector('.container');
+                // Extract the hero banner and policy wrapper from the fetched file
+                const heroBanner = doc.querySelector('.dpdp-hero-banner') || doc.querySelector('.policy-hero-banner') || doc.querySelector('.terms-hero-banner');
+                const policyWrapper = doc.querySelector('.dpdp-wrapper') || doc.querySelector('.policy-wrapper');
 
-                if (extractedContent && contentBox) {
-                    // Clean up any nested back buttons if present in extracted content
-                    const oldButtons = extractedContent.querySelectorAll('.mt-5.text-center');
-                    oldButtons.forEach(b => b.remove());
-
+                if ((heroBanner || policyWrapper) && contentBox) {
                     contentBox.innerHTML = `
-                        ${extractedContent.innerHTML}
+                        ${heroBanner ? heroBanner.outerHTML : ''}
+                        ${policyWrapper ? policyWrapper.outerHTML : ''}
                         <div class="mt-5 text-center">
                             <button onclick="closeInPageLegal()" class="btn btn-dark px-5 py-2.5 rounded-pill fw-bold shadow-sm" style="background: #0b1f3a; border: none;">
                                 <i class="fas fa-arrow-left me-2"></i> Back to Home
                             </button>
                         </div>
                     `;
+                    
+                    // Fix Back button inside the injected container to use our close function instead of root '/'
+                    const backBtn = contentBox.querySelector('.mt-5.text-center a, .mt-5.text-center button');
+                    if(backBtn) {
+                        backBtn.removeAttribute('href');
+                        backBtn.setAttribute('onclick', 'closeInPageLegal()');
+                    }
+
+                    window.scrollTo({ top: 120, behavior: 'smooth' });
                 } else {
-                    throw new Error('Content wrapper not found in target file');
+                    throw new Error('Required content containers not found');
                 }
             } catch (err) {
-                console.error("Legal Page Load Error:", err);
-                // Fallback: direct navigation if fetch encounters an issue
-                window.location.href = pageUrl;
-            }
-        }
-
-        function closeInPageLegal() {
-            const landingContent = document.getElementById('mainLandingContent');
-            const legalContainer = document.getElementById('inPageLegalContainer');
-
-            if (legalContainer && landingContent) {
-                legalContainer.style.display = 'none';
-                landingContent.style.display = 'block';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                console.error("AJAX Load Error:", err);
+                window.location.href = pageUrl; // Fallback to direct page load if error occurs
             }
         }
 
