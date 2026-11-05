@@ -2283,7 +2283,7 @@
             }
         }, { passive: true });
 
-        // AJAX IN-PAGE LEGAL LOADER (Fixes 404 & Open inside main page)
+// ADVANCED AJAX LEGAL LOADER (Extracts only inner card content, avoids double headers)
         async function openInPageLegal(pageUrl, event) {
             if (event) event.preventDefault();
 
@@ -2292,19 +2292,28 @@
                 const legalContainer = document.getElementById('inPageLegalContainer');
                 const contentBox = document.getElementById('inPageLegalContentBox');
 
+                // Show loading placeholder text
+                if (landingContent && legalContainer && contentBox) {
+                    landingContent.style.display = 'none';
+                    legalContainer.style.display = 'block';
+                    contentBox.innerHTML = `<div class="text-center py-5"><i class="fas fa-spinner fa-spin fa-2x text-primary"></i><p class="mt-2 text-muted">Loading policy details...</p></div>`;
+                    window.scrollTo({ top: 120, behavior: 'smooth' });
+                }
+
                 const response = await fetch(pageUrl);
-                if (!response.ok) throw new Error('Network response was not ok');
+                if (!response.ok) throw new Error('Page load failed');
 
                 const htmlText = await response.text();
                 const parser = new DOMParser();
                 const doc = parser.parseFromString(htmlText, 'text/html');
 
-                // Extract the policy/dpdp inner contents
-                const extractedContent = doc.querySelector('.policy-wrapper') || doc.querySelector('.dpdp-wrapper') || doc.body;
+                // Look for the main policy card wrapper inside privacy.html/terms.html/dpdp.html
+                const extractedContent = doc.querySelector('.policy-wrapper') || doc.querySelector('.dpdp-wrapper') || doc.querySelector('.container');
 
-                if (extractedContent && landingContent && legalContainer && contentBox) {
-                    landingContent.style.display = 'none';
-                    legalContainer.style.display = 'block';
+                if (extractedContent && contentBox) {
+                    // Clean up any nested back buttons if present in extracted content
+                    const oldButtons = extractedContent.querySelectorAll('.mt-5.text-center');
+                    oldButtons.forEach(b => b.remove());
 
                     contentBox.innerHTML = `
                         ${extractedContent.innerHTML}
@@ -2314,11 +2323,13 @@
                             </button>
                         </div>
                     `;
-                    window.scrollTo({ top: 120, behavior: 'smooth' });
+                } else {
+                    throw new Error('Content wrapper not found in target file');
                 }
             } catch (err) {
-                console.error("Failed to load legal page dynamically:", err);
-                window.location.href = pageUrl; // Fallback to direct navigation if fetch fails
+                console.error("Legal Page Load Error:", err);
+                // Fallback: direct navigation if fetch encounters an issue
+                window.location.href = pageUrl;
             }
         }
 
