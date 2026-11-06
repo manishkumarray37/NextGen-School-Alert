@@ -43523,13 +43523,12 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </div>
 
 <script type='text/javascript'>
-  // <![CDATA[
   (function() {
     let rawConfigPayload = null;
     let currentCategory = "Session";
     let categoriesList = [];
 
-    // ⚡ 1. INITIALIZE & DETECT URL / ROUTE CATEGORY
+    // 1. Initialize Route
     window.initMasterSettingsModule = async function() {
       const p = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '').trim();
       const h = (window.location.hash || "").replace(/^#\/?/, '').trim();
@@ -43544,7 +43543,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       await window.loadDynamicConfigHub(false);
     };
 
-    // ⚡ 2. FETCH DIRECT FROM SUPABASE 'School_Configs' (REPLACED GOOGLE SHEET)
+    // 2. Fetch From Supabase
     window.loadDynamicConfigHub = async function(forceRefresh) {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const schoolId = user.schoolId;
@@ -43559,7 +43558,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
         if (error) throw error;
 
-        // Transform Supabase rows into the exact data structure expected by old templates
         const dynamicMap = {};
         const availableTypes = [];
 
@@ -43586,22 +43584,19 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         categoriesList = availableTypes;
         if (categoriesList.length === 0) categoriesList = ["Session", "Class", "Role", "Designation"];
 
-        // Match current category case-insensitively
         const matched = categoriesList.find(c => c.toLowerCase() === currentCategory.toLowerCase());
         currentCategory = matched || categoriesList[0];
 
         window.renderDynamicTabsBar();
         window.renderActiveCategoryView();
 
-        // Clear local cache so all ERP dropdowns get fresh data immediately
         localStorage.removeItem("a2z_config_" + schoolId);
-
       } catch(err) {
         console.error("Config load error:", err);
       }
     };
 
-    // ⚡ 3. RENDER DYNAMIC TABS
+    // 3. Render Tabs
     window.renderDynamicTabsBar = function() {
       const bar = document.getElementById('cfgDynamicTabsBar');
       if (!bar) return;
@@ -43627,30 +43622,30 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       bar.innerHTML = html;
     };
 
-    // ⚡ 4. SWITCH TAB (DYNAMIC URL & SIDEBAR SYNC)
+    // 4. Switch Tab Action
     window.switchConfigCategoryTab = function(newCat) {
       if (!newCat) return;
 
       const matched = categoriesList.find(c => c.toLowerCase() === newCat.toLowerCase());
       currentCategory = matched || newCat;
 
-      // Update Active Horizontal Tab Buttons (Green Pill)
+      // Update Horizontal Pill Button
       document.querySelectorAll('.cfg-tab-btn').forEach(b => {
         const bText = b.innerText.trim();
         b.classList.toggle('active', bText.toLowerCase().includes(currentCategory.toLowerCase()));
       });
 
-      // Update URL (/app/ManageClass or /ManageClass)
+      // Update URL
       const host = window.location.hostname.toLowerCase();
-      const isSubdomain = host.startsWith("app.");
+      const isSub = host.startsWith("app.");
       const routeName = "Manage" + currentCategory;
-      const targetUrl = isSubdomain ? `/${routeName}` : `/app/${routeName}`;
+      const targetUrl = isSub ? `/${routeName}` : `/app/${routeName}`;
 
       if (window.location.pathname !== targetUrl) {
         history.pushState({ page: routeName }, "", targetUrl);
       }
 
-      // Update Active Sidebar Highlight in Left Menu
+      // Update Left Sidebar Green Link
       document.querySelectorAll('.nav-link-custom, .nav-link-nested').forEach(link => {
         const fn = link.getAttribute('onclick') || '';
         link.classList.toggle('active-sub', fn.includes(routeName));
@@ -43660,7 +43655,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       window.renderActiveCategoryView();
     };
 
-    // ⚡ 5. RENDER ACTIVE VIEW (WITH SECTIONS & SUBJECTS)
+    // 5. Render Active View
     window.renderActiveCategoryView = function() {
       const headingEl = document.getElementById('cfgActiveCategoryHeading');
       if (headingEl) headingEl.innerText = `Manage ${currentCategory}`;
@@ -43670,9 +43665,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       const inpValEl = document.getElementById('cfgValueInput');
       if (inpValEl) inpValEl.placeholder = `Enter ${currentCategory}...`;
-
-      const hintEl = document.getElementById('cfgUrlHintText');
-      if (hintEl) hintEl.innerText = `Direct Link: /Manage${currentCategory}`;
 
       const isClass = (currentCategory.toLowerCase() === "class");
       const extraContainer = document.getElementById('cfgExtraFieldContainer');
@@ -43686,8 +43678,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       if (subjectsColHeader) subjectsColHeader.style.display = isClass ? 'table-cell' : 'none';
 
       const dynamicMap = (rawConfigPayload && rawConfigPayload.dynamicConfig) ? rawConfigPayload.dynamicConfig : {};
-      
-      // Match current category items
       const matchedKey = Object.keys(dynamicMap).find(k => k.toLowerCase() === currentCategory.toLowerCase());
       const items = matchedKey ? dynamicMap[matchedKey] : [];
 
@@ -43731,21 +43721,18 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       tbody.innerHTML = html;
     };
 
-    // ⚡ 6. PROMPT TO ADD NEW CATEGORY
     window.promptAddNewSettingCategory = function() {
-      const newCatName = prompt("Enter New Setting Category Name (e.g. BloodGroup, House, Subject, FeeCategory):");
-      if (!newCatName || !newCatName.trim()) return;
+      const name = prompt("Enter New Setting Category Name (e.g. House, FeeCategory):");
+      if (!name || !name.trim()) return;
+      const clean = name.replace(/[^a-zA-Z0-9]/g, "").trim();
+      if (!clean) return;
 
-      const cleanCat = newCatName.replace(/[^a-zA-Z0-9]/g, "").trim();
-      if (!cleanCat) return;
-
-      if (!categoriesList.some(x => x.toLowerCase() === cleanCat.toLowerCase())) {
-        categoriesList.push(cleanCat);
+      if (!categoriesList.some(x => x.toLowerCase() === clean.toLowerCase())) {
+        categoriesList.push(clean);
       }
-      window.switchConfigCategoryTab(cleanCat);
+      window.switchConfigCategoryTab(clean);
     };
 
-    // ⚡ 7. EDIT FORM CONTROLLER
     window.editConfigItemRecord = function(val, extra, subjects) {
       document.getElementById('cfgEditOldValue').value = val;
       document.getElementById('cfgValueInput').value = val;
@@ -43765,19 +43752,15 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       document.getElementById('btnCancelCfgEdit').style.display = 'none';
     };
 
-    // 💾 8. SAVE / UPDATE DIRECT IN SUPABASE (REPLACED GOOGLE SHEET POST)
+    // Save/Update in Supabase
     window.saveConfigItemRecord = async function(e) {
       e.preventDefault();
-
       const val = document.getElementById('cfgValueInput').value.trim();
       const extra = document.getElementById('cfgExtraInput').value.trim();
       const subjects = document.getElementById('cfgSubjectsInput').value.trim();
       const oldVal = document.getElementById('cfgEditOldValue').value.trim();
 
-      if (!val) {
-        alert("Please enter a value name!");
-        return;
-      }
+      if (!val) { alert("Please enter a value name!"); return; }
 
       const btn = document.getElementById('btnSubmitCfgRecord');
       btn.disabled = true;
@@ -43788,14 +43771,9 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       try {
         if (oldVal) {
-          // UPDATE
           const { error } = await db
             .from('School_Configs')
-            .update({
-              Value: val,
-              Sections: extra,
-              Subjects: subjects
-            })
+            .update({ Value: val, Sections: extra, Subjects: subjects })
             .eq('SchoolID', schoolId)
             .eq('Category', currentCategory)
             .eq('Value', oldVal);
@@ -43803,7 +43781,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           if (error) throw error;
           alert(`✅ ${currentCategory} updated successfully!`);
         } else {
-          // INSERT
           const { error } = await db
             .from('School_Configs')
             .insert([{
@@ -43820,9 +43797,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
         window.resetConfigItemForm();
         await window.loadDynamicConfigHub(true);
-
       } catch(err) {
-        console.error("Save config error:", err);
         alert("Failed to save: " + (err.message || err));
       } finally {
         btn.disabled = false;
@@ -43830,7 +43805,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
     };
 
-    // 🗑️ 9. DELETE FROM SUPABASE (REPLACED GOOGLE SHEET DELETE)
+    // Delete in Supabase
     window.deleteConfigItemRecord = async function(val) {
       if (!confirm(`Are you sure you want to delete "${val}" from ${currentCategory}?`)) return;
 
@@ -43846,20 +43821,15 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           .eq('Value', val);
 
         if (error) throw error;
-
         alert(`✅ Deleted "${val}" successfully!`);
         await window.loadDynamicConfigHub(true);
-
-      } catch(e) {
-        console.error("Delete config error:", e);
-        alert("Failed to delete: " + (e.message || e));
+      } catch(err) {
+        alert("Failed to delete: " + (err.message || err));
       }
     };
 
-    // Auto-run on template mount
     window.initMasterSettingsModule();
   })();
-  // ]]>
 </script>
 </template>
 
