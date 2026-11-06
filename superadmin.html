@@ -2025,5 +2025,60 @@
       }
     };
   </script>
+<div id='global-top-loader'></div>
+<style>
+  #global-top-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, #059669, #10b981, #38bdf8, #f59e0b);
+    z-index: 99999999 !important;
+    transition: width 0.25s ease, opacity 0.3s ease;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+    pointer-events: none;
+  }
+</style>
+  <!-- 3. TURBO JAVASCRIPT CONTROLLER -->
+<script type='text/javascript'>
+(function() {
+  window.startTopLoader = function() {
+    var loader = document.getElementById('global-top-loader');
+    if (loader) {
+      loader.style.opacity = '1';
+      loader.style.width = '35%';
+      setTimeout(function() { 
+        if (loader.style.width === '35%') loader.style.width = '75%'; 
+      }, 150);
+    }
+  };
+
+  window.stopTopLoader = function() {
+    var loader = document.getElementById('global-top-loader');
+    if (loader) {
+      loader.style.width = '100%';
+      setTimeout(function() {
+        loader.style.opacity = '0';
+        setTimeout(function() { loader.style.width = '0%'; }, 200);
+      }, 250);
+    }
+  };
+
+  // हर Search और API Request पर अपने आप टॉप लोडिंग बार चलेगा
+  var originalFetch = window.fetch;
+  window.fetch = async function() {
+    window.startTopLoader();
+    try {
+      var response = await originalFetch.apply(this, arguments);
+      window.stopTopLoader();
+      return response;
+    } catch (err) {
+      window.stopTopLoader();
+      throw err;
+    }
+  };
+})();
+</script>
 </body>
 </html>

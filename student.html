@@ -5707,7 +5707,7 @@
   <!-- 👆👆👆 END OF STUDENT TEMPLATES REPOSITORY 👆👆👆 -->
 
   <!-- =================================================================== -->
-  <!-- 4. ACCOUNT PROFILE POPUP MODAL (SCREENSHOT 3 EXACT MATCH)           -->
+  <!-- 4. ACCOUNT PROFILE POPUP MODAL (STUDENT VIEW - NO DIRECT PHOTO EDIT) -->
   <!-- =================================================================== -->
   <div class="modal fade" id="userAccountProfileModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
@@ -5717,13 +5717,13 @@
           <button class="btn-close btn-close-white" data-bs-dismiss="modal" type="button"></button>
         </div>
         <div class="modal-body p-4 text-center">
-          <!-- Square Rounded Avatar (Exact Match) -->
+          
+          <!-- Avatar (Camera Button Removed - View Only) -->
           <div class="position-relative d-inline-block mb-3">
             <img class="profile-modal-avatar shadow" id="modalStudentAvatarPreview" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
-            <span class="position-absolute bottom-0 end-0 bg-primary text-white rounded-circle p-1.5 shadow" style="font-size: 11px;"><i class="fas fa-camera"></i></span>
           </div>
 
-          <h5 class="fw-bold text-dark mb-1" id="modalStudentFullName">AARAV KUMAR</h5>
+          <h5 class="fw-bold text-dark mb-1" id="modalStudentFullName">Student Name</h5>
           <div class="badge bg-primary px-3 py-1 mb-3">STUDENT</div>
 
           <div class="text-start border rounded-3 p-3 bg-light mb-3" style="font-size: 13px;">
@@ -5732,6 +5732,7 @@
             <div><strong>Status:</strong> <span class="badge bg-success">ACTIVE</span></div>
           </div>
 
+          <!-- Actions: Change Password & Request Correction -->
           <div class="d-flex justify-content-between gap-2 pt-2 border-top">
             <button class="btn btn-outline-warning btn-sm fw-bold px-3 py-2" onclick="window.openChangePasswordModal()" type="button">
               <i class="fas fa-key me-1"></i> Change Password
@@ -6240,67 +6241,99 @@
       new bootstrap.Modal(document.getElementById('studentCorrectionModal')).show();
     };
 
-    // 📝 Submit Correction Request (Supabase Native)
-    window.submitStudentCorrectionRequest = async function(e) {
-      e.preventDefault();
-      const btn = document.getElementById('btnSubmitCorrection');
-      const msgBox = document.getElementById('correctionStatusMsg');
-      const fileInput = document.getElementById('reqFileAttachment');
+    // 📝 SUBMIT CORRECTION REQUEST (100% SUPABASE NATIVE - ZERO 500 ERRORS)
+  window.submitStudentCorrectionRequest = async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('btnSubmitCorrection');
+    const msgBox = document.getElementById('correctionStatusMsg');
+    const fileInput = document.getElementById('reqFileAttachment');
 
-      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const p = user.studentProfile || {};
+    const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+    const p = user.studentProfile || {};
 
-      btn.disabled = true;
-      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Submitting...`;
-      msgBox.innerHTML = "";
+    if (!user.schoolId) {
+      alert("Session expired. Please login again.");
+      return;
+    }
 
-      try {
-        let attachmentUrl = "";
-        if (fileInput.files && fileInput.files[0]) {
-          const file = fileInput.files[0];
-          if (typeof window.uploadToR2 === "function") {
-            attachmentUrl = await window.uploadToR2(file, "requests");
-          } else {
-            const path = `${user.schoolId}/requests/${Date.now()}_${file.name}`;
-            await db.storage.from("School_Data").upload(path, file, { upsert: true });
-            const { data } = db.storage.from("School_Data").getPublicUrl(path);
-            attachmentUrl = data.publicUrl;
-          }
+    btn.disabled = true;
+    btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Submitting...`;
+    msgBox.innerHTML = "";
+
+    try {
+      let attachmentUrl = "";
+
+      // 1. Upload ID Proof directly to Supabase Storage (School_Data Bucket)
+      if (fileInput.files && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        
+        // Check 5MB limit
+        if (file.size > 5 * 1024 * 1024) {
+          throw new Error("File size exceeds 5MB limit. Please upload a smaller document.");
         }
 
-        const payload = {
-          SchoolID: user.schoolId,
-          StudentID: p.StudId || p.AdmissionNo || user.loginId,
-          AdmissionNo: p.AdmissionNo || "",
-          StudentName: user.name || "",
-          Class: p.Class || "",
-          Section: p.Section || "",
-          RollNo: p.RollNo || "",
-          MobileNo: p.ContactMobileNo || "",
-          RequestType: document.getElementById('reqCategory').value,
-          Description: document.getElementById('reqDescription').value,
-          AttachmentUrl: attachmentUrl,
-          Status: 'Pending',
-          Date: new Date().toISOString().split('T')[0]
-        };
+        const ext = file.name ? file.name.split('.').pop() : "png";
+        const cleanFileName = `proof_${Date.now()}_${Math.random().toString(36).substring(2, 6)}.${ext}`;
+        const filePath = `${user.schoolId}/requests/${cleanFileName}`;
 
-        const { error } = await db.from('Student_Requests').insert([payload]);
-        if (error) throw error;
+        const { error: uploadError } = await db.storage
+          .from('School_Data')
+          .upload(filePath, file, {
+            upsert: true,
+            contentType: file.type || 'application/octet-stream'
+          });
 
-        msgBox.innerHTML = `<div class="alert alert-success py-2 small fw-bold mb-0">✅ Correction request sent to school administration successfully!</div>`;
-        document.getElementById('formStudentCorrection').reset();
-        setTimeout(() => {
-          bootstrap.Modal.getInstance(document.getElementById('studentCorrectionModal')).hide();
-          msgBox.innerHTML = "";
-        }, 1500);
+        if (uploadError) throw uploadError;
 
-      } catch(err) {
-        msgBox.innerHTML = `<div class="alert alert-danger py-2 small fw-bold mb-0">❌ Error: ${err.message}</div>`;
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<i class="fas fa-paper-plane me-1"></i> Submit Request`;
+        const { data: publicUrlData } = db.storage
+          .from('School_Data')
+          .getPublicUrl(filePath);
+
+        attachmentUrl = publicUrlData.publicUrl;
       }
-    };
+
+      // 2. Insert record into Supabase "Student_Requests" Table
+      const payload = {
+        SchoolID: user.schoolId,
+        StudentID: p.StudId || p.StudentID || user.loginId || "",
+        AdmissionNo: p.AdmissionNo || p.StudId || "",
+        StudentName: user.name || p.StudentName || "",
+        Class: p.Class || "",
+        Section: p.Section || p.Sec || "",
+        RollNo: p.RollNo || p.Roll || "",
+        MobileNo: p.ContactMobileNo || p.FatherMobileNo || "",
+        RequestType: document.getElementById('reqCategory').value,
+        Description: document.getElementById('reqDescription').value.trim(),
+        AttachmentUrl: attachmentUrl,
+        Status: 'Pending',
+        Date: new Date().toISOString().split('T')[0]
+      };
+
+      const { error: dbError } = await db
+        .from('Student_Requests')
+        .insert([payload]);
+
+      if (dbError) throw dbError;
+
+      // 3. Success UI Feedback
+      msgBox.innerHTML = `<div class="alert alert-success py-2 small fw-bold mb-0">✅ Correction request sent to school administration successfully!</div>`;
+      document.getElementById('formStudentCorrection').reset();
+
+      setTimeout(() => {
+        const modalEl = document.getElementById('studentCorrectionModal');
+        const modalInstance = bootstrap.Modal.getInstance(modalEl);
+        if (modalInstance) modalInstance.hide();
+        msgBox.innerHTML = "";
+      }, 1800);
+
+    } catch (err) {
+      console.error("Correction Request Error:", err);
+      msgBox.innerHTML = `<div class="alert alert-danger py-2 small fw-bold mb-0">❌ Error: ${err.message || 'Failed to submit request'}</div>`;
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fas fa-paper-plane me-1"></i> Submit Request`;
+    }
+  };
 
     // 🚪 Logout Handler
     window.doStudentLogout = function() {
@@ -6384,5 +6417,59 @@
       window.initStudentPortal();
     });
   </script>
+<div id='global-top-loader'></div>
+<style>
+  #global-top-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, #059669, #10b981, #38bdf8, #f59e0b);
+    z-index: 99999999 !important;
+    transition: width 0.25s ease, opacity 0.3s ease;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+    pointer-events: none;
+  }
+</style>
+  <!-- 3. TURBO JAVASCRIPT CONTROLLER -->
+<script type='text/javascript'>
+(function() {
+  window.startTopLoader = function() {
+    var loader = document.getElementById('global-top-loader');
+    if (loader) {
+      loader.style.opacity = '1';
+      loader.style.width = '35%';
+      setTimeout(function() { 
+        if (loader.style.width === '35%') loader.style.width = '75%'; 
+      }, 150);
+    }
+  };
+
+  window.stopTopLoader = function() {
+    var loader = document.getElementById('global-top-loader');
+    if (loader) {
+      loader.style.width = '100%';
+      setTimeout(function() {
+        loader.style.opacity = '0';
+        setTimeout(function() { loader.style.width = '0%'; }, 200);
+      }, 250);
+    }
+  };
+
+  var originalFetch = window.fetch;
+  window.fetch = async function() {
+    window.startTopLoader();
+    try {
+      var response = await originalFetch.apply(this, arguments);
+      window.stopTopLoader();
+      return response;
+    } catch (err) {
+      window.stopTopLoader();
+      throw err;
+    }
+  };
+})();
+</script>
 </body>
 </html>

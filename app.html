@@ -48304,6 +48304,214 @@ window.finalSubmit = async function(btn) {
         }
     };
     // ]]>
-    </script>
+</script>
+<div id='global-top-loader'></div>
+<style>
+  #global-top-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, #059669, #10b981, #38bdf8, #f59e0b);
+    z-index: 99999999 !important;
+    transition: width 0.25s ease, opacity 0.3s ease;
+    box-shadow: 0 0 12px rgba(16, 185, 129, 0.8);
+    pointer-events: none;
+  }
+</style>
+<!-- 3. TURBO JAVASCRIPT CONTROLLER -->
+<script type='text/javascript'>
+(function() {
+  window.startTopLoader = function() {
+    var loader = document.getElementById('global-top-loader');
+    if (loader) {
+      loader.style.opacity = '1';
+      loader.style.width = '35%';
+      setTimeout(function() { 
+        if (loader.style.width === '35%') loader.style.width = '75%'; 
+      }, 150);
+    }
+  };
+
+  window.stopTopLoader = function() {
+    var loader = document.getElementById('global-top-loader');
+    if (loader) {
+      loader.style.width = '100%';
+      setTimeout(function() {
+        loader.style.opacity = '0';
+        setTimeout(function() { loader.style.width = '0%'; }, 200);
+      }, 250);
+    }
+  };
+
+  var originalFetch = window.fetch;
+  window.fetch = async function() {
+    window.startTopLoader();
+    try {
+      var response = await originalFetch.apply(this, arguments);
+      window.stopTopLoader();
+      return response;
+    } catch (err) {
+      window.stopTopLoader();
+      throw err;
+    }
+  };
+})();
+</script>
+<!-- =================================================================== -->
+<!-- 🎆 ALL-IN-ONE SELF-CONTAINED FESTIVE GREETINGS POPUP FOR STAFF/ADMIN-->
+<!-- =================================================================== -->
+<script type="text/javascript">
+(function() {
+    // 1. Auto-Inject Greeting Modal HTML into DOM if not present
+    function injectGreetingModalHTML() {
+        if (document.getElementById('globalGreetingPopupModal')) return;
+
+        const modalMarkup = `
+        <div aria-hidden="true" class="modal fade" id="globalGreetingPopupModal" style="z-index: 9999999;" tabindex="-1">
+          <div class="modal-dialog modal-dialog-centered" style="max-width: 520px; margin: 1.5rem auto;">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden; background: #ffffff;">
+              <div style="background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); padding: 16px 20px; position: relative; color: #ffffff; text-align: center;">
+                <button type="button" class="btn-close btn-close-white position-absolute" style="top: 14px; right: 14px;" data-bs-dismiss="modal" onclick="window.dismissGreetingPopupManually()"></button>
+                <h5 class="fw-bold m-0" id="popupGreetingTitle">Festive Greetings! 🎆</h5>
+                <small class="text-white-50 d-block mt-0.5" id="popupGreetingSchool">School Administration</small>
+              </div>
+              <div style="height: 4px; width: 100%; background: #fde68a; overflow: hidden;">
+                <div id="popupGreetingTimerBar" style="height: 100%; width: 100%; background: #b45309; transition: width 1s linear;"></div>
+              </div>
+              <div class="modal-body p-3 text-center">
+                <div class="rounded-3 overflow-hidden mb-3 border" id="popupMediaContainer" style="background:#0f172a; min-height: 180px; max-height: 320px; display:flex; align-items:center; justify-content:center;">
+                  <img class="img-fluid w-100" id="popupGreetingImg" src="" alt="Greeting Poster" style="max-height: 320px; object-fit: contain;">
+                </div>
+                <h6 class="fw-bold text-dark" id="popupGreetingUserGreeting">Dear Staff Member,</h6>
+                <p class="small text-muted mb-3" id="popupGreetingMessage" style="white-space: pre-wrap; line-height: 1.5;">Warmest festive wishes from the Management.</p>
+                <div class="d-flex align-items-center justify-content-between gap-2 pt-2 border-top">
+                  <span class="badge bg-light text-secondary border" style="font-size: 10px;">
+                    <i class="far fa-clock me-1 text-warning"></i> Auto-closing in <strong class="text-dark" id="popupSecCountdown">5</strong>s
+                  </span>
+                  <button class="btn btn-warning btn-sm px-3 py-1.5 fw-bold text-dark rounded-pill shadow-sm" data-bs-dismiss="modal" type="button" onclick="window.dismissGreetingPopupManually()">
+                    Continue to Dashboard <i class="fas fa-arrow-right ms-1"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalMarkup);
+    }
+
+    // 2. Timer & Modal Dismiss Controllers
+    let autoDismissTimer = null;
+    let countdownInterval = null;
+
+    function clearGreetingTimers() {
+        if (autoDismissTimer) clearTimeout(autoDismissTimer);
+        if (countdownInterval) clearInterval(countdownInterval);
+    }
+
+    window.dismissGreetingPopupManually = function() {
+        clearGreetingTimers();
+    };
+
+    // 3. Supabase Fetch & Display Controller
+    window.checkAndShowLiveGreetingPopup = async function() {
+        try {
+            injectGreetingModalHTML();
+
+            const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+            if (!user.schoolId) return;
+
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            // Query live active greetings for today
+            const { data, error } = await db
+                .from('E_Greetings')
+                .select('*')
+                .eq('SchoolID', user.schoolId)
+                .eq('Status', 'ACTIVE')
+                .lte('StartDate', todayStr)
+                .gte('EndDate', todayStr);
+
+            if (error || !data || data.length === 0) return;
+
+            // Target Audience Matching for Staff & Admin
+            const g = data.find(item => {
+                const aud = String(item.TargetAudience || "ALL").toUpperCase();
+                return (aud === "ALL" || aud === "EVERYONE" || aud === "STAFF");
+            });
+
+            if (!g) return;
+
+            // Show once per user session
+            const sessionKey = `seen_egreeting_${user.schoolId}_${g.GreetingID || g.Id || g.id}`;
+            if (sessionStorage.getItem(sessionKey)) return;
+
+            // Populate Modal Content
+            document.getElementById('popupGreetingTitle').innerText = g.Title || "Festive Greetings! 🎆";
+            document.getElementById('popupGreetingSchool').innerText = user.schoolName || "School Administration";
+            document.getElementById('popupGreetingUserGreeting').innerText = `Dear ${user.name || 'Staff Member'},`;
+            document.getElementById('popupGreetingMessage').innerText = g.Message || "Warmest festive wishes!";
+
+            const mediaBox = document.getElementById('popupMediaContainer');
+            if (g.MediaType === "VIDEO" && g.VideoUrl) {
+                let vUrl = g.VideoUrl.trim();
+                if (vUrl.includes("watch?v=")) vUrl = vUrl.replace("watch?v=", "embed/");
+                else if (vUrl.includes("youtu.be/")) vUrl = vUrl.replace("youtu.be/", "www.youtube.com/embed/");
+                mediaBox.innerHTML = `<iframe src="${vUrl}?autoplay=1" allow="autoplay; fullscreen" style="width:100%; height:270px; border:none;" allowfullscreen></iframe>`;
+            } else {
+                mediaBox.innerHTML = `<img class="img-fluid" src="${g.PosterUrl || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600'}" style="max-height:320px; object-fit:contain;">`;
+            }
+
+            sessionStorage.setItem(sessionKey, "true");
+
+            // Show Modal via Bootstrap
+            const modalEl = document.getElementById('globalGreetingPopupModal');
+            const modalInstance = new bootstrap.Modal(modalEl);
+            modalInstance.show();
+
+            // 5s Countdown Timer & Progress Bar
+            let sec = 5;
+            const cntEl = document.getElementById('popupSecCountdown');
+            const barEl = document.getElementById('popupGreetingTimerBar');
+            
+            clearGreetingTimers();
+            countdownInterval = setInterval(() => {
+                sec--;
+                if (cntEl) cntEl.innerText = sec;
+                if (barEl) barEl.style.width = `${(sec / 5) * 100}%`;
+                if (sec <= 0) clearInterval(countdownInterval);
+            }, 1000);
+
+            autoDismissTimer = setTimeout(() => {
+                modalInstance.hide();
+                clearGreetingTimers();
+            }, 5000);
+
+        } catch(e) {
+            console.warn("Greeting popup skipped:", e);
+        }
+    };
+
+    // 4. Auto-Hook into Dashboard Boot
+    function autoHookGreeting() {
+        if (typeof window.initDashboard === "function") {
+            const originalInit = window.initDashboard;
+            window.initDashboard = function() {
+                originalInit.apply(this, arguments);
+                setTimeout(window.checkAndShowLiveGreetingPopup, 900);
+            };
+        }
+        setTimeout(window.checkAndShowLiveGreetingPopup, 1200);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', autoHookGreeting);
+    } else {
+        autoHookGreeting();
+    }
+})();
+</script>
 </body>
 </html>
