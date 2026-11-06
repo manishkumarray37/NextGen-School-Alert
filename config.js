@@ -6,18 +6,21 @@ window.db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 window.STORAGE_BUCKET = "School_Data";
 window.R2_PUBLIC_URL = "https://pub-edbd94d93c744b28be5bc8dca7ea9c1d.r2.dev";
 
-// Universal R2 File Uploader
+// Universal R2 File Uploader (Supports Files & Canvas Blobs)
 window.uploadToR2 = async function(file, moduleName, customFileName) {
   try {
     const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-    const activeSchool = user.schoolId;
+    const activeSchool = user.schoolId || "GLOBAL";
 
-    if (!activeSchool) {
-      throw new Error("Active school session not found.");
+    // Auto-detect extension even for compressed Blobs without a name
+    let ext = "jpg";
+    if (file.name && file.name.includes('.')) {
+      ext = file.name.split('.').pop().toLowerCase();
+    } else if (file.type && file.type.includes('/')) {
+      ext = file.type.split('/')[1].replace('jpeg', 'jpg');
     }
 
     const cleanModule = (moduleName || "general").toLowerCase();
-    const ext = file.name ? file.name.split('.').pop() : "bin";
     const fileName = customFileName || `${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
     const targetPath = `${activeSchool}/${cleanModule}/${fileName}`;
 
@@ -32,12 +35,38 @@ window.uploadToR2 = async function(file, moduleName, customFileName) {
 
     const data = await res.json();
     if (!res.ok || !data.success) {
-      throw new Error(data.error || "Failed to upload file to storage");
+      throw new Error(data.error || "Failed to upload file to Cloudflare R2");
     }
 
-    return data.url;
+    // Return Full R2 Public URL
+    if (data.url && data.url.startsWith("http")) {
+      return data.url;
+    }
+    return `${window.R2_PUBLIC_URL}/${targetPath}`;
+
   } catch (err) {
     console.error("R2 Upload Error:", err);
     throw err;
+  }
+};
+
+// Universal R2 File Deletion Helper
+window.deleteFromR2 = async function(fileUrl) {
+  if (!fileUrl || typeof fileUrl !== 'string') return;
+  try {
+    // Only process R2 URLs
+    if (!fileUrl.includes('.r2.dev') && !fileUrl.includes('/api/upload')) return;
+
+    const urlObj = new URL(fileUrl);
+    const filePath = urlObj.pathname.replace(/^\/+/, '');
+    if (!filePath) return;
+
+    const res = await fetch(`/api/upload?path=${encodeURIComponent(filePath)}`, {
+      method: "DELETE"
+    });
+    const data = await res.json();
+    return data && data.success;
+  } catch (err) {
+    console.warn("R2 Delete Warning:", err);
   }
 };
