@@ -47045,6 +47045,13 @@ body.public-page-mode .main-content {
 
 			if (error || !data || data.length === 0) throw error || new Error("No configs found");
 
+			// Sort by database primary key ID first
+			data.sort((a, b) => {
+				const idA = a.Id || a.id || 0;
+				const idB = b.Id || b.id || 0;
+				return idA - idB;
+			});
+
 			const result = {
 				status: "success",
 				sessions: [],
@@ -47053,6 +47060,8 @@ body.public-page-mode .main-content {
 				roles: [],
 				designations: []
 			};
+
+			const classItems = [];
 
 			data.forEach(item => {
 				const cat = String(item.Category || item.category || "").trim().toLowerCase();
@@ -47065,14 +47074,23 @@ body.public-page-mode .main-content {
 				if (cat === "session") {
 					if (!result.sessions.includes(val)) result.sessions.push(val);
 				} else if (cat === "class") {
-					result.classMap[val] = secs;
-					if (subs) result.classSubjectMap[val] = subs;
+					classItems.push({ val, secs, subs });
 				} else if (cat === "role") {
 					if (!result.roles.includes(val)) result.roles.push(val);
 				} else if (cat === "designation") {
 					if (!result.designations.includes(val)) result.designations.push(val);
 				}
 			});
+
+			// Natural numerical sorting for classes (Class 1, Class 2, Class 10...)
+			classItems.sort((a, b) => a.val.localeCompare(b.val, undefined, { numeric: true, sensitivity: 'base' }));
+			classItems.forEach(c => {
+				result.classMap[c.val] = c.secs;
+				if (c.subs) result.classSubjectMap[c.val] = c.subs;
+			});
+
+			// Sort sessions in natural order
+			result.sessions.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 
 			localStorage.setItem(cacheKey, JSON.stringify(result));
 			return result;
