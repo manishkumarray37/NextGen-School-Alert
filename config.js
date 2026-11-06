@@ -50,7 +50,7 @@ window.uploadToR2 = async function(file, moduleName, customFileName) {
   }
 };
 
-// Universal R2 File Deletion Helper
+// Universal R2 File Deletion Helper (POST based for 100% reliability)
 window.deleteFromR2 = async function(fileUrl) {
   if (!fileUrl || typeof fileUrl !== 'string') return;
   try {
@@ -61,9 +61,12 @@ window.deleteFromR2 = async function(fileUrl) {
     const filePath = urlObj.pathname.replace(/^\/+/, '');
     if (!filePath) return;
 
-    const res = await fetch(`/api/upload?path=${encodeURIComponent(filePath)}`, {
-      method: "DELETE"
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "delete", path: filePath })
     });
+    
     const data = await res.json();
     return data && data.success;
   } catch (err) {
