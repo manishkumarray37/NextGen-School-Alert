@@ -32305,35 +32305,21 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       let finalPosterUrl = document.getElementById('egsExistingPosterUrl').value;
 
       try {
+        // 🚀 Upload Poster directly to Cloudflare R2 via config.js helper
         if (mediaType === "IMAGE" && egsCompressedPosterBlob) {
-          const fileName = `poster_${Date.now()}_${Math.random().toString(36).substring(2, 6)}.jpg`;
-          const filePath = `${activeSchool}/greetings/${fileName}`;
+          const oldPosterUrl = finalPosterUrl;
 
-          const { error: upErr } = await db.storage
-            .from('School_Data')
-            .upload(filePath, egsCompressedPosterBlob, {
-              contentType: 'image/jpeg',
-              upsert: true
-            });
+          // Upload new compressed blob to R2
+          finalPosterUrl = await window.uploadToR2(egsCompressedPosterBlob, "greetings");
 
-          if (upErr) throw upErr;
-
-          const { data: pubData } = db.storage
-            .from('School_Data')
-            .getPublicUrl(filePath);
-
-          const newPosterUrl = pubData.publicUrl;
-
-          if (finalPosterUrl && finalPosterUrl.includes('/School_Data/')) {
+          // Delete old poster from R2 if replacing
+          if (oldPosterUrl && typeof window.deleteFromR2 === 'function') {
             try {
-              const oldPath = finalPosterUrl.split('/School_Data/')[1]?.split('?')[0];
-              if (oldPath) {
-                await db.storage.from('School_Data').remove([decodeURIComponent(oldPath)]);
-              }
-            } catch(e) {}
+              await window.deleteFromR2(oldPosterUrl);
+            } catch(e) {
+              console.warn("Old R2 file delete skipped:", e);
+            }
           }
-
-          finalPosterUrl = newPosterUrl;
         }
 
         const greetingId = editId || `GRT_${Date.now()}`;
