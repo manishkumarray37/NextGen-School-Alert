@@ -32785,7 +32785,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       window.navigateTo("EGreetingsSetting");
     };
 
-    // 🗑️ PERMANENT DELETE (DELETES POSTER FROM SUPABASE STORAGE + DATABASE ROW)
+    // 🗑️ PERMANENT DELETE (DELETES POSTER FROM CLOUDFLARE R2 + DATABASE ROW)
     window.deleteEgrItem = async function(id) {
       if (!confirm("Are you sure you want to permanently delete this greeting campaign and its uploaded poster image?")) return;
 
@@ -32800,15 +32800,12 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       try {
         const item = allReportsList.find(x => String(x.GreetingID) === String(id) || String(x.id) === String(id));
 
-        // 1. Delete Poster File from Supabase Storage 'School_Data' bucket if present
-        if (item && item.PosterUrl && item.PosterUrl.includes('/School_Data/')) {
+        // 1. Delete Poster File from Cloudflare R2 Storage using config.js helper
+        if (item && item.PosterUrl && typeof window.deleteFromR2 === 'function') {
           try {
-            const storagePath = item.PosterUrl.split('/School_Data/')[1]?.split('?')[0];
-            if (storagePath) {
-              await db.storage.from('School_Data').remove([decodeURIComponent(storagePath)]);
-            }
+            await window.deleteFromR2(item.PosterUrl);
           } catch(fileErr) {
-            console.warn("Storage poster file cleanup skipped:", fileErr);
+            console.warn("R2 poster file cleanup skipped:", fileErr);
           }
         }
 
@@ -32821,7 +32818,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
         if (error) throw error;
 
-        alert("Campaign and uploaded poster file deleted successfully.");
+        alert("Campaign and uploaded poster file deleted successfully from R2!");
         window.fetchEgrReports();
 
       } catch (err) {
