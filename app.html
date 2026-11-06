@@ -43524,19 +43524,24 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     </div>
   </div>
 
-  <script type='text/javascript'>
+<script type='text/javascript'>
   (function() {
     let allConfigsRaw = [];
     let currentCategory = "Session";
     let categoriesList = ["Session", "Class", "Role", "Designation"];
 
-    // ⚡ 1. INITIALIZE & DETECT ROUTE (Extracts ManageSession / ManageClass)
+    // ⚡ 1. INITIALIZE & ACCURATELY DETECT ROUTE CATEGORY
     window.initMasterSettingsModule = async function() {
-      const p = (window.location.pathname || "").replace(/^\/+/, '').replace(/\/+$/, '').trim();
-      const lastPart = p.split('/').pop() || "";
+      // Extract target from pathname (e.g. /app/ManageRole or /ManageRole) or hash
+      const p = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '').trim();
+      const h = (window.location.hash || "").replace(/^#\/?/, '').trim();
+      const currentSegment = h || p.split('/').pop() || "";
 
-      if (lastPart.startsWith("Manage")) {
-        currentCategory = lastPart.replace("Manage", "") || "Session";
+      if (currentSegment.toLowerCase().startsWith("manage")) {
+        const extracted = currentSegment.substring(6).trim();
+        if (extracted) {
+          currentCategory = extracted;
+        }
       } else {
         currentCategory = "Session";
       }
@@ -43559,29 +43564,29 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         if (error) throw error;
         allConfigsRaw = data || [];
 
-        // Collect all available categories dynamically
-        const foundCategories = Array.from(new Set(allConfigsRaw.map(c => c.Category).filter(Boolean)));
+        // Build dynamic categories list while keeping core defaults first
+        const foundCategories = Array.from(new Set(allConfigsRaw.map(c => c.Category || c.category).filter(Boolean)));
         foundCategories.forEach(c => {
           if (!categoriesList.some(x => x.toLowerCase() === c.toLowerCase())) {
             categoriesList.push(c);
           }
         });
 
-        // Match current category case-insensitively
+        // Match requested category case-insensitively
         const matched = categoriesList.find(c => c.toLowerCase() === currentCategory.toLowerCase());
-        currentCategory = matched || "Session";
+        currentCategory = matched || categoriesList[0] || "Session";
 
         window.renderDynamicTabsBar();
         window.renderActiveCategoryView();
 
-        // Clear client cache so other forms get updated data immediately
+        // Invalidate cached config in localStorage so all ERP dropdowns get fresh data
         localStorage.removeItem("a2z_config_" + schoolId);
       } catch(err) {
         console.error("Config fetch error:", err);
       }
     };
 
-    // ⚡ 3. RENDER TABS
+    // ⚡ 3. RENDER DYNAMIC TABS WITH DATA ATTRIBUTES
     window.renderDynamicTabsBar = function() {
       const bar = document.getElementById('cfgDynamicTabsBar');
       if (!bar) return;
@@ -43590,13 +43595,15 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       categoriesList.forEach(cat => {
         const isActive = (cat.toLowerCase() === currentCategory.toLowerCase());
         let icon = "fa-cog";
-        if (cat.toLowerCase().includes("session")) icon = "fa-calendar-alt";
-        else if (cat.toLowerCase().includes("class")) icon = "fa-chalkboard";
-        else if (cat.toLowerCase().includes("role")) icon = "fa-user-shield";
-        else if (cat.toLowerCase().includes("designation")) icon = "fa-id-badge";
+        const catLower = cat.toLowerCase();
+
+        if (catLower.includes("session")) icon = "fa-calendar-alt";
+        else if (catLower.includes("class")) icon = "fa-chalkboard";
+        else if (catLower.includes("role")) icon = "fa-user-shield";
+        else if (catLower.includes("designation")) icon = "fa-id-badge";
 
         html += `
-          <button class="cfg-tab-btn ${isActive ? 'active' : ''}" onclick="window.switchConfigCategoryTab('${cat}')">
+          <button class="cfg-tab-btn ${isActive ? 'active' : ''}" data-category="${cat.toLowerCase()}" onclick="window.switchConfigCategoryTab('${cat}')" type="button">
             <i class="fas ${icon} me-1"></i> ${cat}
           </button>
         `;
@@ -43605,21 +43612,20 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       bar.innerHTML = html;
     };
 
-    // ⚡ 4. SWITCH TAB (DYNAMIC URL & SIDEBAR SYNC)
+    // ⚡ 4. SWITCH TAB (FULL 2-WAY SYNC FOR URL, TABS & SIDEBAR)
     window.switchConfigCategoryTab = function(newCat) {
       if (!newCat) return;
 
-      // Find matching category name from available list
       const matched = categoriesList.find(c => c.toLowerCase() === newCat.toLowerCase());
       currentCategory = matched || newCat;
 
-      // A. Update Active Horizontal Tab Button
+      // A. Update Active Horizontal Tab Button (Green Pill)
       document.querySelectorAll('.cfg-tab-btn').forEach(b => {
-        const bText = b.innerText.trim().toLowerCase();
-        b.classList.toggle('active', bText.includes(currentCategory.toLowerCase()));
+        const bCat = (b.getAttribute('data-category') || b.innerText).trim().toLowerCase();
+        b.classList.toggle('active', bCat === currentCategory.toLowerCase());
       });
 
-      // B. 🚀 DYNAMIC URL UPDATE (Changes URL to /app/ManageClass, /app/ManageRole etc.)
+      // B. Update Address Bar URL (/app/ManageRole or /ManageRole)
       const host = window.location.hostname.toLowerCase();
       const isSubdomain = host.startsWith("app.");
       const routeName = `Manage${currentCategory}`;
@@ -43629,7 +43635,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         history.pushState({ page: routeName }, "", targetUrl);
       }
 
-      // C. 🚀 SIDEBAR ACTIVE LINK SYNC (Highlights left sidebar menu)
+      // C. Update Active Sidebar Highlight in Left Menu
       document.querySelectorAll('.nav-link-custom, .nav-link-nested').forEach(link => {
         const fn = link.getAttribute('onclick') || '';
         link.classList.toggle('active-sub', fn.includes(routeName));
@@ -43661,7 +43667,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       if (extraColHeader) extraColHeader.style.display = isClass ? 'table-cell' : 'none';
       if (subjectsColHeader) subjectsColHeader.style.display = isClass ? 'table-cell' : 'none';
 
-      const items = allConfigsRaw.filter(c => String(c.Category || '').toLowerCase() === currentCategory.toLowerCase());
+      const items = allConfigsRaw.filter(c => String(c.Category || c.category || '').toLowerCase() === currentCategory.toLowerCase());
       const countEl = document.getElementById('cfgActiveCategoryCountBadge');
       if (countEl) countEl.innerText = `${items.length} ${currentCategory}(s)`;
 
@@ -43675,9 +43681,9 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       let html = "";
       items.forEach((item, idx) => {
-        const val = item.Value || "";
-        const extra = item.Sections || "";
-        const subs = item.Subjects || "";
+        const val = item.Value || item.value || "";
+        const extra = item.Sections || item.sections || "";
+        const subs = item.Subjects || item.subjects || "";
 
         html += `
           <tr>
@@ -43687,10 +43693,10 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             ${isClass ? `<td class="text-start ps-2 text-primary small fw-semibold" style="max-width:240px; word-break:break-word;">${subs || "-"}</td>` : ''}
             <td>
               <div class="d-flex gap-1 justify-content-center">
-                <button class="btn-cfg-action btn-cfg-edit" onclick="window.editConfigItemRecord('${val}', '${extra}', '${subs}')" title="Edit">
+                <button class="btn-cfg-action btn-cfg-edit" onclick="window.editConfigItemRecord('${val}', '${extra}', '${subs}')" title="Edit Item" type="button">
                   <i class="fas fa-pencil-alt"></i>
                 </button>
-                <button class="btn-cfg-action btn-cfg-del" onclick="window.deleteConfigItemRecord('${val}')" title="Delete">
+                <button class="btn-cfg-action btn-cfg-del" onclick="window.deleteConfigItemRecord('${val}')" title="Delete Item" type="button">
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </div>
@@ -43709,7 +43715,9 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       const clean = name.replace(/[^a-zA-Z0-9]/g, "").trim();
       if (!clean) return;
 
-      if (!categoriesList.includes(clean)) categoriesList.push(clean);
+      if (!categoriesList.some(x => x.toLowerCase() === clean.toLowerCase())) {
+        categoriesList.push(clean);
+      }
       window.switchConfigCategoryTab(clean);
     };
 
@@ -43813,7 +43821,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
     };
 
-    // Boot
+    // Boot Module on initial load
     window.initMasterSettingsModule();
   })();
   </script>
