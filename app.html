@@ -31735,7 +31735,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </script>
 </template>
 
-<!-- MODULE 2: E-GREETINGS DESIGNER STUDIO & CAMPAIGN CREATOR            -->
+<!-- MODULE 2: E-GREETINGS DESIGNER STUDIO & CAMPAIGN CREATOR -->
 <template id='tpl-EGreetingsSetting'>
   <style>
     .egs-card { border-radius: 14px; border: 1.5px solid #e2e8f0; min-height: 550px; }
@@ -31765,15 +31765,15 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       <div class='d-flex align-items-center gap-2'>
         <i class='fas fa-palette text-warning fa-lg'></i>
         <div>
-          <h6 class='m-0 fw-bold text-dark'>E-Greetings Designer Studio &amp; Campaign Creator</h6>
+          <h6 class='m-0 fw-bold text-dark' id='egsHeaderTitle'>E-Greetings Designer Studio &amp; Campaign Creator</h6>
           <small class='text-muted' style='font-size: 11px;'>Design festival popups with real-time interactive preview &amp; audience targeting</small>
         </div>
       </div>
       <div class='d-flex gap-2'>
-        <button class='btn btn-outline-secondary btn-sm fw-bold' onclick='window.navigateTo(&quot;E-Greetings&quot;)' type='button'>
+        <button class='btn btn-outline-secondary btn-sm fw-bold' onclick='window.navigateTo("E-Greetings")' type='button'>
           <i class='fas fa-arrow-left me-1'></i> Hub
         </button>
-        <button class='btn btn-outline-primary btn-sm fw-bold' onclick='window.navigateTo(&quot;EGreetingsReports&quot;)' type='button'>
+        <button class='btn btn-outline-primary btn-sm fw-bold' onclick='window.navigateTo("EGreetingsReports")' type='button'>
           <i class='fas fa-chart-pie me-1'></i> Reports
         </button>
       </div>
@@ -31827,7 +31827,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               <div class='col-md-6 col-12'>
                 <label class='egs-label'>Media Format *</label>
                 <select class='form-select egs-input fw-bold text-primary' id='egsMediaType' onchange='window.onEgsMediaToggle()' required>
-                  <option value='IMAGE'>🖼️ Image Poster (Cloudflare R2)</option>
+                  <option value='IMAGE'>🖼️ Image Poster (Supabase Storage)</option>
                   <option value='VIDEO'>🎥 Video URL (YouTube Embed)</option>
                 </select>
               </div>
@@ -31877,12 +31877,15 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               </div>
             </div>
 
-            <!-- POSTER UPLOAD (IMAGE) -->
+            <!-- POSTER UPLOAD (IMAGE WITH AUTO-COMPRESSION) -->
             <div class='mb-3 p-3 bg-light rounded-3 border' id='egsPosterUploadBox'>
-              <label class='egs-label'><i class='fas fa-image text-primary me-1'></i> Upload Greeting Poster (PNG / JPG / WebP)</label>
+              <div class='d-flex justify-content-between align-items-center mb-1'>
+                <label class='egs-label m-0'><i class='fas fa-image text-primary me-1'></i> Upload Greeting Poster (PNG / JPG / WebP)</label>
+                <span id='posterCompressionBadge' class='badge bg-success text-white' style='display:none; font-size:10px;'>Optimized</span>
+              </div>
               <input accept='image/*' class='form-control form-control-sm' id='egsPosterInput' onchange='window.handleEgsPosterSelect(this)' type='file'>
               <input id='egsExistingPosterUrl' type='hidden' value=''>
-              <small class='text-muted d-block mt-1' style='font-size: 10px;'>Uploaded directly to Cloudflare R2 storage</small>
+              <small class='text-muted d-block mt-1' style='font-size: 10px;'>Auto-compressed to ~40KB for instant zero-lag popup display</small>
             </div>
 
             <!-- VIDEO URL (VIDEO) -->
@@ -31937,7 +31940,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   <script type='text/javascript'>
   // <![CDATA[
   (function() {
-    let egsSelectedPosterFile = null;
+    let egsCompressedPosterBlob = null;
     let localPreviewUrl = "";
 
     const GREETING_PRESETS = {
@@ -31998,17 +32001,50 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       const parts = s.split(/[\/\-\.]/);
       if (parts.length === 3) {
         if (parts[0].length === 4) return `${parts[2].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[0]}`;
-        return `${parts[0].padStart(2, '0')}/${parts[1].padStart(2, '0')}/${parts[2]}`;
+        return `${parts[0]}/${parts[1]}/${parts[2]}`;
       }
       return s;
     }
 
     function getEmbedVideoUrl(url) {
       if (!url) return "";
-      if (url.includes("youtube.com/watch?v=")) return url.replace("watch?v=", "embed/");
-      if (url.includes("youtu.be/")) return url.replace("youtu.be/", "www.youtube.com/embed/");
+      if (url.includes("youtube.com/watch?v=")) return url.replace("watch?v=", "embed/") + "?autoplay=1";
+      if (url.includes("youtu.be/")) return url.replace("youtu.be/", "www.youtube.com/embed/") + "?autoplay=1";
       if (url.includes("drive.google.com/file/d/")) return url.replace("/view", "/preview");
       return url;
+    }
+
+    // ⚡ Fast Canvas Image Compression Helper (Reduces to ~40KB)
+    function compressPosterBlob(file, maxDim = 800, quality = 0.76) {
+      return new Promise((resolve) => {
+        if (!file || !file.type.startsWith("image/")) {
+          resolve(file);
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = function() {
+            const canvas = document.createElement("canvas");
+            let w = img.width, h = img.height;
+            if (w > maxDim || h > maxDim) {
+              if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+              else { w = Math.round((w * maxDim) / h); h = maxDim; }
+            }
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, w, h);
+            canvas.toBlob((blob) => {
+              resolve(blob || file);
+            }, "image/jpeg", quality);
+          };
+          img.onerror = () => resolve(file);
+          img.src = e.target.result;
+        };
+        reader.onerror = () => resolve(file);
+        reader.readAsDataURL(file);
+      });
     }
 
     window.initEGreetingsSettingModule = async function() {
@@ -32018,6 +32054,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       if (sEl && !sEl.value) sEl.value = today;
       if (eEl && !eEl.value) eEl.value = today;
 
+      // 1. Populate Target Classes & Roles from Configs
       try {
         const cfg = (typeof window.getConfigData === 'function') ? await window.getConfigData() : null;
         if (cfg) {
@@ -32041,11 +32078,11 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         }
       } catch (e) {}
 
+      // 2. Reliable Edit Check: Read session storage item and populate form
       const editStr = sessionStorage.getItem("edit_egreeting_item");
       if (editStr) {
         try {
           const item = JSON.parse(editStr);
-          sessionStorage.removeItem("edit_egreeting_item");
           window.populateEgsEditForm(item);
         } catch (e) {}
       } else {
@@ -32063,8 +32100,11 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       document.getElementById('egsExistingPosterUrl').value = p.posterUrl;
       document.getElementById('egsMediaType').value = 'IMAGE';
 
-      egsSelectedPosterFile = null;
+      egsCompressedPosterBlob = null;
       localPreviewUrl = p.posterUrl;
+      const badge = document.getElementById('posterCompressionBadge');
+      if (badge) badge.style.display = 'none';
+
       window.onEgsMediaToggle();
       window.updateLivePreview();
     };
@@ -32110,10 +32150,27 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       document.querySelectorAll('.egs-role-chk').forEach(r => r.checked = check);
     };
 
-    window.handleEgsPosterSelect = function(input) {
+    // ⚡ Realtime Compressed Image Selector
+    window.handleEgsPosterSelect = async function(input) {
       if (input.files && input.files[0]) {
-        egsSelectedPosterFile = input.files[0];
-        localPreviewUrl = URL.createObjectURL(egsSelectedPosterFile);
+        const rawFile = input.files[0];
+        const badge = document.getElementById('posterCompressionBadge');
+
+        if (badge) {
+          badge.style.display = 'inline-block';
+          badge.className = 'badge bg-warning text-dark';
+          badge.innerText = 'Compressing...';
+        }
+
+        egsCompressedPosterBlob = await compressPosterBlob(rawFile, 800, 0.76);
+        const sizeKB = (egsCompressedPosterBlob.size / 1024).toFixed(1);
+
+        if (badge) {
+          badge.className = 'badge bg-success text-white';
+          badge.innerText = `Optimized: ${sizeKB} KB`;
+        }
+
+        localPreviewUrl = URL.createObjectURL(egsCompressedPosterBlob);
         window.updateLivePreview();
       }
     };
@@ -32148,19 +32205,28 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
     };
 
+    // 🚀 EDIT POPULATOR CONTROLLER
     window.populateEgsEditForm = function(item) {
       document.getElementById('egsEditGreetingId').value = item.GreetingID || item.id || "";
       document.getElementById('egsTitle').value = item.Title || "";
       document.getElementById('egsCategory').value = item.Category || "Festival / Celebration";
       document.getElementById('egsMediaType').value = item.MediaType || "IMAGE";
       document.getElementById('egsAudience').value = item.TargetAudience || "ALL";
-      document.getElementById('egsStartDate').value = item.StartDate || "";
-      document.getElementById('egsEndDate').value = item.EndDate || "";
+      document.getElementById('egsStartDate').value = item.StartDate ? item.StartDate.split('T')[0] : "";
+      document.getElementById('egsEndDate').value = item.EndDate ? item.EndDate.split('T')[0] : "";
       document.getElementById('egsMessage').value = item.Message || "";
       document.getElementById('egsExistingPosterUrl').value = item.PosterUrl || "";
 
       if (item.MediaType === "VIDEO" && item.VideoUrl) {
         document.getElementById('egsVideoUrl').value = item.VideoUrl;
+      }
+
+      // Update Form Titles and Submit Button for Edit Mode
+      document.getElementById('egsHeaderTitle').innerText = `Edit Greeting: ${item.Title || ''}`;
+      const saveBtn = document.getElementById('btnSaveEgsCampaign');
+      if (saveBtn) {
+        saveBtn.className = "btn btn-primary btn-sm fw-bold px-4 shadow";
+        saveBtn.innerHTML = `<i class="fas fa-check-circle me-1"></i> Update Greeting Campaign`;
       }
 
       window.onEgsMediaToggle();
@@ -32184,19 +32250,33 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     };
 
     window.resetEgsForm = function() {
+      sessionStorage.removeItem("edit_egreeting_item");
       document.getElementById('formSaveGreetingCampaign').reset();
       document.getElementById('egsEditGreetingId').value = "";
       document.getElementById('egsExistingPosterUrl').value = "";
-      egsSelectedPosterFile = null;
+      egsCompressedPosterBlob = null;
       localPreviewUrl = "";
+
+      const badge = document.getElementById('posterCompressionBadge');
+      if (badge) badge.style.display = 'none';
+
+      document.getElementById('egsHeaderTitle').innerText = "E-Greetings Designer Studio & Campaign Creator";
+      const saveBtn = document.getElementById('btnSaveEgsCampaign');
+      if (saveBtn) {
+        saveBtn.className = "btn btn-warning btn-sm fw-bold text-dark px-4 shadow";
+        saveBtn.innerHTML = `<i class="fas fa-save me-1"></i> Save &amp; Activate Greeting`;
+      }
+
       const today = new Date().toISOString().split('T')[0];
       document.getElementById('egsStartDate').value = today;
       document.getElementById('egsEndDate').value = today;
+
       window.onEgsMediaToggle();
       window.onEgsAudienceChange();
       window.updateLivePreview();
     };
 
+    // 💾 SUBMIT CAMPAIGN (SUPABASE STORAGE NATIVE + OLD POSTER AUTO-CLEANUP)
     window.submitGreetingCampaignForm = async function(e) {
       e.preventDefault();
       const btn = document.getElementById('btnSaveEgsCampaign');
@@ -32209,7 +32289,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       if (!activeSchool) {
         alert("Session expired. Please log in again.");
         btn.disabled = false;
-        btn.innerHTML = `<i class="fas fa-save me-1"></i> Save &amp; Activate Greeting`;
         return;
       }
 
@@ -32233,24 +32312,37 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       let finalPosterUrl = document.getElementById('egsExistingPosterUrl').value;
 
       try {
-        if (mediaType === "IMAGE" && egsSelectedPosterFile) {
-          if (typeof window.uploadToR2 === 'function') {
-            finalPosterUrl = await window.uploadToR2(egsSelectedPosterFile, 'greetings');
-          } else {
-            const formData = new FormData();
-            const cleanName = egsSelectedPosterFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-            const targetPath = `${activeSchool}/greetings/${Date.now()}_${cleanName}`;
-            formData.append('file', egsSelectedPosterFile);
-            formData.append('path', targetPath);
+        // Upload Poster directly to Supabase Storage 'School_Data' bucket
+        if (mediaType === "IMAGE" && egsCompressedPosterBlob) {
+          const fileName = `poster_${Date.now()}_${Math.random().toString(36).substring(2, 6)}.jpg`;
+          const filePath = `${activeSchool}/greetings/${fileName}`;
 
-            const upRes = await fetch('/api/upload', { method: 'POST', body: formData });
-            const upData = await upRes.json();
-            finalPosterUrl = upData?.url || "";
+          const { error: upErr } = await db.storage
+            .from('School_Data')
+            .upload(filePath, egsCompressedPosterBlob, {
+              contentType: 'image/jpeg',
+              upsert: true
+            });
+
+          if (upErr) throw upErr;
+
+          const { data: pubData } = db.storage
+            .from('School_Data')
+            .getPublicUrl(filePath);
+
+          const newPosterUrl = pubData.publicUrl;
+
+          // Delete Old Poster File from Storage if replacing
+          if (finalPosterUrl && finalPosterUrl.includes('/School_Data/')) {
+            try {
+              const oldPath = finalPosterUrl.split('/School_Data/')[1]?.split('?')[0];
+              if (oldPath) {
+                await db.storage.from('School_Data').remove([decodeURIComponent(oldPath)]);
+              }
+            } catch(e) {}
           }
 
-          if (!finalPosterUrl) {
-            throw new Error("Failed to upload poster image to storage.");
-          }
+          finalPosterUrl = newPosterUrl;
         }
 
         const greetingId = editId || `GRT_${Date.now()}`;
@@ -32282,16 +32374,17 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             .eq('GreetingID', editId);
 
           if (updErr) throw updErr;
-          alert("E-Greeting campaign updated successfully.");
+          alert("✅ E-Greeting campaign updated successfully!");
         } else {
           const { error: insErr } = await db
             .from('E_Greetings')
             .insert([payload]);
 
           if (insErr) throw insErr;
-          alert("E-Greeting campaign created and activated successfully.");
+          alert("✅ E-Greeting campaign created and activated successfully!");
         }
 
+        sessionStorage.removeItem("edit_egreeting_item");
         window.navigateTo("EGreetingsReports");
 
       } catch (err) {
@@ -32299,7 +32392,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         alert(`Failed to save greeting campaign: ${err.message}`);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<i class="fas fa-save me-1"></i> Save &amp; Activate Greeting`;
+        btn.innerHTML = `<i class='fas fa-save me-1'></i> Save &amp; Activate Greeting`;
       }
     };
 
@@ -32309,7 +32402,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </script>
 </template>
 
-<!-- MODULE 3: E-GREETINGS LIVE AUDIT, EXPIRY TRACKER & REPORTS          -->
+<!-- MODULE 3: E-GREETINGS LIVE AUDIT, EXPIRY TRACKER & REPORTS -->
 <template id='tpl-EGreetingsReports'>
   <style>
     .egr-card { border-radius: 14px; border: 1.5px solid #e2e8f0; min-height: 540px; }
@@ -32339,10 +32432,10 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         </div>
       </div>
       <div class='d-flex gap-2'>
-        <button class='btn btn-outline-secondary btn-sm fw-bold' onclick='window.navigateTo(&quot;E-Greetings&quot;)' type='button'>
+        <button class='btn btn-outline-secondary btn-sm fw-bold' onclick='window.navigateTo("E-Greetings")' type='button'>
           <i class='fas fa-arrow-left me-1'></i> Hub
         </button>
-        <button class='btn btn-warning btn-sm fw-bold text-dark px-3 shadow-sm' onclick='window.navigateTo(&quot;EGreetingsSetting&quot;)' type='button'>
+        <button class='btn btn-warning btn-sm fw-bold text-dark px-3 shadow-sm' onclick='window.openFreshGreetingDesigner()' type='button'>
           <i class='fas fa-plus-circle me-1'></i> Add / Configure Greeting
         </button>
       </div>
@@ -32486,6 +32579,13 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
     window.initEGreetingsReportsModule = function() {
       window.fetchEgrReports();
+    };
+
+    window.openFreshGreetingDesigner = function() {
+      sessionStorage.removeItem("edit_egreeting_item");
+      const oldForm = document.getElementById('page-container-EGreetingsSetting');
+      if (oldForm) oldForm.remove();
+      window.navigateTo("EGreetingsSetting");
     };
 
     window.fetchEgrReports = async function() {
@@ -32693,15 +32793,24 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
     };
 
+    // 🚀 EDIT CONTROLLER (CLEARS CACHE & PREPARES FORM DATA)
     window.editEgrItem = function(id) {
       const item = allReportsList.find(x => String(x.GreetingID) === String(id) || String(x.id) === String(id));
       if (!item) return;
+
+      // Store complete record in session storage
       sessionStorage.setItem("edit_egreeting_item", JSON.stringify(item));
+
+      // Remove cached form container to force a fresh populate
+      const oldForm = document.getElementById('page-container-EGreetingsSetting');
+      if (oldForm) oldForm.remove();
+
       window.navigateTo("EGreetingsSetting");
     };
 
+    // 🗑️ PERMANENT DELETE (DELETES POSTER FROM SUPABASE STORAGE + DATABASE ROW)
     window.deleteEgrItem = async function(id) {
-      if (!confirm("Are you sure you want to delete this greeting campaign?")) return;
+      if (!confirm("Are you sure you want to permanently delete this greeting campaign and its uploaded poster image?")) return;
 
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const activeSchool = user.schoolId;
@@ -32712,6 +32821,21 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
 
       try {
+        const item = allReportsList.find(x => String(x.GreetingID) === String(id) || String(x.id) === String(id));
+
+        // 1. Delete Poster File from Supabase Storage 'School_Data' bucket if present
+        if (item && item.PosterUrl && item.PosterUrl.includes('/School_Data/')) {
+          try {
+            const storagePath = item.PosterUrl.split('/School_Data/')[1]?.split('?')[0];
+            if (storagePath) {
+              await db.storage.from('School_Data').remove([decodeURIComponent(storagePath)]);
+            }
+          } catch(fileErr) {
+            console.warn("Storage poster file cleanup skipped:", fileErr);
+          }
+        }
+
+        // 2. Delete Record from Supabase 'E_Greetings' Table
         const { error } = await db
           .from('E_Greetings')
           .delete()
@@ -32719,6 +32843,8 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           .eq('GreetingID', id);
 
         if (error) throw error;
+
+        alert("Campaign and uploaded poster file deleted successfully.");
         window.fetchEgrReports();
 
       } catch (err) {
