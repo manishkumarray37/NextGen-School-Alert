@@ -141,3 +141,20 @@ export async function onRequestOptions() {
     }
   });
 }
+// 2. Handle JSON Deletion Request (POST with action: delete from config.js)
+    if (contentType.includes("application/json")) {
+      const body = await request.json();
+      if (body.action === "delete" && body.path) {
+        console.log("Attempting to delete R2 file path:", body.path); // 👈 Debug log
+        await env.R2_STORAGE.delete(body.path);
+        console.log("Successfully deleted from R2:", body.path); // 👈 Debug log
+        
+        return new Response(JSON.stringify({ 
+          success: true, 
+          message: "File successfully deleted from R2 storage." 
+        }), {
+          status: 200,
+          headers: corsHeaders
+        });
+      }
+    }

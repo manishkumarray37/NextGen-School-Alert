@@ -32787,7 +32787,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
     // 🗑️ PERMANENT DELETE (DELETES POSTER FROM CLOUDFLARE R2 + DATABASE ROW)
     window.deleteEgrItem = async function(id) {
-      if (!confirm("Are you sure you want to permanently delete this greeting campaign and its uploaded poster image?")) return;
+      if (!confirm("Are you sure you want to permanently delete this greeting?")) return;
 
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const activeSchool = user.schoolId;
@@ -32818,7 +32818,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
         if (error) throw error;
 
-        alert("Campaign and uploaded poster file deleted successfully from R2!");
+        alert("E-green deleted successfully!");
         window.fetchEgrReports();
 
       } catch (err) {
