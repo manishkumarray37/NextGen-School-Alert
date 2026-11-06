@@ -98,7 +98,6 @@ export async function onRequestDelete({ request, env }) {
         error: "R2_STORAGE binding is missing." 
       }), { status: 500, headers: corsHeaders });
     }
-
     const url = new URL(request.url);
     const filePath = url.searchParams.get("path");
 
