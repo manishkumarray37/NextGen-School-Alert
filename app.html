@@ -32014,7 +32014,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       return url;
     }
 
-    // ⚡ Fast Canvas Image Compression Helper (Reduces to ~40KB)
     function compressPosterBlob(file, maxDim = 800, quality = 0.76) {
       return new Promise((resolve) => {
         if (!file || !file.type.startsWith("image/")) {
@@ -32054,7 +32053,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       if (sEl && !sEl.value) sEl.value = today;
       if (eEl && !eEl.value) eEl.value = today;
 
-      // 1. Populate Target Classes & Roles from Configs
       try {
         const cfg = (typeof window.getConfigData === 'function') ? await window.getConfigData() : null;
         if (cfg) {
@@ -32078,7 +32076,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         }
       } catch (e) {}
 
-      // 2. Reliable Edit Check: Read session storage item and populate form
       const editStr = sessionStorage.getItem("edit_egreeting_item");
       if (editStr) {
         try {
@@ -32150,7 +32147,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       document.querySelectorAll('.egs-role-chk').forEach(r => r.checked = check);
     };
 
-    // ⚡ Realtime Compressed Image Selector
     window.handleEgsPosterSelect = async function(input) {
       if (input.files && input.files[0]) {
         const rawFile = input.files[0];
@@ -32205,7 +32201,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
     };
 
-    // 🚀 EDIT POPULATOR CONTROLLER
     window.populateEgsEditForm = function(item) {
       document.getElementById('egsEditGreetingId').value = item.GreetingID || item.id || "";
       document.getElementById('egsTitle').value = item.Title || "";
@@ -32221,7 +32216,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         document.getElementById('egsVideoUrl').value = item.VideoUrl;
       }
 
-      // Update Form Titles and Submit Button for Edit Mode
       document.getElementById('egsHeaderTitle').innerText = `Edit Greeting: ${item.Title || ''}`;
       const saveBtn = document.getElementById('btnSaveEgsCampaign');
       if (saveBtn) {
@@ -32276,7 +32270,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       window.updateLivePreview();
     };
 
-    // 💾 SUBMIT CAMPAIGN (SUPABASE STORAGE NATIVE + OLD POSTER AUTO-CLEANUP)
     window.submitGreetingCampaignForm = async function(e) {
       e.preventDefault();
       const btn = document.getElementById('btnSaveEgsCampaign');
@@ -32312,7 +32305,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       let finalPosterUrl = document.getElementById('egsExistingPosterUrl').value;
 
       try {
-        // Upload Poster directly to Supabase Storage 'School_Data' bucket
         if (mediaType === "IMAGE" && egsCompressedPosterBlob) {
           const fileName = `poster_${Date.now()}_${Math.random().toString(36).substring(2, 6)}.jpg`;
           const filePath = `${activeSchool}/greetings/${fileName}`;
@@ -32332,7 +32324,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
           const newPosterUrl = pubData.publicUrl;
 
-          // Delete Old Poster File from Storage if replacing
           if (finalPosterUrl && finalPosterUrl.includes('/School_Data/')) {
             try {
               const oldPath = finalPosterUrl.split('/School_Data/')[1]?.split('?')[0];
