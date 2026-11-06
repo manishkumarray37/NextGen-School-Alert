@@ -43397,8 +43397,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </script>
 </template>
 
-
-
 <!-- =================================================================== -->
 <!-- MODULE: DYNAMIC MASTER SETTINGS (100% SUPABASE NATIVE)             -->
 <!-- =================================================================== -->
@@ -43525,23 +43523,20 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </div>
 
 <script type='text/javascript'>
+  // <![CDATA[
   (function() {
-    let allConfigsRaw = [];
+    let rawConfigPayload = null;
     let currentCategory = "Session";
-    let categoriesList = ["Session", "Class", "Role", "Designation"];
+    let categoriesList = [];
 
-    // ⚡ 1. INITIALIZE & ACCURATELY DETECT ROUTE CATEGORY
+    // ⚡ 1. INITIALIZE & DETECT URL / ROUTE CATEGORY
     window.initMasterSettingsModule = async function() {
-      // Extract target from pathname (e.g. /app/ManageRole or /ManageRole) or hash
       const p = window.location.pathname.replace(/^\/+/, '').replace(/\/+$/, '').trim();
       const h = (window.location.hash || "").replace(/^#\/?/, '').trim();
-      const currentSegment = h || p.split('/').pop() || "";
+      const currentRoute = h || p.split('/').pop() || "";
 
-      if (currentSegment.toLowerCase().startsWith("manage")) {
-        const extracted = currentSegment.substring(6).trim();
-        if (extracted) {
-          currentCategory = extracted;
-        }
+      if (currentRoute.includes("Manage")) {
+        currentCategory = currentRoute.replace(/.*Manage/, '').trim() || "Session";
       } else {
         currentCategory = "Session";
       }
@@ -43549,7 +43544,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       await window.loadDynamicConfigHub(false);
     };
 
-    // ⚡ 2. FETCH DIRECT FROM SUPABASE 'School_Configs'
+    // ⚡ 2. FETCH DIRECT FROM SUPABASE 'School_Configs' (REPLACED GOOGLE SHEET)
     window.loadDynamicConfigHub = async function(forceRefresh) {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const schoolId = user.schoolId;
@@ -43559,34 +43554,54 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         const { data, error } = await db
           .from('School_Configs')
           .select('*')
-          .eq('SchoolID', schoolId);
+          .eq('SchoolID', schoolId)
+          .order('Id', { ascending: true });
 
         if (error) throw error;
-        allConfigsRaw = data || [];
 
-        // Build dynamic categories list while keeping core defaults first
-        const foundCategories = Array.from(new Set(allConfigsRaw.map(c => c.Category || c.category).filter(Boolean)));
-        foundCategories.forEach(c => {
-          if (!categoriesList.some(x => x.toLowerCase() === c.toLowerCase())) {
-            categoriesList.push(c);
+        // Transform Supabase rows into the exact data structure expected by old templates
+        const dynamicMap = {};
+        const availableTypes = [];
+
+        (data || []).forEach(row => {
+          const cat = row.Category || row.category || "General";
+          if (!dynamicMap[cat]) {
+            dynamicMap[cat] = [];
+            if (!availableTypes.includes(cat)) availableTypes.push(cat);
           }
+          dynamicMap[cat].push({
+            id: row.Id || row.id,
+            value: row.Value || row.value || "",
+            extra: row.Sections || row.sections || "",
+            subjects: row.Subjects || row.subjects || ""
+          });
         });
 
-        // Match requested category case-insensitively
+        rawConfigPayload = {
+          status: "success",
+          availableTypes: availableTypes,
+          dynamicConfig: dynamicMap
+        };
+
+        categoriesList = availableTypes;
+        if (categoriesList.length === 0) categoriesList = ["Session", "Class", "Role", "Designation"];
+
+        // Match current category case-insensitively
         const matched = categoriesList.find(c => c.toLowerCase() === currentCategory.toLowerCase());
-        currentCategory = matched || categoriesList[0] || "Session";
+        currentCategory = matched || categoriesList[0];
 
         window.renderDynamicTabsBar();
         window.renderActiveCategoryView();
 
-        // Invalidate cached config in localStorage so all ERP dropdowns get fresh data
+        // Clear local cache so all ERP dropdowns get fresh data immediately
         localStorage.removeItem("a2z_config_" + schoolId);
+
       } catch(err) {
-        console.error("Config fetch error:", err);
+        console.error("Config load error:", err);
       }
     };
 
-    // ⚡ 3. RENDER DYNAMIC TABS WITH DATA ATTRIBUTES
+    // ⚡ 3. RENDER DYNAMIC TABS
     window.renderDynamicTabsBar = function() {
       const bar = document.getElementById('cfgDynamicTabsBar');
       if (!bar) return;
@@ -43603,7 +43618,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         else if (catLower.includes("designation")) icon = "fa-id-badge";
 
         html += `
-          <button class="cfg-tab-btn ${isActive ? 'active' : ''}" data-category="${cat.toLowerCase()}" onclick="window.switchConfigCategoryTab('${cat}')" type="button">
+          <button class="cfg-tab-btn ${isActive ? 'active' : ''}" onclick="window.switchConfigCategoryTab('${cat}')" type="button">
             <i class="fas ${icon} me-1"></i> ${cat}
           </button>
         `;
@@ -43612,30 +43627,30 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       bar.innerHTML = html;
     };
 
-    // ⚡ 4. SWITCH TAB (FULL 2-WAY SYNC FOR URL, TABS & SIDEBAR)
+    // ⚡ 4. SWITCH TAB (DYNAMIC URL & SIDEBAR SYNC)
     window.switchConfigCategoryTab = function(newCat) {
       if (!newCat) return;
 
       const matched = categoriesList.find(c => c.toLowerCase() === newCat.toLowerCase());
       currentCategory = matched || newCat;
 
-      // A. Update Active Horizontal Tab Button (Green Pill)
+      // Update Active Horizontal Tab Buttons (Green Pill)
       document.querySelectorAll('.cfg-tab-btn').forEach(b => {
-        const bCat = (b.getAttribute('data-category') || b.innerText).trim().toLowerCase();
-        b.classList.toggle('active', bCat === currentCategory.toLowerCase());
+        const bText = b.innerText.trim();
+        b.classList.toggle('active', bText.toLowerCase().includes(currentCategory.toLowerCase()));
       });
 
-      // B. Update Address Bar URL (/app/ManageRole or /ManageRole)
+      // Update URL (/app/ManageClass or /ManageClass)
       const host = window.location.hostname.toLowerCase();
       const isSubdomain = host.startsWith("app.");
-      const routeName = `Manage${currentCategory}`;
+      const routeName = "Manage" + currentCategory;
       const targetUrl = isSubdomain ? `/${routeName}` : `/app/${routeName}`;
 
       if (window.location.pathname !== targetUrl) {
         history.pushState({ page: routeName }, "", targetUrl);
       }
 
-      // C. Update Active Sidebar Highlight in Left Menu
+      // Update Active Sidebar Highlight in Left Menu
       document.querySelectorAll('.nav-link-custom, .nav-link-nested').forEach(link => {
         const fn = link.getAttribute('onclick') || '';
         link.classList.toggle('active-sub', fn.includes(routeName));
@@ -43645,16 +43660,19 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       window.renderActiveCategoryView();
     };
 
-    // ⚡ 5. RENDER ACTIVE CATEGORY TABLE & FIELDS
+    // ⚡ 5. RENDER ACTIVE VIEW (WITH SECTIONS & SUBJECTS)
     window.renderActiveCategoryView = function() {
-      const headEl = document.getElementById('cfgActiveCategoryHeading');
-      if (headEl) headEl.innerText = `Manage ${currentCategory}`;
-      
-      const lblEl = document.getElementById('cfgValueInputLabel');
-      if (lblEl) lblEl.innerText = `${currentCategory} Name *`;
+      const headingEl = document.getElementById('cfgActiveCategoryHeading');
+      if (headingEl) headingEl.innerText = `Manage ${currentCategory}`;
 
-      const inpEl = document.getElementById('cfgValueInput');
-      if (inpEl) inpEl.placeholder = `Enter ${currentCategory}...`;
+      const lblValEl = document.getElementById('cfgValueInputLabel');
+      if (lblValEl) lblValEl.innerText = `${currentCategory} Name *`;
+
+      const inpValEl = document.getElementById('cfgValueInput');
+      if (inpValEl) inpValEl.placeholder = `Enter ${currentCategory}...`;
+
+      const hintEl = document.getElementById('cfgUrlHintText');
+      if (hintEl) hintEl.innerText = `Direct Link: /Manage${currentCategory}`;
 
       const isClass = (currentCategory.toLowerCase() === "class");
       const extraContainer = document.getElementById('cfgExtraFieldContainer');
@@ -43667,9 +43685,14 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       if (extraColHeader) extraColHeader.style.display = isClass ? 'table-cell' : 'none';
       if (subjectsColHeader) subjectsColHeader.style.display = isClass ? 'table-cell' : 'none';
 
-      const items = allConfigsRaw.filter(c => String(c.Category || c.category || '').toLowerCase() === currentCategory.toLowerCase());
-      const countEl = document.getElementById('cfgActiveCategoryCountBadge');
-      if (countEl) countEl.innerText = `${items.length} ${currentCategory}(s)`;
+      const dynamicMap = (rawConfigPayload && rawConfigPayload.dynamicConfig) ? rawConfigPayload.dynamicConfig : {};
+      
+      // Match current category items
+      const matchedKey = Object.keys(dynamicMap).find(k => k.toLowerCase() === currentCategory.toLowerCase());
+      const items = matchedKey ? dynamicMap[matchedKey] : [];
+
+      const countBadge = document.getElementById('cfgActiveCategoryCountBadge');
+      if (countBadge) countBadge.innerText = `${items.length} ${currentCategory}(s)`;
 
       const tbody = document.getElementById('cfgDataTableBody');
       if (!tbody) return;
@@ -43681,19 +43704,19 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       let html = "";
       items.forEach((item, idx) => {
-        const val = item.Value || item.value || "";
-        const extra = item.Sections || item.sections || "";
-        const subs = item.Subjects || item.subjects || "";
+        const val = item.value;
+        const extra = item.extra || "";
+        const subjects = item.subjects || "";
 
         html += `
           <tr>
             <td>${idx + 1}</td>
             <td class="text-start ps-3 fw-bold text-dark">${val}</td>
             ${isClass ? `<td class="text-secondary small font-monospace">${extra || "-"}</td>` : ''}
-            ${isClass ? `<td class="text-start ps-2 text-primary small fw-semibold" style="max-width:240px; word-break:break-word;">${subs || "-"}</td>` : ''}
+            ${isClass ? `<td class="text-start ps-2 text-primary small fw-semibold" style="max-width:240px; word-break:break-word;">${subjects || "-"}</td>` : ''}
             <td>
               <div class="d-flex gap-1 justify-content-center">
-                <button class="btn-cfg-action btn-cfg-edit" onclick="window.editConfigItemRecord('${val}', '${extra}', '${subs}')" title="Edit Item" type="button">
+                <button class="btn-cfg-action btn-cfg-edit" onclick="window.editConfigItemRecord('${val}', '${extra}', '${subjects}')" title="Edit Item" type="button">
                   <i class="fas fa-pencil-alt"></i>
                 </button>
                 <button class="btn-cfg-action btn-cfg-del" onclick="window.deleteConfigItemRecord('${val}')" title="Delete Item" type="button">
@@ -43708,20 +43731,21 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       tbody.innerHTML = html;
     };
 
-    // ⚡ 6. PROMPT ADD CATEGORY
+    // ⚡ 6. PROMPT TO ADD NEW CATEGORY
     window.promptAddNewSettingCategory = function() {
-      const name = prompt("Enter New Category Name (e.g. House, BloodGroup, FeeCategory):");
-      if (!name || !name.trim()) return;
-      const clean = name.replace(/[^a-zA-Z0-9]/g, "").trim();
-      if (!clean) return;
+      const newCatName = prompt("Enter New Setting Category Name (e.g. BloodGroup, House, Subject, FeeCategory):");
+      if (!newCatName || !newCatName.trim()) return;
 
-      if (!categoriesList.some(x => x.toLowerCase() === clean.toLowerCase())) {
-        categoriesList.push(clean);
+      const cleanCat = newCatName.replace(/[^a-zA-Z0-9]/g, "").trim();
+      if (!cleanCat) return;
+
+      if (!categoriesList.some(x => x.toLowerCase() === cleanCat.toLowerCase())) {
+        categoriesList.push(cleanCat);
       }
-      window.switchConfigCategoryTab(clean);
+      window.switchConfigCategoryTab(cleanCat);
     };
 
-    // ⚡ 7. EDIT & RESET CONTROLLER
+    // ⚡ 7. EDIT FORM CONTROLLER
     window.editConfigItemRecord = function(val, extra, subjects) {
       document.getElementById('cfgEditOldValue').value = val;
       document.getElementById('cfgValueInput').value = val;
@@ -43741,15 +43765,19 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       document.getElementById('btnCancelCfgEdit').style.display = 'none';
     };
 
-    // 💾 8. SAVE / UPDATE DIRECT IN SUPABASE
+    // 💾 8. SAVE / UPDATE DIRECT IN SUPABASE (REPLACED GOOGLE SHEET POST)
     window.saveConfigItemRecord = async function(e) {
       e.preventDefault();
+
       const val = document.getElementById('cfgValueInput').value.trim();
       const extra = document.getElementById('cfgExtraInput').value.trim();
       const subjects = document.getElementById('cfgSubjectsInput').value.trim();
       const oldVal = document.getElementById('cfgEditOldValue').value.trim();
 
-      if (!val) { alert("Please enter a value name!"); return; }
+      if (!val) {
+        alert("Please enter a value name!");
+        return;
+      }
 
       const btn = document.getElementById('btnSubmitCfgRecord');
       btn.disabled = true;
@@ -43760,9 +43788,14 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       try {
         if (oldVal) {
+          // UPDATE
           const { error } = await db
             .from('School_Configs')
-            .update({ Value: val, Sections: extra, Subjects: subjects })
+            .update({
+              Value: val,
+              Sections: extra,
+              Subjects: subjects
+            })
             .eq('SchoolID', schoolId)
             .eq('Category', currentCategory)
             .eq('Value', oldVal);
@@ -43770,6 +43803,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           if (error) throw error;
           alert(`✅ ${currentCategory} updated successfully!`);
         } else {
+          // INSERT
           const { error } = await db
             .from('School_Configs')
             .insert([{
@@ -43788,15 +43822,15 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         await window.loadDynamicConfigHub(true);
 
       } catch(err) {
-        console.error("Config save error:", err);
-        alert("Failed to save: " + err.message);
+        console.error("Save config error:", err);
+        alert("Failed to save: " + (err.message || err));
       } finally {
         btn.disabled = false;
         btn.innerHTML = `<i class="fas fa-check-circle me-1"></i> Save Item`;
       }
     };
 
-    // 🗑️ 9. DELETE FROM SUPABASE
+    // 🗑️ 9. DELETE FROM SUPABASE (REPLACED GOOGLE SHEET DELETE)
     window.deleteConfigItemRecord = async function(val) {
       if (!confirm(`Are you sure you want to delete "${val}" from ${currentCategory}?`)) return;
 
@@ -43812,19 +43846,21 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           .eq('Value', val);
 
         if (error) throw error;
+
         alert(`✅ Deleted "${val}" successfully!`);
         await window.loadDynamicConfigHub(true);
 
-      } catch(err) {
-        console.error("Delete error:", err);
-        alert("Failed to delete: " + err.message);
+      } catch(e) {
+        console.error("Delete config error:", e);
+        alert("Failed to delete: " + (e.message || e));
       }
     };
 
-    // Boot Module on initial load
+    // Auto-run on template mount
     window.initMasterSettingsModule();
   })();
-  </script>
+  // ]]>
+</script>
 </template>
 
 <!-- MODULE: ACADEMIC CALENDAR & EVENT PLANNER (RESPONSIVE MOBILE FIXED) -->
