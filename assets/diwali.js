@@ -4,16 +4,15 @@
   var c = cv.getContext('2d');
   var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var G = 900, W = 0, H = 0, K = 1, pots = [], rockets = [], stars = [], halos = [], nextLaunch = 0.4;
-  // spark colours from hot to cool, chosen to stay visible on the cream and white page backgrounds
-  // each spark gets one of these colour sets, so the fountain is multicoloured
+  
   var COLS = [
-    ['#ffd166', '#ff9f1c', '#e06d00', '#c2410c'],   // gold
-    ['#ff9ac4', '#ff4f8b', '#d81b60', '#ad1457'],   // pink
-    ['#b9f6ca', '#3ddc84', '#16a34a', '#15803d'],   // green
-    ['#a5d8ff', '#3b9cff', '#1d4ed8', '#1e3a8a'],   // blue
-    ['#e0b0ff', '#b15cff', '#7c3aed', '#5b21b6'],   // violet
-    ['#ffb4a2', '#ff5a36', '#dc2626', '#991b1b'],   // red
-    ['#a5f3fc', '#22d3ee', '#0891b2', '#0e7490']    // teal
+    ['#ffd166', '#ff9f1c', '#e06d00', '#c2410c'],
+    ['#ff9ac4', '#ff4f8b', '#d81b60', '#ad1457'],
+    ['#b9f6ca', '#3ddc84', '#16a34a', '#15803d'],
+    ['#a5d8ff', '#3b9cff', '#1d4ed8', '#1e3a8a'],
+    ['#e0b0ff', '#b15cff', '#7c3aed', '#5b21b6'],
+    ['#ffb4a2', '#ff5a36', '#dc2626', '#991b1b'],
+    ['#a5f3fc', '#22d3ee', '#0891b2', '#0e7490']
   ];
   var seed = 7;
   function hexA(hex, a) { return 'rgba(' + parseInt(hex.slice(1, 3), 16) + ',' + parseInt(hex.slice(3, 5), 16) + ',' + parseInt(hex.slice(5, 7), 16) + ',' + a + ')'; }
@@ -25,18 +24,18 @@
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
     c.setTransform(dpr, 0, 0, dpr, 0, 0);
     var phone = W < 576;
-    K = Math.min(2.4, Math.max(1, Math.min(W, H) / 720));               // bigger bursts on big screens (4K, 86-inch)
-    var s = Math.max(24, Math.min(84, W * 0.028));                   // pot base width
-    var edge = Math.max(s * 0.75, Math.min(W * 0.045, 170));         // distance of the pot centre from the window edge
-    var narrow = W < 900;                                             // phones and portrait tablets: shorter, tighter fountains
-    var h = H * (phone ? 0.36 : narrow ? 0.42 : 0.68);                // fountain height
+    K = Math.min(2.4, Math.max(1, Math.min(W, H) / 720));
+    var s = Math.max(24, Math.min(84, W * 0.028));
+    var edge = Math.max(s * 0.75, Math.min(W * 0.045, 170));
+    var narrow = W < 900;
+    var h = H * (phone ? 0.36 : narrow ? 0.42 : 0.68);
     var old = pots;
     pots = [
       { x: edge, s: s, h: h, col: COLS[0], wrap: ['#c2185b', '#ffb703'] },
       { x: W - edge, s: s, h: h, col: COLS[0], wrap: ['#1d4ed8', '#ffb703'] }
     ];
     pots.forEach(function (p, i) {
-      p.y = H - 6 - p.s * 0.95;                                       // nozzle = top of the pot
+      p.y = H - 6 - p.s * 0.95;
       p.rate = narrow ? 150 : 260; p.spread = narrow ? 0.09 : 0.15; p.acc = 0;
       p.ps = old[i] ? old[i].ps : [];
     });
@@ -44,9 +43,9 @@
 
   function launch() {
     var phone = W < 900;
-    var side = rnd() < 0.65;                                                      // most rockets burst beside the headline
+    var side = rnd() < 0.65;
     var x = W * (side ? (rnd() < 0.5 ? 0.05 + rnd() * 0.25 : 0.7 + rnd() * 0.25) : 0.3 + rnd() * 0.4);
-    var top = H * (phone ? 0.1 + rnd() * 0.25 : 0.14 + rnd() * 0.3);     // where the rocket bursts
+    var top = H * (phone ? 0.1 + rnd() * 0.25 : 0.14 + rnd() * 0.3);
     rockets.push({ x: x, y: H + 4, vx: (rnd() - 0.5) * 30, vy: -Math.sqrt(2 * G * (H + 4 - top)), trail: [],
                    col: COLS[Math.floor(rnd() * COLS.length)], big: rnd() < 0.3 });
     nextLaunch = phone ? 1.5 + rnd() * 1.5 : 0.8 + rnd() * 1.2;
@@ -56,13 +55,13 @@
     var phone = W < 900;
     var n = phone ? 30 : (r.big ? 60 : 46);
     var speed = (phone ? 120 : (r.big ? 300 : 230)) * K * (0.9 + rnd() * 0.2);
-    var col2 = rnd() < 0.35 ? COLS[Math.floor(rnd() * COLS.length)] : r.col;   // some bursts are two-coloured
+    var col2 = rnd() < 0.35 ? COLS[Math.floor(rnd() * COLS.length)] : r.col;
     for (var i = 0; i < n; i++) {
       var a = i / n * Math.PI * 2 + rnd() * 0.08, v = speed * (i % 2 ? 0.8 : 1) * (0.92 + rnd() * 0.16);
       stars.push({ x: r.x, y: r.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, age: 0, life: 1.5 + rnd() * 0.6,
                    tw: rnd(), col: i % 3 ? r.col : col2, w: (i % 2 ? 2.4 : 3.2) * K });
     }
-    for (i = 0; i < n / 2; i++) {                                                 // slower inner ring
+    for (i = 0; i < n / 2; i++) {
       a = i / (n / 2) * Math.PI * 2 + 0.2; v = speed * 0.45;
       stars.push({ x: r.x, y: r.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, age: 0, life: 1.1 + rnd() * 0.4,
                    tw: rnd(), col: col2, w: 2 * K });
@@ -126,7 +125,7 @@
 
   function drawRockets(t) {
     var i, p, k;
-    for (i = 0; i < halos.length; i++) {                                           // soft flash at the burst centre
+    for (i = 0; i < halos.length; i++) {
       var h = halos[i]; if (h.age > 0.45) continue;
       k = h.age / 0.45;
       var g = c.createRadialGradient(h.x, h.y, 0, h.x, h.y, h.r * (0.3 + k * 0.7));
@@ -134,7 +133,7 @@
       g.addColorStop(1, hexA(h.col[2], 0));
       c.fillStyle = g; c.beginPath(); c.arc(h.x, h.y, h.r, 0, 7); c.fill();
     }
-    for (i = 0; i < rockets.length; i++) {                                         // climbing rocket with a fading tail
+    for (i = 0; i < rockets.length; i++) {
       var r = rockets[i];
       for (var j = 1; j < r.trail.length; j++) {
         c.globalAlpha = (j / r.trail.length) * 0.9; c.strokeStyle = j % 2 ? '#ffb703' : '#ffd166'; c.lineWidth = (1.4 + j * 0.14) * K;
@@ -143,10 +142,10 @@
       c.globalAlpha = 1; c.shadowBlur = 14; c.shadowColor = '#ff9f1c'; c.fillStyle = '#fff7d6';
       c.beginPath(); c.arc(r.x, r.y, 3.4 * K, 0, 7); c.fill(); c.shadowBlur = 0;
     }
-    for (i = 0; i < stars.length; i++) {                                           // burst stars: short glowing streaks
+    for (i = 0; i < stars.length; i++) {
       p = stars[i]; k = p.age / p.life;
       c.globalAlpha = Math.max(0, 1 - k * k) * (0.75 + 0.25 * Math.abs(Math.sin(t * 18 + p.tw * 9)));
-      c.strokeStyle = p.col[k < 0.2 ? 1 : k < 0.5 ? 2 : 3];                     // the deeper shades read on cream and white
+      c.strokeStyle = p.col[k < 0.2 ? 1 : k < 0.5 ? 2 : 3];
       c.lineWidth = p.w; c.shadowColor = p.col[1]; c.shadowBlur = 10;
       c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(p.x - p.vx * 0.075, p.y - p.vy * 0.075); c.stroke();
       if (k < 0.3) { c.fillStyle = '#fff7d6'; c.beginPath(); c.arc(p.x, p.y, p.w * 0.7, 0, 7); c.fill(); }
@@ -168,7 +167,7 @@
         c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(p.x - p.vx * 0.022, p.y - p.vy * 0.022); c.stroke();
       }
       c.globalAlpha = 1; c.shadowBlur = 18; c.shadowColor = f.col[0]; c.fillStyle = '#fffbe0';
-      c.beginPath(); c.arc(f.x, f.y, 3.2, 0, 7); c.fill();               // bright core at the nozzle
+      c.beginPath(); c.arc(f.x, f.y, 3.2, 0, 7); c.fill();
       c.shadowBlur = 0;
     });
   }
@@ -180,7 +179,7 @@
     for (var i = 0; i < 300; i++) step(1 / 60);
     rockets = []; stars = []; halos = [];
     burst({ x: W * 0.2, y: H * 0.26, col: COLS[1], big: true }); burst({ x: W * 0.8, y: H * 0.3, col: COLS[0], big: false });
-    nextLaunch = 10; for (i = 0; i < 24; i++) step(1 / 60);                        // mid-bloom, no new launch
+    nextLaunch = 10; for (i = 0; i < 24; i++) step(1 / 60);
   }
   if (still) { warm(); draw(0.37); return; }
   var last = performance.now();
