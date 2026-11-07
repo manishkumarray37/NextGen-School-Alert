@@ -2765,44 +2765,190 @@
 </script>
 
 <!-- ========================================================
-     1. CEO / DEVELOPER DESK SECTION
+     CEO / DEVELOPER DESK SECTION (PREMIUM REDESIGN)
      ======================================================== -->
-<section id='ceo-desk' style='padding: 60px 0; background-color: #ffffff;'>
-    <div class='container'>
-        <div class='text-center mb-5'>
-            <p class='mb-1 text-muted fw-bold' style='letter-spacing: 2px;'>NextGen School Alert | School Alarm Info</p>
-            <h2 class='fw-bold display-5 title-3d'>CEO Desk</h2>
-            <p class='text-muted'>Formerly Known as <span style='color: #28a745; font-weight: bold;'>schoolalarm.online</span></p>
-        </div>
+<section id="ceo-desk" class="ceo-section-wrapper position-relative overflow-hidden">
+    <!-- Animated Soft Glow Background -->
+    <div class="ceo-bg-glow"></div>
 
-        <div class='row align-items-center mt-4'>
-            <div class='col-lg-7'>
-                <h2 class='fw-bold mb-1 title-3d' style='font-size: 2.5rem; color: #1a202c;'>Manish Kumar Ray</h2>
-                <h5 class='text-dark fw-bold mb-4'>Founder &amp; CEO</h5>
+    <div class="container position-relative z-2">
+        <div class="row align-items-center g-5">
+            
+            <!-- Left Column: CEO Image with Premium Frame -->
+            <div class="col-lg-4 col-md-5 text-center text-md-start">
+                <div class="ceo-image-container">
+                    <div class="ceo-image-frame shadow-lg">
+                        <img alt="Manish Kumar Ray - CEO" class="img-fluid ceo-portrait" src="https://yanzstgfsvnlspbrminc.supabase.co/storage/v1/object/public/School_Data/ADMIN%20DATA/ChatGPT%20Image%20Jun%2029,%202026,%2012_50_33%20PM%20(2)%20-%20Copy.png">
+                    </div>
+                    <!-- Decorative Element -->
+                    <div class="ceo-frame-accent"></div>
+                </div>
                 
-                <div class='ceo-text' style='line-height: 1.8; color: #4a5568; font-size: 1.05rem;'>
-                    <p class='mb-3'>
-                        Manish is the Founder &amp; CEO of <b>A2Z Online Services Pvt Ltd</b>, the company behind schoolalarm.online. With a vision to digitalize the education system, he has been leading the innovation in school automation.
-                    </p>
-                    <p class='mb-3'>
-                        His dynamic capabilities, entrepreneurial zeal, and management skills are the key factors which keep the entire team motivated to deliver excellence every day.
-                    </p>
-                    <p class='mb-3'>
-                        Manish leads the company&#8217;s business development initiatives as well as overall execution excellence, ensuring that every school gets the best-in-class service.
-                    </p>
-                    <p>
-                        His constant innovation has made our platform one of the most advanced, scalable, and intuitive applications which eases the life of parents and school administrators.
-                    </p>
+                <div class="mt-4 ms-lg-2 ceo-name-plate">
+                    <h3 class="text-white fw-bold mb-1" style="font-size: 1.6rem; letter-spacing: -0.5px;">Manish Kumar Ray</h3>
+                    <p class="mb-0 fw-semibold" style="color: #38bdf8; font-size: 0.95rem;">Founder &amp; CEO, A2Z Online Services</p>
                 </div>
             </div>
-            <div class='col-lg-5 text-center mt-5 mt-lg-0'>
-                <div style='background: transparent !important; border: none !important; box-shadow: none !important; padding: 0;'>
-                    <img alt='CEO Manish Kumar' class='img-fluid' src='https://yanzstgfsvnlspbrminc.supabase.co/storage/v1/object/public/School_Data/ADMIN%20DATA/Generated%20Image%20November%2004,%202026%20-%203_47PM.jpg' style='width: 100%; max-width: 300px; height: auto; display: inline-block; background: transparent; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.15));'>
+
+            <!-- Right Column: Blended Content & Quote -->
+            <div class="col-lg-8 col-md-7">
+                <div class="ceo-content-box ps-lg-4">
+                    
+                    <span class="badge rounded-pill ceo-badge mb-4 shadow-sm">
+                        <i class="fas fa-pen-nib me-2 text-warning"></i> From the CEO's Desk
+                    </span>
+                    
+                    <h2 class="ceo-quote-text fw-bold text-white mb-4">
+                        "Powering your school’s daily operations with an uncompromised, seamless digital experience."
+                    </h2>
+                    
+                    <div class="ceo-paragraphs text-white-50">
+                        <p>
+                            With a vision to digitalize the education ecosystem, we set out under <b>A2Z Online Services Pvt Ltd</b> to bring thoughtful automation into schools. Our goal has always been to ensure parents stay connected, administrators work with ease, and every campus runs its day with absolute clarity and confidence.
+                        </p>
+                        <p>
+                            Our platform, <b>NextGen School Alert</b>, keeps vital information flowing between homes and classrooms. By taking heavy routine work off the school office, we empower educators to spend less time on manual paperwork and more on their students' growth.
+                        </p>
+                        <p>
+                            What defines us most is execution excellence and service. Driven by constant innovation and an entrepreneurial zeal, our entire team treats every school as a long-term partner. We deliver robust software you can rely on, ensuring that every institution gets best-in-class support.
+                        </p>
+                        <p class="mb-0">
+                            The journey continues, with the firm belief that intuitive technology will help build a brighter future for every student, parent, and educator.
+                        </p>
+                    </div>
+
                 </div>
             </div>
+
         </div>
     </div>
 </section>
+
+<!-- ========================================================
+     CSS STYLES & ANIMATIONS FOR CEO SECTION
+     ======================================================== -->
+<style>
+    .ceo-section-wrapper {
+        padding: 100px 0;
+        background: linear-gradient(135deg, #09172c 0%, #153b6e 50%, #0c203c 100%);
+        box-shadow: inset 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    /* Ambient Animated Glow */
+    .ceo-bg-glow {
+        position: absolute;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(2, 132, 199, 0.15) 0%, transparent 70%);
+        top: -200px;
+        right: -100px;
+        border-radius: 50%;
+        animation: ceoPulseGlow 8s ease-in-out infinite alternate;
+        pointer-events: none;
+    }
+
+    @keyframes ceoPulseGlow {
+        0% { transform: scale(1) translate(0, 0); opacity: 0.6; }
+        100% { transform: scale(1.2) translate(-20px, 30px); opacity: 1; }
+    }
+
+    /* Modern Glassmorphism Image Frame */
+    .ceo-image-container {
+        position: relative;
+        display: inline-block;
+    }
+
+    .ceo-image-frame {
+        position: relative;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 24px;
+        padding: 12px;
+        backdrop-filter: blur(10px);
+        z-index: 2;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+        animation: ceoFloat 6s ease-in-out infinite;
+    }
+
+    .ceo-image-frame:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 25px 50px -15px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.3);
+        animation-play-state: paused;
+    }
+
+    .ceo-portrait {
+        border-radius: 16px;
+        width: 100%;
+        max-width: 320px;
+        object-fit: cover;
+        background: linear-gradient(180deg, #e0f2fe 0%, #bae6fd 100%); /* Adds a soft backing color if image is transparent */
+    }
+
+    /* Decorative Accent Behind Image */
+    .ceo-frame-accent {
+        position: absolute;
+        bottom: -15px;
+        left: -15px;
+        width: 100px;
+        height: 100px;
+        background: #0284c7;
+        border-radius: 20px;
+        z-index: 1;
+        opacity: 0.5;
+        filter: blur(15px);
+        transition: all 0.4s ease;
+    }
+    
+    .ceo-image-container:hover .ceo-frame-accent {
+        opacity: 0.8;
+        transform: scale(1.1);
+        background: #38bdf8;
+    }
+
+    @keyframes ceoFloat {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-12px); }
+    }
+
+    /* Content Styling */
+    .ceo-badge {
+        background: rgba(2, 132, 199, 0.2);
+        border: 1px solid rgba(2, 132, 199, 0.5);
+        color: #e0f2fe;
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 8px 16px;
+    }
+
+    .ceo-quote-text {
+        font-size: clamp(1.6rem, 3vw, 2.2rem);
+        line-height: 1.35;
+        letter-spacing: -0.02em;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .ceo-paragraphs p {
+        font-size: 1.05rem;
+        line-height: 1.8;
+        margin-bottom: 1.25rem;
+        color: rgba(226, 232, 240, 0.9);
+    }
+    
+    .ceo-paragraphs b {
+        color: #ffffff;
+        font-weight: 600;
+    }
+
+    /* Mobile Adjustments */
+    @media (max-width: 991px) {
+        .ceo-section-wrapper { padding: 70px 0; }
+        .ceo-content-box { margin-top: 20px; text-align: center; }
+        .ceo-paragraphs p { text-align: left; }
+        .ceo-image-frame { max-width: 280px; margin: 0 auto; }
+        .ceo-name-plate { text-align: center !important; }
+    }
+</style>
 
 <!-- ========================================================
      2. OUR STORY TABS SECTION
