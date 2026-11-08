@@ -1023,10 +1023,14 @@
             <a href="#home" onclick="closeMobileDrawer()"><i class="fas fa-home"></i> Home</a>
             <a href="#about" onclick="closeMobileDrawer()"><i class="fas fa-info-circle"></i> About us</a>
             <a href="#features" onclick="closeMobileDrawer()"><i class="fas fa-th-large"></i> Features</a>
+			<a href="#ceo-desk" onclick="closeMobileDrawer()"><i class="fas fa-user-tie"></i> Ceo Desk</a>
+			<a href="#Our-Story" onclick="closeMobileDrawer()"><i class="fas fa-user-tie"></i> Our Story</a>
             <a href="#pricing" onclick="closeMobileDrawer()"><i class="fas fa-tags"></i> Pricing</a>
-            <a href="#ceo-desk" onclick="closeMobileDrawer()"><i class="fas fa-user-tie"></i> Developer Desk</a>
             <a href="#contact" onclick="closeMobileDrawer()"><i class="fas fa-envelope"></i> Contact</a>
+			<a href="#BookDemo" onclick="closeMobileDrawer()"><i class="fas fa-user"></i> Book Demo</a>
             <hr style="border-color: rgba(255,255,255,0.15); margin: 8px 0;">
+			<a href="/app.html" style="color: #ffd166;"><i class="fas fa-shield-alt"></i> School Login</a>
+			<a href="/student.html" style="color: #ffd166;"><i class="fas fa-shield-alt"></i> Student Login</a>
             <a href="/superadmin.html" style="color: #ffd166;"><i class="fas fa-shield-alt"></i> Super Admin</a>
         </div>
     </div>
@@ -1039,9 +1043,11 @@
                 <a href="#home"><i class="fas fa-home me-1"></i> Home</a>
                 <a href="#about">About us</a>
                 <a href="#features">Features</a>
+				<a href="#ceo-desk">Ceo Desk</a>
+				<a href="#Our-Story">Our Story</a>
                 <a href="#pricing">Pricing</a>
-                <a href="#ceo-desk">Ceo Desk</a>
                 <a href="#contact">Contact</a>
+				<a href="#BookDemo">Book Demo</a>
             </div>
             <button class="sc-mobile-hamburger" onclick="openMobileDrawer()" title="Open Menu">
                 <i class="fas fa-bars"></i>
@@ -2956,10 +2962,9 @@
 <!-- ========================================================
      2. OUR STORY TABS SECTION
      ======================================================== -->
-<section id='our-story-tabs' style='padding: 60px 0; background: #f8fafc;'>
+<section id="Our-Story" class="ceo-section-wrapper position-relative overflow-hidden" style="padding: 60px 0; background: #f8fafc;">
     <div class='container text-center'>
-        <p class='mb-1 text-muted fw-bold'>Platform Overview</p>
-        <h2 class='fw-bold display-5 mb-2 title-3d'>Welcome to School Canvas</h2>
+        <h4 class='fw-bold display-5 mb-2 title-3d'>Welcome to NextGen School Alert</h4>
         <p class='mb-4 text-muted'>Formerly Known as <span style='color: #28a745; font-weight: bold;'>schoolalarm.online</span></p>
         
         <div class='d-flex justify-content-center flex-wrap gap-3 mb-5'>
@@ -3508,7 +3513,7 @@
 <!-- ========================================================
      STILL RUNNING ON REGISTERS - FULL WIDTH BLUE TECH BANNER
      ======================================================== -->
-<section class="fullwidth-tech-cta position-relative overflow-hidden">
+<section class="fullwidth-tech-cta position-relative overflow-hidden" id="contact" style="padding: 100px 0; background-color: #030712;">
     <!-- Animated Wind & Fog Background Layer -->
     <div class="tech-wind-animation-bg"></div>
 
@@ -3680,7 +3685,7 @@
 </style>
 
 <!-- ================= CONTACT & DEMO BOOKING SECTION ================= -->
-<section id='contact' style='padding: 70px 0; background: linear-gradient(to bottom, #f1f5f9, #e2e8f0);'>
+<section id='BookDemo' style='padding: 70px 0; background: linear-gradient(to bottom, #f1f5f9, #e2e8f0);'>
     <div class='container'>
         <div class='row g-5 align-items-center'>
             <!-- LEFT COLUMN: BENEFITS & INFO -->
@@ -4219,6 +4224,63 @@
     }
   };
 })();
+</script>
+<!-- SCROLL TO TOP BUTTON (COMBINED HTML, CSS & JS)-->
+<style>
+    #scrollTopBtn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 9999;
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, #0284c7, #0369a1);
+        color: #ffffff;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        font-size: 18px;
+        box-shadow: 0 10px 25px rgba(2, 132, 199, 0.4);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #scrollTopBtn.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    #scrollTopBtn:hover {
+        background: linear-gradient(135deg, #0369a1, #075985);
+        transform: translateY(-4px) scale(1.05);
+        box-shadow: 0 15px 30px rgba(2, 132, 199, 0.5);
+    }
+</style>
+<!-- Scroll to Top Button Element -->
+<button id="scrollTopBtn" onclick="scrollToTop()" title="Go to top">
+    <i class="fas fa-arrow-up"></i>
+</button>
+<script>
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            scrollTopBtn.classList.add('show');
+        } else {
+            scrollTopBtn.classList.remove('show');
+        }
+    });
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
 </script>
 </body>
 </html>

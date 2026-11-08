@@ -101,7 +101,7 @@
       f.ps = f.ps.filter(function (p) { return p.age < p.life; });
     });
   }
-
+  
   function drawPot(f) {
     var s = f.s, h = s * 0.95, top = s * 0.16;
     c.save(); c.translate(f.x, H - 6);
