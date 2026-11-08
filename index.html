@@ -46,6 +46,77 @@
             overflow-x: hidden;
         }
 
+/* ========================================================
+   MOBILE & OVERFLOW BUG FIXES (FOR SCREENSHOTS)
+   ======================================================== */
+
+/* 1. Prevent Right-Side Horizontal Overflow / Cutting */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden !important;
+}
+
+/* 2. Fix Container Margins on Mobile */
+@media (max-width: 991px) {
+    .container, .container-fluid {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+    
+    /* Fix Mobile Header Bar alignment */
+    .sc-island-host {
+        width: calc(100% - 16px) !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        padding: 0 4px !important;
+    }
+
+    .sc-bar-row {
+        padding: 0 8px !important;
+        gap: 4px !important;
+    }
+
+    .sc-brand-title {
+        font-size: 16px !important;
+    }
+
+    .sc-login-white-btn {
+        padding: 0 10px !important;
+        font-size: 12px !important;
+        height: 34px !important;
+    }
+
+    /* Fix Role Tabs Navigation on Mobile */
+    .role-tabs-nav {
+        justify-content: flex-start !important;
+        overflow-x: auto;
+        flex-wrap: nowrap !important;
+        padding-bottom: 8px;
+        -webkit-overflow-scrolling: touch;
+    }
+    .role-pill-btn {
+        flex: 0 0 auto;
+        font-size: 13px !important;
+        padding: 6px 14px !important;
+    }
+}
+
+/* 3. Fix Circular Progress Ring Alignment (99% full circle fix) */
+.circular-progress-wrap {
+    width: 90px !important;
+    height: 90px !important;
+}
+.progress-ring {
+    width: 90px !important;
+    height: 90px !important;
+}
+.progress-number {
+    font-size: 1.3rem !important;
+}
+/* ========================================================
+   MOBILE & OVERFLOW BUG FIXES (FOR SCREENSHOTS)
+   ======================================================== */
+   
         /* ========================================================
            1. TOP UTILITY STRIP (WITH STAR-GRID BLUE BACKGROUND)
            ======================================================== */
