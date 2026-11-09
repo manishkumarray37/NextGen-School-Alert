@@ -2,8 +2,8 @@ export async function onRequest(context) {
   const url = new URL(context.request.url);
   const hostname = url.hostname.toLowerCase();
 
-  // 1. Static asset bypass & subpath fix (/app/config.js -> /config.js)
-  if (url.pathname.startsWith('/app/') || url.pathname.startsWith('/student/')) {
+  // 1. Static asset bypass & subpath fix (/app/config.js, /website/config.js -> /config.js)
+  if (url.pathname.startsWith('/app/') || url.pathname.startsWith('/student/') || url.pathname.startsWith('/website/')) {
     if (url.pathname.endsWith('.js') || url.pathname.endsWith('.css') || url.pathname.endsWith('.png') || url.pathname.endsWith('.jpg') || url.pathname.endsWith('.ico')) {
       url.pathname = '/' + url.pathname.split('/').pop();
       return context.env.ASSETS.fetch(url);
@@ -32,6 +32,13 @@ export async function onRequest(context) {
     return context.env.ASSETS.fetch(url);
   }
 
+  // 🚀 4.5 NEW: DEMO & CUSTOM SCHOOL SUBDOMAINS (demo.schoolalarm.online, sphs.schoolalarm.online etc.)
+  // Checks if subdomain is NOT student, admin, app, or www -> Serves website/school1.html
+  if (hostname.startsWith('demo.') || (hostname.split('.').length > 2 && !hostname.startsWith('www.'))) {
+    url.pathname = '/website/school1.html';
+    return context.env.ASSETS.fetch(url);
+  }
+
   // 5. Direct URL paths for testing on *.pages.dev or localhost
   if (url.pathname === '/student' || url.pathname.startsWith('/student/')) {
     url.pathname = '/student.html';
@@ -45,6 +52,11 @@ export async function onRequest(context) {
     url.pathname = '/superadmin.html';
     return context.env.ASSETS.fetch(url);
   }
+  // Testing path for demo website on pages.dev
+  if (url.pathname === '/demo' || url.pathname.startsWith('/demo/')) {
+    url.pathname = '/website/school1.html';
+    return context.env.ASSETS.fetch(url);
+  }
 
   // 6. Root Landing Page
   if (url.pathname === '/' || url.pathname === '/index.html') {
@@ -52,7 +64,7 @@ export async function onRequest(context) {
   }
 
   // 🚀 7. DYNAMIC FILE CHECK: Try fetching the requested asset/page first.
-  // If the file actually exists on server (e.g. /privacy.html, /about.html, etc.), serve it automatically!
+  // If the file actually exists on server (e.g. /website/school1.html, /about.html, etc.), serve it automatically!
   const assetResponse = await context.env.ASSETS.fetch(context.request);
   if (assetResponse.status !== 404) {
     return assetResponse;
