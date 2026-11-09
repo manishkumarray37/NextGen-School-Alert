@@ -16,7 +16,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/config.js"></script>
 
-    <style>
+    <!-- Dynamic Theme Injector Tag -->
+    <style id="dynamicThemeStyles">
         :root {
             --school-primary: #0284c7;
             --school-secondary: #0369a1;
@@ -25,7 +26,9 @@
             --school-light: #f8fafc;
             --school-gold: #eab308;
         }
+    </style>
 
+    <style>
         * { box-sizing: border-box; }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -37,7 +40,7 @@
 
         h1, h2, h3, h4, .brand-font { font-family: 'Playfair Display', serif; }
 
-        /* 1. Desktop Top Utility Bar */
+        /* Top Bars */
         .top-info-bar {
             background-color: var(--school-dark);
             color: #cbd5e1;
@@ -45,8 +48,6 @@
             padding: 8px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
-
-        /* 1.1 Mobile Dedicated Top Bar */
         .top-info-bar-mobile {
             background-color: var(--school-dark);
             color: #ffffff;
@@ -55,7 +56,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        /* 2. Main Navigation Bar */
+        /* Main Navbar */
         .navbar-main {
             background: #ffffff;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
@@ -82,7 +83,6 @@
             color: var(--school-primary) !important;
         }
 
-        /* Mobile Menu Left Alignment */
         @media (max-width: 991px) {
             .navbar-collapse {
                 background: #ffffff;
@@ -113,12 +113,9 @@
             gap: 4px;
             transition: 0.2s;
         }
-        .btn-top-apply:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
-        }
+        .btn-top-apply:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4); }
 
-        /* 3. Live News Ticker */
+        /* Ticker */
         .ticker-wrap {
             background: #fef3c7;
             border-bottom: 1px solid #fde68a;
@@ -135,7 +132,7 @@
             white-space: nowrap;
         }
 
-        /* 4. Hero Section */
+        /* Hero */
         .hero-section {
             background: linear-gradient(rgba(15, 23, 42, 0.72), rgba(15, 23, 42, 0.88)), url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
             min-height: 85vh;
@@ -165,7 +162,7 @@
             color: #ffffff;
         }
 
-        /* 5. Modern Cards & Containers */
+        /* Cards */
         .premium-card {
             background: #ffffff;
             border-radius: 20px;
@@ -175,11 +172,8 @@
             transition: all 0.3s ease;
             height: 100%;
         }
-        .premium-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 45px rgba(2, 132, 199, 0.12);
-            border-color: #bae6fd;
-        }
+        .premium-card:hover { transform: translateY(-6px); box-shadow: 0 20px 45px rgba(2, 132, 199, 0.12); }
+
         .icon-circle-lg {
             width: 58px;
             height: 58px;
@@ -193,7 +187,7 @@
             margin-bottom: 18px;
         }
 
-        /* Toppers Card */
+        /* Toppers */
         .topper-card {
             border-radius: 20px;
             overflow: hidden;
@@ -215,10 +209,9 @@
             display: inline-block;
             margin-top: -16px;
             position: relative;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
 
-        /* Online Forms */
+        /* Forms */
         .enquiry-card {
             background: #ffffff;
             border-radius: 24px;
@@ -239,10 +232,6 @@
             border-radius: 10px;
             border: 1.5px solid #cbd5e1;
             padding: 10px 14px;
-        }
-        .form-control-custom:focus {
-            border-color: var(--school-primary);
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
         }
 
         .btn-filter-pill {
@@ -310,7 +299,7 @@
             text-decoration: none;
         }
 
-        /* 🚀 FLOATING LIVE CUSTOMIZER BUTTON (Visible only when editor logged in) */
+        /* 🚀 FLOATING LIVE CUSTOMIZER BUTTON */
         .btn-floating-customizer {
             position: fixed;
             bottom: 25px;
@@ -324,7 +313,7 @@
             border-radius: 30px;
             border: none;
             box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
-            display: none; /* Auto-shown on login */
+            display: none;
             align-items: center;
             gap: 8px;
             cursor: pointer;
@@ -336,7 +325,22 @@
             100% { transform: scale(1); }
         }
 
-        /* Theme Color Presets */
+        /* ✏️ INLINE SECTION EDIT BADGES (Visible when editor logged in) */
+        .btn-inline-edit {
+            display: none;
+            background: rgba(15, 23, 42, 0.85);
+            color: #fde047 !important;
+            border: 1px solid rgba(253, 224, 71, 0.5);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 8px;
+            transition: 0.2s;
+        }
+        .btn-inline-edit:hover { background: #0f172a; transform: scale(1.05); }
+
         .color-dot {
             width: 32px;
             height: 32px;
@@ -452,15 +456,15 @@
 
             <div class="collapse navbar-collapse order-2" id="navMenu">
                 <ul class="navbar-nav ms-auto align-items-start align-items-lg-center gap-lg-1 py-3 py-lg-0 w-100 justify-content-lg-end" id="dynamicNavLinks">
-                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start active" href="#home">Home</a></li>
-                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#about">About</a></li>
-                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#academics">Academics</a></li>
-                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#facilities">Facilities</a></li>
-                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#toppers">Toppers</a></li>
-                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#gallery">Gallery</a></li>
-                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#notices">Notices</a></li>
-                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#disclosure">Disclosure</a></li>
-                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#contact">Contact</a></li>
+                    <li class="nav-item w-100 w-lg-auto" data-nav-target="home"><a class="nav-link text-start active" href="#home">Home</a></li>
+                    <li class="nav-item w-100 w-lg-auto" data-nav-target="about"><a class="nav-link text-start" href="#about">About</a></li>
+                    <li class="nav-item w-100 w-lg-auto" data-nav-target="academics"><a class="nav-link text-start" href="#academics">Academics</a></li>
+                    <li class="nav-item w-100 w-lg-auto" data-nav-target="facilities"><a class="nav-link text-start" href="#facilities">Facilities</a></li>
+                    <li class="nav-item w-100 w-lg-auto" data-nav-target="toppers"><a class="nav-link text-start" href="#toppers">Toppers</a></li>
+                    <li class="nav-item w-100 w-lg-auto" data-nav-target="gallery"><a class="nav-link text-start" href="#gallery">Gallery</a></li>
+                    <li class="nav-item w-100 w-lg-auto" data-nav-target="notices"><a class="nav-link text-start" href="#notices">Notices</a></li>
+                    <li class="nav-item w-100 w-lg-auto" data-nav-target="disclosure"><a class="nav-link text-start" href="#disclosure">Disclosure</a></li>
+                    <li class="nav-item w-100 w-lg-auto" data-nav-target="contact"><a class="nav-link text-start" href="#contact">Contact</a></li>
                 </ul>
             </div>
         </div>
@@ -477,10 +481,11 @@
     </div>
 
     <!-- 4. HERO BANNER SECTION (sec-hero) -->
-    <section class="hero-section" id="sec-hero">
+    <section class="hero-section" id="home">
         <div class="container-fluid px-lg-5">
             <div class="row align-items-center">
                 <div class="col-lg-8">
+                    <button class="btn-inline-edit" onclick="window.openSectionEditor('hero')"><i class="fas fa-pencil-alt me-1"></i> Edit Hero Section</button>
                     <div class="hero-badge" id="heroBadge">
                         <i class="fas fa-star text-warning"></i> Admissions Open for Academic Session 2026-27
                     </div>
@@ -531,7 +536,8 @@
     <section class="py-5" id="about">
         <div class="container py-4">
             <div class="row align-items-center g-5">
-                <div class="col-lg-5 text-center">
+                <div class="col-lg-5 text-center position-relative">
+                    <button class="btn-inline-edit" onclick="window.openSectionEditor('about')"><i class="fas fa-pencil-alt me-1"></i> Edit Principal Photo & Message</button>
                     <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=700&q=80" alt="Principal" class="rounded-4 shadow-lg w-100" id="principalPhoto" style="max-height: 480px; object-fit: cover;">
                     <div class="mt-3">
                         <h5 class="fw-bold m-0 text-dark" id="principalName">Dr. Sunita Sharma</h5>
@@ -841,22 +847,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label-custom">Seeking Admission For Class *</label>
+                                    <!-- 🚀 DYNAMIC REPLICATED CLASSES FROM School_Configs -->
                                     <select class="form-select form-control-custom" id="enqClass" required>
-                                        <option value="">-- Select Class --</option>
-                                        <option value="Pre-Nursery">Pre-Nursery / Nursery</option>
-                                        <option value="KG">LKG / UKG</option>
-                                        <option value="Class 1">Class 1</option>
-                                        <option value="Class 2">Class 2</option>
-                                        <option value="Class 3">Class 3</option>
-                                        <option value="Class 4">Class 4</option>
-                                        <option value="Class 5">Class 5</option>
-                                        <option value="Class 6">Class 6</option>
-                                        <option value="Class 7">Class 7</option>
-                                        <option value="Class 8">Class 8</option>
-                                        <option value="Class 9">Class 9</option>
-                                        <option value="Class 10">Class 10</option>
-                                        <option value="Class 11">Class 11</option>
-                                        <option value="Class 12">Class 12</option>
+                                        <option value="">-- Loading Classes... --</option>
                                     </select>
                                 </div>
                                 <div class="col-md-6">
@@ -975,7 +968,6 @@
                     <p class="small mb-2"><i class="fas fa-envelope text-warning me-2"></i><span id="footerHelplineMail">info@schoolalarm.online</span></p>
                     <p class="small mb-2"><i class="fas fa-clock text-warning me-2"></i>Mon - Sat: 8:00 AM - 3:00 PM</p>
                     <div class="mt-3">
-                        <!-- Secret Web Editor Login Button -->
                         <a href="javascript:void(0)" onclick="window.openEditorModal()" class="text-secondary small text-decoration-none">
                             <i class="fas fa-lock me-1"></i> Web Editor Login
                         </a>
@@ -999,7 +991,7 @@
         <i class="fas fa-edit me-1"></i> APPLY ADMISSION
     </a>
 
-    <!-- ⚡ FLOATING LIVE CUSTOMIZER BUTTON (Appears upon editor login) -->
+    <!-- ⚡ FLOATING LIVE CUSTOMIZER BUTTON -->
     <button class="btn-floating-customizer" id="btnLiveCustomizer" onclick="window.openCustomizerDrawer()" type="button">
         <i class="fas fa-palette fa-lg"></i> Customize Website
     </button>
@@ -1041,53 +1033,103 @@
             <!-- Theme Color Selector -->
             <label class="form-label-custom mb-2">1. Theme Primary Color</label>
             <div class="d-flex gap-2 mb-4">
-                <div class="color-dot" style="background:#0284c7;" onclick="window.setThemeColor('#0284c7')" title="Ocean Blue"></div>
-                <div class="color-dot" style="background:#059669;" onclick="window.setThemeColor('#059669')" title="Emerald Green"></div>
-                <div class="color-dot" style="background:#dc2626;" onclick="window.setThemeColor('#dc2626')" title="Ruby Red"></div>
-                <div class="color-dot" style="background:#7c3aed;" onclick="window.setThemeColor('#7c3aed')" title="Royal Purple"></div>
-                <div class="color-dot" style="background:#d97706;" onclick="window.setThemeColor('#d97706')" title="Sunset Gold"></div>
+                <div class="color-dot" style="background:#0284c7;" onclick="window.applyLiveThemeColor('#0284c7', '#0369a1')" title="Ocean Blue"></div>
+                <div class="color-dot" style="background:#059669;" onclick="window.applyLiveThemeColor('#059669', '#047857')" title="Emerald Green"></div>
+                <div class="color-dot" style="background:#dc2626;" onclick="window.applyLiveThemeColor('#dc2626', '#b91c1c')" title="Ruby Red"></div>
+                <div class="color-dot" style="background:#7c3aed;" onclick="window.applyLiveThemeColor('#7c3aed', '#6d28d9')" title="Royal Purple"></div>
+                <div class="color-dot" style="background:#d97706;" onclick="window.applyLiveThemeColor('#d97706', '#b45309')" title="Sunset Gold"></div>
             </div>
 
-            <!-- Section Toggle Switches -->
-            <label class="form-label-custom mb-2">2. Section Visibility (Show / Hide)</label>
+            <!-- Section Toggle Switches (Syncs both section & nav link!) -->
+            <label class="form-label-custom mb-2">2. Section & Menu Visibility (Hide / Show)</label>
             <div class="d-flex flex-column gap-2 mb-4 p-3 bg-light rounded-3 border">
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="chkEnquiry" onchange="window.toggleSection('enquiry', this.checked)" checked>
+                    <input class="form-check-input" type="checkbox" id="chkEnquiry" onchange="window.toggleSectionAndNav('enquiry', this.checked)" checked>
                     <label class="form-check-label small fw-bold" for="chkEnquiry">Admission Enquiry Form</label>
                 </div>
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="chkToppers" onchange="window.toggleSection('toppers', this.checked)" checked>
+                    <input class="form-check-input" type="checkbox" id="chkToppers" onchange="window.toggleSectionAndNav('toppers', this.checked)" checked>
                     <label class="form-check-label small fw-bold" for="chkToppers">Toppers Hall of Fame</label>
                 </div>
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="chkGallery" onchange="window.toggleSection('gallery', this.checked)" checked>
+                    <input class="form-check-input" type="checkbox" id="chkFacilities" onchange="window.toggleSectionAndNav('facilities', this.checked)" checked>
+                    <label class="form-check-label small fw-bold" for="chkFacilities">Campus Facilities</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="chkGallery" onchange="window.toggleSectionAndNav('gallery', this.checked)" checked>
                     <label class="form-check-label small fw-bold" for="chkGallery">Photo & Video Gallery</label>
                 </div>
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="chkNotices" onchange="window.toggleSection('notices', this.checked)" checked>
+                    <input class="form-check-input" type="checkbox" id="chkNotices" onchange="window.toggleSectionAndNav('notices', this.checked)" checked>
                     <label class="form-check-label small fw-bold" for="chkNotices">Notice Board & Circulars</label>
                 </div>
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="chkDisclosure" onchange="window.toggleSection('disclosure', this.checked)" checked>
+                    <input class="form-check-input" type="checkbox" id="chkDisclosure" onchange="window.toggleSectionAndNav('disclosure', this.checked)" checked>
                     <label class="form-check-label small fw-bold" for="chkDisclosure">Mandatory Disclosure</label>
                 </div>
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="chkStats" onchange="window.toggleSection('sec-stats', this.checked)" checked>
+                    <input class="form-check-input" type="checkbox" id="chkStats" onchange="window.toggleSectionAndNav('sec-stats', this.checked)" checked>
                     <label class="form-check-label small fw-bold" for="chkStats">Highlights & Counters</label>
                 </div>
-            </div>
-
-            <!-- Content Quick Text -->
-            <label class="form-label-custom mb-2">3. Headline & Mission</label>
-            <div class="mb-3">
-                <textarea class="form-control form-control-sm mb-2" id="txtCustomHeadline" rows="2" placeholder="Custom Hero Headline"></textarea>
-                <button type="button" class="btn btn-sm btn-outline-primary w-100" onclick="window.applyHeadlineText()">Update Preview</button>
             </div>
 
             <!-- Master Save Button -->
             <button type="button" class="btn btn-success w-100 py-3 fw-bold shadow mt-2" id="btnSaveLiveSettings" onclick="window.saveLiveWebsiteSettings()">
                 <i class="fas fa-cloud-upload-alt me-2"></i> SAVE LIVE SETTINGS
             </button>
+        </div>
+    </div>
+
+    <!-- ✏️ UNIVERSAL INLINE SECTION EDITOR MODAL -->
+    <div class="modal fade" id="universalSectionEditModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white p-3">
+                    <h6 class="modal-title fw-bold" id="editModalTitle"><i class="fas fa-edit me-2 text-warning"></i>Edit Section Details</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form onsubmit="window.saveInlineSectionData(event)">
+                        <input type="hidden" id="editSectionTarget" value="">
+                        
+                        <!-- Principal Section Fields -->
+                        <div id="fieldsPrincipalDesk">
+                            <div class="mb-3">
+                                <label class="form-label-custom">Principal Name</label>
+                                <input type="text" class="form-control form-control-custom" id="inEditPrincipalName">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label-custom">Principal Title / Designation</label>
+                                <input type="text" class="form-control form-control-custom" id="inEditPrincipalTitle">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label-custom">Principal Photo URL (or Image Link)</label>
+                                <input type="text" class="form-control form-control-custom" id="inEditPrincipalPhoto">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label-custom">Inspiring Message</label>
+                                <textarea class="form-control" id="inEditPrincipalMsg" rows="4" style="border-radius:10px; font-size:13px;"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Hero Section Fields -->
+                        <div id="fieldsHeroSection" style="display:none;">
+                            <div class="mb-3">
+                                <label class="form-label-custom">Main Headline</label>
+                                <textarea class="form-control" id="inEditHeroHeadline" rows="2"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label-custom">Hero Subtitle</label>
+                                <textarea class="form-control" id="inEditHeroSubtext" rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
+                            <i class="fas fa-check-circle me-1"></i> Apply & Save Live
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1099,14 +1141,18 @@
         let activeSchoolId = "";
         let websiteConfig = {
             ThemeColor: "#0284c7",
+            ThemeSecondary: "#0369a1",
             SectionToggles: {
                 enquiry: true,
                 toppers: true,
+                facilities: true,
                 gallery: true,
                 notices: true,
                 disclosure: true,
                 "sec-stats": true
-            }
+            },
+            HeroData: {},
+            AboutData: {}
         };
 
         // 1. Dynamic Data Loader from Supabase
@@ -1127,13 +1173,11 @@
             try {
                 let schoolRecord = null;
 
-                // Query from Schools Table
                 if (searchId && searchId !== "demo") {
                     const { data } = await db.from('Schools').select('*').eq('SchoolID', searchId).maybeSingle();
                     schoolRecord = data;
                 }
 
-                // Fallback to active school
                 if (!schoolRecord) {
                     const { data: fb } = await db.from('Schools').select('*').eq('Status', 'ACTIVE').limit(1).maybeSingle();
                     schoolRecord = fb;
@@ -1178,6 +1222,9 @@
                     // Address
                     document.getElementById('footerAddr').innerText = sAddr;
 
+                    // 🚀 Load Classes directly from School_Configs
+                    window.loadSchoolClassesFromConfig(activeSchoolId);
+
                     // Load Custom Website Configuration
                     window.loadCustomWebsiteConfig(activeSchoolId);
                 }
@@ -1185,14 +1232,62 @@
                 console.warn("Dynamic branding fallback active:", e);
             }
 
-            // Check if already authenticated as Editor in sessionStorage
+            // Check if authenticated as Editor
             if (sessionStorage.getItem("website_editor_auth") === "true") {
-                const btn = document.getElementById('btnLiveCustomizer');
-                if (btn) btn.style.display = 'inline-flex';
+                window.enableEditorModeUI();
             }
         });
 
-        // 2. Load School_Websites Custom Configuration
+        // 🚀 2. DYNAMIC CLASS REPLICATOR (FROM School_Configs TABLE)
+        window.loadSchoolClassesFromConfig = async function(schId) {
+            const classSelect = document.getElementById('enqClass');
+            if (!classSelect) return;
+
+            try {
+                const { data: configs, error } = await db
+                    .from('School_Configs')
+                    .select('Value')
+                    .eq('SchoolID', schId)
+                    .eq('Category', 'Class')
+                    .order('Id', { ascending: true });
+
+                if (error || !configs || configs.length === 0) {
+                    // Fallback default classes
+                    classSelect.innerHTML = `
+                        <option value="">-- Select Class --</option>
+                        <option value="Pre-Nursery">Pre-Nursery / Nursery</option>
+                        <option value="KG">LKG / UKG</option>
+                        <option value="Class 1">Class 1</option>
+                        <option value="Class 2">Class 2</option>
+                        <option value="Class 3">Class 3</option>
+                        <option value="Class 4">Class 4</option>
+                        <option value="Class 5">Class 5</option>
+                        <option value="Class 6">Class 6</option>
+                        <option value="Class 7">Class 7</option>
+                        <option value="Class 8">Class 8</option>
+                        <option value="Class 9">Class 9</option>
+                        <option value="Class 10">Class 10</option>
+                        <option value="Class 11">Class 11</option>
+                        <option value="Class 12">Class 12</option>
+                    `;
+                    return;
+                }
+
+                // Natural sort classes
+                configs.sort((a, b) => (a.Value || '').localeCompare(b.Value || '', undefined, { numeric: true, sensitivity: 'base' }));
+
+                let optionsHtml = '<option value="">-- Select Class --</option>';
+                configs.forEach(c => {
+                    if (c.Value) optionsHtml += `<option value="${c.Value}">${c.Value}</option>`;
+                });
+                classSelect.innerHTML = optionsHtml;
+
+            } catch(e) {
+                console.warn("Config classes fallback:", e);
+            }
+        };
+
+        // 3. Load School_Websites Custom Configuration
         window.loadCustomWebsiteConfig = async function(schId) {
             try {
                 const { data: webData } = await db
@@ -1202,22 +1297,32 @@
                     .maybeSingle();
 
                 if (webData) {
-                    if (webData.ThemeColor) window.setThemeColor(webData.ThemeColor);
+                    if (webData.ThemeColor) {
+                        window.applyLiveThemeColor(webData.ThemeColor, webData.ThemeColor);
+                    }
 
                     if (webData.SectionToggles) {
                         websiteConfig.SectionToggles = webData.SectionToggles;
                         for (const secKey in webData.SectionToggles) {
                             const isVisible = webData.SectionToggles[secKey];
-                            window.toggleSection(secKey, isVisible);
-                            // Sync checkbox
+                            window.toggleSectionAndNav(secKey, isVisible);
                             const chk = document.querySelector(`input[onchange*="'${secKey}'"]`);
                             if (chk) chk.checked = isVisible;
                         }
                     }
 
-                    if (webData.HeroData && webData.HeroData.headline) {
-                        document.getElementById('heroHeadline').innerText = webData.HeroData.headline;
-                        document.getElementById('txtCustomHeadline').value = webData.HeroData.headline;
+                    if (webData.HeroData) {
+                        websiteConfig.HeroData = webData.HeroData;
+                        if (webData.HeroData.headline) document.getElementById('heroHeadline').innerText = webData.HeroData.headline;
+                        if (webData.HeroData.subtext) document.getElementById('heroSubtext').innerText = webData.HeroData.subtext;
+                    }
+
+                    if (webData.AboutData) {
+                        websiteConfig.AboutData = webData.AboutData;
+                        if (webData.AboutData.principalName) document.getElementById('principalName').innerText = webData.AboutData.principalName;
+                        if (webData.AboutData.principalTitle) document.getElementById('principalTitle').innerText = webData.AboutData.principalTitle;
+                        if (webData.AboutData.principalMsg) document.getElementById('principalMsg').innerText = webData.AboutData.principalMsg;
+                        if (webData.AboutData.principalPhoto) document.getElementById('principalPhoto').src = webData.AboutData.principalPhoto;
                     }
                 }
             } catch(err) {
@@ -1225,7 +1330,64 @@
             }
         };
 
-        // 3. Web Editor Auth Modal & Validation
+        // 🚀 4. INSTANT THEME COLOR ENGINE (Overrides all buttons, badges, links)
+        window.applyLiveThemeColor = function(primary, secondary) {
+            websiteConfig.ThemeColor = primary;
+            websiteConfig.ThemeSecondary = secondary || primary;
+
+            let styleEl = document.getElementById('liveThemeOverride');
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = 'liveThemeOverride';
+                document.head.appendChild(styleEl);
+            }
+
+            styleEl.innerHTML = `
+                :root {
+                    --school-primary: ${primary} !important;
+                    --school-secondary: ${secondary || primary} !important;
+                }
+                .btn-primary, .btn-enquiry-nav, .btn-filter-pill.active {
+                    background: ${primary} !important;
+                    border-color: ${primary} !important;
+                    color: #ffffff !important;
+                }
+                .text-primary, .nav-link.active, .nav-link:hover, .feature-icon-box, .icon-circle-lg {
+                    color: ${primary} !important;
+                }
+                .form-control-custom:focus {
+                    border-color: ${primary} !important;
+                    box-shadow: 0 0 0 3px ${primary}28 !important;
+                }
+                .btn-outline-primary {
+                    border-color: ${primary} !important;
+                    color: ${primary} !important;
+                }
+                .btn-outline-primary:hover {
+                    background: ${primary} !important;
+                    color: #ffffff !important;
+                }
+            `;
+        };
+
+        // 🚀 5. SECTION & NAVBAR SYNCHRONIZED TOGGLE (Hides both section and menu link)
+        window.toggleSectionAndNav = function(sectionKey, isVisible) {
+            websiteConfig.SectionToggles[sectionKey] = isVisible;
+
+            // Toggle Section in Page Body
+            const secEl = document.getElementById(sectionKey);
+            if (secEl) {
+                secEl.style.display = isVisible ? '' : 'none';
+            }
+
+            // Synchronously Toggle Menu Link in Navbar
+            const navItem = document.querySelector(`li[data-nav-target="${sectionKey}"]`);
+            if (navItem) {
+                navItem.style.display = isVisible ? '' : 'none';
+            }
+        };
+
+        // 6. Web Editor Auth Modal & Validation
         window.openEditorModal = function() {
             new bootstrap.Modal(document.getElementById('editorLoginModal')).show();
         };
@@ -1240,8 +1402,7 @@
             btn.innerHTML = 'Verifying...';
 
             try {
-                // Check in School_Websites
-                const { data, error } = await db
+                const { data } = await db
                     .from('School_Websites')
                     .select('*')
                     .eq('SchoolID', activeSchoolId || '169701')
@@ -1252,11 +1413,8 @@
                 if (data || (id === "demo" && pass === "demo")) {
                     sessionStorage.setItem("website_editor_auth", "true");
                     bootstrap.Modal.getInstance(document.getElementById('editorLoginModal')).hide();
-                    
-                    // Show Floating Live Customizer Button
-                    const customizerBtn = document.getElementById('btnLiveCustomizer');
-                    customizerBtn.style.display = 'inline-flex';
-                    alert("✅ Authentication Successful! Click 'Customize Website' at bottom-right to edit live.");
+                    window.enableEditorModeUI();
+                    alert("✅ Authentication Successful! Live Edit Mode & Studio are now unlocked.");
                 } else {
                     alert("❌ Invalid Editor ID or Password!");
                 }
@@ -1268,45 +1426,98 @@
             }
         };
 
-        // 4. Live Customizer Controls
+        window.enableEditorModeUI = function() {
+            const customizerBtn = document.getElementById('btnLiveCustomizer');
+            if (customizerBtn) customizerBtn.style.display = 'inline-flex';
+
+            // Show all inline pencil buttons
+            document.querySelectorAll('.btn-inline-edit').forEach(el => el.style.display = 'inline-block');
+        };
+
         window.openCustomizerDrawer = function() {
             new bootstrap.Offcanvas(document.getElementById('liveCustomizerDrawer')).show();
         };
 
-        window.setThemeColor = function(color) {
-            websiteConfig.ThemeColor = color;
-            document.documentElement.style.setProperty('--school-primary', color);
-            document.documentElement.style.setProperty('--school-secondary', color);
-        };
+        // 🚀 7. INLINE SECTION EDITORS (PRINCIPAL PHOTO, MESSAGE, HERO)
+        window.openSectionEditor = function(target) {
+            document.getElementById('editSectionTarget').value = target;
 
-        window.toggleSection = function(sectionId, isVisible) {
-            websiteConfig.SectionToggles[sectionId] = isVisible;
-            const secEl = document.getElementById(sectionId);
-            if (secEl) {
-                secEl.style.display = isVisible ? '' : 'none';
+            const pFields = document.getElementById('fieldsPrincipalDesk');
+            const hFields = document.getElementById('fieldsHeroSection');
+
+            if (target === 'about') {
+                document.getElementById('editModalTitle').innerHTML = '<i class="fas fa-user-tie me-2 text-warning"></i>Edit Principal Desk & Photo';
+                pFields.style.display = 'block';
+                hFields.style.display = 'none';
+
+                document.getElementById('inEditPrincipalName').value = document.getElementById('principalName').innerText;
+                document.getElementById('inEditPrincipalTitle').value = document.getElementById('principalTitle').innerText;
+                document.getElementById('inEditPrincipalPhoto').value = document.getElementById('principalPhoto').src;
+                document.getElementById('inEditPrincipalMsg').value = document.getElementById('principalMsg').innerText.replace(/^"|"$/g, '');
+            } else if (target === 'hero') {
+                document.getElementById('editModalTitle').innerHTML = '<i class="fas fa-heading me-2 text-warning"></i>Edit Hero Section Headline';
+                pFields.style.display = 'none';
+                hFields.style.display = 'block';
+
+                document.getElementById('inEditHeroHeadline').value = document.getElementById('heroHeadline').innerText;
+                document.getElementById('inEditHeroSubtext').value = document.getElementById('heroSubtext').innerText;
             }
+
+            new bootstrap.Modal(document.getElementById('universalSectionEditModal')).show();
         };
 
-        window.applyHeadlineText = function() {
-            const txt = document.getElementById('txtCustomHeadline').value.trim();
-            if (txt) {
-                document.getElementById('heroHeadline').innerText = txt;
+        window.saveInlineSectionData = async function(e) {
+            e.preventDefault();
+            const target = document.getElementById('editSectionTarget').value;
+
+            if (target === 'about') {
+                const name = document.getElementById('inEditPrincipalName').value.trim();
+                const title = document.getElementById('inEditPrincipalTitle').value.trim();
+                const photo = document.getElementById('inEditPrincipalPhoto').value.trim();
+                const msg = document.getElementById('inEditPrincipalMsg').value.trim();
+
+                document.getElementById('principalName').innerText = name;
+                document.getElementById('principalTitle').innerText = title;
+                if (photo) document.getElementById('principalPhoto').src = photo;
+                document.getElementById('principalMsg').innerText = `"${msg}"`;
+
+                websiteConfig.AboutData = {
+                    principalName: name,
+                    principalTitle: title,
+                    principalPhoto: photo || document.getElementById('principalPhoto').src,
+                    principalMsg: msg
+                };
+            } else if (target === 'hero') {
+                const headline = document.getElementById('inEditHeroHeadline').value.trim();
+                const subtext = document.getElementById('inEditHeroSubtext').value.trim();
+
+                document.getElementById('heroHeadline').innerText = headline;
+                document.getElementById('heroSubtext').innerText = subtext;
+
+                websiteConfig.HeroData = {
+                    headline: headline,
+                    subtext: subtext
+                };
             }
+
+            bootstrap.Modal.getInstance(document.getElementById('universalSectionEditModal')).hide();
+            await window.saveLiveWebsiteSettings();
         };
 
-        // 5. Save Live Settings into Supabase
+        // 8. Save Live Settings into Supabase
         window.saveLiveWebsiteSettings = async function() {
             const btn = document.getElementById('btnSaveLiveSettings');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Saving Live...';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Saving Live...';
+            }
 
             const payload = {
                 SchoolID: activeSchoolId || "169701",
                 ThemeColor: websiteConfig.ThemeColor,
                 SectionToggles: websiteConfig.SectionToggles,
-                HeroData: {
-                    headline: document.getElementById('heroHeadline').innerText
-                },
+                HeroData: websiteConfig.HeroData,
+                AboutData: websiteConfig.AboutData,
                 UpdatedAt: new Date().toISOString()
             };
 
@@ -1316,18 +1527,19 @@
                     .upsert(payload, { onConflict: 'SchoolID' });
 
                 if (error) throw error;
-                alert("🎉 Website Settings Saved Successfully & Live in Supabase!");
-                bootstrap.Offcanvas.getInstance(document.getElementById('liveCustomizerDrawer')).hide();
+                alert("🎉 Website Settings & Content Saved Successfully!");
             } catch(err) {
                 console.error("Save error:", err);
                 alert("Failed to save: " + err.message);
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-cloud-upload-alt me-2"></i> SAVE LIVE SETTINGS';
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-cloud-upload-alt me-2"></i> SAVE LIVE SETTINGS';
+                }
             }
         };
 
-        // 6. Interactive Photo Gallery Filter
+        // 9. Interactive Photo Gallery Filter
         window.filterGallery = function(category) {
             document.querySelectorAll('.btn-filter-pill').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
@@ -1342,7 +1554,7 @@
             });
         };
 
-        // 7. Online Admission Enquiry Form Submission to Supabase
+        // 10. Online Admission Enquiry Form Submission to Supabase
         window.submitAdmissionEnquiry = async function(e) {
             e.preventDefault();
 
@@ -1378,7 +1590,7 @@
             }
         };
 
-        // 8. Auto-Close Mobile Navbar when any link is clicked
+        // 11. Auto-Close Mobile Navbar when any link is clicked
         document.addEventListener("DOMContentLoaded", function() {
             const navLinks = document.querySelectorAll('#navMenu .nav-link');
             const navMenu = document.getElementById('navMenu');
@@ -1393,7 +1605,7 @@
             });
         });
 
-        // 9. Smooth Transition from Drawer to Admission Enquiry Form
+        // 12. Smooth Transition from Drawer to Admission Enquiry Form
         window.goToEnquiryFromDrawer = function() {
             const drawerEl = document.getElementById('topInfoOffcanvas');
             if (drawerEl) {
