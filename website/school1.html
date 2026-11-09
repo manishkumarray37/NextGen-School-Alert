@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title id="siteTitle">Royal International Public School | Excellence in Education</title>
+    <title id="siteTitle">School Portal | Excellence in Education</title>
     
     <link rel="icon" type="image/png" href="/favicon.png">
 
@@ -364,7 +364,42 @@
 </head>
 <body>
 
-    <!-- 1.2 MOBILE TOP BAR OFFCANVAS DRAWER -->
+    <!-- 1. DESKTOP TOP UTILITY BAR (sec-top-bar) -->
+    <div class="top-info-bar d-none d-lg-block" id="sec-top-bar">
+        <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-4">
+                <span><i class="fas fa-phone-alt me-2 text-warning"></i><span id="topPhone">+91 7079090740</span></span>
+                <span><i class="fas fa-envelope me-2 text-warning"></i><span id="topEmail">info@schoolalarm.online</span></span>
+                <span><i class="fas fa-award me-2 text-warning"></i><span id="topAffiliation">Affiliated to State / Central Board</span></span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a href="https://student.schoolalarm.online" class="text-white text-decoration-none fw-semibold">
+                    <i class="fas fa-graduation-cap me-1 text-info"></i> Student Portal
+                </a>
+                <span class="text-secondary">|</span>
+                <a href="https://app.schoolalarm.online" class="text-white text-decoration-none fw-semibold">
+                    <i class="fas fa-user-shield me-1 text-warning"></i> Staff Login
+                </a>
+                <a href="#enquiry" class="btn-top-apply ms-1">
+                    <i class="fas fa-paper-plane me-1"></i> Apply Admission
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1.1 MOBILE DEDICATED TOP BAR (sec-top-bar-mobile) -->
+    <div class="top-info-bar-mobile d-block d-lg-none" id="sec-top-bar-mobile">
+        <div class="d-flex justify-content-between align-items-center">
+            <button class="btn btn-sm btn-outline-warning text-white fw-bold d-flex align-items-center gap-1 py-1 px-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#topInfoOffcanvas" aria-controls="topInfoOffcanvas">
+                <i class="fas fa-bars-staggered text-warning"></i> Quick Portals
+            </button>
+            <a href="tel:+917079090740" class="text-white text-decoration-none fw-bold" id="mobPhoneLink">
+                <i class="fas fa-phone-alt text-warning me-1"></i> <span id="topPhoneMobile">+91 7079090740</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 1.2 MOBILE TOP BAR OFFCANVAS DRAWER (CORRECTLY CLOSED) -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="topInfoOffcanvas" style="background:#0f172a; color:#ffffff;">
         <div class="offcanvas-header border-bottom border-secondary">
             <h6 class="offcanvas-title fw-bold text-warning"><i class="fas fa-university me-2"></i>Institutional Access</h6>
@@ -391,61 +426,11 @@
                 </div>
                 <div>
                     <span class="text-secondary d-block">Board Affiliation:</span>
-                    <i class="fas fa-award text-warning me-2"></i>Affiliated to CBSE, New Delhi (Code: 330XXX)
+                    <i class="fas fa-award text-warning me-2"></i><span id="offcanvasAffiliation">Affiliated to Board</span>
                 </div>
                 <div>
-                    <span class="text-secondary d-block">Helpline Numbers:</span>
-                    <i class="fas fa-phone text-warning me-2"></i>+91 7079090740
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 1.1 MOBILE DEDICATED TOP BAR (sec-top-bar-mobile) -->
-    <div class="top-info-bar-mobile d-block d-lg-none" id="sec-top-bar-mobile">
-        <div class="d-flex justify-content-between align-items-center">
-            <!-- Left 3-Line Menu Button to Open Full Institutional Details -->
-            <button class="btn btn-sm btn-outline-warning text-white fw-bold d-flex align-items-center gap-1 py-1 px-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#topInfoOffcanvas" aria-controls="topInfoOffcanvas">
-                <i class="fas fa-bars-staggered text-warning"></i> Quick Portals
-            </button>
-            <!-- Right Clickable School Phone -->
-            <a href="tel:+917079090740" class="text-white text-decoration-none fw-bold" id="mobPhoneLink">
-                <i class="fas fa-phone-alt text-warning me-1"></i> <span id="topPhoneMobile">+91 7079090740</span>
-            </a>
-        </div>
-    </div>
-
-    <!-- 1.2 MOBILE TOP BAR OFFCANVAS DRAWER -->
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="topInfoOffcanvas" style="background:#0f172a; color:#ffffff;">
-        <div class="offcanvas-header border-bottom border-secondary">
-            <h6 class="offcanvas-title fw-bold text-warning"><i class="fas fa-university me-2"></i>Institutional Access</h6>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
-        </div>
-        <div class="offcanvas-body p-4">
-            <div class="d-grid gap-3 mb-4">
-                <a href="https://student.schoolalarm.online" class="btn btn-info py-2 fw-bold text-dark text-start">
-                    <i class="fas fa-graduation-cap me-2"></i> Student & Parent Portal
-                </a>
-                <a href="https://app.schoolalarm.online" class="btn btn-warning py-2 fw-bold text-dark text-start">
-                    <i class="fas fa-user-shield me-2"></i> Staff & Teacher Login
-                </a>
-                <button onclick="window.goToEnquiryFromDrawer()" class="btn btn-danger py-2 fw-bold text-start w-100" type="button">
-                    <i class="fas fa-paper-plane me-2"></i> Apply Online Admission
-                    </button>
-
-            <h6 class="fw-bold text-secondary text-uppercase small mb-3">Institutional Details</h6>
-            <div class="small text-light d-flex flex-column gap-3">
-                <div>
-                    <span class="text-secondary d-block">Official Email:</span>
-                    <i class="fas fa-envelope text-warning me-2"></i><span id="offcanvasEmail">info@schoolalarm.online</span>
-                </div>
-                <div>
-                    <span class="text-secondary d-block">Board Affiliation:</span>
-                    <i class="fas fa-award text-warning me-2"></i>Affiliated to CBSE, New Delhi (Code: 330XXX)
-                </div>
-                <div>
-                    <span class="text-secondary d-block">Helpline Numbers:</span>
-                    <i class="fas fa-phone text-warning me-2"></i>+91 7079090740
+                    <span class="text-secondary d-block">Helpline Number:</span>
+                    <i class="fas fa-phone text-warning me-2"></i><span id="offcanvasPhone">+91 7079090740</span>
                 </div>
             </div>
         </div>
@@ -454,21 +439,18 @@
     <!-- 2. MAIN NAVIGATION HEADER (sec-navbar) -->
     <nav class="navbar navbar-expand-lg navbar-main" id="sec-navbar">
         <div class="container-fluid px-lg-5 px-3">
-            <!-- Mobile 3-line toggler strictly placed on LEFT (Order 0) -->
             <button class="navbar-toggler border-0 me-2 p-1 order-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false">
                 <i class="fas fa-bars fa-lg text-dark"></i>
             </button>
             
-            <!-- School Logo & Name (Order 1, Left Aligned with zero gap) -->
             <a class="navbar-brand d-flex align-items-center gap-2 gap-sm-3 order-1 me-auto" href="#home">
                 <img src="/favicon.png" alt="School Logo" class="school-logo-img" id="schoolLogo">
                 <div>
-                    <h5 class="fw-bold m-0 text-dark" id="schoolNameHeader">Royal International Public School</h5>
-                    <small class="text-muted d-none d-sm-block" style="font-size: 11px;">Empowering Minds, Shaping Futures</small>
+                    <h5 class="fw-bold m-0 text-dark" id="schoolNameHeader">Institutional Campus Portal</h5>
+                    <small class="text-muted d-none d-sm-block" id="schoolTagline" style="font-size: 11px;">Empowering Minds, Shaping Futures</small>
                 </div>
             </a>
 
-            <!-- Navbar Menu Items (Left Aligned on mobile, Order 2) -->
             <div class="collapse navbar-collapse order-2" id="navMenu">
                 <ul class="navbar-nav ms-auto align-items-start align-items-lg-center gap-lg-1 py-3 py-lg-0 w-100 justify-content-lg-end">
                     <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start active" href="#home">Home</a></li>
@@ -478,7 +460,6 @@
                     <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#toppers">Toppers</a></li>
                     <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#gallery">Gallery</a></li>
                     <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#notices">Notices</a></li>
-                    <!-- Shortened to Disclosure -->
                     <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#disclosure">Disclosure</a></li>
                     <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#contact">Contact</a></li>
                 </ul>
@@ -491,7 +472,7 @@
         <div class="container-fluid px-lg-5 d-flex align-items-center gap-3">
             <span class="ticker-title"><i class="fas fa-bullhorn me-1"></i> LATEST ANNOUNCEMENT</span>
             <marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();" class="fw-bold text-dark small" id="newsTickerText">
-                Registration open for Session 2026-27 (Pre-Nursery to Grade XII) &bull; Annual Sports Meet commences on 15th December &bull; Download Updated Term Syllabus and Date Sheet from Notice Board below.
+                Admissions open for academic session 2026-27 &bull; Download curriculum and fee structure circular from Notice Board &bull; Contact school helpline for interactive campus tour.
             </marquee>
         </div>
     </div>
@@ -502,12 +483,12 @@
             <div class="row align-items-center">
                 <div class="col-lg-8">
                     <div class="hero-badge">
-                        <i class="fas fa-star text-warning"></i> Admissions Open for Session 2026-27 (Pre-Nursery to XII)
+                        <i class="fas fa-star text-warning"></i> Admissions Open for Academic Session 2026-27
                     </div>
                     <h1 class="hero-title" id="heroHeadline">
                         Nurturing Leaders for Tomorrow with Modern Education & Core Values
                     </h1>
-                    <p class="lead text-light mb-4" style="font-size: 17px; max-width: 650px;">
+                    <p class="lead text-light mb-4" id="heroSubtext" style="font-size: 17px; max-width: 650px;">
                         Welcome to an institution dedicated to academic excellence, innovative smart learning, character building, and world-class sports infrastructure.
                     </p>
                     <div class="d-flex flex-wrap gap-3">
@@ -554,8 +535,8 @@
                 <div class="col-lg-5 text-center">
                     <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=700&q=80" alt="Principal" class="rounded-4 shadow-lg w-100" style="max-height: 480px; object-fit: cover;">
                     <div class="mt-3">
-                        <h5 class="fw-bold m-0 text-dark">Dr. Sunita Sharma</h5>
-                        <small class="text-muted fw-semibold">Principal & Academic Director (M.Sc, B.Ed, Ph.D)</small>
+                        <h5 class="fw-bold m-0 text-dark" id="principalName">Dr. Sunita Sharma</h5>
+                        <small class="text-muted fw-semibold" id="principalTitle">Principal & Academic Director</small>
                     </div>
                 </div>
                 <div class="col-lg-7">
@@ -569,8 +550,8 @@
                     </p>
                     <div class="d-flex align-items-center gap-4 mt-4 pt-2 border-top">
                         <div>
-                            <h6 class="fw-bold m-0 text-primary">Affiliation Status</h6>
-                            <small class="text-muted">Senior Secondary Level (Science, Commerce & Humanities)</small>
+                            <h6 class="fw-bold m-0 text-primary">Academic Curriculum</h6>
+                            <small class="text-muted">Holistic Development across Sciences, Humanities & Commerce</small>
                         </div>
                     </div>
                 </div>
@@ -589,22 +570,22 @@
                 <div class="col-md-4">
                     <div class="premium-card">
                         <div class="icon-circle-lg"><i class="fas fa-shapes"></i></div>
-                        <h5 class="fw-bold mb-2">Pre-Primary (Playgroup - UKG)</h5>
+                        <h5 class="fw-bold mb-2">Pre-Primary Wing</h5>
                         <p class="text-muted small">Playway Montessori methodologies focused on sensory exploration, phonics, motor skills, and foundational literacy.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="premium-card">
                         <div class="icon-circle-lg"><i class="fas fa-book-reader"></i></div>
-                        <h5 class="fw-bold mb-2">Primary & Middle (Class I - VIII)</h5>
+                        <h5 class="fw-bold mb-2">Primary & Middle Wing</h5>
                         <p class="text-muted small">Holistic competency-based learning emphasizing Mathematics, Science, Environmental Studies, Robotics, and Languages.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="premium-card">
                         <div class="icon-circle-lg"><i class="fas fa-graduation-cap"></i></div>
-                        <h5 class="fw-bold mb-2">Secondary & Sr. Sec (Class IX - XII)</h5>
-                        <p class="text-muted small">Rigorous board exam preparation combined with competitive exam mentoring (NEET, JEE, CUET) in Science, Commerce, and Arts.</p>
+                        <h5 class="fw-bold mb-2">Secondary & Sr. Secondary</h5>
+                        <p class="text-muted small">Rigorous board exam preparation combined with competitive mentoring in Science, Commerce, and Arts streams.</p>
                     </div>
                 </div>
             </div>
@@ -636,8 +617,8 @@
                 <div class="col-md-4">
                     <div class="premium-card">
                         <div class="icon-circle-lg text-warning" style="background: #fef3c7;"><i class="fas fa-bus"></i></div>
-                        <h5 class="fw-bold mb-2">GPS Air-Conditioned Transport</h5>
-                        <p class="text-muted small">Safe bus transportation covering a 25km radius equipped with live GPS tracking and female safety attendants.</p>
+                        <h5 class="fw-bold mb-2">GPS-Tracked Safe Transport</h5>
+                        <p class="text-muted small">Safe bus transportation equipped with live GPS tracking and safety attendants on all primary routes.</p>
                     </div>
                 </div>
             </div>
@@ -658,7 +639,7 @@
                         <span class="topper-badge">98.6%</span>
                         <div class="p-3">
                             <h6 class="fw-bold m-0 text-dark">Ananya Verma</h6>
-                            <small class="text-muted">Class XII (Science Stream)</small>
+                            <small class="text-muted">Senior Secondary (Science)</small>
                         </div>
                     </div>
                 </div>
@@ -668,7 +649,7 @@
                         <span class="topper-badge">97.8%</span>
                         <div class="p-3">
                             <h6 class="fw-bold m-0 text-dark">Rohan Malhotra</h6>
-                            <small class="text-muted">Class XII (Commerce Stream)</small>
+                            <small class="text-muted">Senior Secondary (Commerce)</small>
                         </div>
                     </div>
                 </div>
@@ -678,7 +659,7 @@
                         <span class="topper-badge">99.2%</span>
                         <div class="p-3">
                             <h6 class="fw-bold m-0 text-dark">Pooja Kumari</h6>
-                            <small class="text-muted">Class X (District 1st Rank)</small>
+                            <small class="text-muted">Secondary Board Topper</small>
                         </div>
                     </div>
                 </div>
@@ -724,22 +705,22 @@
                         <a href="javascript:void(0)" class="list-group-item list-group-item-action p-3 d-flex justify-content-between align-items-center">
                             <div>
                                 <span class="badge bg-danger me-2">NEW</span>
-                                <span class="fw-bold">Schedule for Periodic Assessment 2 Examination</span>
-                                <div class="text-muted small mt-1">Published: 28th October 2026</div>
+                                <span class="fw-bold">Schedule for Periodic Assessment Examination</span>
+                                <div class="text-muted small mt-1">Academic Circular Release</div>
                             </div>
                             <i class="fas fa-file-pdf text-danger fa-lg"></i>
                         </a>
                         <a href="javascript:void(0)" class="list-group-item list-group-item-action p-3 d-flex justify-content-between align-items-center">
                             <div>
-                                <span class="fw-bold">Academic Session 2026-27 Fee Structure Circular</span>
-                                <div class="text-muted small mt-1">Published: 15th October 2026</div>
+                                <span class="fw-bold">Academic Session Fee Structure Guidelines</span>
+                                <div class="text-muted small mt-1">Administrative Notice</div>
                             </div>
                             <i class="fas fa-file-pdf text-danger fa-lg"></i>
                         </a>
                         <a href="javascript:void(0)" class="list-group-item list-group-item-action p-3 d-flex justify-content-between align-items-center">
                             <div>
-                                <span class="fw-bold">Winter Break Vacation Schedule Notification</span>
-                                <div class="text-muted small mt-1">Published: 10th October 2026</div>
+                                <span class="fw-bold">Winter Vacation Schedule Notification</span>
+                                <div class="text-muted small mt-1">Official Notification</div>
                             </div>
                             <i class="fas fa-file-pdf text-danger fa-lg"></i>
                         </a>
@@ -750,8 +731,8 @@
                     <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2">VERIFICATION TOOL</span>
                     <h3 class="fw-bold text-dark mb-3">Transfer Certificate (TC) Search</h3>
                     <div class="p-4 bg-white rounded-4 shadow-sm border">
-                        <p class="small text-secondary mb-3">Verify the authenticity of Transfer Certificate issued by school authority.</p>
-                        <form onsubmit="event.preventDefault(); alert('TC Verified: Valid active certificate on institutional records.');">
+                        <p class="small text-secondary mb-3">Verify the authenticity of Transfer Certificate issued by institutional authority.</p>
+                        <form onsubmit="event.preventDefault(); alert('TC Status: Verified and Authenticated on institutional portal.');">
                             <div class="mb-3">
                                 <label class="form-label-custom">Admission No / TC Reference Number</label>
                                 <input type="text" class="form-control form-control-custom" placeholder="e.g. TC-2026-089" required>
@@ -771,8 +752,8 @@
         <div class="container py-4">
             <div class="text-center mb-4">
                 <span class="badge bg-secondary-subtle text-secondary fw-bold px-3 py-2 rounded-pill mb-2">STATUTORY COMPLIANCE</span>
-                <h3 class="fw-bold text-dark">Mandatory Public Disclosure (Board Compliance)</h3>
-                <p class="text-muted small">Information stipulated under CBSE / Education Department Guidelines</p>
+                <h3 class="fw-bold text-dark">Mandatory Public Disclosure</h3>
+                <p class="text-muted small">Statutory documents stipulated under Competent Education Department Guidelines</p>
             </div>
             <div class="table-responsive bg-white rounded-4 shadow-sm border">
                 <table class="table table-hover align-middle mb-0" style="font-size: 13.5px;">
@@ -780,33 +761,33 @@
                         <tr>
                             <th class="ps-3 py-3">#</th>
                             <th>Information / Documents</th>
-                            <th>Certificate Source</th>
+                            <th>Issuing Authority</th>
                             <th class="text-center pe-3">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td class="ps-3">1</td>
-                            <td class="fw-bold">Affiliation Letter from Central Board of Secondary Education (CBSE)</td>
-                            <td>CBSE Board, New Delhi</td>
+                            <td class="fw-bold">Affiliation Letter from Educational Board</td>
+                            <td>Recognized Board of Education</td>
                             <td class="text-center pe-3"><a href="#" class="btn btn-sm btn-outline-danger py-1 px-3 fw-bold"><i class="fas fa-file-pdf me-1"></i> View Document</a></td>
                         </tr>
                         <tr>
                             <td class="ps-3">2</td>
-                            <td class="fw-bold">Societies / Trust Registration Certificate</td>
-                            <td>Govt. of Bihar / Competent Authority</td>
+                            <td class="fw-bold">Societies / Educational Trust Registration Certificate</td>
+                            <td>Competent State Authority</td>
                             <td class="text-center pe-3"><a href="#" class="btn btn-sm btn-outline-danger py-1 px-3 fw-bold"><i class="fas fa-file-pdf me-1"></i> View Document</a></td>
                         </tr>
                         <tr>
                             <td class="ps-3">3</td>
-                            <td class="fw-bold">No Objection Certificate (NOC) Issued by State Government</td>
-                            <td>District Education Office</td>
+                            <td class="fw-bold">No Objection Certificate (NOC) Issued by Government</td>
+                            <td>District Education Department</td>
                             <td class="text-center pe-3"><a href="#" class="btn btn-sm btn-outline-danger py-1 px-3 fw-bold"><i class="fas fa-file-pdf me-1"></i> View Document</a></td>
                         </tr>
                         <tr>
                             <td class="ps-3">4</td>
                             <td class="fw-bold">Building Safety & Fire Safety Certificate</td>
-                            <td>PWD / Fire Service Department</td>
+                            <td>PWD / Fire Service Authority</td>
                             <td class="text-center pe-3"><a href="#" class="btn btn-sm btn-outline-danger py-1 px-3 fw-bold"><i class="fas fa-file-pdf me-1"></i> View Document</a></td>
                         </tr>
                     </tbody>
@@ -830,7 +811,7 @@
                         </div>
                         <p class="text-secondary small italic mb-4">"The focus on individual attention and modern STEM education has transformed my daughter's confidence. The management and teachers are extraordinarily supportive."</p>
                         <h6 class="fw-bold m-0 text-dark">Rajeev Sinha</h6>
-                        <small class="text-muted">Father of Aarav (Grade VI)</small>
+                        <small class="text-muted">Parent</small>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -840,7 +821,7 @@
                         </div>
                         <p class="text-secondary small italic mb-4">"Best school infrastructure in the district. Safe GPS transport and daily mobile app updates through ERP give complete peace of mind."</p>
                         <h6 class="fw-bold m-0 text-dark">Mrs. Shweta Singh</h6>
-                        <small class="text-muted">Mother of Ananya (Grade III)</small>
+                        <small class="text-muted">Parent</small>
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -848,9 +829,9 @@
                         <div class="text-warning mb-3">
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                         </div>
-                        <p class="text-secondary small italic mb-4">"Academic excellence combined with extracurricular sports. My son has topped his board exams thanks to regular doubt-clearing sessions."</p>
+                        <p class="text-secondary small italic mb-4">"Academic excellence combined with extracurricular sports. Regular guidance and interactive digital classrooms set the bar high."</p>
                         <h6 class="fw-bold m-0 text-dark">Dr. Arvind Mishra</h6>
-                        <small class="text-muted">Father of Pranav (Grade XII)</small>
+                        <small class="text-muted">Parent</small>
                     </div>
                 </div>
             </div>
@@ -878,7 +859,7 @@
                         <div class="icon-circle-lg m-0" style="width: 48px; height: 48px; font-size: 20px;"><i class="fas fa-headset"></i></div>
                         <div>
                             <h6 class="fw-bold m-0">Admission Help Desk</h6>
-                            <small class="text-muted">Call directly: +91 7079090740</small>
+                            <small class="text-muted">Direct Phone: <span id="enqHelplineText">+91 7079090740</span></small>
                         </div>
                     </div>
                 </div>
@@ -932,7 +913,7 @@
                                 </div>
                                 <div class="col-12">
                                     <label class="form-label-custom">Any Questions / Remarks</label>
-                                    <textarea class="form-control" id="enqMessage" rows="2" style="border-radius:10px; font-size:13.5px;" placeholder="Transport requirement, hostel facility query..."></textarea>
+                                    <textarea class="form-control" id="enqMessage" rows="2" style="border-radius:10px; font-size:13.5px;" placeholder="Transport requirement, fee query..."></textarea>
                                 </div>
                                 <div class="col-12 pt-2">
                                     <button type="submit" class="btn btn-primary w-100 py-3 fw-bold shadow" id="btnSubmitEnquiry" style="border-radius: 12px; font-size: 15px;">
@@ -960,7 +941,7 @@
                         <i class="fas fa-map-marker-alt text-primary fa-lg mt-1"></i>
                         <div>
                             <h6 class="fw-bold m-0">Campus Address</h6>
-                            <small class="text-muted" id="footerAddr">Main Campus Road, Industrial Area, Hajipur, Vaishali, Bihar - 844101</small>
+                            <small class="text-muted" id="footerAddr">Institutional Campus, Main Road</small>
                         </div>
                     </div>
                     <div class="d-flex align-items-start gap-3 mb-3">
@@ -992,7 +973,7 @@
         <div class="container-fluid px-lg-5">
             <div class="row g-4">
                 <div class="col-lg-4">
-                    <h5 class="text-white fw-bold mb-3" id="footerSchoolName">Royal International Public School</h5>
+                    <h5 class="text-white fw-bold mb-3" id="footerSchoolName">School Campus Portal</h5>
                     <p class="small text-secondary mb-3">
                         Committed to high-quality academic education, character development, and holistic student growth with modern digital infrastructure.
                     </p>
@@ -1026,26 +1007,24 @@
 
                 <div class="col-lg-3">
                     <h6>Contact Support</h6>
-                    <p class="small mb-2"><i class="fas fa-phone-alt text-warning me-2"></i>+91 7079090740</p>
-                    <p class="small mb-2"><i class="fas fa-envelope text-warning me-2"></i>info@schoolalarm.online</p>
+                    <p class="small mb-2"><i class="fas fa-phone-alt text-warning me-2"></i><span id="footerHelplinePhone">+91 7079090740</span></p>
+                    <p class="small mb-2"><i class="fas fa-envelope text-warning me-2"></i><span id="footerHelplineMail">info@schoolalarm.online</span></p>
                     <p class="small mb-2"><i class="fas fa-clock text-warning me-2"></i>Mon - Sat: 8:00 AM - 3:00 PM</p>
                 </div>
             </div>
 
             <div class="footer-divider d-flex justify-content-between align-items-center flex-wrap gap-2 text-secondary small">
-                <div>&copy; 2026 <span id="copySchoolName">Royal International Public School</span>. All rights reserved.</div>
+                <div>&copy; 2026 <span id="copySchoolName">School Campus Portal</span>. All rights reserved.</div>
                 <div>Powered by <a href="https://schoolalarm.online" class="text-white fw-bold">School Alarm ERP</a></div>
             </div>
         </div>
     </footer>
 
     <!-- 17. FLOATING GADGETS -->
-    <!-- A. Floating WhatsApp Button (gadget-whatsapp) -->
     <a href="https://wa.me/917079090740?text=Hello%20School%20Helpdesk,%20I%20have%20an%20admission%20enquiry." target="_blank" class="gadget-whatsapp" id="gadget-whatsapp" title="Chat on WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- B. Floating Quick Enquiry Drawer Tab (gadget-floating-enquiry) -->
     <a href="#enquiry" class="gadget-quick-enquiry" id="gadget-floating-enquiry">
         <i class="fas fa-edit me-1"></i> APPLY ADMISSION
     </a>
@@ -1053,56 +1032,95 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- ⚡ Dynamic School Engine & Lead Generator Script -->
+    <!-- ⚡ Multi-Tenant Dynamic School Engine Script -->
     <script>
-        let currentSchoolId = "169701"; // Default Demo ID
+        let activeSchoolId = "";
 
-        // 1. Detect Subdomain or Parameter (demo.schoolalarm.online or ?school=169701)
+        // 1. Dynamic School Data Binder from Supabase
         document.addEventListener("DOMContentLoaded", async function() {
             const host = window.location.hostname.toLowerCase();
             const urlParams = new URLSearchParams(window.location.search);
             const querySchool = urlParams.get('school');
 
-            if (querySchool) {
-                currentSchoolId = querySchool;
-            } else if (host.startsWith('demo.')) {
-                currentSchoolId = "169701";
-            } else if (host.includes('.') && !host.startsWith('www.')) {
-                currentSchoolId = host.split('.')[0];
+            let searchIdentifier = querySchool || "";
+
+            if (!searchIdentifier) {
+                if (host.startsWith('demo.')) {
+                    searchIdentifier = "demo";
+                } else if (host.includes('.') && !host.startsWith('www.')) {
+                    searchIdentifier = host.split('.')[0];
+                }
             }
 
-            // Live Branding Fetch from Supabase
             try {
-                const { data: sch } = await db
-                    .from('Schools')
-                    .select('*')
-                    .or(`SchoolID.eq.${currentSchoolId},Subdomain.eq.${currentSchoolId}`)
-                    .maybeSingle();
+                let schoolRecord = null;
 
-                if (sch) {
-                    currentSchoolId = sch.SchoolID;
-                    document.getElementById('schoolNameHeader').innerText = sch.SchoolName;
-                    document.getElementById('footerSchoolName').innerText = sch.SchoolName;
-                    document.getElementById('copySchoolName').innerText = sch.SchoolName;
-                    document.getElementById('siteTitle').innerText = `${sch.SchoolName} | Official Website`;
-                    if (sch.SchoolLogo) document.getElementById('schoolLogo').src = sch.SchoolLogo;
-                    if (sch.Phone) {
-                        document.getElementById('topPhone').innerText = sch.Phone;
-                        document.getElementById('topPhoneMobile').innerText = sch.Phone;
-                        document.getElementById('footerPhone').innerText = sch.Phone;
-                        document.getElementById('mobPhoneLink').href = `tel:${sch.Phone}`;
+                // Try fetching by SchoolID
+                if (searchIdentifier && searchIdentifier !== "demo") {
+                    const { data } = await db
+                        .from('Schools')
+                        .select('*')
+                        .eq('SchoolID', searchIdentifier)
+                        .maybeSingle();
+                    schoolRecord = data;
+                }
+
+                // If demo or not matched, fetch the first active operational school
+                if (!schoolRecord) {
+                    const { data: fallbackSchool } = await db
+                        .from('Schools')
+                        .select('*')
+                        .eq('Status', 'ACTIVE')
+                        .limit(1)
+                        .maybeSingle();
+                    schoolRecord = fallbackSchool;
+                }
+
+                // 🚀 DYNAMIC BINDING FOR MULTI-TENANT ARCHITECTURE
+                if (schoolRecord) {
+                    activeSchoolId = schoolRecord.SchoolID;
+                    const sName = schoolRecord.SchoolName || "Institutional Campus Portal";
+                    const sPhone = schoolRecord.Phone || "+91 7079090740";
+                    const sMail = schoolRecord.Email || "info@schoolalarm.online";
+                    const sAddr = schoolRecord.Address ? `${schoolRecord.Address}, ${schoolRecord.City || ''}` : "Main Campus Road";
+
+                    // Bind Names
+                    document.getElementById('siteTitle').innerText = `${sName} | Official Website`;
+                    document.getElementById('schoolNameHeader').innerText = sName;
+                    document.getElementById('footerSchoolName').innerText = sName;
+                    document.getElementById('copySchoolName').innerText = sName;
+                    document.getElementById('heroHeadline').innerText = `Welcome to ${sName} - Excellence in Education`;
+
+                    // Bind Logo
+                    if (schoolRecord.SchoolLogo) {
+                        document.getElementById('schoolLogo').src = schoolRecord.SchoolLogo;
                     }
-                    if (sch.Email) {
-                        document.getElementById('topEmail').innerText = sch.Email;
-                        document.getElementById('offcanvasEmail').innerText = sch.Email;
-                        document.getElementById('footerMail').innerText = sch.Email;
-                    }
-                    if (sch.Address) {
-                        document.getElementById('footerAddr').innerText = sch.Address;
-                    }
+
+                    // Bind Phones
+                    document.getElementById('topPhone').innerText = sPhone;
+                    document.getElementById('topPhoneMobile').innerText = sPhone;
+                    document.getElementById('offcanvasPhone').innerText = sPhone;
+                    document.getElementById('footerPhone').innerText = sPhone;
+                    document.getElementById('footerHelplinePhone').innerText = sPhone;
+                    document.getElementById('enqHelplineText').innerText = sPhone;
+                    document.getElementById('mobPhoneLink').href = `tel:${sPhone.replace(/[^0-9+]/g, '')}`;
+
+                    // Bind WhatsApp floating button dynamically
+                    const cleanPhone = sPhone.replace(/[^0-9]/g, '');
+                    const waNum = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+                    document.getElementById('gadget-whatsapp').href = `https://wa.me/${waNum}?text=Hello%20${encodeURIComponent(sName)},%20I%20have%20an%20admission%20enquiry.`;
+
+                    // Bind Emails
+                    document.getElementById('topEmail').innerText = sMail;
+                    document.getElementById('offcanvasEmail').innerText = sMail;
+                    document.getElementById('footerMail').innerText = sMail;
+                    document.getElementById('footerHelplineMail').innerText = sMail;
+
+                    // Bind Address
+                    document.getElementById('footerAddr').innerText = sAddr;
                 }
             } catch(e) {
-                console.warn("Branding loaded fallback:", e);
+                console.warn("Dynamic branding fallback applied:", e);
             }
         });
 
@@ -1130,7 +1148,7 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Submitting Enquiry...';
 
             const payload = {
-                "SchoolID": currentSchoolId,
+                "SchoolID": activeSchoolId || "169701",
                 "StudentName": document.getElementById('enqStudentName').value.trim().toUpperCase(),
                 "ParentName": document.getElementById('enqParentName').value.trim().toUpperCase(),
                 "Class": document.getElementById('enqClass').value,
@@ -1161,7 +1179,7 @@
             }
         };
 
-        // 🚀 1. Auto-Close Mobile Navbar when any link is clicked
+        // 4. Auto-Close Mobile Navbar when any link is clicked
         document.addEventListener("DOMContentLoaded", function() {
             const navLinks = document.querySelectorAll('#navMenu .nav-link');
             const navMenu = document.getElementById('navMenu');
@@ -1176,7 +1194,7 @@
             });
         });
 
-        // 🚀 2. Smooth Transition from Drawer to Admission Enquiry Form
+        // 5. Smooth Transition from Drawer to Admission Enquiry Form
         window.goToEnquiryFromDrawer = function() {
             const drawerEl = document.getElementById('topInfoOffcanvas');
             if (drawerEl) {
@@ -1184,7 +1202,6 @@
                 bsDrawer.hide();
             }
 
-            // Wait 300ms for offcanvas backdrop to fully disappear, then smooth scroll
             setTimeout(() => {
                 const enquirySection = document.getElementById('enquiry');
                 if (enquirySection) {
