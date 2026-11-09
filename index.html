@@ -2572,26 +2572,26 @@
                 </p>
 
                 <!-- Animated 99% Circular Progress Ring -->
-                <div class="d-flex align-items-center gap-4 mt-2">
-                    <div class="circular-progress-wrap">
-                        <svg class="progress-ring" width="110" height="110">
-                            <circle class="progress-ring-circle-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="46" cx="55" cy="55"/>
-                            <circle class="progress-ring-circle" id="renewalRing" stroke="url(#gradientRing)" stroke-width="8" stroke-dasharray="289" stroke-dashoffset="289" stroke-linecap="round" fill="transparent" r="46" cx="55" cy="55"/>
-                            <defs>
-                                <linearGradient id="gradientRing" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#38bdf8" />
-                                    <stop offset="50%" stop-color="#f59e0b" />
-                                    <stop offset="100%" stop-color="#10b981" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                        <div class="progress-number"><span id="renewalPercent">0</span>%</div>
-                    </div>
-                    <div>
-                        <h4 class="fw-bold text-white h5 mb-1">Retention Rate</h4>
-                        <p class="text-white-50 small mb-0">Institutions renewing their subscriptions year after year.</p>
-                    </div>
-                </div>
+				<div class="d-flex align-items-center gap-4 mt-2">
+					<div class="circular-progress-wrap" style="position: relative; width: 110px; height: 110px; min-width: 110px; display: flex; align-items: center; justify-content: center;">
+						<svg class="progress-ring" viewBox="0 0 110 110" width="110" height="110" style="transform: rotate(-90deg); width: 110px; height: 110px; overflow: visible;">
+							<circle class="progress-ring-circle-bg" stroke="rgba(255,255,255,0.12)" stroke-width="8" fill="transparent" r="46" cx="55" cy="55"/>
+							<circle class="progress-ring-circle" id="renewalRing" stroke="url(#gradientRing)" stroke-width="8" stroke-dasharray="289.02" stroke-dashoffset="289.02" stroke-linecap="round" fill="transparent" r="46" cx="55" cy="55"/>
+							<defs>
+								<linearGradient id="gradientRing" x1="0%" y1="0%" x2="100%" y2="100%">
+									<stop offset="0%" stop-color="#38bdf8" />
+									<stop offset="50%" stop-color="#f59e0b" />
+									<stop offset="100%" stop-color="#10b981" />
+								</linearGradient>
+							</defs>
+						</svg>
+						<div class="progress-number" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: 800; font-size: 1.5rem; color: #ffffff; line-height: 1;"><span id="renewalPercent">0</span>%</div>
+					</div>
+					<div>
+						<h4 class="fw-bold text-white h5 mb-1">Retention Rate</h4>
+						<p class="text-white-50 small mb-0">Institutions renewing their subscriptions year after year.</p>
+					</div>
+				</div>
 
                 <!-- Call to Action Button -->
                 <div class="mt-4">
@@ -2660,7 +2660,7 @@
 <style>
     .hn-stats-section {
         position: relative;
-        padding: 90px 0;
+        padding: 100px 0;
         background: radial-gradient(circle at 30% 20%, #0284c7 0%, #0f172a 60%, #030712 100%);
         overflow: hidden;
     }
@@ -4068,26 +4068,83 @@
         });
     </script>
 	<script>
+    /* ========================================================
+       1. FIX: OUR STORY TAB SWITCHER
+       ======================================================== */
     function switchStoryTab(evt, tabKey) {
-        // Hide all tabs
-        const panels = document.querySelectorAll('#our-story-tabs .tab-panel');
+        // ID '#Our-Story' ke andar sabhi panels ko hide karein
+        const storySection = document.getElementById('Our-Story');
+        if (!storySection) return;
+
+        const panels = storySection.querySelectorAll('.tab-panel');
         panels.forEach(p => p.style.display = 'none');
 
-        // Remove active class from buttons
-        const btns = document.querySelectorAll('#our-story-tabs .tab-btn');
+        // Sabhi buttons se active hatayein
+        const btns = storySection.querySelectorAll('.tab-btn');
         btns.forEach(b => b.classList.remove('active'));
 
-        // Show target tab
+        // Target panel ko dikhayein
         const targetPanel = document.getElementById('tab-' + tabKey);
         if (targetPanel) {
             targetPanel.style.display = 'block';
         }
 
-        // Add active class to clicked button
-        evt.currentTarget.classList.add('active');
+        // Click kiye gaye button ko active karein
+        if (evt && evt.currentTarget) {
+            evt.currentTarget.classList.add('active');
+        }
     }
-</script>
 
+    /* ========================================================
+       2. FIX: ROLES & BEFORE/AFTER TAB SWITCHER
+       ======================================================== */
+    function switchRoleTab(evt, roleKey) {
+        const rolesSection = document.getElementById('roles-section');
+        if (!rolesSection) return;
+
+        // Sabhi role panes ko hide karein
+        const panes = rolesSection.querySelectorAll('.role-tab-pane');
+        panes.forEach(p => p.style.display = 'none');
+
+        // Sabhi pill buttons se active hatayein
+        const pills = rolesSection.querySelectorAll('.role-pill-btn');
+        pills.forEach(b => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+        });
+
+        // Target role pane ko dikhayein
+        const targetPane = document.getElementById('role-' + roleKey);
+        if (targetPane) {
+            targetPane.style.display = 'block';
+        }
+
+        // Clicked pill ko active karein
+        if (evt && evt.currentTarget) {
+            evt.currentTarget.classList.add('active');
+            evt.currentTarget.setAttribute('aria-selected', 'true');
+        }
+    }
+    // Default: Page load hote hi ensure karein ki dono section ke pehle tab open ho
+    document.addEventListener("DOMContentLoaded", function () {
+        // Story section ka pehla tab
+        const storySection = document.getElementById('Our-Story');
+        if (storySection) {
+            const panels = storySection.querySelectorAll('.tab-panel');
+            panels.forEach((p, index) => {
+                p.style.display = (index === 0) ? 'block' : 'none';
+            });
+        }
+        // Roles section ka pehla tab
+        const rolesSection = document.getElementById('roles-section');
+        if (rolesSection) {
+            const panes = rolesSection.querySelectorAll('.role-tab-pane');
+            panes.forEach((p, index) => {
+                p.style.display = (index === 0) ? 'block' : 'none';
+            });
+        }
+    });
+</script>
 <style id="multi-dir-scroll-animations">
   /* Base state: Sare directions ke transitions */
   .erp-dir-anim {
