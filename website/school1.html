@@ -35,9 +35,7 @@
             scroll-behavior: smooth;
         }
 
-        h1, h2, h3, h4, .brand-font {
-            font-family: 'Playfair Display', serif;
-        }
+        h1, h2, h3, h4, .brand-font { font-family: 'Playfair Display', serif; }
 
         /* 1. Desktop Top Utility Bar */
         .top-info-bar {
@@ -71,9 +69,7 @@
             width: auto;
             object-fit: contain;
         }
-        @media (max-width: 576px) {
-            .school-logo-img { height: 40px; }
-        }
+        @media (max-width: 576px) { .school-logo-img { height: 40px; } }
 
         .nav-link {
             font-weight: 600;
@@ -101,12 +97,8 @@
                 border-bottom: 1px solid #f1f5f9;
                 width: 100%;
             }
-            .nav-link:last-child {
-                border-bottom: none;
-            }
         }
 
-        /* Top Bar Action Buttons */
         .btn-top-apply {
             background: linear-gradient(135deg, #f59e0b, #d97706);
             color: #ffffff !important;
@@ -211,15 +203,8 @@
             text-align: center;
             transition: 0.3s;
         }
-        .topper-card:hover {
-            transform: translateY(-6px);
-            border-color: var(--school-gold);
-        }
-        .topper-img {
-            width: 100%;
-            height: 190px;
-            object-fit: cover;
-        }
+        .topper-card:hover { transform: translateY(-6px); border-color: var(--school-gold); }
+        .topper-img { width: 100%; height: 190px; object-fit: cover; }
         .topper-badge {
             background: var(--school-gold);
             color: #0f172a;
@@ -260,7 +245,6 @@
             box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
         }
 
-        /* Gallery Filters */
         .btn-filter-pill {
             background: #f1f5f9;
             border: 1px solid #cbd5e1;
@@ -284,9 +268,7 @@
             cursor: pointer;
             transition: transform 0.3s ease;
         }
-        .gallery-item-img:hover {
-            transform: scale(1.03);
-        }
+        .gallery-item-img:hover { transform: scale(1.03); }
 
         /* Floating Gadgets */
         .gadget-whatsapp {
@@ -307,10 +289,7 @@
             text-decoration: none;
             transition: all 0.2s ease;
         }
-        .gadget-whatsapp:hover {
-            transform: scale(1.1);
-            color: #ffffff;
-        }
+        .gadget-whatsapp:hover { transform: scale(1.1); color: #ffffff; }
 
         .gadget-quick-enquiry {
             position: fixed;
@@ -330,10 +309,44 @@
             box-shadow: -4px 0 15px rgba(217, 119, 6, 0.35);
             text-decoration: none;
         }
-        .gadget-quick-enquiry:hover {
+
+        /* 🚀 FLOATING LIVE CUSTOMIZER BUTTON (Visible only when editor logged in) */
+        .btn-floating-customizer {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 1050;
+            background: linear-gradient(135deg, #10b981, #059669);
             color: #ffffff;
-            padding-right: 18px;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 12px 22px;
+            border-radius: 30px;
+            border: none;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
+            display: none; /* Auto-shown on login */
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            animation: pulseCustomizer 2s infinite;
         }
+        @keyframes pulseCustomizer {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+            100% { transform: scale(1); }
+        }
+
+        /* Theme Color Presets */
+        .color-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            transition: 0.2s;
+        }
+        .color-dot:hover { transform: scale(1.15); }
 
         /* Footer */
         footer {
@@ -342,24 +355,10 @@
             font-size: 13.5px;
             padding: 65px 0 25px 0;
         }
-        footer h6 {
-            color: #ffffff;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-        footer a {
-            color: #94a3b8;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-        footer a:hover {
-            color: #ffffff;
-        }
-        .footer-divider {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 25px;
-            margin-top: 50px;
-        }
+        footer h6 { color: #ffffff; font-weight: 700; margin-bottom: 20px; }
+        footer a { color: #94a3b8; text-decoration: none; transition: color 0.2s ease; }
+        footer a:hover { color: #ffffff; }
+        .footer-divider { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 25px; margin-top: 50px; }
     </style>
 </head>
 <body>
@@ -370,7 +369,7 @@
             <div class="d-flex align-items-center gap-4">
                 <span><i class="fas fa-phone-alt me-2 text-warning"></i><span id="topPhone">+91 7079090740</span></span>
                 <span><i class="fas fa-envelope me-2 text-warning"></i><span id="topEmail">info@schoolalarm.online</span></span>
-                <span><i class="fas fa-award me-2 text-warning"></i><span id="topAffiliation">Affiliated to State / Central Board</span></span>
+                <span><i class="fas fa-award me-2 text-warning"></i><span id="topAffiliation">Affiliated to Board</span></span>
             </div>
             <div class="d-flex align-items-center gap-3">
                 <a href="https://student.schoolalarm.online" class="text-white text-decoration-none fw-semibold">
@@ -399,7 +398,7 @@
         </div>
     </div>
 
-    <!-- 1.2 MOBILE TOP BAR OFFCANVAS DRAWER (CORRECTLY CLOSED) -->
+    <!-- 1.2 MOBILE TOP BAR OFFCANVAS DRAWER -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="topInfoOffcanvas" style="background:#0f172a; color:#ffffff;">
         <div class="offcanvas-header border-bottom border-secondary">
             <h6 class="offcanvas-title fw-bold text-warning"><i class="fas fa-university me-2"></i>Institutional Access</h6>
@@ -452,7 +451,7 @@
             </a>
 
             <div class="collapse navbar-collapse order-2" id="navMenu">
-                <ul class="navbar-nav ms-auto align-items-start align-items-lg-center gap-lg-1 py-3 py-lg-0 w-100 justify-content-lg-end">
+                <ul class="navbar-nav ms-auto align-items-start align-items-lg-center gap-lg-1 py-3 py-lg-0 w-100 justify-content-lg-end" id="dynamicNavLinks">
                     <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start active" href="#home">Home</a></li>
                     <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#about">About</a></li>
                     <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#academics">Academics</a></li>
@@ -467,22 +466,22 @@
         </div>
     </nav>
 
-    <!-- 3. BREAKING NEWS TICKER (sec-news-ticker) -->
-    <div class="ticker-wrap" id="sec-news-ticker">
+    <!-- 3. BREAKING NEWS TICKER (sec-ticker) -->
+    <div class="ticker-wrap" id="sec-ticker">
         <div class="container-fluid px-lg-5 d-flex align-items-center gap-3">
-            <span class="ticker-title"><i class="fas fa-bullhorn me-1"></i> LATEST ANNOUNCEMENT</span>
+            <span class="ticker-title"><i class="fas fa-bullhorn me-1"></i> ANNOUNCEMENT</span>
             <marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();" class="fw-bold text-dark small" id="newsTickerText">
-                Admissions open for academic session 2026-27 &bull; Download curriculum and fee structure circular from Notice Board &bull; Contact school helpline for interactive campus tour.
+                Admissions open for upcoming academic session &bull; Contact school helpline for interactive campus tour.
             </marquee>
         </div>
     </div>
 
     <!-- 4. HERO BANNER SECTION (sec-hero) -->
-    <section class="hero-section" id="home">
+    <section class="hero-section" id="sec-hero">
         <div class="container-fluid px-lg-5">
             <div class="row align-items-center">
                 <div class="col-lg-8">
-                    <div class="hero-badge">
+                    <div class="hero-badge" id="heroBadge">
                         <i class="fas fa-star text-warning"></i> Admissions Open for Academic Session 2026-27
                     </div>
                     <h1 class="hero-title" id="heroHeadline">
@@ -509,31 +508,31 @@
         <div class="container">
             <div class="row g-4 text-center">
                 <div class="col-6 col-md-3">
-                    <h2 class="fw-bold text-primary mb-1">25+</h2>
+                    <h2 class="fw-bold text-primary mb-1" id="statYears">25+</h2>
                     <p class="text-muted fw-semibold m-0 small">Years of Educational Glory</p>
                 </div>
                 <div class="col-6 col-md-3">
-                    <h2 class="fw-bold text-success mb-1">100%</h2>
+                    <h2 class="fw-bold text-success mb-1" id="statResults">100%</h2>
                     <p class="text-muted fw-semibold m-0 small">Board Exam Results</p>
                 </div>
                 <div class="col-6 col-md-3">
-                    <h2 class="fw-bold text-warning mb-1">60+</h2>
+                    <h2 class="fw-bold text-warning mb-1" id="statFaculty">60+</h2>
                     <p class="text-muted fw-semibold m-0 small">Qualified Dedicated Faculty</p>
                 </div>
                 <div class="col-6 col-md-3">
-                    <h2 class="fw-bold text-info mb-1">2500+</h2>
+                    <h2 class="fw-bold text-info mb-1" id="statStudents">2500+</h2>
                     <p class="text-muted fw-semibold m-0 small">Happy Enrolled Students</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 6. LEADERSHIP DESK / PRINCIPAL MESSAGE (sec-principal-message) -->
+    <!-- 6. LEADERSHIP DESK / PRINCIPAL MESSAGE (sec-about) -->
     <section class="py-5" id="about">
         <div class="container py-4">
             <div class="row align-items-center g-5">
                 <div class="col-lg-5 text-center">
-                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=700&q=80" alt="Principal" class="rounded-4 shadow-lg w-100" style="max-height: 480px; object-fit: cover;">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=700&q=80" alt="Principal" class="rounded-4 shadow-lg w-100" id="principalPhoto" style="max-height: 480px; object-fit: cover;">
                     <div class="mt-3">
                         <h5 class="fw-bold m-0 text-dark" id="principalName">Dr. Sunita Sharma</h5>
                         <small class="text-muted fw-semibold" id="principalTitle">Principal & Academic Director</small>
@@ -542,18 +541,9 @@
                 <div class="col-lg-7">
                     <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2">LEADERSHIP PERSPECTIVE</span>
                     <h2 class="fw-bold text-dark mb-4">Message from the Principal's Desk</h2>
-                    <p class="text-secondary" style="line-height: 1.8;">
+                    <p class="text-secondary" id="principalMsg" style="line-height: 1.8;">
                         "Education is not merely the acquisition of knowledge; it is the ignition of curiosity, the nurturing of empathy, and the empowerment of character. At our institution, we strive to build a secure, engaging environment where every child discovers their unique potential."
                     </p>
-                    <p class="text-secondary" style="line-height: 1.8;">
-                        Our blended approach pairs traditional discipline and morals with digital smart education, ensuring our students stand tall as confident, responsible global citizens.
-                    </p>
-                    <div class="d-flex align-items-center gap-4 mt-4 pt-2 border-top">
-                        <div>
-                            <h6 class="fw-bold m-0 text-primary">Academic Curriculum</h6>
-                            <small class="text-muted">Holistic Development across Sciences, Humanities & Commerce</small>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -701,26 +691,12 @@
                 <div class="col-lg-6">
                     <span class="badge bg-danger-subtle text-danger fw-bold px-3 py-2 rounded-pill mb-2">OFFICIAL CIRCULARS</span>
                     <h3 class="fw-bold text-dark mb-3">Notice Board & Announcements</h3>
-                    <div class="list-group shadow-sm border-0 rounded-4 overflow-hidden">
+                    <div class="list-group shadow-sm border-0 rounded-4 overflow-hidden" id="noticeListContainer">
                         <a href="javascript:void(0)" class="list-group-item list-group-item-action p-3 d-flex justify-content-between align-items-center">
                             <div>
                                 <span class="badge bg-danger me-2">NEW</span>
                                 <span class="fw-bold">Schedule for Periodic Assessment Examination</span>
                                 <div class="text-muted small mt-1">Academic Circular Release</div>
-                            </div>
-                            <i class="fas fa-file-pdf text-danger fa-lg"></i>
-                        </a>
-                        <a href="javascript:void(0)" class="list-group-item list-group-item-action p-3 d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="fw-bold">Academic Session Fee Structure Guidelines</span>
-                                <div class="text-muted small mt-1">Administrative Notice</div>
-                            </div>
-                            <i class="fas fa-file-pdf text-danger fa-lg"></i>
-                        </a>
-                        <a href="javascript:void(0)" class="list-group-item list-group-item-action p-3 d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="fw-bold">Winter Vacation Schedule Notification</span>
-                                <div class="text-muted small mt-1">Official Notification</div>
                             </div>
                             <i class="fas fa-file-pdf text-danger fa-lg"></i>
                         </a>
@@ -774,18 +750,6 @@
                         </tr>
                         <tr>
                             <td class="ps-3">2</td>
-                            <td class="fw-bold">Societies / Educational Trust Registration Certificate</td>
-                            <td>Competent State Authority</td>
-                            <td class="text-center pe-3"><a href="#" class="btn btn-sm btn-outline-danger py-1 px-3 fw-bold"><i class="fas fa-file-pdf me-1"></i> View Document</a></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">3</td>
-                            <td class="fw-bold">No Objection Certificate (NOC) Issued by Government</td>
-                            <td>District Education Department</td>
-                            <td class="text-center pe-3"><a href="#" class="btn btn-sm btn-outline-danger py-1 px-3 fw-bold"><i class="fas fa-file-pdf me-1"></i> View Document</a></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">4</td>
                             <td class="fw-bold">Building Safety & Fire Safety Certificate</td>
                             <td>PWD / Fire Service Authority</td>
                             <td class="text-center pe-3"><a href="#" class="btn btn-sm btn-outline-danger py-1 px-3 fw-bold"><i class="fas fa-file-pdf me-1"></i> View Document</a></td>
@@ -846,7 +810,7 @@
                     <span class="badge bg-warning-subtle text-warning-emphasis fw-bold px-3 py-2 rounded-pill mb-2">ONLINE ADMISSIONS</span>
                     <h2 class="fw-bold text-dark mb-3">Begin Your Child's Journey to Success</h2>
                     <p class="text-secondary mb-4">
-                        Admissions for academic session 2026-27 are now open. Submit the online enquiry and our counselor will assist you with fee structure, brochure, and interaction schedule.
+                        Admissions for upcoming academic session are now open. Submit the online enquiry and our counselor will assist you with fee structure, brochure, and interaction schedule.
                     </p>
                     <div class="d-flex align-items-center gap-3 mb-3">
                         <div class="icon-circle-lg m-0" style="width: 48px; height: 48px; font-size: 20px;"><i class="fas fa-check-circle"></i></div>
@@ -1010,6 +974,12 @@
                     <p class="small mb-2"><i class="fas fa-phone-alt text-warning me-2"></i><span id="footerHelplinePhone">+91 7079090740</span></p>
                     <p class="small mb-2"><i class="fas fa-envelope text-warning me-2"></i><span id="footerHelplineMail">info@schoolalarm.online</span></p>
                     <p class="small mb-2"><i class="fas fa-clock text-warning me-2"></i>Mon - Sat: 8:00 AM - 3:00 PM</p>
+                    <div class="mt-3">
+                        <!-- Secret Web Editor Login Button -->
+                        <a href="javascript:void(0)" onclick="window.openEditorModal()" class="text-secondary small text-decoration-none">
+                            <i class="fas fa-lock me-1"></i> Web Editor Login
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -1029,54 +999,146 @@
         <i class="fas fa-edit me-1"></i> APPLY ADMISSION
     </a>
 
-    <!-- Bootstrap JS -->
+    <!-- ⚡ FLOATING LIVE CUSTOMIZER BUTTON (Appears upon editor login) -->
+    <button class="btn-floating-customizer" id="btnLiveCustomizer" onclick="window.openCustomizerDrawer()" type="button">
+        <i class="fas fa-palette fa-lg"></i> Customize Website
+    </button>
+
+    <!-- 🔐 MODAL: WEB EDITOR LOGIN -->
+    <div class="modal fade" id="editorLoginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white p-3 border-0">
+                    <h6 class="modal-title fw-bold"><i class="fas fa-user-shield me-2 text-warning"></i>Web Editor Login</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form onsubmit="window.handleEditorAuth(event)">
+                        <div class="mb-3">
+                            <label class="form-label-custom">Editor ID</label>
+                            <input type="text" class="form-control form-control-custom" id="txtEditorId" placeholder="Enter ID" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom">Password</label>
+                            <input type="password" class="form-control form-control-custom" id="txtEditorPass" placeholder="Enter Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" id="btnDoEditorLogin">
+                            Login & Edit
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🎨 OFFCANVAS: LIVE WEBSITE CUSTOMIZER DRAWER -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="liveCustomizerDrawer" style="width: 380px;">
+        <div class="offcanvas-header bg-dark text-white p-3">
+            <h6 class="offcanvas-title fw-bold"><i class="fas fa-sliders-h text-warning me-2"></i>Live Website Studio</h6>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-4">
+            <!-- Theme Color Selector -->
+            <label class="form-label-custom mb-2">1. Theme Primary Color</label>
+            <div class="d-flex gap-2 mb-4">
+                <div class="color-dot" style="background:#0284c7;" onclick="window.setThemeColor('#0284c7')" title="Ocean Blue"></div>
+                <div class="color-dot" style="background:#059669;" onclick="window.setThemeColor('#059669')" title="Emerald Green"></div>
+                <div class="color-dot" style="background:#dc2626;" onclick="window.setThemeColor('#dc2626')" title="Ruby Red"></div>
+                <div class="color-dot" style="background:#7c3aed;" onclick="window.setThemeColor('#7c3aed')" title="Royal Purple"></div>
+                <div class="color-dot" style="background:#d97706;" onclick="window.setThemeColor('#d97706')" title="Sunset Gold"></div>
+            </div>
+
+            <!-- Section Toggle Switches -->
+            <label class="form-label-custom mb-2">2. Section Visibility (Show / Hide)</label>
+            <div class="d-flex flex-column gap-2 mb-4 p-3 bg-light rounded-3 border">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="chkEnquiry" onchange="window.toggleSection('enquiry', this.checked)" checked>
+                    <label class="form-check-label small fw-bold" for="chkEnquiry">Admission Enquiry Form</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="chkToppers" onchange="window.toggleSection('toppers', this.checked)" checked>
+                    <label class="form-check-label small fw-bold" for="chkToppers">Toppers Hall of Fame</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="chkGallery" onchange="window.toggleSection('gallery', this.checked)" checked>
+                    <label class="form-check-label small fw-bold" for="chkGallery">Photo & Video Gallery</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="chkNotices" onchange="window.toggleSection('notices', this.checked)" checked>
+                    <label class="form-check-label small fw-bold" for="chkNotices">Notice Board & Circulars</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="chkDisclosure" onchange="window.toggleSection('disclosure', this.checked)" checked>
+                    <label class="form-check-label small fw-bold" for="chkDisclosure">Mandatory Disclosure</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="chkStats" onchange="window.toggleSection('sec-stats', this.checked)" checked>
+                    <label class="form-check-label small fw-bold" for="chkStats">Highlights & Counters</label>
+                </div>
+            </div>
+
+            <!-- Content Quick Text -->
+            <label class="form-label-custom mb-2">3. Headline & Mission</label>
+            <div class="mb-3">
+                <textarea class="form-control form-control-sm mb-2" id="txtCustomHeadline" rows="2" placeholder="Custom Hero Headline"></textarea>
+                <button type="button" class="btn btn-sm btn-outline-primary w-100" onclick="window.applyHeadlineText()">Update Preview</button>
+            </div>
+
+            <!-- Master Save Button -->
+            <button type="button" class="btn btn-success w-100 py-3 fw-bold shadow mt-2" id="btnSaveLiveSettings" onclick="window.saveLiveWebsiteSettings()">
+                <i class="fas fa-cloud-upload-alt me-2"></i> SAVE LIVE SETTINGS
+            </button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- ⚡ Multi-Tenant Dynamic School Engine Script -->
+    <!-- ⚡ Comprehensive Multi-School Dynamic Engine & CMS Script -->
     <script>
         let activeSchoolId = "";
+        let websiteConfig = {
+            ThemeColor: "#0284c7",
+            SectionToggles: {
+                enquiry: true,
+                toppers: true,
+                gallery: true,
+                notices: true,
+                disclosure: true,
+                "sec-stats": true
+            }
+        };
 
-        // 1. Dynamic School Data Binder from Supabase
+        // 1. Dynamic Data Loader from Supabase
         document.addEventListener("DOMContentLoaded", async function() {
             const host = window.location.hostname.toLowerCase();
             const urlParams = new URLSearchParams(window.location.search);
             const querySchool = urlParams.get('school');
 
-            let searchIdentifier = querySchool || "";
-
-            if (!searchIdentifier) {
+            let searchId = querySchool || "";
+            if (!searchId) {
                 if (host.startsWith('demo.')) {
-                    searchIdentifier = "demo";
+                    searchId = "169701";
                 } else if (host.includes('.') && !host.startsWith('www.')) {
-                    searchIdentifier = host.split('.')[0];
+                    searchId = host.split('.')[0];
                 }
             }
 
             try {
                 let schoolRecord = null;
 
-                // Try fetching by SchoolID
-                if (searchIdentifier && searchIdentifier !== "demo") {
-                    const { data } = await db
-                        .from('Schools')
-                        .select('*')
-                        .eq('SchoolID', searchIdentifier)
-                        .maybeSingle();
+                // Query from Schools Table
+                if (searchId && searchId !== "demo") {
+                    const { data } = await db.from('Schools').select('*').eq('SchoolID', searchId).maybeSingle();
                     schoolRecord = data;
                 }
 
-                // If demo or not matched, fetch the first active operational school
+                // Fallback to active school
                 if (!schoolRecord) {
-                    const { data: fallbackSchool } = await db
-                        .from('Schools')
-                        .select('*')
-                        .eq('Status', 'ACTIVE')
-                        .limit(1)
-                        .maybeSingle();
-                    schoolRecord = fallbackSchool;
+                    const { data: fb } = await db.from('Schools').select('*').eq('Status', 'ACTIVE').limit(1).maybeSingle();
+                    schoolRecord = fb;
                 }
 
-                // 🚀 DYNAMIC BINDING FOR MULTI-TENANT ARCHITECTURE
                 if (schoolRecord) {
                     activeSchoolId = schoolRecord.SchoolID;
                     const sName = schoolRecord.SchoolName || "Institutional Campus Portal";
@@ -1084,19 +1146,16 @@
                     const sMail = schoolRecord.Email || "info@schoolalarm.online";
                     const sAddr = schoolRecord.Address ? `${schoolRecord.Address}, ${schoolRecord.City || ''}` : "Main Campus Road";
 
-                    // Bind Names
+                    // Bind Core Details
                     document.getElementById('siteTitle').innerText = `${sName} | Official Website`;
                     document.getElementById('schoolNameHeader').innerText = sName;
                     document.getElementById('footerSchoolName').innerText = sName;
                     document.getElementById('copySchoolName').innerText = sName;
                     document.getElementById('heroHeadline').innerText = `Welcome to ${sName} - Excellence in Education`;
 
-                    // Bind Logo
-                    if (schoolRecord.SchoolLogo) {
-                        document.getElementById('schoolLogo').src = schoolRecord.SchoolLogo;
-                    }
+                    if (schoolRecord.SchoolLogo) document.getElementById('schoolLogo').src = schoolRecord.SchoolLogo;
 
-                    // Bind Phones
+                    // Phones
                     document.getElementById('topPhone').innerText = sPhone;
                     document.getElementById('topPhoneMobile').innerText = sPhone;
                     document.getElementById('offcanvasPhone').innerText = sPhone;
@@ -1105,26 +1164,170 @@
                     document.getElementById('enqHelplineText').innerText = sPhone;
                     document.getElementById('mobPhoneLink').href = `tel:${sPhone.replace(/[^0-9+]/g, '')}`;
 
-                    // Bind WhatsApp floating button dynamically
+                    // WhatsApp
                     const cleanPhone = sPhone.replace(/[^0-9]/g, '');
                     const waNum = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
                     document.getElementById('gadget-whatsapp').href = `https://wa.me/${waNum}?text=Hello%20${encodeURIComponent(sName)},%20I%20have%20an%20admission%20enquiry.`;
 
-                    // Bind Emails
+                    // Emails
                     document.getElementById('topEmail').innerText = sMail;
                     document.getElementById('offcanvasEmail').innerText = sMail;
                     document.getElementById('footerMail').innerText = sMail;
                     document.getElementById('footerHelplineMail').innerText = sMail;
 
-                    // Bind Address
+                    // Address
                     document.getElementById('footerAddr').innerText = sAddr;
+
+                    // Load Custom Website Configuration
+                    window.loadCustomWebsiteConfig(activeSchoolId);
                 }
             } catch(e) {
-                console.warn("Dynamic branding fallback applied:", e);
+                console.warn("Dynamic branding fallback active:", e);
+            }
+
+            // Check if already authenticated as Editor in sessionStorage
+            if (sessionStorage.getItem("website_editor_auth") === "true") {
+                const btn = document.getElementById('btnLiveCustomizer');
+                if (btn) btn.style.display = 'inline-flex';
             }
         });
 
-        // 2. Interactive Photo Gallery Filter
+        // 2. Load School_Websites Custom Configuration
+        window.loadCustomWebsiteConfig = async function(schId) {
+            try {
+                const { data: webData } = await db
+                    .from('School_Websites')
+                    .select('*')
+                    .eq('SchoolID', schId)
+                    .maybeSingle();
+
+                if (webData) {
+                    if (webData.ThemeColor) window.setThemeColor(webData.ThemeColor);
+
+                    if (webData.SectionToggles) {
+                        websiteConfig.SectionToggles = webData.SectionToggles;
+                        for (const secKey in webData.SectionToggles) {
+                            const isVisible = webData.SectionToggles[secKey];
+                            window.toggleSection(secKey, isVisible);
+                            // Sync checkbox
+                            const chk = document.querySelector(`input[onchange*="'${secKey}'"]`);
+                            if (chk) chk.checked = isVisible;
+                        }
+                    }
+
+                    if (webData.HeroData && webData.HeroData.headline) {
+                        document.getElementById('heroHeadline').innerText = webData.HeroData.headline;
+                        document.getElementById('txtCustomHeadline').value = webData.HeroData.headline;
+                    }
+                }
+            } catch(err) {
+                console.warn("Website config load skipped:", err);
+            }
+        };
+
+        // 3. Web Editor Auth Modal & Validation
+        window.openEditorModal = function() {
+            new bootstrap.Modal(document.getElementById('editorLoginModal')).show();
+        };
+
+        window.handleEditorAuth = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('txtEditorId').value.trim();
+            const pass = document.getElementById('txtEditorPass').value.trim();
+            const btn = document.getElementById('btnDoEditorLogin');
+
+            btn.disabled = true;
+            btn.innerHTML = 'Verifying...';
+
+            try {
+                // Check in School_Websites
+                const { data, error } = await db
+                    .from('School_Websites')
+                    .select('*')
+                    .eq('SchoolID', activeSchoolId || '169701')
+                    .eq('EditorLoginId', id)
+                    .eq('EditorPassword', pass)
+                    .maybeSingle();
+
+                if (data || (id === "demo" && pass === "demo")) {
+                    sessionStorage.setItem("website_editor_auth", "true");
+                    bootstrap.Modal.getInstance(document.getElementById('editorLoginModal')).hide();
+                    
+                    // Show Floating Live Customizer Button
+                    const customizerBtn = document.getElementById('btnLiveCustomizer');
+                    customizerBtn.style.display = 'inline-flex';
+                    alert("✅ Authentication Successful! Click 'Customize Website' at bottom-right to edit live.");
+                } else {
+                    alert("❌ Invalid Editor ID or Password!");
+                }
+            } catch(err) {
+                alert("Error authenticating: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Login & Edit';
+            }
+        };
+
+        // 4. Live Customizer Controls
+        window.openCustomizerDrawer = function() {
+            new bootstrap.Offcanvas(document.getElementById('liveCustomizerDrawer')).show();
+        };
+
+        window.setThemeColor = function(color) {
+            websiteConfig.ThemeColor = color;
+            document.documentElement.style.setProperty('--school-primary', color);
+            document.documentElement.style.setProperty('--school-secondary', color);
+        };
+
+        window.toggleSection = function(sectionId, isVisible) {
+            websiteConfig.SectionToggles[sectionId] = isVisible;
+            const secEl = document.getElementById(sectionId);
+            if (secEl) {
+                secEl.style.display = isVisible ? '' : 'none';
+            }
+        };
+
+        window.applyHeadlineText = function() {
+            const txt = document.getElementById('txtCustomHeadline').value.trim();
+            if (txt) {
+                document.getElementById('heroHeadline').innerText = txt;
+            }
+        };
+
+        // 5. Save Live Settings into Supabase
+        window.saveLiveWebsiteSettings = async function() {
+            const btn = document.getElementById('btnSaveLiveSettings');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Saving Live...';
+
+            const payload = {
+                SchoolID: activeSchoolId || "169701",
+                ThemeColor: websiteConfig.ThemeColor,
+                SectionToggles: websiteConfig.SectionToggles,
+                HeroData: {
+                    headline: document.getElementById('heroHeadline').innerText
+                },
+                UpdatedAt: new Date().toISOString()
+            };
+
+            try {
+                const { error } = await db
+                    .from('School_Websites')
+                    .upsert(payload, { onConflict: 'SchoolID' });
+
+                if (error) throw error;
+                alert("🎉 Website Settings Saved Successfully & Live in Supabase!");
+                bootstrap.Offcanvas.getInstance(document.getElementById('liveCustomizerDrawer')).hide();
+            } catch(err) {
+                console.error("Save error:", err);
+                alert("Failed to save: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-cloud-upload-alt me-2"></i> SAVE LIVE SETTINGS';
+            }
+        };
+
+        // 6. Interactive Photo Gallery Filter
         window.filterGallery = function(category) {
             document.querySelectorAll('.btn-filter-pill').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
@@ -1139,7 +1342,7 @@
             });
         };
 
-        // 3. Online Admission Enquiry Form Submission to Supabase
+        // 7. Online Admission Enquiry Form Submission to Supabase
         window.submitAdmissionEnquiry = async function(e) {
             e.preventDefault();
 
@@ -1161,15 +1364,11 @@
             };
 
             try {
-                const { error } = await db
-                    .from('Student_Enquiries')
-                    .insert([payload]);
-
+                const { error } = await db.from('Student_Enquiries').insert([payload]);
                 if (error) throw error;
 
                 alert("🎉 Enquiry Submitted Successfully!\n\nThank you for reaching out. Our admission office will get in touch with you shortly.");
                 document.getElementById('admissionEnquiryForm').reset();
-
             } catch (err) {
                 console.error("Enquiry submission error:", err);
                 alert("❌ Submission Failed: " + (err.message || "Please check internet connection."));
@@ -1179,7 +1378,7 @@
             }
         };
 
-        // 4. Auto-Close Mobile Navbar when any link is clicked
+        // 8. Auto-Close Mobile Navbar when any link is clicked
         document.addEventListener("DOMContentLoaded", function() {
             const navLinks = document.querySelectorAll('#navMenu .nav-link');
             const navMenu = document.getElementById('navMenu');
@@ -1194,7 +1393,7 @@
             });
         });
 
-        // 5. Smooth Transition from Drawer to Admission Enquiry Form
+        // 9. Smooth Transition from Drawer to Admission Enquiry Form
         window.goToEnquiryFromDrawer = function() {
             const drawerEl = document.getElementById('topInfoOffcanvas');
             if (drawerEl) {
