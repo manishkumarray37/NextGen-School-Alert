@@ -416,10 +416,9 @@
                 <a href="https://app.schoolalarm.online" class="btn btn-warning py-2 fw-bold text-dark text-start">
                     <i class="fas fa-user-shield me-2"></i> Staff & Teacher Login
                 </a>
-                <a href="#enquiry" class="btn btn-danger py-2 fw-bold text-start" data-bs-dismiss="offcanvas">
+                <button onclick="window.goToEnquiryFromDrawer()" class="btn btn-danger py-2 fw-bold text-start w-100" type="button">
                     <i class="fas fa-paper-plane me-2"></i> Apply Online Admission
-                </a>
-            </div>
+                    </button>
             
             <h6 class="fw-bold text-secondary text-uppercase small mb-3">Institutional Details</h6>
             <div class="small text-light d-flex flex-column gap-3">
@@ -1147,6 +1146,38 @@
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-check-circle me-2"></i> SUBMIT ADMISSION ENQUIRY';
             }
+        };
+
+        // 🚀 1. Auto-Close Mobile Navbar when any link is clicked
+        document.addEventListener("DOMContentLoaded", function() {
+            const navLinks = document.querySelectorAll('#navMenu .nav-link');
+            const navMenu = document.getElementById('navMenu');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (navMenu && navMenu.classList.contains('show')) {
+                        const bsCollapse = bootstrap.Collapse.getInstance(navMenu) || new bootstrap.Collapse(navMenu);
+                        bsCollapse.hide();
+                    }
+                });
+            });
+        });
+
+        // 🚀 2. Smooth Transition from Drawer to Admission Enquiry Form
+        window.goToEnquiryFromDrawer = function() {
+            const drawerEl = document.getElementById('topInfoOffcanvas');
+            if (drawerEl) {
+                const bsDrawer = bootstrap.Offcanvas.getInstance(drawerEl) || new bootstrap.Offcanvas(drawerEl);
+                bsDrawer.hide();
+            }
+
+            // Wait 300ms for offcanvas backdrop to fully disappear, then smooth scroll
+            setTimeout(() => {
+                const enquirySection = document.getElementById('enquiry');
+                if (enquirySection) {
+                    enquirySection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 350);
         };
     </script>
 </body>
