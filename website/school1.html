@@ -39,60 +39,98 @@
             font-family: 'Playfair Display', serif;
         }
 
-        /* 1. Top Utility Info Bar */
+        /* 1. Desktop Top Utility Bar */
         .top-info-bar {
             background-color: var(--school-dark);
             color: #cbd5e1;
             font-size: 12.5px;
-            padding: 9px 0;
+            padding: 8px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 1.1 Mobile Dedicated Top Bar */
+        .top-info-bar-mobile {
+            background-color: var(--school-dark);
+            color: #ffffff;
+            padding: 7px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         /* 2. Main Navigation Bar */
         .navbar-main {
             background: #ffffff;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            padding: 12px 0;
+            padding: 10px 0;
             position: sticky;
             top: 0;
             z-index: 1030;
         }
         .school-logo-img {
-            height: 54px;
+            height: 52px;
             width: auto;
             object-fit: contain;
         }
+        @media (max-width: 576px) {
+            .school-logo-img { height: 40px; }
+        }
+
         .nav-link {
             font-weight: 600;
             font-size: 14px;
             color: #334155 !important;
-            padding: 8px 14px !important;
+            padding: 8px 12px !important;
             transition: color 0.2s ease;
         }
         .nav-link:hover, .nav-link.active {
             color: var(--school-primary) !important;
         }
-        .btn-enquiry-nav {
-            background: linear-gradient(135deg, var(--school-primary), var(--school-secondary));
-            color: #ffffff !important;
-            font-weight: 700;
-            font-size: 13.5px;
-            padding: 9px 22px;
-            border-radius: 30px;
-            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);
-            border: none;
-            transition: all 0.2s ease;
+
+        /* Mobile Menu Left Alignment */
+        @media (max-width: 991px) {
+            .navbar-collapse {
+                background: #ffffff;
+                padding: 15px 12px;
+                border-radius: 14px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+                margin-top: 10px;
+            }
+            .nav-link {
+                text-align: left !important;
+                padding: 10px 14px !important;
+                border-bottom: 1px solid #f1f5f9;
+                width: 100%;
+            }
+            .nav-link:last-child {
+                border-bottom: none;
+            }
         }
-        .btn-enquiry-nav:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
+
+        /* Top Bar Action Buttons */
+        .btn-top-apply {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #ffffff !important;
+            font-weight: 800;
+            font-size: 11.5px;
+            padding: 4px 14px;
+            border-radius: 20px;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: 0.2s;
+        }
+        .btn-top-apply:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4);
         }
 
         /* 3. Live News Ticker */
         .ticker-wrap {
             background: #fef3c7;
             border-bottom: 1px solid #fde68a;
-            padding: 8px 0;
+            padding: 7px 0;
             overflow: hidden;
         }
         .ticker-title {
@@ -100,7 +138,7 @@
             color: #ffffff;
             font-size: 11px;
             font-weight: 800;
-            padding: 4px 12px;
+            padding: 3px 10px;
             border-radius: 20px;
             white-space: nowrap;
         }
@@ -120,18 +158,18 @@
             color: #fef08a;
             font-weight: 700;
             font-size: 13px;
-            padding: 7px 18px;
+            padding: 6px 16px;
             border-radius: 30px;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
         .hero-title {
-            font-size: clamp(2.4rem, 5vw, 4.4rem);
+            font-size: clamp(2.3rem, 5vw, 4.4rem);
             font-weight: 900;
             line-height: 1.15;
-            margin-bottom: 22px;
+            margin-bottom: 20px;
             color: #ffffff;
         }
 
@@ -139,28 +177,28 @@
         .premium-card {
             background: #ffffff;
             border-radius: 20px;
-            padding: 32px 26px;
+            padding: 30px 24px;
             border: 1.5px solid #e2e8f0;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
             transition: all 0.3s ease;
             height: 100%;
         }
         .premium-card:hover {
-            transform: translateY(-8px);
+            transform: translateY(-6px);
             box-shadow: 0 20px 45px rgba(2, 132, 199, 0.12);
             border-color: #bae6fd;
         }
         .icon-circle-lg {
-            width: 62px;
-            height: 62px;
-            border-radius: 18px;
+            width: 58px;
+            height: 58px;
+            border-radius: 16px;
             background: #e0f2fe;
             color: var(--school-primary);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
-            margin-bottom: 20px;
+            font-size: 24px;
+            margin-bottom: 18px;
         }
 
         /* Toppers Card */
@@ -179,7 +217,7 @@
         }
         .topper-img {
             width: 100%;
-            height: 200px;
+            height: 190px;
             object-fit: cover;
         }
         .topper-badge {
@@ -199,7 +237,7 @@
         .enquiry-card {
             background: #ffffff;
             border-radius: 24px;
-            padding: 40px;
+            padding: 36px 30px;
             box-shadow: 0 20px 50px rgba(15, 23, 42, 0.1);
             border: 1.5px solid #e2e8f0;
         }
@@ -207,7 +245,7 @@
             font-size: 12.5px;
             font-weight: 700;
             color: #475569;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
         }
         .form-control-custom {
             height: 44px;
@@ -227,7 +265,7 @@
             background: #f1f5f9;
             border: 1px solid #cbd5e1;
             border-radius: 25px;
-            padding: 7px 20px;
+            padding: 6px 18px;
             font-size: 13px;
             font-weight: 700;
             color: #475569;
@@ -240,7 +278,7 @@
         }
         .gallery-item-img {
             width: 100%;
-            height: 230px;
+            height: 220px;
             object-fit: cover;
             border-radius: 16px;
             cursor: pointer;
@@ -253,18 +291,18 @@
         /* Floating Gadgets */
         .gadget-whatsapp {
             position: fixed;
-            bottom: 28px;
-            left: 28px;
+            bottom: 25px;
+            left: 25px;
             z-index: 1040;
-            width: 58px;
-            height: 58px;
+            width: 54px;
+            height: 54px;
             border-radius: 50%;
             background: #22c55e;
             color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+            font-size: 30px;
             box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
             text-decoration: none;
             transition: all 0.2s ease;
@@ -283,9 +321,9 @@
             background: linear-gradient(135deg, #d97706, #f59e0b);
             color: #ffffff;
             font-weight: 800;
-            font-size: 13px;
-            padding: 12px 16px;
-            border-radius: 16px 0 0 16px;
+            font-size: 12.5px;
+            padding: 12px 14px;
+            border-radius: 14px 0 0 14px;
             writing-mode: vertical-rl;
             text-orientation: mixed;
             cursor: pointer;
@@ -294,7 +332,7 @@
         }
         .gadget-quick-enquiry:hover {
             color: #ffffff;
-            padding-right: 20px;
+            padding-right: 18px;
         }
 
         /* Footer */
@@ -302,12 +340,12 @@
             background-color: var(--school-dark);
             color: #94a3b8;
             font-size: 13.5px;
-            padding: 70px 0 25px 0;
+            padding: 65px 0 25px 0;
         }
         footer h6 {
             color: #ffffff;
             font-weight: 700;
-            margin-bottom: 22px;
+            margin-bottom: 20px;
         }
         footer a {
             color: #94a3b8;
@@ -326,9 +364,9 @@
 </head>
 <body>
 
-    <!-- 1. TOP ANNOUNCEMENT & UTILITY BAR (sec-top-bar) -->
-    <div class="top-info-bar d-none d-md-block" id="sec-top-bar">
-        <div class="container d-flex justify-content-between align-items-center">
+    <!-- 1. DESKTOP TOP UTILITY BAR (sec-top-bar) -->
+    <div class="top-info-bar d-none d-lg-block" id="sec-top-bar">
+        <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-4">
                 <span><i class="fas fa-phone-alt me-2 text-warning"></i><span id="topPhone">+91 7079090740</span></span>
                 <span><i class="fas fa-envelope me-2 text-warning"></i><span id="topEmail">info@schoolalarm.online</span></span>
@@ -342,39 +380,95 @@
                 <a href="https://app.schoolalarm.online" class="text-white text-decoration-none fw-semibold">
                     <i class="fas fa-user-shield me-1 text-warning"></i> Staff Login
                 </a>
+                <!-- Moved Apply Admission Button to Top Bar -->
+                <a href="#enquiry" class="btn-top-apply ms-1">
+                    <i class="fas fa-paper-plane me-1"></i> Apply Admission
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1.1 MOBILE DEDICATED TOP BAR (sec-top-bar-mobile) -->
+    <div class="top-info-bar-mobile d-block d-lg-none" id="sec-top-bar-mobile">
+        <div class="d-flex justify-content-between align-items-center">
+            <!-- Left 3-Line Menu Button to Open Full Institutional Details -->
+            <button class="btn btn-sm btn-outline-warning text-white fw-bold d-flex align-items-center gap-1 py-1 px-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#topInfoOffcanvas" aria-controls="topInfoOffcanvas">
+                <i class="fas fa-bars-staggered text-warning"></i> Quick Portals
+            </button>
+            <!-- Right Clickable School Phone -->
+            <a href="tel:+917079090740" class="text-white text-decoration-none fw-bold" id="mobPhoneLink">
+                <i class="fas fa-phone-alt text-warning me-1"></i> <span id="topPhoneMobile">+91 7079090740</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 1.2 MOBILE TOP BAR OFFCANVAS DRAWER -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="topInfoOffcanvas" style="background:#0f172a; color:#ffffff;">
+        <div class="offcanvas-header border-bottom border-secondary">
+            <h6 class="offcanvas-title fw-bold text-warning"><i class="fas fa-university me-2"></i>Institutional Access</h6>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-4">
+            <div class="d-grid gap-3 mb-4">
+                <a href="https://student.schoolalarm.online" class="btn btn-info py-2 fw-bold text-dark text-start">
+                    <i class="fas fa-graduation-cap me-2"></i> Student & Parent Portal
+                </a>
+                <a href="https://app.schoolalarm.online" class="btn btn-warning py-2 fw-bold text-dark text-start">
+                    <i class="fas fa-user-shield me-2"></i> Staff & Teacher Login
+                </a>
+                <a href="#enquiry" class="btn btn-danger py-2 fw-bold text-start" data-bs-dismiss="offcanvas">
+                    <i class="fas fa-paper-plane me-2"></i> Apply Online Admission
+                </a>
+            </div>
+            
+            <h6 class="fw-bold text-secondary text-uppercase small mb-3">Institutional Details</h6>
+            <div class="small text-light d-flex flex-column gap-3">
+                <div>
+                    <span class="text-secondary d-block">Official Email:</span>
+                    <i class="fas fa-envelope text-warning me-2"></i><span id="offcanvasEmail">info@schoolalarm.online</span>
+                </div>
+                <div>
+                    <span class="text-secondary d-block">Board Affiliation:</span>
+                    <i class="fas fa-award text-warning me-2"></i>Affiliated to CBSE, New Delhi (Code: 330XXX)
+                </div>
+                <div>
+                    <span class="text-secondary d-block">Helpline Numbers:</span>
+                    <i class="fas fa-phone text-warning me-2"></i>+91 7079090740
+                </div>
             </div>
         </div>
     </div>
 
     <!-- 2. MAIN NAVIGATION HEADER (sec-navbar) -->
     <nav class="navbar navbar-expand-lg navbar-main" id="sec-navbar">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center gap-3" href="#home">
+        <div class="container-fluid px-lg-5 px-3">
+            <!-- Mobile 3-line toggler strictly placed on LEFT (Order 0) -->
+            <button class="navbar-toggler border-0 me-2 p-1 order-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false">
+                <i class="fas fa-bars fa-lg text-dark"></i>
+            </button>
+            
+            <!-- School Logo & Name (Order 1, Left Aligned with zero gap) -->
+            <a class="navbar-brand d-flex align-items-center gap-2 gap-sm-3 order-1 me-auto" href="#home">
                 <img src="/favicon.png" alt="School Logo" class="school-logo-img" id="schoolLogo">
                 <div>
                     <h5 class="fw-bold m-0 text-dark" id="schoolNameHeader">Royal International Public School</h5>
-                    <small class="text-muted" style="font-size: 11px;">Empowering Minds, Shaping Futures</small>
+                    <small class="text-muted d-none d-sm-block" style="font-size: 11px;">Empowering Minds, Shaping Futures</small>
                 </div>
             </a>
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navMenu">
-                <ul class="navbar-nav ms-auto align-items-center gap-1">
-                    <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#academics">Academics</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#facilities">Facilities</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#toppers">Toppers</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#gallery">Gallery</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#notices">Notices</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#disclosure">Mandatory Disclosure</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                    <li class="nav-item ms-lg-2">
-                        <a href="#enquiry" class="btn btn-enquiry-nav">
-                            <i class="fas fa-paper-plane me-1"></i> Apply Admission
-                        </a>
-                    </li>
+
+            <!-- Navbar Menu Items (Left Aligned on mobile, Order 2) -->
+            <div class="collapse navbar-collapse order-2" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-start align-items-lg-center gap-lg-1 py-3 py-lg-0 w-100 justify-content-lg-end">
+                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start active" href="#home">Home</a></li>
+                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#about">About</a></li>
+                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#academics">Academics</a></li>
+                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#facilities">Facilities</a></li>
+                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#toppers">Toppers</a></li>
+                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#gallery">Gallery</a></li>
+                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#notices">Notices</a></li>
+                    <!-- Shortened to Disclosure -->
+                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#disclosure">Disclosure</a></li>
+                    <li class="nav-item w-100 w-lg-auto"><a class="nav-link text-start" href="#contact">Contact</a></li>
                 </ul>
             </div>
         </div>
@@ -382,7 +476,7 @@
 
     <!-- 3. BREAKING NEWS TICKER (sec-news-ticker) -->
     <div class="ticker-wrap" id="sec-news-ticker">
-        <div class="container d-flex align-items-center gap-3">
+        <div class="container-fluid px-lg-5 d-flex align-items-center gap-3">
             <span class="ticker-title"><i class="fas fa-bullhorn me-1"></i> LATEST ANNOUNCEMENT</span>
             <marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();" class="fw-bold text-dark small" id="newsTickerText">
                 Registration open for Session 2026-27 (Pre-Nursery to Grade XII) &bull; Annual Sports Meet commences on 15th December &bull; Download Updated Term Syllabus and Date Sheet from Notice Board below.
@@ -392,7 +486,7 @@
 
     <!-- 4. HERO BANNER SECTION (sec-hero) -->
     <section class="hero-section" id="home">
-        <div class="container">
+        <div class="container-fluid px-lg-5">
             <div class="row align-items-center">
                 <div class="col-lg-8">
                     <div class="hero-badge">
@@ -883,7 +977,7 @@
 
     <!-- 16. COMPREHENSIVE FOOTER (sec-footer) -->
     <footer id="sec-footer">
-        <div class="container">
+        <div class="container-fluid px-lg-5">
             <div class="row g-4">
                 <div class="col-lg-4">
                     <h5 class="text-white fw-bold mb-3" id="footerSchoolName">Royal International Public School</h5>
@@ -982,10 +1076,13 @@
                     if (sch.SchoolLogo) document.getElementById('schoolLogo').src = sch.SchoolLogo;
                     if (sch.Phone) {
                         document.getElementById('topPhone').innerText = sch.Phone;
+                        document.getElementById('topPhoneMobile').innerText = sch.Phone;
                         document.getElementById('footerPhone').innerText = sch.Phone;
+                        document.getElementById('mobPhoneLink').href = `tel:${sch.Phone}`;
                     }
                     if (sch.Email) {
                         document.getElementById('topEmail').innerText = sch.Email;
+                        document.getElementById('offcanvasEmail').innerText = sch.Email;
                         document.getElementById('footerMail').innerText = sch.Email;
                     }
                     if (sch.Address) {
