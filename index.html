@@ -1135,12 +1135,12 @@
                     </linearGradient>
                     <clipPath id="mcaL"><rect x="0" y="6" width="40" height="18.5"/></clipPath>
                 </defs>
-                <!-- 1. Top Grommet (स्ट्रिप के अंदर धंसा हुआ छेद) -->
+                <!-- 1. Top Grommet -->
                 <circle cx="20" cy="6" r="4.4" fill="url(#mtgL)"/>
                 <circle cx="20" cy="6" r="4.4" fill="none" stroke="var(--h5)" stroke-width=".5"/>
                 <circle cx="20" cy="6" r="2.1" fill="#09182e"/>
                 
-                <!-- 2. Bottom Tab on Island (आइलैंड के ऊपर ब्रास ब्रैकेट) -->
+                <!-- 2. Bottom Tab on Island -->
                 <path d="M14.6 31.2V25a5.4 5.4 0 0 1 10.8 0v6.2z" fill="url(#mttL)" stroke="var(--h3)" stroke-width=".55"/>
                 <path d="M15.6 25a4.4 4.4 0 0 1 8.8 0" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width=".5"/>
                 <circle cx="20" cy="24.5" r="2.2" fill="#09182e"/>
@@ -3837,14 +3837,34 @@
 </section>
 
 
-    <!-- FOOTER -->
-    <footer style="background: #09172c; color: #ffffff; padding: 40px 0 20px;">
+<!-- FOOTER -->
+    <footer class="site-footer" style="background: #09172c; color: #ffffff; padding: 40px 0 0; position: relative; overflow: hidden;">
         <div class="container text-center text-md-start">
             <div class="row g-4">
                 <div class="col-lg-4 col-md-12">
                     <h5 class="fw-bold mb-3 text-white">NextGen School Alert</h5>
                     <p class="text-secondary small">Comprehensive multi-school ERP suite built for modern educational administration, fee collections, attendance logging, and parent communications.</p>
+					<p class="text-secondary small">Made with &hearts;, Smart Technology for Smart schools across the India.</p>
+					                    
+                    <!-- App Download Buttons (Mobile Responsive) -->
+                    <div class="d-flex flex-wrap gap-2 justify-content-center justify-content-md-start mt-3">
+                        <a href="https://play.google.com/store" target="_blank" rel="noopener" class="app-store-btn" style="display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 6px 12px; color: #ffffff; text-decoration: none; transition: all 0.2s ease;">
+                            <i class="fab fa-google-play text-warning fs-5"></i>
+                            <div class="text-start" style="line-height: 1.1;">
+                                <small class="d-block text-white-50" style="font-size: 9px; text-transform: uppercase;">Get it on</small>
+                                <span class="fw-bold" style="font-size: 11px;">Student App</span>
+                            </div>
+                        </a>
+                        <a href="https://play.google.com/store" target="_blank" rel="noopener" class="app-store-btn" style="display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 8px; padding: 6px 12px; color: #ffffff; text-decoration: none; transition: all 0.2s ease;">
+                            <i class="fab fa-google-play text-info fs-5"></i>
+                            <div class="text-start" style="line-height: 1.1;">
+                                <small class="d-block text-white-50" style="font-size: 9px; text-transform: uppercase;">Get it on</small>
+                                <span class="fw-bold" style="font-size: 11px;">Staff &amp; Admin</span>
+                            </div>
+                        </a>
+                    </div>
                 </div>
+
                 <div class="col-lg-4 col-md-6">
                     <h6 class="fw-bold text-white mb-3">Quick Navigation</h6>
                     <div class="row small">
@@ -3856,28 +3876,45 @@
                             </ul>
                         </div>
                         <div class="col-6">
-						<ul class="list-unstyled mb-0" style="font-size: 0.85rem;">
-							<li class="mb-2"><a href="/legal/privacy.html" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-shield-alt me-1 text-success"></i> Privacy Policy</a></li>
-							<li class="mb-2"><a href="/legal/terms.html" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-file-contract me-1 text-primary"></i> Terms of Use</a></li>
-							<li class="mb-2"><a href="/legal/dpdp.html" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-user-shield me-1 text-warning"></i> DPDP &amp; Data Protection</a></li>
-						</ul>
-					</div>
+                            <ul class="list-unstyled mb-0" style="font-size: 0.85rem;">
+                                <li class="mb-2"><a href="/legal/privacy.html" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-shield-alt me-1 text-success"></i> Privacy Policy</a></li>
+                                <li class="mb-2"><a href="/legal/terms.html" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-file-contract me-1 text-primary"></i> Terms of Use</a></li>
+                                <li class="mb-2"><a href="/legal/dpdp.html" style="color: #a0aec0; text-decoration: none;"><i class="fas fa-user-shield me-1 text-warning"></i> DPDP &amp; Data Protection</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
+
                 <div class="col-lg-4 col-md-6">
                     <h6 class="fw-bold text-white mb-3">Support Office</h6>
                     <p class="small text-secondary mb-1"><i class="fas fa-map-marker-alt me-2 text-primary"></i> Hajipur, Bihar, India</p>
                     <p class="small text-secondary mb-1"><i class="fas fa-phone-alt me-2 text-primary"></i> +91 7079090740</p>
-                    <p class="small text-secondary"><i class="fas fa-envelope me-2 text-primary"></i> info@schoolalarm.online</p>
-					<p class="small text-secondary"><i class="fas fa-envelope me-2 text-primary"></i> help@schoolalarm.online</p>
+                    <p class="small text-secondary mb-1"><i class="fas fa-envelope me-2 text-primary"></i> info@schoolalarm.online</p>
+                    <p class="small text-secondary"><i class="fas fa-envelope me-2 text-primary"></i> help@schoolalarm.online</p>
                 </div>
             </div>
+
             <hr class="my-4 border-secondary opacity-25"/>
             <div class="text-center small text-secondary">
-                &copy; 2026 NextGen School Alert. Powered by A2Z Online Services PVT. LTD.
+                &copy; 2026 NextGen School Alert. by A2Z Online Services Pvt. Ltd.
             </div>
         </div>
+
+        <!-- Giant Background Watermark Text -->
+        <div class="footer-bottom-wordmark" aria-hidden="true" style="width: 100%; text-align: center; overflow: hidden; pointer-events: none; user-select: none; line-height: 1; margin-top: 10px; padding: 0 10px;">
+    <span style="font-family: 'Poppins', sans-serif; font-size: clamp(2rem, 6.2vw, 5.8rem); font-weight: 900; letter-spacing: -0.5px; color: rgba(255, 255, 255, 0.05); text-transform: none; white-space: nowrap; display: inline-block;">
+        NextGen School Alert
+    </span>
+	</div>
     </footer>
+
+    <style>
+        .app-store-btn:hover {
+            background: rgba(255, 255, 255, 0.16) !important;
+            border-color: rgba(255, 255, 255, 0.35) !important;
+            transform: translateY(-2px);
+        }
+    </style>
 
     <!-- Supabase JS Client for Demo Booking -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
