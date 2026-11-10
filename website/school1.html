@@ -16,15 +16,14 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/config.js"></script>
 
-    <!-- Dynamic Theme Injector Tag -->
-    <style id="dynamicThemeStyles">
+    <!-- 🎨 Real-time Injected CSS Engine -->
+    <style id="dynamicLiveStyles">
         :root {
             --school-primary: #0284c7;
             --school-secondary: #0369a1;
-            --school-accent: #f59e0b;
-            --school-dark: #0f172a;
-            --school-light: #f8fafc;
-            --school-gold: #eab308;
+            --nav-bg: #ffffff;
+            --nav-text: #334155;
+            --footer-bg: #0f172a;
         }
     </style>
 
@@ -40,44 +39,40 @@
 
         h1, h2, h3, h4, .brand-font { font-family: 'Playfair Display', serif; }
 
-        /* Top Bars */
+        /* Top Bar */
         .top-info-bar {
-            background-color: var(--school-dark);
+            background-color: var(--footer-bg);
             color: #cbd5e1;
             font-size: 12.5px;
             padding: 8px 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .top-info-bar-mobile {
-            background-color: var(--school-dark);
+            background-color: var(--footer-bg);
             color: #ffffff;
             padding: 7px 16px;
             font-size: 13px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        /* Main Navbar */
+        /* Navbar with Dynamic Styles */
         .navbar-main {
-            background: #ffffff;
+            background-color: var(--nav-bg) !important;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
             padding: 10px 0;
             position: sticky;
             top: 0;
             z-index: 1030;
+            transition: all 0.3s ease;
         }
-        .school-logo-img {
-            height: 52px;
-            width: auto;
-            object-fit: contain;
-        }
+        .school-logo-img { height: 52px; width: auto; object-fit: contain; }
         @media (max-width: 576px) { .school-logo-img { height: 40px; } }
 
         .nav-link {
             font-weight: 600;
             font-size: 14px;
-            color: #334155 !important;
+            color: var(--nav-text) !important;
             padding: 8px 12px !important;
-            transition: color 0.2s ease;
+            transition: 0.2s ease;
         }
         .nav-link:hover, .nav-link.active {
             color: var(--school-primary) !important;
@@ -85,17 +80,16 @@
 
         @media (max-width: 991px) {
             .navbar-collapse {
-                background: #ffffff;
+                background: var(--nav-bg);
                 padding: 15px 12px;
                 border-radius: 14px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.1);
                 margin-top: 10px;
             }
             .nav-link {
                 text-align: left !important;
                 padding: 10px 14px !important;
-                border-bottom: 1px solid #f1f5f9;
-                width: 100%;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
             }
         }
 
@@ -111,11 +105,9 @@
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            transition: 0.2s;
         }
-        .btn-top-apply:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(245, 158, 11, 0.4); }
 
-        /* Ticker */
+        /* News Ticker */
         .ticker-wrap {
             background: #fef3c7;
             border-bottom: 1px solid #fde68a;
@@ -143,7 +135,7 @@
         }
         .hero-badge {
             background: rgba(245, 158, 11, 0.2);
-            border: 1px solid var(--school-accent);
+            border: 1px solid #f59e0b;
             color: #fef08a;
             font-weight: 700;
             font-size: 13px;
@@ -197,10 +189,10 @@
             text-align: center;
             transition: 0.3s;
         }
-        .topper-card:hover { transform: translateY(-6px); border-color: var(--school-gold); }
+        .topper-card:hover { transform: translateY(-6px); border-color: #eab308; }
         .topper-img { width: 100%; height: 190px; object-fit: cover; }
         .topper-badge {
-            background: var(--school-gold);
+            background: #eab308;
             color: #0f172a;
             font-weight: 800;
             font-size: 13px;
@@ -219,45 +211,43 @@
             box-shadow: 0 20px 50px rgba(15, 23, 42, 0.1);
             border: 1.5px solid #e2e8f0;
         }
-        .form-label-custom {
-            font-size: 12.5px;
-            font-weight: 700;
-            color: #475569;
-            margin-bottom: 5px;
-        }
-        .form-control-custom {
-            height: 44px;
-            font-size: 13.5px;
-            font-weight: 500;
-            border-radius: 10px;
-            border: 1.5px solid #cbd5e1;
-            padding: 10px 14px;
-        }
+        .form-label-custom { font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px; display: block; }
+        .form-control-custom { height: 42px; font-size: 13px; font-weight: 500; border-radius: 8px; border: 1.5px solid #cbd5e1; padding: 8px 12px; }
 
-        .btn-filter-pill {
-            background: #f1f5f9;
-            border: 1px solid #cbd5e1;
-            border-radius: 25px;
-            padding: 6px 18px;
-            font-size: 13px;
-            font-weight: 700;
-            color: #475569;
-            transition: 0.2s;
+        /* Floating Studio Toolbar */
+        .editor-floating-dock {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 1050;
+            display: none;
+            gap: 10px;
         }
-        .btn-filter-pill.active, .btn-filter-pill:hover {
-            background: var(--school-primary);
+        .btn-dock-studio {
+            background: linear-gradient(135deg, #10b981, #059669);
             color: #ffffff;
-            border-color: var(--school-primary);
-        }
-        .gallery-item-img {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            border-radius: 16px;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 12px 22px;
+            border-radius: 30px;
+            border: none;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             cursor: pointer;
-            transition: transform 0.3s ease;
         }
-        .gallery-item-img:hover { transform: scale(1.03); }
+        .btn-dock-logout {
+            background: #ef4444;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 12px 18px;
+            border-radius: 30px;
+            border: none;
+            box-shadow: 0 6px 18px rgba(239, 68, 68, 0.35);
+            cursor: pointer;
+        }
 
         /* Floating Gadgets */
         .gadget-whatsapp {
@@ -276,10 +266,7 @@
             font-size: 30px;
             box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
             text-decoration: none;
-            transition: all 0.2s ease;
         }
-        .gadget-whatsapp:hover { transform: scale(1.1); color: #ffffff; }
-
         .gadget-quick-enquiry {
             position: fixed;
             right: 0;
@@ -299,70 +286,21 @@
             text-decoration: none;
         }
 
-        /* 🚀 FLOATING LIVE CUSTOMIZER BUTTON */
-        .btn-floating-customizer {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            z-index: 1050;
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: #ffffff;
-            font-weight: 800;
-            font-size: 13px;
-            padding: 12px 22px;
-            border-radius: 30px;
-            border: none;
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
-            display: none;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            animation: pulseCustomizer 2s infinite;
-        }
-        @keyframes pulseCustomizer {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.04); }
-            100% { transform: scale(1); }
-        }
-
-        /* ✏️ INLINE SECTION EDIT BADGES (Visible when editor logged in) */
-        .btn-inline-edit {
-            display: none;
-            background: rgba(15, 23, 42, 0.85);
-            color: #fde047 !important;
-            border: 1px solid rgba(253, 224, 71, 0.5);
-            font-size: 11px;
-            font-weight: 800;
-            padding: 4px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            margin-bottom: 8px;
-            transition: 0.2s;
-        }
-        .btn-inline-edit:hover { background: #0f172a; transform: scale(1.05); }
-
-        .color-dot {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid #ffffff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-            transition: 0.2s;
-        }
-        .color-dot:hover { transform: scale(1.15); }
-
         /* Footer */
         footer {
-            background-color: var(--school-dark);
+            background-color: var(--footer-bg);
             color: #94a3b8;
             font-size: 13.5px;
             padding: 65px 0 25px 0;
+            transition: all 0.3s ease;
         }
         footer h6 { color: #ffffff; font-weight: 700; margin-bottom: 20px; }
-        footer a { color: #94a3b8; text-decoration: none; transition: color 0.2s ease; }
+        footer a { color: #94a3b8; text-decoration: none; }
         footer a:hover { color: #ffffff; }
         .footer-divider { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 25px; margin-top: 50px; }
+
+        /* Color Dots */
+        .color-dot { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
@@ -390,10 +328,10 @@
         </div>
     </div>
 
-    <!-- 1.1 MOBILE DEDICATED TOP BAR (sec-top-bar-mobile) -->
+    <!-- 1.1 MOBILE TOP BAR -->
     <div class="top-info-bar-mobile d-block d-lg-none" id="sec-top-bar-mobile">
         <div class="d-flex justify-content-between align-items-center">
-            <button class="btn btn-sm btn-outline-warning text-white fw-bold d-flex align-items-center gap-1 py-1 px-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#topInfoOffcanvas" aria-controls="topInfoOffcanvas">
+            <button class="btn btn-sm btn-outline-warning text-white fw-bold d-flex align-items-center gap-1 py-1 px-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#topInfoOffcanvas">
                 <i class="fas fa-bars-staggered text-warning"></i> Quick Portals
             </button>
             <a href="tel:+917079090740" class="text-white text-decoration-none fw-bold" id="mobPhoneLink">
@@ -402,7 +340,7 @@
         </div>
     </div>
 
-    <!-- 1.2 MOBILE TOP BAR OFFCANVAS DRAWER -->
+    <!-- 1.2 MOBILE TOP DRAWER -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="topInfoOffcanvas" style="background:#0f172a; color:#ffffff;">
         <div class="offcanvas-header border-bottom border-secondary">
             <h6 class="offcanvas-title fw-bold text-warning"><i class="fas fa-university me-2"></i>Institutional Access</h6>
@@ -423,54 +361,38 @@
             
             <h6 class="fw-bold text-secondary text-uppercase small mb-3">Institutional Details</h6>
             <div class="small text-light d-flex flex-column gap-3">
-                <div>
-                    <span class="text-secondary d-block">Official Email:</span>
-                    <i class="fas fa-envelope text-warning me-2"></i><span id="offcanvasEmail">info@schoolalarm.online</span>
-                </div>
-                <div>
-                    <span class="text-secondary d-block">Board Affiliation:</span>
-                    <i class="fas fa-award text-warning me-2"></i><span id="offcanvasAffiliation">Affiliated to Board</span>
-                </div>
-                <div>
-                    <span class="text-secondary d-block">Helpline Number:</span>
-                    <i class="fas fa-phone text-warning me-2"></i><span id="offcanvasPhone">+91 7079090740</span>
-                </div>
+                <div><span class="text-secondary d-block">Official Email:</span><span id="offcanvasEmail">info@schoolalarm.online</span></div>
+                <div><span class="text-secondary d-block">Affiliation:</span><span id="offcanvasAffiliation">Affiliated to Board</span></div>
+                <div><span class="text-secondary d-block">Helpline:</span><span id="offcanvasPhone">+91 7079090740</span></div>
             </div>
         </div>
     </div>
 
-    <!-- 2. MAIN NAVIGATION HEADER (sec-navbar) -->
+    <!-- 2. MAIN NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-main" id="sec-navbar">
         <div class="container-fluid px-lg-5 px-3">
-            <button class="navbar-toggler border-0 me-2 p-1 order-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false">
+            <button class="navbar-toggler border-0 me-2 p-1 order-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
                 <i class="fas fa-bars fa-lg text-dark"></i>
             </button>
             
             <a class="navbar-brand d-flex align-items-center gap-2 gap-sm-3 order-1 me-auto" href="#home">
                 <img src="/favicon.png" alt="School Logo" class="school-logo-img" id="schoolLogo">
                 <div>
-                    <h5 class="fw-bold m-0 text-dark" id="schoolNameHeader">Institutional Campus Portal</h5>
+                    <h5 class="fw-bold m-0" id="schoolNameHeader">Institutional Campus Portal</h5>
                     <small class="text-muted d-none d-sm-block" id="schoolTagline" style="font-size: 11px;">Empowering Minds, Shaping Futures</small>
                 </div>
             </a>
 
+            <!-- Dynamic Nav Menu Container -->
             <div class="collapse navbar-collapse order-2" id="navMenu">
                 <ul class="navbar-nav ms-auto align-items-start align-items-lg-center gap-lg-1 py-3 py-lg-0 w-100 justify-content-lg-end" id="dynamicNavLinks">
-                    <li class="nav-item w-100 w-lg-auto" data-nav-target="home"><a class="nav-link text-start active" href="#home">Home</a></li>
-                    <li class="nav-item w-100 w-lg-auto" data-nav-target="about"><a class="nav-link text-start" href="#about">About</a></li>
-                    <li class="nav-item w-100 w-lg-auto" data-nav-target="academics"><a class="nav-link text-start" href="#academics">Academics</a></li>
-                    <li class="nav-item w-100 w-lg-auto" data-nav-target="facilities"><a class="nav-link text-start" href="#facilities">Facilities</a></li>
-                    <li class="nav-item w-100 w-lg-auto" data-nav-target="toppers"><a class="nav-link text-start" href="#toppers">Toppers</a></li>
-                    <li class="nav-item w-100 w-lg-auto" data-nav-target="gallery"><a class="nav-link text-start" href="#gallery">Gallery</a></li>
-                    <li class="nav-item w-100 w-lg-auto" data-nav-target="notices"><a class="nav-link text-start" href="#notices">Notices</a></li>
-                    <li class="nav-item w-100 w-lg-auto" data-nav-target="disclosure"><a class="nav-link text-start" href="#disclosure">Disclosure</a></li>
-                    <li class="nav-item w-100 w-lg-auto" data-nav-target="contact"><a class="nav-link text-start" href="#contact">Contact</a></li>
+                    <!-- Populated dynamically via config -->
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- 3. BREAKING NEWS TICKER (sec-ticker) -->
+    <!-- 3. TICKER -->
     <div class="ticker-wrap" id="sec-ticker">
         <div class="container-fluid px-lg-5 d-flex align-items-center gap-3">
             <span class="ticker-title"><i class="fas fa-bullhorn me-1"></i> ANNOUNCEMENT</span>
@@ -480,14 +402,13 @@
         </div>
     </div>
 
-    <!-- 4. HERO BANNER SECTION (sec-hero) -->
+    <!-- 4. HERO SECTION -->
     <section class="hero-section" id="home">
         <div class="container-fluid px-lg-5">
             <div class="row align-items-center">
                 <div class="col-lg-8">
-                    <button class="btn-inline-edit" onclick="window.openSectionEditor('hero')"><i class="fas fa-pencil-alt me-1"></i> Edit Hero Section</button>
                     <div class="hero-badge" id="heroBadge">
-                        <i class="fas fa-star text-warning"></i> Admissions Open for Academic Session 2026-27
+                        <i class="fas fa-star text-warning"></i> Admissions Open for Session 2026-27
                     </div>
                     <h1 class="hero-title" id="heroHeadline">
                         Nurturing Leaders for Tomorrow with Modern Education & Core Values
@@ -508,7 +429,7 @@
         </div>
     </section>
 
-    <!-- 5. KEY STATS & QUICK FACTS (sec-stats) -->
+    <!-- 5. STATS -->
     <section class="py-5" style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;" id="sec-stats">
         <div class="container">
             <div class="row g-4 text-center">
@@ -532,12 +453,11 @@
         </div>
     </section>
 
-    <!-- 6. LEADERSHIP DESK / PRINCIPAL MESSAGE (sec-about) -->
+    <!-- 6. PRINCIPAL MESSAGE -->
     <section class="py-5" id="about">
         <div class="container py-4">
             <div class="row align-items-center g-5">
                 <div class="col-lg-5 text-center position-relative">
-                    <button class="btn-inline-edit" onclick="window.openSectionEditor('about')"><i class="fas fa-pencil-alt me-1"></i> Edit Principal Photo & Message</button>
                     <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=700&q=80" alt="Principal" class="rounded-4 shadow-lg w-100" id="principalPhoto" style="max-height: 480px; object-fit: cover;">
                     <div class="mt-3">
                         <h5 class="fw-bold m-0 text-dark" id="principalName">Dr. Sunita Sharma</h5>
@@ -555,7 +475,7 @@
         </div>
     </section>
 
-    <!-- 7. ACADEMIC PROGRAMS & WINGS (sec-academics) -->
+    <!-- 7. ACADEMICS -->
     <section class="py-5" id="academics" style="background: #f8fafc;">
         <div class="container py-4">
             <div class="text-center mb-5">
@@ -567,28 +487,28 @@
                     <div class="premium-card">
                         <div class="icon-circle-lg"><i class="fas fa-shapes"></i></div>
                         <h5 class="fw-bold mb-2">Pre-Primary Wing</h5>
-                        <p class="text-muted small">Playway Montessori methodologies focused on sensory exploration, phonics, motor skills, and foundational literacy.</p>
+                        <p class="text-muted small">Playway Montessori methodologies focused on foundational literacy and sensory growth.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="premium-card">
                         <div class="icon-circle-lg"><i class="fas fa-book-reader"></i></div>
                         <h5 class="fw-bold mb-2">Primary & Middle Wing</h5>
-                        <p class="text-muted small">Holistic competency-based learning emphasizing Mathematics, Science, Environmental Studies, Robotics, and Languages.</p>
+                        <p class="text-muted small">Competency-based learning emphasizing Science, Robotics, and Languages.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="premium-card">
                         <div class="icon-circle-lg"><i class="fas fa-graduation-cap"></i></div>
                         <h5 class="fw-bold mb-2">Secondary & Sr. Secondary</h5>
-                        <p class="text-muted small">Rigorous board exam preparation combined with competitive mentoring in Science, Commerce, and Arts streams.</p>
+                        <p class="text-muted small">Rigorous exam coaching in Science, Commerce, and Arts streams.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 8. CAMPUS INFRASTRUCTURE & FACILITIES (sec-facilities) -->
+    <!-- 8. FACILITIES -->
     <section class="py-5" id="facilities">
         <div class="container py-4">
             <div class="text-center mb-5">
@@ -600,28 +520,28 @@
                     <div class="premium-card">
                         <div class="icon-circle-lg text-success" style="background: #dcfce7;"><i class="fas fa-desktop"></i></div>
                         <h5 class="fw-bold mb-2">Interactive Smart Panels</h5>
-                        <p class="text-muted small">High-speed 4K interactive digital touch boards and visual 3D simulation content for classroom concepts.</p>
+                        <p class="text-muted small">High-speed 4K interactive digital touch boards and visual 3D simulation content.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="premium-card">
                         <div class="icon-circle-lg text-primary" style="background: #e0f2fe;"><i class="fas fa-flask"></i></div>
                         <h5 class="fw-bold mb-2">Advanced STEM & AI Labs</h5>
-                        <p class="text-muted small">Ultra-modern Physics, Chemistry, Biology, Mathematics and Computer Artificial Intelligence laboratories.</p>
+                        <p class="text-muted small">Modern Physics, Chemistry, Biology, Mathematics and AI computer laboratories.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="premium-card">
                         <div class="icon-circle-lg text-warning" style="background: #fef3c7;"><i class="fas fa-bus"></i></div>
                         <h5 class="fw-bold mb-2">GPS-Tracked Safe Transport</h5>
-                        <p class="text-muted small">Safe bus transportation equipped with live GPS tracking and safety attendants on all primary routes.</p>
+                        <p class="text-muted small">Safe bus transportation equipped with live GPS tracking and female safety attendants.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 9. WALL OF FAME / TOPPERS (sec-toppers) -->
+    <!-- 9. TOPPERS -->
     <section class="py-5" id="toppers" style="background: #fdfaf6;">
         <div class="container py-4">
             <div class="text-center mb-5">
@@ -663,7 +583,7 @@
         </div>
     </section>
 
-    <!-- 10. PHOTO & VIDEO GALLERY (sec-gallery) -->
+    <!-- 10. GALLERY -->
     <section class="py-5" id="gallery">
         <div class="container py-4">
             <div class="text-center mb-4">
@@ -690,7 +610,7 @@
         </div>
     </section>
 
-    <!-- 11. NOTICE BOARD & CIRCULARS DOWNLOAD (sec-notices) -->
+    <!-- 11. NOTICES -->
     <section class="py-5" id="notices" style="background: #f1f5f9;">
         <div class="container py-4">
             <div class="row g-4">
@@ -729,7 +649,7 @@
         </div>
     </section>
 
-    <!-- 12. MANDATORY PUBLIC DISCLOSURE (sec-disclosure) -->
+    <!-- 12. DISCLOSURE -->
     <section class="py-5" id="disclosure">
         <div class="container py-4">
             <div class="text-center mb-4">
@@ -766,49 +686,7 @@
         </div>
     </section>
 
-    <!-- 13. PARENT TESTIMONIALS (sec-testimonials) -->
-    <section class="py-5" style="background: #f8fafc;" id="sec-testimonials">
-        <div class="container py-4">
-            <div class="text-center mb-5">
-                <span class="badge bg-warning-subtle text-warning-emphasis fw-bold px-3 py-2 rounded-pill mb-2">PARENT EXPERIENCES</span>
-                <h2 class="fw-bold text-dark">What Parents Say About Us</h2>
-            </div>
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="premium-card">
-                        <div class="text-warning mb-3">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        </div>
-                        <p class="text-secondary small italic mb-4">"The focus on individual attention and modern STEM education has transformed my daughter's confidence. The management and teachers are extraordinarily supportive."</p>
-                        <h6 class="fw-bold m-0 text-dark">Rajeev Sinha</h6>
-                        <small class="text-muted">Parent</small>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="premium-card">
-                        <div class="text-warning mb-3">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        </div>
-                        <p class="text-secondary small italic mb-4">"Best school infrastructure in the district. Safe GPS transport and daily mobile app updates through ERP give complete peace of mind."</p>
-                        <h6 class="fw-bold m-0 text-dark">Mrs. Shweta Singh</h6>
-                        <small class="text-muted">Parent</small>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="premium-card">
-                        <div class="text-warning mb-3">
-                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-                        </div>
-                        <p class="text-secondary small italic mb-4">"Academic excellence combined with extracurricular sports. Regular guidance and interactive digital classrooms set the bar high."</p>
-                        <h6 class="fw-bold m-0 text-dark">Dr. Arvind Mishra</h6>
-                        <small class="text-muted">Parent</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 14. ONLINE ADMISSION ENQUIRY FORM (sec-enquiry) -->
+    <!-- 14. ADMISSION ENQUIRY FORM -->
     <section class="py-5" id="enquiry" style="background: #f1f5f9;">
         <div class="container py-4">
             <div class="row align-items-center g-5">
@@ -818,20 +696,6 @@
                     <p class="text-secondary mb-4">
                         Admissions for upcoming academic session are now open. Submit the online enquiry and our counselor will assist you with fee structure, brochure, and interaction schedule.
                     </p>
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <div class="icon-circle-lg m-0" style="width: 48px; height: 48px; font-size: 20px;"><i class="fas fa-check-circle"></i></div>
-                        <div>
-                            <h6 class="fw-bold m-0">Fast-Track Verification</h6>
-                            <small class="text-muted">Instant response within 24 working hours.</small>
-                        </div>
-                    </div>
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="icon-circle-lg m-0" style="width: 48px; height: 48px; font-size: 20px;"><i class="fas fa-headset"></i></div>
-                        <div>
-                            <h6 class="fw-bold m-0">Admission Help Desk</h6>
-                            <small class="text-muted">Direct Phone: <span id="enqHelplineText">+91 7079090740</span></small>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="col-lg-7">
@@ -847,7 +711,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label-custom">Seeking Admission For Class *</label>
-                                    <!-- 🚀 DYNAMIC REPLICATED CLASSES FROM School_Configs -->
+                                    <!-- Dynamic Classes from School_Configs -->
                                     <select class="form-select form-control-custom" id="enqClass" required>
                                         <option value="">-- Loading Classes... --</option>
                                     </select>
@@ -885,7 +749,7 @@
         </div>
     </section>
 
-    <!-- 15. CONTACT & CAMPUS LOCATION MAP (sec-contact) -->
+    <!-- 15. CONTACT -->
     <section class="py-5" id="contact">
         <div class="container py-4">
             <div class="row g-4 align-items-center">
@@ -925,7 +789,7 @@
         </div>
     </section>
 
-    <!-- 16. COMPREHENSIVE FOOTER (sec-footer) -->
+    <!-- 16. FOOTER -->
     <footer id="sec-footer">
         <div class="container-fluid px-lg-5">
             <div class="row g-4">
@@ -934,11 +798,6 @@
                     <p class="small text-secondary mb-3">
                         Committed to high-quality academic education, character development, and holistic student growth with modern digital infrastructure.
                     </p>
-                    <div class="d-flex gap-2">
-                        <a href="#" class="btn btn-sm btn-outline-light rounded-circle" style="width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center;"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="btn btn-sm btn-outline-light rounded-circle" style="width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center;"><i class="fab fa-youtube"></i></a>
-                        <a href="#" class="btn btn-sm btn-outline-light rounded-circle" style="width:36px; height:36px; display:inline-flex; align-items:center; justify-content:center;"><i class="fab fa-instagram"></i></a>
-                    </div>
                 </div>
 
                 <div class="col-lg-2 col-6">
@@ -966,7 +825,6 @@
                     <h6>Contact Support</h6>
                     <p class="small mb-2"><i class="fas fa-phone-alt text-warning me-2"></i><span id="footerHelplinePhone">+91 7079090740</span></p>
                     <p class="small mb-2"><i class="fas fa-envelope text-warning me-2"></i><span id="footerHelplineMail">info@schoolalarm.online</span></p>
-                    <p class="small mb-2"><i class="fas fa-clock text-warning me-2"></i>Mon - Sat: 8:00 AM - 3:00 PM</p>
                     <div class="mt-3">
                         <a href="javascript:void(0)" onclick="window.openEditorModal()" class="text-secondary small text-decoration-none">
                             <i class="fas fa-lock me-1"></i> Web Editor Login
@@ -986,17 +844,21 @@
     <a href="https://wa.me/917079090740?text=Hello%20School%20Helpdesk,%20I%20have%20an%20admission%20enquiry." target="_blank" class="gadget-whatsapp" id="gadget-whatsapp" title="Chat on WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
-
     <a href="#enquiry" class="gadget-quick-enquiry" id="gadget-floating-enquiry">
         <i class="fas fa-edit me-1"></i> APPLY ADMISSION
     </a>
 
-    <!-- ⚡ FLOATING LIVE CUSTOMIZER BUTTON -->
-    <button class="btn-floating-customizer" id="btnLiveCustomizer" onclick="window.openCustomizerDrawer()" type="button">
-        <i class="fas fa-palette fa-lg"></i> Customize Website
-    </button>
+    <!-- ⚡ FLOATING DOCK TOOLBAR (Visible on Login with Logout!) -->
+    <div class="editor-floating-dock" id="editorDockToolbar">
+        <button class="btn-dock-studio" onclick="window.openCustomizerDrawer()" type="button">
+            <i class="fas fa-palette fa-lg"></i> Website Studio
+        </button>
+        <button class="btn-dock-logout" onclick="window.doEditorLogout()" type="button" title="Logout Editor Session">
+            <i class="fas fa-sign-out-alt me-1"></i> Logout
+        </button>
+    </div>
 
-    <!-- 🔐 MODAL: WEB EDITOR LOGIN -->
+    <!-- 🔐 MODAL: BACKEND SECURED WEB EDITOR LOGIN -->
     <div class="modal fade" id="editorLoginModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content rounded-4 border-0 shadow-lg">
@@ -1023,113 +885,115 @@
         </div>
     </div>
 
-    <!-- 🎨 OFFCANVAS: LIVE WEBSITE CUSTOMIZER DRAWER -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="liveCustomizerDrawer" style="width: 380px;">
+    <!-- 🎨 ULTIMATE LIVE WEBSITE STUDIO DRAWER -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="liveCustomizerDrawer" style="width: 440px;">
         <div class="offcanvas-header bg-dark text-white p-3">
             <h6 class="offcanvas-title fw-bold"><i class="fas fa-sliders-h text-warning me-2"></i>Live Website Studio</h6>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
         </div>
         <div class="offcanvas-body p-4">
-            <!-- Theme Color Selector -->
-            <label class="form-label-custom mb-2">1. Theme Primary Color</label>
-            <div class="d-flex gap-2 mb-4">
-                <div class="color-dot" style="background:#0284c7;" onclick="window.applyLiveThemeColor('#0284c7', '#0369a1')" title="Ocean Blue"></div>
-                <div class="color-dot" style="background:#059669;" onclick="window.applyLiveThemeColor('#059669', '#047857')" title="Emerald Green"></div>
-                <div class="color-dot" style="background:#dc2626;" onclick="window.applyLiveThemeColor('#dc2626', '#b91c1c')" title="Ruby Red"></div>
-                <div class="color-dot" style="background:#7c3aed;" onclick="window.applyLiveThemeColor('#7c3aed', '#6d28d9')" title="Royal Purple"></div>
-                <div class="color-dot" style="background:#d97706;" onclick="window.applyLiveThemeColor('#d97706', '#b45309')" title="Sunset Gold"></div>
-            </div>
 
-            <!-- Section Toggle Switches (Syncs both section & nav link!) -->
-            <label class="form-label-custom mb-2">2. Section & Menu Visibility (Hide / Show)</label>
-            <div class="d-flex flex-column gap-2 mb-4 p-3 bg-light rounded-3 border">
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="chkEnquiry" onchange="window.toggleSectionAndNav('enquiry', this.checked)" checked>
-                    <label class="form-check-label small fw-bold" for="chkEnquiry">Admission Enquiry Form</label>
+            <!-- Tabbed Studio Sections -->
+            <ul class="nav nav-pills nav-fill mb-3" id="studioTabs">
+                <li class="nav-item"><button class="nav-link active small py-1" data-bs-toggle="pill" data-bs-target="#tabTheme">Theme & Colors</button></li>
+                <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabNav">Menu Builder</button></li>
+                <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabContent">Content</button></li>
+                <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabSections">Sections</button></li>
+            </ul>
+
+            <div class="tab-content border-top pt-3">
+                <!-- TAB 1: THEME & COLORS -->
+                <div class="tab-pane fade show active" id="tabTheme">
+                    <label class="form-label-custom mb-2">Preset Brand Primary Color</label>
+                    <div class="d-flex gap-2 mb-3">
+                        <div class="color-dot" style="background:#0284c7;" onclick="window.applyLiveThemeColors('#0284c7', null, null, null)" title="Ocean Blue"></div>
+                        <div class="color-dot" style="background:#059669;" onclick="window.applyLiveThemeColors('#059669', null, null, null)" title="Emerald Green"></div>
+                        <div class="color-dot" style="background:#dc2626;" onclick="window.applyLiveThemeColors('#dc2626', null, null, null)" title="Ruby Red"></div>
+                        <div class="color-dot" style="background:#7c3aed;" onclick="window.applyLiveThemeColors('#7c3aed', null, null, null)" title="Royal Purple"></div>
+                        <div class="color-dot" style="background:#d97706;" onclick="window.applyLiveThemeColors('#d97706', null, null, null)" title="Sunset Gold"></div>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label-custom">Navbar BG Color</label>
+                            <input type="color" class="form-control form-control-color w-100" id="inNavBgColor" value="#ffffff" onchange="window.applyLiveThemeColors(null, this.value, null, null)">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label-custom">Navbar Text Color</label>
+                            <input type="color" class="form-control form-control-color w-100" id="inNavTextColor" value="#334155" onchange="window.applyLiveThemeColors(null, null, this.value, null)">
+                        </div>
+                        <div class="col-12 mt-2">
+                            <label class="form-label-custom">Footer & Top-Bar BG Color</label>
+                            <input type="color" class="form-control form-control-color w-100" id="inFooterBgColor" value="#0f172a" onchange="window.applyLiveThemeColors(null, null, null, this.value)">
+                        </div>
+                    </div>
                 </div>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="chkToppers" onchange="window.toggleSectionAndNav('toppers', this.checked)" checked>
-                    <label class="form-check-label small fw-bold" for="chkToppers">Toppers Hall of Fame</label>
+
+                <!-- TAB 2: MENU & CUSTOM PAGES BUILDER -->
+                <div class="tab-pane fade" id="tabNav">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label-custom m-0">Active Navigation Links</label>
+                        <button class="btn btn-sm btn-outline-success py-0 px-2 fw-bold" onclick="window.promptAddNewMenuItem()">+ Add Page/Menu</button>
+                    </div>
+                    <div class="list-group mb-3" id="studioMenuList">
+                        <!-- Populated by JS -->
+                    </div>
                 </div>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="chkFacilities" onchange="window.toggleSectionAndNav('facilities', this.checked)" checked>
-                    <label class="form-check-label small fw-bold" for="chkFacilities">Campus Facilities</label>
+
+                <!-- TAB 3: CONTENT & MESSAGES -->
+                <div class="tab-pane fade" id="tabContent">
+                    <label class="form-label-custom">Hero Banner Headline</label>
+                    <textarea class="form-control form-control-sm mb-3" id="inHeroHeadline" rows="2"></textarea>
+
+                    <label class="form-label-custom">Principal Name</label>
+                    <input type="text" class="form-control form-control-sm mb-2" id="inPrincipalName">
+
+                    <label class="form-label-custom">Principal Photo Link / URL</label>
+                    <input type="text" class="form-control form-control-sm mb-2" id="inPrincipalPhoto">
+
+                    <label class="form-label-custom">Principal Inspiring Message</label>
+                    <textarea class="form-control form-control-sm mb-3" id="inPrincipalMsg" rows="3"></textarea>
                 </div>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="chkGallery" onchange="window.toggleSectionAndNav('gallery', this.checked)" checked>
-                    <label class="form-check-label small fw-bold" for="chkGallery">Photo & Video Gallery</label>
-                </div>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="chkNotices" onchange="window.toggleSectionAndNav('notices', this.checked)" checked>
-                    <label class="form-check-label small fw-bold" for="chkNotices">Notice Board & Circulars</label>
-                </div>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="chkDisclosure" onchange="window.toggleSectionAndNav('disclosure', this.checked)" checked>
-                    <label class="form-check-label small fw-bold" for="chkDisclosure">Mandatory Disclosure</label>
-                </div>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" id="chkStats" onchange="window.toggleSectionAndNav('sec-stats', this.checked)" checked>
-                    <label class="form-check-label small fw-bold" for="chkStats">Highlights & Counters</label>
+
+                <!-- TAB 4: SECTIONS TOGGLES (HIDE/SHOW) -->
+                <div class="tab-pane fade" id="tabSections">
+                    <div class="d-flex flex-column gap-2 p-2 bg-light rounded-3 border">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="chkEnquiry" onchange="window.toggleSectionAndNav('enquiry', this.checked)" checked>
+                            <label class="form-check-label small fw-bold" for="chkEnquiry">Admission Enquiry Form</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="chkToppers" onchange="window.toggleSectionAndNav('toppers', this.checked)" checked>
+                            <label class="form-check-label small fw-bold" for="chkToppers">Toppers Hall of Fame</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="chkFacilities" onchange="window.toggleSectionAndNav('facilities', this.checked)" checked>
+                            <label class="form-check-label small fw-bold" for="chkFacilities">Campus Facilities</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="chkGallery" onchange="window.toggleSectionAndNav('gallery', this.checked)" checked>
+                            <label class="form-check-label small fw-bold" for="chkGallery">Photo & Video Gallery</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="chkNotices" onchange="window.toggleSectionAndNav('notices', this.checked)" checked>
+                            <label class="form-check-label small fw-bold" for="chkNotices">Notice Board & Circulars</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="chkDisclosure" onchange="window.toggleSectionAndNav('disclosure', this.checked)" checked>
+                            <label class="form-check-label small fw-bold" for="chkDisclosure">Mandatory Disclosure</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="chkStats" onchange="window.toggleSectionAndNav('sec-stats', this.checked)" checked>
+                            <label class="form-check-label small fw-bold" for="chkStats">Highlights & Counters</label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Master Save Button -->
-            <button type="button" class="btn btn-success w-100 py-3 fw-bold shadow mt-2" id="btnSaveLiveSettings" onclick="window.saveLiveWebsiteSettings()">
+            <button type="button" class="btn btn-success w-100 py-3 fw-bold shadow mt-4" id="btnSaveLiveSettings" onclick="window.saveLiveWebsiteSettings()">
                 <i class="fas fa-cloud-upload-alt me-2"></i> SAVE LIVE SETTINGS
             </button>
-        </div>
-    </div>
-
-    <!-- ✏️ UNIVERSAL INLINE SECTION EDITOR MODAL -->
-    <div class="modal fade" id="universalSectionEditModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content rounded-4 border-0 shadow-lg">
-                <div class="modal-header bg-dark text-white p-3">
-                    <h6 class="modal-title fw-bold" id="editModalTitle"><i class="fas fa-edit me-2 text-warning"></i>Edit Section Details</h6>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <form onsubmit="window.saveInlineSectionData(event)">
-                        <input type="hidden" id="editSectionTarget" value="">
-                        
-                        <!-- Principal Section Fields -->
-                        <div id="fieldsPrincipalDesk">
-                            <div class="mb-3">
-                                <label class="form-label-custom">Principal Name</label>
-                                <input type="text" class="form-control form-control-custom" id="inEditPrincipalName">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label-custom">Principal Title / Designation</label>
-                                <input type="text" class="form-control form-control-custom" id="inEditPrincipalTitle">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label-custom">Principal Photo URL (or Image Link)</label>
-                                <input type="text" class="form-control form-control-custom" id="inEditPrincipalPhoto">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label-custom">Inspiring Message</label>
-                                <textarea class="form-control" id="inEditPrincipalMsg" rows="4" style="border-radius:10px; font-size:13px;"></textarea>
-                            </div>
-                        </div>
-
-                        <!-- Hero Section Fields -->
-                        <div id="fieldsHeroSection" style="display:none;">
-                            <div class="mb-3">
-                                <label class="form-label-custom">Main Headline</label>
-                                <textarea class="form-control" id="inEditHeroHeadline" rows="2"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label-custom">Hero Subtitle</label>
-                                <textarea class="form-control" id="inEditHeroSubtext" rows="3"></textarea>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100 fw-bold py-2 shadow-sm">
-                            <i class="fas fa-check-circle me-1"></i> Apply & Save Live
-                        </button>
-                    </form>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -1140,8 +1004,24 @@
     <script>
         let activeSchoolId = "";
         let websiteConfig = {
-            ThemeColor: "#0284c7",
-            ThemeSecondary: "#0369a1",
+            ThemeConfig: {
+                primaryColor: "#0284c7",
+                secondaryColor: "#0369a1",
+                navBgColor: "#ffffff",
+                navTextColor: "#334155",
+                footerBgColor: "#0f172a"
+            },
+            NavMenu: [
+                { label: "Home", link: "#home", target: "home" },
+                { label: "About", link: "#about", target: "about" },
+                { label: "Academics", link: "#academics", target: "academics" },
+                { label: "Facilities", link: "#facilities", target: "facilities" },
+                { label: "Toppers", link: "#toppers", target: "toppers" },
+                { label: "Gallery", link: "#gallery", target: "gallery" },
+                { label: "Notices", link: "#notices", target: "notices" },
+                { label: "Disclosure", link: "#disclosure", target: "disclosure" },
+                { label: "Contact", link: "#contact", target: "contact" }
+            ],
             SectionToggles: {
                 enquiry: true,
                 toppers: true,
@@ -1205,7 +1085,6 @@
                     document.getElementById('offcanvasPhone').innerText = sPhone;
                     document.getElementById('footerPhone').innerText = sPhone;
                     document.getElementById('footerHelplinePhone').innerText = sPhone;
-                    document.getElementById('enqHelplineText').innerText = sPhone;
                     document.getElementById('mobPhoneLink').href = `tel:${sPhone.replace(/[^0-9+]/g, '')}`;
 
                     // WhatsApp
@@ -1222,7 +1101,7 @@
                     // Address
                     document.getElementById('footerAddr').innerText = sAddr;
 
-                    // 🚀 Load Classes directly from School_Configs
+                    // Load Classes directly from School_Configs
                     window.loadSchoolClassesFromConfig(activeSchoolId);
 
                     // Load Custom Website Configuration
@@ -1238,42 +1117,31 @@
             }
         });
 
-        // 🚀 2. DYNAMIC CLASS REPLICATOR (FROM School_Configs TABLE)
+        // 2. DYNAMIC CLASS REPLICATOR (FROM School_Configs TABLE)
         window.loadSchoolClassesFromConfig = async function(schId) {
             const classSelect = document.getElementById('enqClass');
             if (!classSelect) return;
 
             try {
-                const { data: configs, error } = await db
+                const { data: configs } = await db
                     .from('School_Configs')
                     .select('Value')
                     .eq('SchoolID', schId)
                     .eq('Category', 'Class')
                     .order('Id', { ascending: true });
 
-                if (error || !configs || configs.length === 0) {
-                    // Fallback default classes
+                if (!configs || configs.length === 0) {
                     classSelect.innerHTML = `
                         <option value="">-- Select Class --</option>
                         <option value="Pre-Nursery">Pre-Nursery / Nursery</option>
-                        <option value="KG">LKG / UKG</option>
                         <option value="Class 1">Class 1</option>
                         <option value="Class 2">Class 2</option>
-                        <option value="Class 3">Class 3</option>
-                        <option value="Class 4">Class 4</option>
-                        <option value="Class 5">Class 5</option>
-                        <option value="Class 6">Class 6</option>
-                        <option value="Class 7">Class 7</option>
-                        <option value="Class 8">Class 8</option>
-                        <option value="Class 9">Class 9</option>
                         <option value="Class 10">Class 10</option>
-                        <option value="Class 11">Class 11</option>
                         <option value="Class 12">Class 12</option>
                     `;
                     return;
                 }
 
-                // Natural sort classes
                 configs.sort((a, b) => (a.Value || '').localeCompare(b.Value || '', undefined, { numeric: true, sensitivity: 'base' }));
 
                 let optionsHtml = '<option value="">-- Select Class --</option>';
@@ -1297,9 +1165,20 @@
                     .maybeSingle();
 
                 if (webData) {
-                    if (webData.ThemeColor) {
-                        window.applyLiveThemeColor(webData.ThemeColor, webData.ThemeColor);
+                    if (webData.ThemeConfig) {
+                        websiteConfig.ThemeConfig = webData.ThemeConfig;
+                        window.applyLiveThemeColors(
+                            webData.ThemeConfig.primaryColor,
+                            webData.ThemeConfig.navBgColor,
+                            webData.ThemeConfig.navTextColor,
+                            webData.ThemeConfig.footerBgColor
+                        );
                     }
+
+                    if (webData.NavMenu && Array.isArray(webData.NavMenu)) {
+                        websiteConfig.NavMenu = webData.NavMenu;
+                    }
+                    window.renderNavbarMenu();
 
                     if (webData.SectionToggles) {
                         websiteConfig.SectionToggles = webData.SectionToggles;
@@ -1313,81 +1192,146 @@
 
                     if (webData.HeroData) {
                         websiteConfig.HeroData = webData.HeroData;
-                        if (webData.HeroData.headline) document.getElementById('heroHeadline').innerText = webData.HeroData.headline;
-                        if (webData.HeroData.subtext) document.getElementById('heroSubtext').innerText = webData.HeroData.subtext;
+                        if (webData.HeroData.headline) {
+                            document.getElementById('heroHeadline').innerText = webData.HeroData.headline;
+                            document.getElementById('inHeroHeadline').value = webData.HeroData.headline;
+                        }
                     }
 
                     if (webData.AboutData) {
                         websiteConfig.AboutData = webData.AboutData;
-                        if (webData.AboutData.principalName) document.getElementById('principalName').innerText = webData.AboutData.principalName;
-                        if (webData.AboutData.principalTitle) document.getElementById('principalTitle').innerText = webData.AboutData.principalTitle;
-                        if (webData.AboutData.principalMsg) document.getElementById('principalMsg').innerText = webData.AboutData.principalMsg;
-                        if (webData.AboutData.principalPhoto) document.getElementById('principalPhoto').src = webData.AboutData.principalPhoto;
+                        if (webData.AboutData.principalName) {
+                            document.getElementById('principalName').innerText = webData.AboutData.principalName;
+                            document.getElementById('inPrincipalName').value = webData.AboutData.principalName;
+                        }
+                        if (webData.AboutData.principalTitle) {
+                            document.getElementById('principalTitle').innerText = webData.AboutData.principalTitle;
+                        }
+                        if (webData.AboutData.principalMsg) {
+                            document.getElementById('principalMsg').innerText = `"${webData.AboutData.principalMsg}"`;
+                            document.getElementById('inPrincipalMsg').value = webData.AboutData.principalMsg;
+                        }
+                        if (webData.AboutData.principalPhoto) {
+                            document.getElementById('principalPhoto').src = webData.AboutData.principalPhoto;
+                            document.getElementById('inPrincipalPhoto').value = webData.AboutData.principalPhoto;
+                        }
                     }
+                } else {
+                    window.renderNavbarMenu();
                 }
             } catch(err) {
                 console.warn("Website config load skipped:", err);
+                window.renderNavbarMenu();
             }
         };
 
-        // 🚀 4. INSTANT THEME COLOR ENGINE (Overrides all buttons, badges, links)
-        window.applyLiveThemeColor = function(primary, secondary) {
-            websiteConfig.ThemeColor = primary;
-            websiteConfig.ThemeSecondary = secondary || primary;
+        // 4. Render Dynamic Navbar Menu from JSON
+        window.renderNavbarMenu = function() {
+            const container = document.getElementById('dynamicNavLinks');
+            const studioList = document.getElementById('studioMenuList');
+            if (!container) return;
 
-            let styleEl = document.getElementById('liveThemeOverride');
-            if (!styleEl) {
-                styleEl = document.createElement('style');
-                styleEl.id = 'liveThemeOverride';
-                document.head.appendChild(styleEl);
-            }
+            let navHtml = "";
+            let studioHtml = "";
 
-            styleEl.innerHTML = `
-                :root {
-                    --school-primary: ${primary} !important;
-                    --school-secondary: ${secondary || primary} !important;
+            websiteConfig.NavMenu.forEach((item, idx) => {
+                const targetKey = item.target || item.label.toLowerCase();
+                const isVisible = (websiteConfig.SectionToggles[targetKey] !== false);
+
+                navHtml += `
+                    <li class="nav-item w-100 w-lg-auto" data-nav-target="${targetKey}" style="${isVisible ? '' : 'display:none;'}">
+                        <a class="nav-link text-start ${idx === 0 ? 'active' : ''}" href="${item.link}">${item.label}</a>
+                    </li>
+                `;
+
+                if (studioList) {
+                    studioHtml += `
+                        <div class="list-group-item d-flex justify-content-between align-items-center p-2">
+                            <span class="small fw-bold">${idx + 1}. ${item.label}</span>
+                            <button class="btn btn-sm btn-outline-danger py-0 px-2" onclick="window.removeMenuItem(${idx})" type="button">&times;</button>
+                        </div>
+                    `;
                 }
-                .btn-primary, .btn-enquiry-nav, .btn-filter-pill.active {
-                    background: ${primary} !important;
-                    border-color: ${primary} !important;
-                    color: #ffffff !important;
-                }
-                .text-primary, .nav-link.active, .nav-link:hover, .feature-icon-box, .icon-circle-lg {
-                    color: ${primary} !important;
-                }
-                .form-control-custom:focus {
-                    border-color: ${primary} !important;
-                    box-shadow: 0 0 0 3px ${primary}28 !important;
-                }
-                .btn-outline-primary {
-                    border-color: ${primary} !important;
-                    color: ${primary} !important;
-                }
-                .btn-outline-primary:hover {
-                    background: ${primary} !important;
-                    color: #ffffff !important;
-                }
-            `;
+            });
+
+            container.innerHTML = navHtml;
+            if (studioList) studioList.innerHTML = studioHtml;
         };
 
-        // 🚀 5. SECTION & NAVBAR SYNCHRONIZED TOGGLE (Hides both section and menu link)
+        // 5. Add / Remove Menu Items
+        window.promptAddNewMenuItem = function() {
+            const label = prompt("Enter Menu Item / Page Name (e.g. Hostel, Alumni, Rules):");
+            if (!label || !label.trim()) return;
+
+            const link = prompt("Enter Link URL or Anchor (e.g. #hostel or https://...):", "#" + label.toLowerCase().replace(/[^a-z0-9]/g, ''));
+            if (!link) return;
+
+            websiteConfig.NavMenu.push({
+                label: label.trim(),
+                link: link.trim(),
+                target: label.toLowerCase().trim()
+            });
+
+            window.renderNavbarMenu();
+        };
+
+        window.removeMenuItem = function(idx) {
+            if (websiteConfig.NavMenu.length <= 2) {
+                alert("At least 2 menu items must remain.");
+                return;
+            }
+            websiteConfig.NavMenu.splice(idx, 1);
+            window.renderNavbarMenu();
+        };
+
+        // 6. INSTANT LIVE THEME & STYLE ENGINE
+        window.applyLiveThemeColors = function(primary, navBg, navText, footerBg) {
+            if (primary) {
+                websiteConfig.ThemeConfig.primaryColor = primary;
+                websiteConfig.ThemeConfig.secondaryColor = primary;
+            }
+            if (navBg) websiteConfig.ThemeConfig.navBgColor = navBg;
+            if (navText) websiteConfig.ThemeConfig.navTextColor = navText;
+            if (footerBg) websiteConfig.ThemeConfig.footerBgColor = footerBg;
+
+            const styleEl = document.getElementById('dynamicLiveStyles');
+            if (styleEl) {
+                styleEl.innerHTML = `
+                    :root {
+                        --school-primary: ${websiteConfig.ThemeConfig.primaryColor} !important;
+                        --school-secondary: ${websiteConfig.ThemeConfig.secondaryColor} !important;
+                        --nav-bg: ${websiteConfig.ThemeConfig.navBgColor} !important;
+                        --nav-text: ${websiteConfig.ThemeConfig.navTextColor} !important;
+                        --footer-bg: ${websiteConfig.ThemeConfig.footerBgColor} !important;
+                    }
+                    .btn-primary, .btn-enquiry-nav, .btn-filter-pill.active {
+                        background: ${websiteConfig.ThemeConfig.primaryColor} !important;
+                        border-color: ${websiteConfig.ThemeConfig.primaryColor} !important;
+                        color: #ffffff !important;
+                    }
+                    .text-primary, .nav-link.active, .nav-link:hover, .icon-circle-lg {
+                        color: ${websiteConfig.ThemeConfig.primaryColor} !important;
+                    }
+                    .btn-outline-primary {
+                        border-color: ${websiteConfig.ThemeConfig.primaryColor} !important;
+                        color: ${websiteConfig.ThemeConfig.primaryColor} !important;
+                    }
+                `;
+            }
+        };
+
+        // 7. SECTION & NAVBAR SYNCHRONIZED TOGGLE
         window.toggleSectionAndNav = function(sectionKey, isVisible) {
             websiteConfig.SectionToggles[sectionKey] = isVisible;
 
-            // Toggle Section in Page Body
             const secEl = document.getElementById(sectionKey);
-            if (secEl) {
-                secEl.style.display = isVisible ? '' : 'none';
-            }
+            if (secEl) secEl.style.display = isVisible ? '' : 'none';
 
-            // Synchronously Toggle Menu Link in Navbar
             const navItem = document.querySelector(`li[data-nav-target="${sectionKey}"]`);
-            if (navItem) {
-                navItem.style.display = isVisible ? '' : 'none';
-            }
+            if (navItem) navItem.style.display = isVisible ? '' : 'none';
         };
 
-        // 6. Web Editor Auth Modal & Validation
+        // 8. BACKEND SECURED RPC EDITOR LOGIN
         window.openEditorModal = function() {
             new bootstrap.Modal(document.getElementById('editorLoginModal')).show();
         };
@@ -1399,27 +1343,29 @@
             const btn = document.getElementById('btnDoEditorLogin');
 
             btn.disabled = true;
-            btn.innerHTML = 'Verifying...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Verifying...';
 
             try {
-                const { data } = await db
-                    .from('School_Websites')
-                    .select('*')
-                    .eq('SchoolID', activeSchoolId || '169701')
-                    .eq('EditorLoginId', id)
-                    .eq('EditorPassword', pass)
-                    .maybeSingle();
+                // 🚀 Call Secure Database Function (No client-side password matching!)
+                const { data: authResult, error: rpcErr } = await db.rpc('verify_website_editor_login', {
+                    p_school_id: activeSchoolId || '169701',
+                    p_login_id: id,
+                    p_password: pass
+                });
 
-                if (data || (id === "demo" && pass === "demo")) {
+                if (rpcErr) throw rpcErr;
+
+                if (authResult && authResult.status === 'success') {
                     sessionStorage.setItem("website_editor_auth", "true");
                     bootstrap.Modal.getInstance(document.getElementById('editorLoginModal')).hide();
                     window.enableEditorModeUI();
-                    alert("✅ Authentication Successful! Live Edit Mode & Studio are now unlocked.");
+                    alert("✅ Authentication Successful! Live Studio & Controls are unlocked.");
                 } else {
-                    alert("❌ Invalid Editor ID or Password!");
+                    alert("❌ " + (authResult.message || "Invalid Editor Credentials"));
                 }
             } catch(err) {
-                alert("Error authenticating: " + err.message);
+                console.error("Editor Auth Error:", err);
+                alert("Authentication failed: " + err.message);
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = 'Login & Edit';
@@ -1427,94 +1373,53 @@
         };
 
         window.enableEditorModeUI = function() {
-            const customizerBtn = document.getElementById('btnLiveCustomizer');
-            if (customizerBtn) customizerBtn.style.display = 'inline-flex';
+            const dock = document.getElementById('editorDockToolbar');
+            if (dock) dock.style.display = 'inline-flex';
+        };
 
-            // Show all inline pencil buttons
-            document.querySelectorAll('.btn-inline-edit').forEach(el => el.style.display = 'inline-block');
+        window.doEditorLogout = function() {
+            if (!confirm("Are you sure you want to logout from Website Editor Mode?")) return;
+            sessionStorage.removeItem("website_editor_auth");
+            window.location.reload();
         };
 
         window.openCustomizerDrawer = function() {
             new bootstrap.Offcanvas(document.getElementById('liveCustomizerDrawer')).show();
         };
 
-        // 🚀 7. INLINE SECTION EDITORS (PRINCIPAL PHOTO, MESSAGE, HERO)
-        window.openSectionEditor = function(target) {
-            document.getElementById('editSectionTarget').value = target;
-
-            const pFields = document.getElementById('fieldsPrincipalDesk');
-            const hFields = document.getElementById('fieldsHeroSection');
-
-            if (target === 'about') {
-                document.getElementById('editModalTitle').innerHTML = '<i class="fas fa-user-tie me-2 text-warning"></i>Edit Principal Desk & Photo';
-                pFields.style.display = 'block';
-                hFields.style.display = 'none';
-
-                document.getElementById('inEditPrincipalName').value = document.getElementById('principalName').innerText;
-                document.getElementById('inEditPrincipalTitle').value = document.getElementById('principalTitle').innerText;
-                document.getElementById('inEditPrincipalPhoto').value = document.getElementById('principalPhoto').src;
-                document.getElementById('inEditPrincipalMsg').value = document.getElementById('principalMsg').innerText.replace(/^"|"$/g, '');
-            } else if (target === 'hero') {
-                document.getElementById('editModalTitle').innerHTML = '<i class="fas fa-heading me-2 text-warning"></i>Edit Hero Section Headline';
-                pFields.style.display = 'none';
-                hFields.style.display = 'block';
-
-                document.getElementById('inEditHeroHeadline').value = document.getElementById('heroHeadline').innerText;
-                document.getElementById('inEditHeroSubtext').value = document.getElementById('heroSubtext').innerText;
-            }
-
-            new bootstrap.Modal(document.getElementById('universalSectionEditModal')).show();
-        };
-
-        window.saveInlineSectionData = async function(e) {
-            e.preventDefault();
-            const target = document.getElementById('editSectionTarget').value;
-
-            if (target === 'about') {
-                const name = document.getElementById('inEditPrincipalName').value.trim();
-                const title = document.getElementById('inEditPrincipalTitle').value.trim();
-                const photo = document.getElementById('inEditPrincipalPhoto').value.trim();
-                const msg = document.getElementById('inEditPrincipalMsg').value.trim();
-
-                document.getElementById('principalName').innerText = name;
-                document.getElementById('principalTitle').innerText = title;
-                if (photo) document.getElementById('principalPhoto').src = photo;
-                document.getElementById('principalMsg').innerText = `"${msg}"`;
-
-                websiteConfig.AboutData = {
-                    principalName: name,
-                    principalTitle: title,
-                    principalPhoto: photo || document.getElementById('principalPhoto').src,
-                    principalMsg: msg
-                };
-            } else if (target === 'hero') {
-                const headline = document.getElementById('inEditHeroHeadline').value.trim();
-                const subtext = document.getElementById('inEditHeroSubtext').value.trim();
-
-                document.getElementById('heroHeadline').innerText = headline;
-                document.getElementById('heroSubtext').innerText = subtext;
-
-                websiteConfig.HeroData = {
-                    headline: headline,
-                    subtext: subtext
-                };
-            }
-
-            bootstrap.Modal.getInstance(document.getElementById('universalSectionEditModal')).hide();
-            await window.saveLiveWebsiteSettings();
-        };
-
-        // 8. Save Live Settings into Supabase
+        // 9. SAVE LIVE SETTINGS INTO SUPABASE
         window.saveLiveWebsiteSettings = async function() {
             const btn = document.getElementById('btnSaveLiveSettings');
-            if (btn) {
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Saving Live...';
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Saving Live to Cloud...';
+
+            // Collect form fields from Content tab
+            const hLine = document.getElementById('inHeroHeadline').value.trim();
+            const pName = document.getElementById('inPrincipalName').value.trim();
+            const pPhoto = document.getElementById('inPrincipalPhoto').value.trim();
+            const pMsg = document.getElementById('inPrincipalMsg').value.trim();
+
+            if (hLine) {
+                websiteConfig.HeroData.headline = hLine;
+                document.getElementById('heroHeadline').innerText = hLine;
+            }
+            if (pName) {
+                websiteConfig.AboutData.principalName = pName;
+                document.getElementById('principalName').innerText = pName;
+            }
+            if (pPhoto) {
+                websiteConfig.AboutData.principalPhoto = pPhoto;
+                document.getElementById('principalPhoto').src = pPhoto;
+            }
+            if (pMsg) {
+                websiteConfig.AboutData.principalMsg = pMsg;
+                document.getElementById('principalMsg').innerText = `"${pMsg}"`;
             }
 
             const payload = {
                 SchoolID: activeSchoolId || "169701",
-                ThemeColor: websiteConfig.ThemeColor,
+                ThemeConfig: websiteConfig.ThemeConfig,
+                NavMenu: websiteConfig.NavMenu,
                 SectionToggles: websiteConfig.SectionToggles,
                 HeroData: websiteConfig.HeroData,
                 AboutData: websiteConfig.AboutData,
@@ -1527,19 +1432,18 @@
                     .upsert(payload, { onConflict: 'SchoolID' });
 
                 if (error) throw error;
-                alert("🎉 Website Settings & Content Saved Successfully!");
+                alert("🎉 Website Settings & Content Saved Live to Supabase!");
+                bootstrap.Offcanvas.getInstance(document.getElementById('liveCustomizerDrawer')).hide();
             } catch(err) {
                 console.error("Save error:", err);
                 alert("Failed to save: " + err.message);
             } finally {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i class="fas fa-cloud-upload-alt me-2"></i> SAVE LIVE SETTINGS';
-                }
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-cloud-upload-alt me-2"></i> SAVE LIVE SETTINGS';
             }
         };
 
-        // 9. Interactive Photo Gallery Filter
+        // 10. Interactive Photo Gallery Filter
         window.filterGallery = function(category) {
             document.querySelectorAll('.btn-filter-pill').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
@@ -1554,7 +1458,7 @@
             });
         };
 
-        // 10. Online Admission Enquiry Form Submission to Supabase
+        // 11. Online Admission Enquiry Form Submission to Supabase
         window.submitAdmissionEnquiry = async function(e) {
             e.preventDefault();
 
@@ -1590,7 +1494,7 @@
             }
         };
 
-        // 11. Auto-Close Mobile Navbar when any link is clicked
+        // 12. Auto-Close Mobile Navbar when any link is clicked
         document.addEventListener("DOMContentLoaded", function() {
             const navLinks = document.querySelectorAll('#navMenu .nav-link');
             const navMenu = document.getElementById('navMenu');
@@ -1605,7 +1509,7 @@
             });
         });
 
-        // 12. Smooth Transition from Drawer to Admission Enquiry Form
+        // 13. Smooth Transition from Drawer to Admission Enquiry Form
         window.goToEnquiryFromDrawer = function() {
             const drawerEl = document.getElementById('topInfoOffcanvas');
             if (drawerEl) {
