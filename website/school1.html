@@ -16,7 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/config.js"></script>
 
-    <!-- 🎨 Dynamic Injected CSS Engine -->
+    <!-- 🎨 Global & Section-Scoped Dynamic Injected CSS Engine -->
     <style id="dynamicLiveStyles">
         :root {
             --school-primary: #0284c7;
@@ -77,10 +77,27 @@
             font-size: 14px;
             color: var(--nav-text) !important;
             padding: 8px 12px !important;
-            transition: 0.2s ease;
+            transition: all 0.2s ease;
+            position: relative;
         }
-        .nav-link:hover, .nav-link.active, .dropdown-item:hover {
+        .nav-link:hover, .dropdown-item:hover {
             color: var(--school-primary) !important;
+        }
+        
+        /* 🚀 DYNAMIC ACTIVE SCROLLSPY HIGHLIGHT */
+        .nav-link.active {
+            color: var(--school-primary) !important;
+            font-weight: 800 !important;
+        }
+        .nav-link.active::after {
+            content: "";
+            position: absolute;
+            bottom: 2px;
+            left: 12px;
+            right: 12px;
+            height: 2.5px;
+            background: var(--school-primary);
+            border-radius: 2px;
         }
 
         /* Dropdown Styling */
@@ -111,6 +128,7 @@
                 padding: 10px 14px !important;
                 border-bottom: 1px solid rgba(0,0,0,0.05);
             }
+            .nav-link.active::after { display: none; }
         }
 
         .btn-top-apply {
@@ -412,7 +430,7 @@
         </div>
     </div>
 
-    <!-- 2. MAIN NAVBAR -->
+    <!-- 2. MAIN NAVBAR (🚀 Brand and Home Click Handled Cleanly) -->
     <nav class="navbar navbar-expand-lg navbar-main" id="sec-navbar">
         <div class="container-fluid px-lg-5 px-3 position-relative">
             <button class="btn-inline-pencil" style="top:10px; left:6px;" onclick="window.triggerInlineEdit('navbar-brand')"><i class="fas fa-pencil-alt"></i></button>
@@ -420,7 +438,7 @@
                 <i class="fas fa-bars fa-lg text-dark"></i>
             </button>
             
-            <a class="navbar-brand d-flex align-items-center gap-2 gap-sm-3 order-1 me-auto" href="#home">
+            <a class="navbar-brand d-flex align-items-center gap-2 gap-sm-3 order-1 me-auto" href="javascript:void(0)" onclick="window.goToHomePage(event)">
                 <img src="/favicon.png" alt="School Logo" class="school-logo-img" id="schoolLogo">
                 <div>
                     <h5 class="fw-bold m-0" id="schoolNameHeader"></h5>
@@ -740,25 +758,21 @@
         </div>
     </section>
 
-    <!-- 16. FOOTER -->
+    <!-- 16. FOOTER (Managed Dynamically via Footer Manager Tab) -->
     <footer id="sec-footer">
         <div class="container-fluid px-lg-5">
             <div class="row g-4">
                 <div class="col-lg-4">
                     <h5 class="text-white fw-bold mb-3" id="footerSchoolName"></h5>
-                    <p class="small text-secondary mb-3">
+                    <p class="small text-secondary mb-3" id="footerAboutDesc">
                         Committed to high-quality academic education, character development, and holistic student growth with modern digital infrastructure.
                     </p>
                 </div>
 
                 <div class="col-lg-2 col-6">
                     <h6>Quick Links</h6>
-                    <ul class="list-unstyled d-flex flex-column gap-2 small">
-                        <li><a href="#about">About Campus</a></li>
-                        <li><a href="#academics">Academics</a></li>
-                        <li><a href="#facilities">Facilities</a></li>
-                        <li><a href="#toppers">Toppers</a></li>
-                        <li><a href="#enquiry">Admission</a></li>
+                    <ul class="list-unstyled d-flex flex-column gap-2 small" id="footerQuickLinksList">
+                        <!-- Populated dynamically via footer manager -->
                     </ul>
                 </div>
 
@@ -776,6 +790,7 @@
                     <h6>Contact Support</h6>
                     <p class="small mb-2"><i class="fas fa-phone-alt text-warning me-2"></i><span id="footerHelplinePhone"></span></p>
                     <p class="small mb-2"><i class="fas fa-envelope text-warning me-2"></i><span id="footerHelplineMail"></span></p>
+                    <p class="small mb-2"><i class="fas fa-clock text-warning me-2"></i><span id="footerTimingText">Mon - Sat: 8:00 AM - 3:00 PM</span></p>
                     <div class="mt-3">
                         <a href="javascript:void(0)" onclick="window.openEditorModal()" class="text-secondary small text-decoration-none">
                             <i class="fas fa-lock me-1"></i> Web Editor Login
@@ -836,7 +851,7 @@
         </div>
     </div>
 
-    <!-- 🎨 520px WIDE PROFESSIONAL LIVE WEBSITE STUDIO DRAWER (Screenshot 3 Fix) -->
+    <!-- 🎨 520px WIDE LIVE WEBSITE STUDIO DRAWER WITH FOOTER MANAGER -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="liveCustomizerDrawer" style="width: 520px; max-width: 95vw;">
         <div class="offcanvas-header bg-dark text-white p-3">
             <h6 class="offcanvas-title fw-bold"><i class="fas fa-sliders-h text-warning me-2"></i>Live Website Studio</h6>
@@ -848,6 +863,7 @@
                 <li class="nav-item"><button class="nav-link active small py-1" data-bs-toggle="pill" data-bs-target="#tabTheme">Colors</button></li>
                 <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabNav">Menu Builder</button></li>
                 <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabSections">Sections & Styles</button></li>
+                <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabFooter">Footer Manager</button></li>
             </ul>
 
             <div class="tab-content border-top pt-3">
@@ -878,10 +894,10 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: MENU BUILDER WITH REAL SUBMENUS -->
+                <!-- TAB 2: MENU BUILDER -->
                 <div class="tab-pane fade" id="tabNav">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <label class="form-label-custom m-0">Reorder & Toggle Menu Items</label>
+                        <label class="form-label-custom m-0">Reorder & Structure Navigation</label>
                         <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="window.promptAddNewMenuItem()">+ Add Item</button>
                     </div>
                     <div class="list-group mb-3" id="studioMenuList"></div>
@@ -891,6 +907,21 @@
                 <div class="tab-pane fade" id="tabSections">
                     <label class="form-label-custom mb-2">Reorder, Toggle & Style Sections</label>
                     <div class="d-flex flex-column gap-2 mb-3" id="studioSectionManagerList"></div>
+                </div>
+
+                <!-- 🚀 TAB 4: NEW FOOTER MANAGER -->
+                <div class="tab-pane fade" id="tabFooter">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label-custom m-0">Footer Quick Links</label>
+                        <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="window.promptAddFooterLink()">+ Add Footer Link</button>
+                    </div>
+                    <div class="list-group mb-3" id="studioFooterLinkList"></div>
+
+                    <label class="form-label-custom mt-3">School Office Operating Hours</label>
+                    <input type="text" class="form-control form-control-sm mb-3" id="inFooterTiming" value="Mon - Sat: 8:00 AM - 3:00 PM">
+
+                    <label class="form-label-custom">Footer About Paragraph</label>
+                    <textarea class="form-control form-control-sm mb-3" id="inFooterAbout" rows="3"></textarea>
                 </div>
             </div>
 
@@ -963,6 +994,13 @@
                 { id: "m_notices", label: "Notices", link: "#notices", target: "notices", parentId: "", visible: true },
                 { id: "m_disclosure", label: "Disclosure", link: "#disclosure", target: "disclosure", parentId: "", visible: true },
                 { id: "m_contact", label: "Contact", link: "#contact", target: "contact", parentId: "", visible: true }
+            ],
+            FooterLinks: [
+                { label: "About Campus", link: "#about" },
+                { label: "Academics", link: "#academics" },
+                { label: "Facilities", link: "#facilities" },
+                { label: "Toppers", link: "#toppers" },
+                { label: "Admission", link: "#enquiry" }
             ],
             SectionOrder: [
                 { id: "sec-ticker", label: "Announcement Ticker", visible: true, bg: "", bgImg: "", textColor: "" },
@@ -1059,7 +1097,7 @@
                     await window.loadCustomWebsiteConfig(activeSchoolId);
                 }
             } catch(e) {
-                console.warn("Dynamic branding load skipped:", e);
+                console.warn("Dynamic branding fallback applied:", e);
             } finally {
                 document.body.classList.remove('loading');
                 document.body.classList.add('loaded');
@@ -1069,6 +1107,7 @@
                 window.enableEditorModeUI();
             }
 
+            // Studio Drawer event listener
             const studioDrawerEl = document.getElementById('liveCustomizerDrawer');
             if (studioDrawerEl) {
                 studioDrawerEl.addEventListener('show.bs.offcanvas', () => {
@@ -1082,7 +1121,41 @@
                     }
                 });
             }
+
+            // 🚀 DYNAMIC SCROLLSPY LISTENER FOR AUTO ACTIVE NAV LINK HIGHLIGHT
+            window.addEventListener('scroll', () => {
+                const sections = document.querySelectorAll('section[id]');
+                const scrollPos = window.scrollY + 200;
+
+                sections.forEach(sec => {
+                    const top = sec.offsetTop;
+                    const height = sec.offsetHeight;
+                    const id = sec.getAttribute('id');
+                    if (scrollPos >= top && scrollPos < top + height) {
+                        document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+                            const href = link.getAttribute('href');
+                            if (href === `#${id}`) {
+                                link.classList.add('active');
+                            } else {
+                                link.classList.remove('active');
+                            }
+                        });
+                    }
+                });
+            });
         });
+
+        // 🚀 HOME / BRAND CLICK CONTROLLER (Cleans URL and smooth scrolls to top)
+        window.goToHomePage = function(e) {
+            if (e) e.preventDefault();
+            if (window.location.hash) {
+                history.pushState("", document.title, window.location.pathname + window.location.search);
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.querySelectorAll('.navbar-nav .nav-link').forEach(l => l.classList.remove('active'));
+            const homeLink = document.querySelector('.navbar-nav a[href="#home"]');
+            if (homeLink) homeLink.classList.add('active');
+        };
 
         // 2. Class Replicator
         window.loadSchoolClassesFromConfig = async function(schId) {
@@ -1134,7 +1207,6 @@
                     }
 
                     if (webData.NavMenu && Array.isArray(webData.NavMenu)) {
-                        // Ensure every menu item strictly has a unique ID to avoid undefined === undefined bug!
                         webData.NavMenu.forEach((m, idx) => {
                             if (!m.id) m.id = "m_" + (m.target || idx) + "_" + idx;
                             if (typeof m.parentId === 'undefined') m.parentId = "";
@@ -1142,6 +1214,11 @@
                         websiteConfig.NavMenu = webData.NavMenu;
                     }
                     window.renderNavbarMenu();
+
+                    if (webData.FooterLinks && Array.isArray(webData.FooterLinks)) {
+                        websiteConfig.FooterLinks = webData.FooterLinks;
+                    }
+                    window.renderFooterLinks();
 
                     if (webData.SectionOrder && Array.isArray(webData.SectionOrder)) {
                         websiteConfig.SectionOrder = webData.SectionOrder;
@@ -1195,6 +1272,12 @@
                             if (eq.title) document.getElementById('enqLeadTitle').innerText = eq.title;
                             if (eq.text) document.getElementById('enqLeadText').innerText = eq.text;
                         }
+
+                        if (webData.SectionsData.footerCustom) {
+                            const fc = webData.SectionsData.footerCustom;
+                            if (fc.timing) document.getElementById('footerTimingText').innerText = fc.timing;
+                            if (fc.about) document.getElementById('footerAboutDesc').innerText = fc.about;
+                        }
                     }
 
                     window.renderAcademicsGrid();
@@ -1204,6 +1287,7 @@
                     window.renderSectionManagerList();
                 } else {
                     window.renderNavbarMenu();
+                    window.renderFooterLinks();
                     window.applySectionOrdersAndStyles();
                     window.renderSectionManagerList();
                     window.renderAcademicsGrid();
@@ -1213,6 +1297,7 @@
             } catch(err) {
                 console.warn("Website config load error:", err);
                 window.renderNavbarMenu();
+                window.renderFooterLinks();
                 window.applySectionOrdersAndStyles();
                 window.renderSectionManagerList();
                 window.renderAcademicsGrid();
@@ -1221,7 +1306,7 @@
             }
         };
 
-        // 4. Render Dynamic Navbar Menu (🚀 BULLETPROOF SUBMENU / DROPDOWN FIX!)
+        // 4. Render Dynamic Navbar Menu (🚀 STABLE SUBMENU DROPDOWN)
         window.renderNavbarMenu = function() {
             const container = document.getElementById('dynamicNavLinks');
             const studioList = document.getElementById('studioMenuList');
@@ -1230,11 +1315,9 @@
             let navHtml = "";
             let studioHtml = "";
 
-            // Separate main menu items and sub-items strictly
             const rootItems = websiteConfig.NavMenu.filter(m => !m.parentId || m.parentId === "");
 
             rootItems.forEach((root, idx) => {
-                // Strict check: Only items that explicitly have parentId matching root.id are sub-items!
                 const subItems = websiteConfig.NavMenu.filter(m => m.parentId && m.parentId === root.id);
                 const hasSubs = (subItems.length > 0);
                 const isVis = (root.visible !== false);
@@ -1242,7 +1325,7 @@
                 if (!hasSubs) {
                     navHtml += `
                         <li class="nav-item w-100 w-lg-auto" data-nav-target="${root.target}" style="${isVis ? '' : 'display:none;'}">
-                            <a class="nav-link text-start ${idx === 0 ? 'active' : ''}" href="${root.link}">${root.label}</a>
+                            <a class="nav-link text-start" href="${root.link}">${root.label}</a>
                         </li>
                     `;
                 } else {
@@ -1259,7 +1342,6 @@
                 }
             });
 
-            // Studio Menu Management List
             if (studioList) {
                 websiteConfig.NavMenu.forEach((item, idx) => {
                     const isSub = !!item.parentId;
@@ -1311,7 +1393,6 @@
             if (!newName) return;
             const newLink = prompt("Edit Link / Anchor:", item.link);
 
-            // Submenu parent option
             const availableParents = websiteConfig.NavMenu.filter(m => m.id !== item.id && !m.parentId);
             let pPrompt = "Set Parent Dropdown (Enter 0 for Main Navbar):\n0. Main Navbar (Top Level)\n";
             availableParents.forEach((p, pIdx) => { pPrompt += `${pIdx + 1}. Under "${p.label}"\n`; });
@@ -1337,7 +1418,6 @@
             const link = "#" + cleanSlug;
             const itemId = "m_" + cleanSlug + "_" + Date.now();
 
-            // Check if user wants it as a sub-menu under an existing item
             const availableParents = websiteConfig.NavMenu.filter(m => !m.parentId);
             let pPrompt = "Set Placement (Enter 0 for Main Navbar, or number to make it a Sub-menu):\n0. Main Navbar (Top Level)\n";
             availableParents.forEach((p, pIdx) => { pPrompt += `${pIdx + 1}. Under "${p.label}"\n`; });
@@ -1358,7 +1438,6 @@
                 isCustom: true
             });
 
-            // Initialize custom page data slot
             if (!websiteConfig.SectionsData.customPages) websiteConfig.SectionsData.customPages = {};
             websiteConfig.SectionsData.customPages[cleanSlug] = {
                 title: label.trim(),
@@ -1369,7 +1448,6 @@
                 videoUrl: ""
             };
 
-            // Register in SectionOrder so it appears at bottom by default, not at the top!
             if (!websiteConfig.SectionOrder.some(s => s.id === cleanSlug)) {
                 websiteConfig.SectionOrder.push({
                     id: cleanSlug,
@@ -1385,11 +1463,19 @@
             window.renderNavbarMenu();
             window.applySectionOrdersAndStyles();
             window.renderSectionManagerList();
-            alert(`🎉 "${label.trim()}" added successfully! Use [📝 Content] to edit text/HTML or [Sections & Styles] to move up/down.`);
+            alert(`🎉 "${label.trim()}" added! Use [📝 Content] to edit text/HTML or [Sections & Styles] to reorder.`);
         };
 
+        // 🚀 VERIFIED MENU DELETE (Confirmation Step Added!)
         window.removeMenuItem = function(idx) {
-            if (websiteConfig.NavMenu.length <= 2) { alert("At least 2 items must remain."); return; }
+            if (websiteConfig.NavMenu.length <= 2) { 
+                alert("At least 2 items must remain in navbar."); 
+                return; 
+            }
+            const item = websiteConfig.NavMenu[idx];
+            const isConfirmed = confirm(`Are you sure you want to delete the menu item "${item.label}"?\nThis action cannot be undone.`);
+            if (!isConfirmed) return;
+
             const removed = websiteConfig.NavMenu.splice(idx, 1)[0];
             if (removed && removed.target) {
                 if (websiteConfig.SectionsData.customPages) delete websiteConfig.SectionsData.customPages[removed.target];
@@ -1400,7 +1486,7 @@
             window.renderSectionManagerList();
         };
 
-        // 🚀 5. SECTION REORDER, BG STYLES & BULLETPROOF TEXT COLOR ENGINE
+        // 5. Section Reorder, BG Styles & Text Color Engine
         window.renderSectionManagerList = function() {
             const listEl = document.getElementById('studioSectionManagerList');
             if (!listEl) return;
@@ -1423,11 +1509,11 @@
                         <div class="d-flex align-items-center gap-2 mt-1 flex-wrap">
                             <div class="d-flex align-items-center gap-1">
                                 <span class="small text-muted" style="font-size:10px;">BG:</span>
-                                <input type="color" class="form-control form-control-color p-0" style="width:24px; height:20px;" value="${sec.bg || '#ffffff'}" onchange="window.changeSectionBgColor(${idx}, this.value)" title="Change Section Background Color">
+                                <input type="color" class="form-control form-control-color p-0" style="width:24px; height:20px;" value="${sec.bg || '#ffffff'}" onchange="window.changeSectionBgColor(${idx}, this.value)">
                             </div>
                             <div class="d-flex align-items-center gap-1">
                                 <span class="small text-muted" style="font-size:10px;">Text:</span>
-                                <input type="color" class="form-control form-control-color p-0" style="width:24px; height:20px;" value="${sec.textColor || '#334155'}" onchange="window.changeSectionTextColor(${idx}, this.value)" title="Change Section Text Color">
+                                <input type="color" class="form-control form-control-color p-0" style="width:24px; height:20px;" value="${sec.textColor || '#334155'}" onchange="window.changeSectionTextColor(${idx}, this.value)">
                             </div>
                             <button class="btn btn-sm btn-outline-secondary py-0 px-1 small" style="font-size:10px;" onclick="window.promptSectionBgImage(${idx})">BG Image</button>
                         </div>
@@ -1476,7 +1562,7 @@
             }
         };
 
-        // 🚀 BULLETPROOF ORDERING: Renders sections in the exact order defined, always before footer!
+        // 🚀 BULLETPROOF ORDERING (Strictly Appends Before Footer)
         window.applySectionOrdersAndStyles = function() {
             window.renderCustomPagesSections();
 
@@ -1509,7 +1595,6 @@
                         `;
                     }
 
-                    // Strict sequential DOM insertion right before footer!
                     footerEl.parentNode.insertBefore(el, footerEl);
                 }
             });
@@ -1596,7 +1681,50 @@
             }
         };
 
-        // 8. Grid Renderers
+        // 🚀 8. FOOTER MANAGER CONTROLLER
+        window.renderFooterLinks = function() {
+            const listContainer = document.getElementById('footerQuickLinksList');
+            const studioFooterList = document.getElementById('studioFooterLinkList');
+            if (!listContainer) return;
+
+            let html = "";
+            let studioHtml = "";
+
+            websiteConfig.FooterLinks.forEach((item, idx) => {
+                html += `<li><a href="${item.link}">${item.label}</a></li>`;
+
+                if (studioFooterList) {
+                    studioHtml += `
+                        <div class="list-group-item d-flex justify-content-between align-items-center p-2 mb-1 border rounded-2">
+                            <span class="small fw-bold">${item.label} <small class="text-muted">(${item.link})</small></span>
+                            <button class="btn btn-sm btn-outline-danger py-0 px-1" onclick="window.removeFooterLink(${idx})" type="button">&times;</button>
+                        </div>
+                    `;
+                }
+            });
+
+            listContainer.innerHTML = html;
+            if (studioFooterList) studioFooterList.innerHTML = studioHtml;
+        };
+
+        window.promptAddFooterLink = function() {
+            const label = prompt("Enter Footer Link Label (e.g. Terms of Use, Bus Routes, Fee Structure):");
+            if (!label || !label.trim()) return;
+            const link = prompt("Enter Link / Anchor URL (e.g. #enquiry or https://...):", "#");
+            if (!link) return;
+
+            websiteConfig.FooterLinks.push({ label: label.trim(), link: link.trim() });
+            window.renderFooterLinks();
+        };
+
+        window.removeFooterLink = function(idx) {
+            const item = websiteConfig.FooterLinks[idx];
+            if (!confirm(`Delete footer link "${item.label}"?`)) return;
+            websiteConfig.FooterLinks.splice(idx, 1);
+            window.renderFooterLinks();
+        };
+
+        // 9. Grid Renderers
         window.renderAcademicsGrid = function() {
             const grid = document.getElementById('academicsGrid');
             if (!grid) return;
@@ -1657,7 +1785,7 @@
             grid.innerHTML = html;
         };
 
-        // 9. Security Backend RPC Auth & Logout
+        // 10. Security Backend RPC Auth & Logout
         window.openEditorModal = function() {
             new bootstrap.Modal(document.getElementById('editorLoginModal')).show();
         };
@@ -1713,13 +1841,13 @@
             new bootstrap.Offcanvas(document.getElementById('liveCustomizerDrawer')).show();
         };
 
-        // 10. UNIVERSAL CONTENT ROUTER FOR ALL MENUS
+        // 11. UNIVERSAL CONTENT ROUTER FOR ALL MENUS
         window.openMenuContentEditor = function(targetKey) {
             const cleanTarget = (targetKey || "").replace(/^#/, '').toLowerCase();
             window.triggerInlineEdit(cleanTarget);
         };
 
-        // 11. DUAL-MODE MODAL SWITCHER (Visual Form vs Raw HTML)
+        // 12. DUAL-MODE MODAL SWITCHER (Visual Form vs Raw HTML)
         window.switchEditorModalMode = function(mode) {
             currentModalMode = mode;
             const btnV = document.getElementById('btnModeVisual');
@@ -1740,7 +1868,7 @@
             }
         };
 
-        // 12. UNIVERSAL CLICK-TO-EDIT ENGINE (With Dual Visual & HTML Mode)
+        // 13. UNIVERSAL CLICK-TO-EDIT ENGINE
         window.triggerInlineEdit = function(targetKey) {
             activeEditTarget = targetKey;
             const container = document.getElementById('modalDynamicFieldsContainer');
@@ -1901,7 +2029,6 @@
                     <input type="email" class="form-control form-control-sm" id="inModContactMail" value="${document.getElementById('footerMail').innerText}">
                 `;
             } else {
-                // Custom Page / Section
                 const pg = (websiteConfig.SectionsData.customPages && websiteConfig.SectionsData.customPages[targetKey]) ? websiteConfig.SectionsData.customPages[targetKey] : { title: targetKey, badge: "", content: "", imageUrl: "", videoUrl: "", rawHtml: "" };
                 
                 titleEl.innerHTML = `<i class="fas fa-file-alt me-2 text-warning"></i>Edit Page: ${pg.title}`;
@@ -1933,7 +2060,6 @@
         window.applyInlineModalData = async function() {
             if (!websiteConfig.SectionsData) websiteConfig.SectionsData = {};
 
-            // Raw HTML Code Mode Save
             if (currentModalMode === 'html') {
                 const code = document.getElementById('inRawHtmlCode').value;
                 if (!websiteConfig.SectionsData.customPages) websiteConfig.SectionsData.customPages = {};
@@ -1947,7 +2073,6 @@
                 return;
             }
 
-            // Visual Form Mode Apply
             if (activeEditTarget === 'top-info') {
                 const ph = document.getElementById('inModTopPhone').value;
                 const em = document.getElementById('inModTopEmail').value;
@@ -2089,7 +2214,6 @@
                 websiteConfig.SectionsData.contact = { address: ad, phone: cp, email: cm };
 
             } else {
-                // Custom Page
                 const slug = document.getElementById('inCustomSlug')?.value || activeEditTarget;
                 const bd = document.getElementById('inCustomBadge')?.value;
                 const ti = document.getElementById('inCustomTitle')?.value;
@@ -2114,7 +2238,7 @@
             await window.saveLiveWebsiteSettings();
         };
 
-        // 13. Storage Uploader
+        // 14. Storage Uploader
         window.handleUploadImageToField = async function(inputEl, targetFieldId) {
             const file = inputEl.files[0];
             if (!file) return;
@@ -2150,7 +2274,7 @@
             }
         };
 
-        // 14. SAVE MASTER LIVE SETTINGS TO SUPABASE
+        // 🚀 15. SAVE MASTER LIVE SETTINGS TO SUPABASE
         window.saveLiveWebsiteSettings = async function() {
             const btn = document.getElementById('btnSaveLiveSettings');
             if (btn) {
@@ -2158,10 +2282,24 @@
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Saving to Cloud...';
             }
 
+            // Sync Footer Form Inputs
+            const fTiming = document.getElementById('inFooterTiming')?.value.trim();
+            const fAbout = document.getElementById('inFooterAbout')?.value.trim();
+            if (!websiteConfig.SectionsData.footerCustom) websiteConfig.SectionsData.footerCustom = {};
+            if (fTiming) {
+                websiteConfig.SectionsData.footerCustom.timing = fTiming;
+                document.getElementById('footerTimingText').innerText = fTiming;
+            }
+            if (fAbout) {
+                websiteConfig.SectionsData.footerCustom.about = fAbout;
+                document.getElementById('footerAboutDesc').innerText = fAbout;
+            }
+
             const payload = {
                 SchoolID: activeSchoolId || "169701",
                 ThemeConfig: websiteConfig.ThemeConfig,
                 NavMenu: websiteConfig.NavMenu,
+                FooterLinks: websiteConfig.FooterLinks,
                 SectionOrder: websiteConfig.SectionOrder,
                 SectionsData: websiteConfig.SectionsData,
                 UpdatedAt: new Date().toISOString()
@@ -2195,7 +2333,7 @@
             }
         };
 
-        // 15. Gallery Filter
+        // 16. Gallery Filter
         window.filterGallery = function(category) {
             document.querySelectorAll('.btn-filter-pill').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
@@ -2210,7 +2348,7 @@
             });
         };
 
-        // 16. Admission Enquiry Submission
+        // 17. Admission Enquiry Submission
         window.submitAdmissionEnquiry = async function(e) {
             e.preventDefault();
             const btn = document.getElementById('btnSubmitEnquiry');
@@ -2243,7 +2381,7 @@
             }
         };
 
-        // 17. Mobile Drawer Smooth Navigation
+        // 18. Mobile Drawer Smooth Navigation
         window.goToEnquiryFromDrawer = function() {
             const drawerEl = document.getElementById('topInfoOffcanvas');
             if (drawerEl) {
