@@ -30,7 +30,6 @@
     <style>
         * { box-sizing: border-box; }
         
-        /* 🚀 ZERO-FLICKER BODY TRANSITION */
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             color: #334155;
@@ -40,9 +39,7 @@
             opacity: 0;
             transition: opacity 0.25s ease-in;
         }
-        body.loaded {
-            opacity: 1;
-        }
+        body.loaded { opacity: 1; }
 
         h1, h2, h3, h4, .brand-font { font-family: 'Playfair Display', serif; }
 
@@ -81,9 +78,7 @@
             padding: 8px 12px !important;
             transition: 0.2s ease;
         }
-        .nav-link:hover, .nav-link.active {
-            color: var(--school-primary) !important;
-        }
+        .nav-link:hover, .nav-link.active { color: var(--school-primary) !important; }
 
         @media (max-width: 991px) {
             .navbar-collapse {
@@ -266,17 +261,17 @@
             color: #0f172a !important;
             border: 1.5px solid #0f172a;
             border-radius: 50%;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             align-items: center;
             justify-content: center;
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 800;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.25);
             transition: transform 0.2s ease;
             position: absolute;
-            z-index: 20;
+            z-index: 30;
         }
         .btn-inline-pencil:hover { transform: scale(1.2); background: #ffffff; }
 
@@ -336,10 +331,10 @@
 </head>
 <body class="loading">
 
-    <!-- 1. DESKTOP TOP UTILITY BAR (sec-top-bar) -->
-    <div class="top-info-bar d-none d-lg-block" id="sec-top-bar">
-        <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center position-relative">
-            <button class="btn-inline-pencil" style="top:2px; left:10px;" onclick="window.triggerInlineEdit('top-info')"><i class="fas fa-pencil-alt"></i></button>
+    <!-- 1. TOP UTILITY BAR (sec-top-bar) -->
+    <div class="top-info-bar d-none d-lg-block position-relative" id="sec-top-bar">
+        <button class="btn-inline-pencil" style="top:4px; left:10px;" onclick="window.triggerInlineEdit('top-info')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-4">
                 <span><i class="fas fa-phone-alt me-2 text-warning"></i><span id="topPhone"></span></span>
                 <span><i class="fas fa-envelope me-2 text-warning"></i><span id="topEmail"></span></span>
@@ -402,7 +397,7 @@
     <!-- 2. MAIN NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-main" id="sec-navbar">
         <div class="container-fluid px-lg-5 px-3 position-relative">
-            <button class="btn-inline-pencil" style="top:10px; left:4px;" onclick="window.triggerInlineEdit('navbar-brand')"><i class="fas fa-pencil-alt"></i></button>
+            <button class="btn-inline-pencil" style="top:10px; left:6px;" onclick="window.triggerInlineEdit('navbar-brand')"><i class="fas fa-pencil-alt"></i></button>
             <button class="navbar-toggler border-0 me-2 p-1 order-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
                 <i class="fas fa-bars fa-lg text-dark"></i>
             </button>
@@ -417,7 +412,6 @@
 
             <div class="collapse navbar-collapse order-2" id="navMenu">
                 <ul class="navbar-nav ms-auto align-items-start align-items-lg-center gap-lg-1 py-3 py-lg-0 w-100 justify-content-lg-end" id="dynamicNavLinks">
-                    <!-- Populated dynamically -->
                 </ul>
             </div>
         </div>
@@ -506,116 +500,51 @@
         </div>
     </section>
 
-    <!-- 7. ACADEMICS -->
+    <!-- 7. ACADEMICS (CURRICULUM WINGS) -->
     <section class="py-5 position-relative" id="academics" style="background: #f8fafc;">
+        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('academics')"><i class="fas fa-pencil-alt"></i></button>
         <div class="container py-4">
             <div class="text-center mb-5">
                 <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2">CURRICULUM ARCHITECTURE</span>
-                <h2 class="fw-bold text-dark">Structured Learning Across Academic Wings</h2>
+                <h2 class="fw-bold text-dark" id="acadHeading">Structured Learning Across Academic Wings</h2>
             </div>
             <div class="row g-4" id="academicsGrid">
-                <div class="col-md-4">
-                    <div class="premium-card">
-                        <div class="icon-circle-lg"><i class="fas fa-shapes"></i></div>
-                        <h5 class="fw-bold mb-2">Pre-Primary Wing</h5>
-                        <p class="text-muted small">Playway Montessori methodologies focused on foundational literacy and sensory growth.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="premium-card">
-                        <div class="icon-circle-lg"><i class="fas fa-book-reader"></i></div>
-                        <h5 class="fw-bold mb-2">Primary & Middle Wing</h5>
-                        <p class="text-muted small">Competency-based learning emphasizing Science, Robotics, and Languages.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="premium-card">
-                        <div class="icon-circle-lg"><i class="fas fa-graduation-cap"></i></div>
-                        <h5 class="fw-bold mb-2">Secondary & Sr. Secondary</h5>
-                        <p class="text-muted small">Rigorous exam coaching in Science, Commerce, and Arts streams.</p>
-                    </div>
-                </div>
+                <!-- Dynamically rendered cards -->
             </div>
         </div>
     </section>
 
     <!-- 8. FACILITIES -->
     <section class="py-5 position-relative" id="facilities">
+        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('facilities')"><i class="fas fa-pencil-alt"></i></button>
         <div class="container py-4">
             <div class="text-center mb-5">
                 <span class="badge bg-success-subtle text-success fw-bold px-3 py-2 rounded-pill mb-2">INFRASTRUCTURE</span>
-                <h2 class="fw-bold text-dark">World-Class Campus Facilities</h2>
+                <h2 class="fw-bold text-dark" id="facHeading">World-Class Campus Facilities</h2>
             </div>
             <div class="row g-4" id="facilitiesGrid">
-                <div class="col-md-4">
-                    <div class="premium-card">
-                        <div class="icon-circle-lg text-success" style="background: #dcfce7;"><i class="fas fa-desktop"></i></div>
-                        <h5 class="fw-bold mb-2">Interactive Smart Panels</h5>
-                        <p class="text-muted small">High-speed 4K interactive digital touch boards and visual 3D simulation content.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="premium-card">
-                        <div class="icon-circle-lg text-primary" style="background: #e0f2fe;"><i class="fas fa-flask"></i></div>
-                        <h5 class="fw-bold mb-2">Advanced STEM & AI Labs</h5>
-                        <p class="text-muted small">Modern Physics, Chemistry, Biology, Mathematics and AI computer laboratories.</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="premium-card">
-                        <div class="icon-circle-lg text-warning" style="background: #fef3c7;"><i class="fas fa-bus"></i></div>
-                        <h5 class="fw-bold mb-2">GPS-Tracked Safe Transport</h5>
-                        <p class="text-muted small">Safe bus transportation equipped with live GPS tracking and female safety attendants.</p>
-                    </div>
-                </div>
+                <!-- Dynamically rendered facilities cards -->
             </div>
         </div>
     </section>
 
-    <!-- 9. TOPPERS -->
+    <!-- 9. TOPPERS (HALL OF FAME) -->
     <section class="py-5 position-relative" id="toppers" style="background: #fdfaf6;">
+        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('toppers')"><i class="fas fa-pencil-alt"></i></button>
         <div class="container py-4">
             <div class="text-center mb-5">
                 <span class="badge bg-warning-subtle text-warning-emphasis fw-bold px-3 py-2 rounded-pill mb-2">HALL OF FAME</span>
                 <h2 class="fw-bold text-dark">Our Outstanding Board Exam Toppers</h2>
             </div>
             <div class="row g-4 justify-content-center" id="toppersGrid">
-                <div class="col-6 col-md-3">
-                    <div class="topper-card">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80" alt="Topper" class="topper-img">
-                        <span class="topper-badge">98.6%</span>
-                        <div class="p-3">
-                            <h6 class="fw-bold m-0 text-dark">Ananya Verma</h6>
-                            <small class="text-muted">Senior Secondary (Science)</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="topper-card">
-                        <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=500&q=80" alt="Topper" class="topper-img">
-                        <span class="topper-badge">97.8%</span>
-                        <div class="p-3">
-                            <h6 class="fw-bold m-0 text-dark">Rohan Malhotra</h6>
-                            <small class="text-muted">Senior Secondary (Commerce)</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3">
-                    <div class="topper-card">
-                        <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=500&q=80" alt="Topper" class="topper-img">
-                        <span class="topper-badge">99.2%</span>
-                        <div class="p-3">
-                            <h6 class="fw-bold m-0 text-dark">Pooja Kumari</h6>
-                            <small class="text-muted">Secondary Board Topper</small>
-                        </div>
-                    </div>
-                </div>
+                <!-- Dynamically rendered topper cards -->
             </div>
         </div>
     </section>
 
     <!-- 10. GALLERY -->
     <section class="py-5 position-relative" id="gallery">
+        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('gallery')"><i class="fas fa-pencil-alt"></i></button>
         <div class="container py-4">
             <div class="text-center mb-4">
                 <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2">CAMPUS CHRONICLES</span>
@@ -643,20 +572,13 @@
 
     <!-- 11. NOTICES -->
     <section class="py-5 position-relative" id="notices" style="background: #f1f5f9;">
+        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('notices')"><i class="fas fa-pencil-alt"></i></button>
         <div class="container py-4">
             <div class="row g-4">
                 <div class="col-lg-6">
                     <span class="badge bg-danger-subtle text-danger fw-bold px-3 py-2 rounded-pill mb-2">OFFICIAL CIRCULARS</span>
                     <h3 class="fw-bold text-dark mb-3">Notice Board & Announcements</h3>
                     <div class="list-group shadow-sm border-0 rounded-4 overflow-hidden" id="noticeListContainer">
-                        <a href="javascript:void(0)" class="list-group-item list-group-item-action p-3 d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="badge bg-danger me-2">NEW</span>
-                                <span class="fw-bold">Schedule for Periodic Assessment Examination</span>
-                                <div class="text-muted small mt-1">Academic Circular Release</div>
-                            </div>
-                            <i class="fas fa-file-pdf text-danger fa-lg"></i>
-                        </a>
                     </div>
                 </div>
 
@@ -682,6 +604,7 @@
 
     <!-- 12. DISCLOSURE -->
     <section class="py-5 position-relative" id="disclosure">
+        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('disclosure')"><i class="fas fa-pencil-alt"></i></button>
         <div class="container py-4">
             <div class="text-center mb-4">
                 <span class="badge bg-secondary-subtle text-secondary fw-bold px-3 py-2 rounded-pill mb-2">STATUTORY COMPLIANCE</span>
@@ -698,19 +621,7 @@
                             <th class="text-center pe-3">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td class="ps-3">1</td>
-                            <td class="fw-bold">Affiliation Letter from Educational Board</td>
-                            <td>Recognized Board of Education</td>
-                            <td class="text-center pe-3"><a href="#" class="btn btn-sm btn-outline-danger py-1 px-3 fw-bold"><i class="fas fa-file-pdf me-1"></i> View Document</a></td>
-                        </tr>
-                        <tr>
-                            <td class="ps-3">2</td>
-                            <td class="fw-bold">Building Safety & Fire Safety Certificate</td>
-                            <td>PWD / Fire Service Authority</td>
-                            <td class="text-center pe-3"><a href="#" class="btn btn-sm btn-outline-danger py-1 px-3 fw-bold"><i class="fas fa-file-pdf me-1"></i> View Document</a></td>
-                        </tr>
+                    <tbody id="disclosureTableBody">
                     </tbody>
                 </table>
             </div>
@@ -719,12 +630,13 @@
 
     <!-- 14. ADMISSION ENQUIRY FORM -->
     <section class="py-5 position-relative" id="enquiry" style="background: #f1f5f9;">
+        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('enquiry-info')"><i class="fas fa-pencil-alt"></i></button>
         <div class="container py-4">
             <div class="row align-items-center g-5">
                 <div class="col-lg-5">
                     <span class="badge bg-warning-subtle text-warning-emphasis fw-bold px-3 py-2 rounded-pill mb-2">ONLINE ADMISSIONS</span>
-                    <h2 class="fw-bold text-dark mb-3">Begin Your Child's Journey to Success</h2>
-                    <p class="text-secondary mb-4">
+                    <h2 class="fw-bold text-dark mb-3" id="enqLeadTitle">Begin Your Child's Journey to Success</h2>
+                    <p class="text-secondary mb-4" id="enqLeadText">
                         Admissions for upcoming academic session are now open. Submit the online enquiry and our counselor will assist you with fee structure, brochure, and interaction schedule.
                     </p>
                 </div>
@@ -819,6 +731,11 @@
             </div>
         </div>
     </section>
+
+    <!-- 🚀 15.1 DYNAMIC USER-CREATED CUSTOM SECTIONS/PAGES CONTAINER -->
+    <div id="customPagesSectionContainer">
+        <!-- Any custom page like 'My Vision', 'Notifications', 'Hostel' renders here -->
+    </div>
 
     <!-- 16. FOOTER -->
     <footer id="sec-footer">
@@ -927,7 +844,7 @@
             <ul class="nav nav-pills nav-fill mb-3" id="studioTabs">
                 <li class="nav-item"><button class="nav-link active small py-1" data-bs-toggle="pill" data-bs-target="#tabTheme">Colors</button></li>
                 <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabNav">Menu Builder</button></li>
-                <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabSections">Sections</button></li>
+                <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabSections">Sections & Styles</button></li>
             </ul>
 
             <div class="tab-content border-top pt-3">
@@ -958,18 +875,18 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: MENU BUILDER -->
+                <!-- TAB 2: MENU & CUSTOM PAGES BUILDER -->
                 <div class="tab-pane fade" id="tabNav">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <label class="form-label-custom m-0">Reorder & Toggle Menu Items</label>
-                        <button class="btn btn-sm btn-outline-success py-0 px-2 fw-bold" onclick="window.promptAddNewMenuItem()">+ Add Item</button>
+                        <button class="btn btn-sm btn-outline-success py-0 px-2 fw-bold" onclick="window.promptAddNewMenuItem()">+ Add Page/Menu</button>
                     </div>
                     <div class="list-group mb-3" id="studioMenuList"></div>
                 </div>
 
-                <!-- TAB 3: SECTIONS MANAGER -->
+                <!-- TAB 3: SECTIONS MANAGER (WITH TEXT COLOR PICKER) -->
                 <div class="tab-pane fade" id="tabSections">
-                    <label class="form-label-custom mb-2">Reorder & Style Sections</label>
+                    <label class="form-label-custom mb-2">Reorder, Toggle & Style Sections</label>
                     <div class="d-flex flex-column gap-2 mb-3" id="studioSectionManagerList"></div>
                 </div>
             </div>
@@ -983,7 +900,7 @@
 
     <!-- ✏️ UNIVERSAL INLINE SECTION MODAL -->
     <div class="modal fade" id="universalSectionEditModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content rounded-4 border-0 shadow-lg">
                 <div class="modal-header bg-dark text-white p-3">
                     <h6 class="modal-title fw-bold" id="editModalTitle">Edit Component</h6>
@@ -1014,31 +931,48 @@
                 footerBgColor: "#0f172a"
             },
             NavMenu: [
-                { label: "Home", link: "#home", target: "home", visible: true },
-                { label: "About", link: "#about", target: "about", visible: true },
-                { label: "Academics", link: "#academics", target: "academics", visible: true },
-                { label: "Facilities", link: "#facilities", target: "facilities", visible: true },
-                { label: "Toppers", link: "#toppers", target: "toppers", visible: true },
-                { label: "Gallery", link: "#gallery", target: "gallery", visible: true },
-                { label: "Notices", link: "#notices", target: "notices", visible: true },
-                { label: "Disclosure", link: "#disclosure", target: "disclosure", visible: true },
-                { label: "Contact", link: "#contact", target: "contact", visible: true }
+                { label: "Home", link: "#home", target: "home", visible: true, isCustom: false },
+                { label: "About", link: "#about", target: "about", visible: true, isCustom: false },
+                { label: "Academics", link: "#academics", target: "academics", visible: true, isCustom: false },
+                { label: "Facilities", link: "#facilities", target: "facilities", visible: true, isCustom: false },
+                { label: "Toppers", link: "#toppers", target: "toppers", visible: true, isCustom: false },
+                { label: "Gallery", link: "#gallery", target: "gallery", visible: true, isCustom: false },
+                { label: "Notices", link: "#notices", target: "notices", visible: true, isCustom: false },
+                { label: "Disclosure", link: "#disclosure", target: "disclosure", visible: true, isCustom: false },
+                { label: "Contact", link: "#contact", target: "contact", visible: true, isCustom: false }
             ],
             SectionOrder: [
-                { id: "sec-ticker", label: "Announcement Ticker", visible: true, bg: "", bgImg: "" },
-                { id: "home", label: "Hero Banner Section", visible: true, bg: "", bgImg: "" },
-                { id: "sec-stats", label: "Stats & Counters", visible: true, bg: "", bgImg: "" },
-                { id: "about", label: "Principal's Desk & About", visible: true, bg: "", bgImg: "" },
-                { id: "academics", label: "Curriculum & Wings", visible: true, bg: "", bgImg: "" },
-                { id: "facilities", label: "Campus Facilities", visible: true, bg: "", bgImg: "" },
-                { id: "toppers", label: "Toppers Hall of Fame", visible: true, bg: "", bgImg: "" },
-                { id: "gallery", label: "Photo & Video Gallery", visible: true, bg: "", bgImg: "" },
-                { id: "notices", label: "Notice Board & TC Tool", visible: true, bg: "", bgImg: "" },
-                { id: "disclosure", label: "Mandatory Disclosure", visible: true, bg: "", bgImg: "" },
-                { id: "enquiry", label: "Admission Enquiry Form", visible: true, bg: "", bgImg: "" },
-                { id: "contact", label: "Contact & Location Map", visible: true, bg: "", bgImg: "" }
+                { id: "sec-ticker", label: "Announcement Ticker", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "home", label: "Hero Banner Section", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "sec-stats", label: "Stats & Counters", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "about", label: "Principal Desk & About", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "academics", label: "Curriculum & Wings", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "facilities", label: "Campus Facilities", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "toppers", label: "Toppers Hall of Fame", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "gallery", label: "Photo & Video Gallery", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "notices", label: "Notice Board & TC Tool", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "disclosure", label: "Mandatory Disclosure", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "enquiry", label: "Admission Enquiry Form", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "contact", label: "Contact & Location Map", visible: true, bg: "", bgImg: "", textColor: "" }
             ],
-            SectionsData: {}
+            SectionsData: {
+                academics: [
+                    { icon: "fa-shapes", title: "Pre-Primary Wing", desc: "Playway Montessori methodologies focused on foundational literacy and sensory growth." },
+                    { icon: "fa-book-reader", title: "Primary & Middle Wing", desc: "Competency-based learning emphasizing Science, Robotics, and Languages." },
+                    { icon: "fa-graduation-cap", title: "Secondary & Sr. Secondary", desc: "Rigorous exam coaching in Science, Commerce, and Arts streams." }
+                ],
+                facilities: [
+                    { icon: "fa-desktop", colorClass: "text-success", bgClass: "#dcfce7", title: "Interactive Smart Panels", desc: "High-speed 4K interactive digital touch boards and visual 3D simulation content." },
+                    { icon: "fa-flask", colorClass: "text-primary", bgClass: "#e0f2fe", title: "Advanced STEM & AI Labs", desc: "Modern Physics, Chemistry, Biology, Mathematics and AI computer laboratories." },
+                    { icon: "fa-bus", colorClass: "text-warning", bgClass: "#fef3c7", title: "GPS-Tracked Safe Transport", desc: "Safe bus transportation equipped with live GPS tracking and female safety attendants." }
+                ],
+                toppers: [
+                    { name: "Ananya Verma", score: "98.6%", stream: "Senior Secondary (Science)", photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80" },
+                    { name: "Rohan Malhotra", score: "97.8%", stream: "Senior Secondary (Commerce)", photo: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=500&q=80" },
+                    { name: "Pooja Kumari", score: "99.2%", stream: "Secondary Board Topper", photo: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=500&q=80" }
+                ],
+                customPages: {}
+            }
         };
 
         // 1. Initial Dynamic Loader
@@ -1074,7 +1008,6 @@
                     const sMail = schoolRecord.Email || "info@schoolalarm.online";
                     const sAddr = schoolRecord.Address ? `${schoolRecord.Address}, ${schoolRecord.City || ''}` : "Main Campus Road";
 
-                    // Bind Core Details dynamically
                     document.getElementById('siteTitle').innerText = `${sName} | Official Website`;
                     document.getElementById('schoolNameHeader').innerText = sName;
                     document.getElementById('footerSchoolName').innerText = sName;
@@ -1103,9 +1036,8 @@
                     await window.loadCustomWebsiteConfig(activeSchoolId);
                 }
             } catch(e) {
-                console.warn("Dynamic branding load skipped:", e);
+                console.warn("Dynamic branding fallback applied:", e);
             } finally {
-                // 🚀 ZERO-FLICKER REVEAL: Only show page once real school data is attached
                 document.body.classList.remove('loading');
                 document.body.classList.add('loaded');
             }
@@ -1114,7 +1046,6 @@
                 window.enableEditorModeUI();
             }
 
-            // Auto-hide floating dock when drawer opens
             const studioDrawerEl = document.getElementById('liveCustomizerDrawer');
             if (studioDrawerEl) {
                 studioDrawerEl.addEventListener('show.bs.offcanvas', () => {
@@ -1130,7 +1061,7 @@
             }
         });
 
-        // 2. Class Replicator from School_Configs
+        // 2. Class Replicator
         window.loadSchoolClassesFromConfig = async function(schId) {
             const classSelect = document.getElementById('enqClass');
             if (!classSelect) return;
@@ -1159,7 +1090,7 @@
             }
         };
 
-        // 3. Load Custom Website Config from Supabase (Dynamic Cell Store)
+        // 3. Load Custom Website Config
         window.loadCustomWebsiteConfig = async function(schId) {
             try {
                 const { data: webData } = await db
@@ -1186,15 +1117,13 @@
 
                     if (webData.SectionOrder && Array.isArray(webData.SectionOrder)) {
                         websiteConfig.SectionOrder = webData.SectionOrder;
-                        window.applySectionOrdersAndStyles();
                     }
+                    window.applySectionOrdersAndStyles();
                     window.renderSectionManagerList();
 
-                    // Load Dynamic Cells
                     if (webData.SectionsData && typeof webData.SectionsData === 'object') {
-                        websiteConfig.SectionsData = webData.SectionsData;
+                        websiteConfig.SectionsData = Object.assign({}, websiteConfig.SectionsData, webData.SectionsData);
 
-                        // Bind Hero Cell
                         if (webData.SectionsData.hero) {
                             const h = webData.SectionsData.hero;
                             if (h.headline) document.getElementById('heroHeadline').innerText = h.headline;
@@ -1202,7 +1131,6 @@
                             if (h.badge) document.getElementById('heroBadge').innerHTML = `<i class="fas fa-star text-warning"></i> ${h.badge}`;
                         }
 
-                        // Bind About Cell
                         if (webData.SectionsData.about) {
                             const a = webData.SectionsData.about;
                             if (a.principalName) document.getElementById('principalName').innerText = a.principalName;
@@ -1211,7 +1139,6 @@
                             if (a.principalPhoto) document.getElementById('principalPhoto').src = a.principalPhoto;
                         }
 
-                        // Bind Stats Cell
                         if (webData.SectionsData.stats) {
                             const s = webData.SectionsData.stats;
                             if (s.stat1_val) document.getElementById('statYears').innerText = s.stat1_val;
@@ -1224,30 +1151,45 @@
                             if (s.stat4_lbl) document.getElementById('lblStatStudents').innerText = s.stat4_lbl;
                         }
 
-                        // Bind Ticker Cell
                         if (webData.SectionsData.ticker && webData.SectionsData.ticker.text) {
                             document.getElementById('newsTickerText').innerText = webData.SectionsData.ticker.text;
                         }
 
-                        // Bind Top Info Cell
                         if (webData.SectionsData.top_info && webData.SectionsData.top_info.affiliation) {
                             document.getElementById('topAffiliation').innerText = webData.SectionsData.top_info.affiliation;
                             document.getElementById('offcanvasAffiliation').innerText = webData.SectionsData.top_info.affiliation;
                         }
 
-                        // Bind Brand Tagline Cell
                         if (webData.SectionsData.brand && webData.SectionsData.brand.tagline) {
                             document.getElementById('schoolTagline').innerText = webData.SectionsData.brand.tagline;
                         }
+
+                        if (webData.SectionsData.enquiryInfo) {
+                            const eq = webData.SectionsData.enquiryInfo;
+                            if (eq.title) document.getElementById('enqLeadTitle').innerText = eq.title;
+                            if (eq.text) document.getElementById('enqLeadText').innerText = eq.text;
+                        }
                     }
+
+                    // Render dynamic lists
+                    window.renderAcademicsGrid();
+                    window.renderFacilitiesGrid();
+                    window.renderToppersGrid();
+                    window.renderCustomPagesSections();
                 } else {
                     window.renderNavbarMenu();
                     window.renderSectionManagerList();
+                    window.renderAcademicsGrid();
+                    window.renderFacilitiesGrid();
+                    window.renderToppersGrid();
                 }
             } catch(err) {
                 console.warn("Website config load skipped:", err);
                 window.renderNavbarMenu();
                 window.renderSectionManagerList();
+                window.renderAcademicsGrid();
+                window.renderFacilitiesGrid();
+                window.renderToppersGrid();
             }
         };
 
@@ -1270,15 +1212,17 @@
 
                 if (studioList) {
                     studioHtml += `
-                        <div class="list-group-item d-flex justify-content-between align-items-center p-2">
+                        <div class="list-group-item d-flex justify-content-between align-items-center p-2 mb-1 border rounded-2">
                             <div class="d-flex align-items-center gap-2">
                                 <input type="checkbox" class="form-check-input mt-0" ${isVis ? 'checked' : ''} onchange="window.toggleMenuItemVisibility(${idx}, this.checked)" title="Toggle Visibility">
                                 <span class="small fw-bold ${isVis ? '' : 'text-decoration-line-through text-muted'}">${item.label}</span>
+                                ${item.isCustom ? `<span class="badge bg-primary-subtle text-primary" style="font-size:9px;">Custom</span>` : ''}
                             </div>
                             <div class="d-flex gap-1">
                                 <button class="btn btn-sm btn-light py-0 px-1 border" onclick="window.moveMenuItem(${idx}, -1)" title="Move Up">&uarr;</button>
                                 <button class="btn btn-sm btn-light py-0 px-1 border" onclick="window.moveMenuItem(${idx}, 1)" title="Move Down">&darr;</button>
-                                <button class="btn btn-sm btn-light py-0 px-1 border" onclick="window.editMenuItem(${idx})" title="Edit">&#9998;</button>
+                                ${item.isCustom ? `<button class="btn btn-sm btn-outline-primary py-0 px-1" onclick="window.openCustomPageContentEditor('${item.target}')" title="Edit Page Content">&#128221; Content</button>` : ''}
+                                <button class="btn btn-sm btn-light py-0 px-1 border" onclick="window.editMenuItem(${idx})" title="Edit Label">&#9998;</button>
                                 <button class="btn btn-sm btn-outline-danger py-0 px-1" onclick="window.removeMenuItem(${idx})" title="Delete">&times;</button>
                             </div>
                         </div>
@@ -1315,25 +1259,114 @@
         };
 
         window.promptAddNewMenuItem = function() {
-            const label = prompt("Enter Menu Item / Page Name (e.g. Hostel, Rules, Alumni):");
+            const label = prompt("Enter Menu Item / Page Name (e.g. My Vision, Notifications, Hostel):");
             if (!label || !label.trim()) return;
-            const link = prompt("Enter Target Anchor/URL (e.g. #hostel):", "#" + label.toLowerCase().replace(/[^a-z0-9]/g, ''));
+
+            const cleanSlug = label.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const link = "#" + cleanSlug;
+
             websiteConfig.NavMenu.push({
                 label: label.trim(),
-                link: (link || "#").trim(),
-                target: label.toLowerCase().trim(),
-                visible: true
+                link: link,
+                target: cleanSlug,
+                visible: true,
+                isCustom: true
             });
+
+            // Initialize custom page slot in SectionsData
+            if (!websiteConfig.SectionsData.customPages) websiteConfig.SectionsData.customPages = {};
+            websiteConfig.SectionsData.customPages[cleanSlug] = {
+                title: label.trim(),
+                badge: "INSTITUTIONAL HIGHLIGHT",
+                content: `Welcome to the ${label.trim()} section. You can customize this content with text, images, videos or raw HTML.`,
+                imageUrl: "",
+                videoUrl: ""
+            };
+
             window.renderNavbarMenu();
+            window.renderCustomPagesSections();
+            alert(`🎉 Custom Menu "${label.trim()}" added! A dynamic section has been generated on the page. Use the [📝 Content] button to edit.`);
         };
 
         window.removeMenuItem = function(idx) {
             if (websiteConfig.NavMenu.length <= 2) { alert("At least 2 items must remain."); return; }
-            websiteConfig.NavMenu.splice(idx, 1);
+            const removed = websiteConfig.NavMenu.splice(idx, 1)[0];
+            if (removed && removed.target && websiteConfig.SectionsData.customPages) {
+                delete websiteConfig.SectionsData.customPages[removed.target];
+            }
             window.renderNavbarMenu();
+            window.renderCustomPagesSections();
         };
 
-        // 5. Section Reorder & Background Styles Engine
+        // 🚀 5. RENDER DYNAMIC CUSTOM PAGES ON HOMEPAGE
+        window.renderCustomPagesSections = function() {
+            const container = document.getElementById('customPagesSectionContainer');
+            if (!container) return;
+
+            const pages = websiteConfig.SectionsData.customPages || {};
+            let html = "";
+
+            for (const slug in pages) {
+                const pg = pages[slug];
+                html += `
+                    <section class="py-5 position-relative border-top" id="${slug}" style="background:#f8fafc;">
+                        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.openCustomPageContentEditor('${slug}')"><i class="fas fa-pencil-alt"></i></button>
+                        <div class="container py-4">
+                            <div class="text-center mb-4">
+                                <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2">${pg.badge || 'CAMPUS WING'}</span>
+                                <h2 class="fw-bold text-dark">${pg.title}</h2>
+                            </div>
+                            <div class="row justify-content-center align-items-center g-4">
+                                ${pg.imageUrl ? `<div class="col-lg-6 text-center"><img src="${pg.imageUrl}" alt="${pg.title}" class="rounded-4 shadow-lg w-100" style="max-height:400px; object-fit:cover;"></div>` : ''}
+                                <div class="${pg.imageUrl ? 'col-lg-6' : 'col-lg-10 text-center'}">
+                                    <div class="lead text-secondary" style="line-height:1.8; font-size:16px;">${pg.content}</div>
+                                    ${pg.videoUrl ? `<div class="mt-4 ratio ratio-16x9 rounded-4 overflow-hidden shadow-sm"><iframe src="${pg.videoUrl}" allowfullscreen></iframe></div>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                `;
+            }
+
+            container.innerHTML = html;
+            if (sessionStorage.getItem("website_editor_auth") === "true") {
+                container.querySelectorAll('.btn-inline-pencil').forEach(p => p.style.display = 'inline-flex');
+            }
+        };
+
+        window.openCustomPageContentEditor = function(slug) {
+            const pg = (websiteConfig.SectionsData.customPages && websiteConfig.SectionsData.customPages[slug]) ? websiteConfig.SectionsData.customPages[slug] : { title: slug, badge: "", content: "", imageUrl: "", videoUrl: "" };
+            
+            const titleEl = document.getElementById('editModalTitle');
+            titleEl.innerHTML = `<i class="fas fa-file-alt me-2 text-warning"></i>Edit Page: ${pg.title}`;
+
+            const container = document.getElementById('modalDynamicFieldsContainer');
+            container.innerHTML = `
+                <input type="hidden" id="inCustomSlug" value="${slug}">
+                <label class="form-label-custom">Badge Tag</label>
+                <input type="text" class="form-control form-control-sm mb-2" id="inCustomBadge" value="${pg.badge || ''}">
+
+                <label class="form-label-custom">Heading Title</label>
+                <input type="text" class="form-control form-control-sm mb-2" id="inCustomTitle" value="${pg.title || ''}">
+
+                <label class="form-label-custom">Main Content (Text or HTML)</label>
+                <textarea class="form-control form-control-sm mb-2" id="inCustomContent" rows="5">${pg.content || ''}</textarea>
+
+                <label class="form-label-custom">Image URL or Upload</label>
+                <div class="input-group input-group-sm mb-2">
+                    <input type="text" class="form-control" id="inCustomImage" value="${pg.imageUrl || ''}">
+                    <label class="btn btn-outline-secondary"><i class="fas fa-upload"></i><input type="file" hidden accept="image/*" onchange="window.handleUploadImageToField(this, 'inCustomImage')"></label>
+                </div>
+
+                <label class="form-label-custom">Embed Video URL (YouTube embed link)</label>
+                <input type="text" class="form-control form-control-sm" id="inCustomVideo" value="${pg.videoUrl || ''}" placeholder="https://www.youtube.com/embed/...">
+            `;
+
+            activeEditTarget = "custom_page_content";
+            new bootstrap.Modal(document.getElementById('universalSectionEditModal')).show();
+        };
+
+        // 6. Section Reorder, BG Styles & TEXT COLOR Engine (Screenshot 6 Fix)
         window.renderSectionManagerList = function() {
             const listEl = document.getElementById('studioSectionManagerList');
             if (!listEl) return;
@@ -1342,7 +1375,7 @@
             websiteConfig.SectionOrder.forEach((sec, idx) => {
                 const isVis = (sec.visible !== false);
                 html += `
-                    <div class="card p-2 shadow-sm border mb-1">
+                    <div class="card p-2 shadow-sm border mb-2">
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <div class="form-check form-switch mb-0">
                                 <input class="form-check-input" type="checkbox" ${isVis ? 'checked' : ''} onchange="window.toggleSectionVisibility(${idx}, this.checked)">
@@ -1353,9 +1386,15 @@
                                 <button class="btn btn-sm btn-light py-0 px-2 border" onclick="window.moveSection(${idx}, 1)">&darr;</button>
                             </div>
                         </div>
-                        <div class="d-flex align-items-center gap-2 mt-1">
-                            <span class="small text-muted" style="font-size:10px;">BG Color:</span>
-                            <input type="color" class="form-control form-control-color p-0" style="width:24px; height:20px;" value="${sec.bg || '#ffffff'}" onchange="window.changeSectionBgColor(${idx}, this.value)">
+                        <div class="d-flex align-items-center gap-2 mt-1 flex-wrap">
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="small text-muted" style="font-size:10px;">BG:</span>
+                                <input type="color" class="form-control form-control-color p-0" style="width:24px; height:20px;" value="${sec.bg || '#ffffff'}" onchange="window.changeSectionBgColor(${idx}, this.value)">
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="small text-muted" style="font-size:10px;">Text:</span>
+                                <input type="color" class="form-control form-control-color p-0" style="width:24px; height:20px;" value="${sec.textColor || '#334155'}" onchange="window.changeSectionTextColor(${idx}, this.value)" title="Change Section Text Color">
+                            </div>
                             <button class="btn btn-sm btn-outline-secondary py-0 px-1 small" style="font-size:10px;" onclick="window.promptSectionBgImage(${idx})">BG Image</button>
                         </div>
                     </div>
@@ -1387,15 +1426,27 @@
             if (el) el.style.backgroundColor = color;
         };
 
+        window.changeSectionTextColor = function(idx, color) {
+            websiteConfig.SectionOrder[idx].textColor = color;
+            const el = document.getElementById(websiteConfig.SectionOrder[idx].id);
+            if (el) {
+                el.style.color = color;
+                el.querySelectorAll('h1, h2, h3, h4, h5, p, span, small').forEach(node => {
+                    node.style.color = color;
+                });
+            }
+        };
+
         window.promptSectionBgImage = function(idx) {
             const currentImg = websiteConfig.SectionOrder[idx].bgImg || "";
-            const url = prompt("Enter Background Image URL:", currentImg);
+            const url = prompt("Enter Background Image URL for Section:", currentImg);
             if (url !== null) {
                 websiteConfig.SectionOrder[idx].bgImg = url.trim();
                 const el = document.getElementById(websiteConfig.SectionOrder[idx].id);
                 if (el) {
                     el.style.backgroundImage = url ? `url('${url}')` : '';
                     el.style.backgroundSize = 'cover';
+                    el.style.backgroundPosition = 'center';
                 }
             }
         };
@@ -1406,9 +1457,14 @@
                 if (el) {
                     if (sec.visible === false) el.style.display = 'none';
                     if (sec.bg) el.style.backgroundColor = sec.bg;
+                    if (sec.textColor) {
+                        el.style.color = sec.textColor;
+                        el.querySelectorAll('h1, h2, h3, h4, h5, p, span, small').forEach(node => node.style.color = sec.textColor);
+                    }
                     if (sec.bgImg) {
                         el.style.backgroundImage = `url('${sec.bgImg}')`;
                         el.style.backgroundSize = 'cover';
+                        el.style.backgroundPosition = 'center';
                     }
                     el.parentNode.appendChild(el);
                 }
@@ -1417,7 +1473,7 @@
             if (f) f.parentNode.appendChild(f);
         };
 
-        // 6. Live Theme Colors
+        // 7. Live Theme Colors
         window.applyLiveThemeColors = function(primary, navBg, navText, footerBg) {
             if (primary) {
                 websiteConfig.ThemeConfig.primaryColor = primary;
@@ -1449,7 +1505,68 @@
             }
         };
 
-        // 7. Backend RPC Authentication & Logout
+        // 8. Render Grid Lists (Academics, Facilities, Toppers)
+        window.renderAcademicsGrid = function() {
+            const grid = document.getElementById('academicsGrid');
+            if (!grid) return;
+            const list = websiteConfig.SectionsData.academics || [];
+            let html = "";
+            list.forEach(c => {
+                html += `
+                    <div class="col-md-4">
+                        <div class="premium-card">
+                            <div class="icon-circle-lg"><i class="fas ${c.icon || 'fa-graduation-cap'}"></i></div>
+                            <h5 class="fw-bold mb-2">${c.title}</h5>
+                            <p class="text-muted small">${c.desc}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        };
+
+        window.renderFacilitiesGrid = function() {
+            const grid = document.getElementById('facilitiesGrid');
+            if (!grid) return;
+            const list = websiteConfig.SectionsData.facilities || [];
+            let html = "";
+            list.forEach(f => {
+                html += `
+                    <div class="col-md-4">
+                        <div class="premium-card">
+                            <div class="icon-circle-lg" style="color:var(--school-primary);"><i class="fas ${f.icon || 'fa-desktop'}"></i></div>
+                            <h5 class="fw-bold mb-2">${f.title}</h5>
+                            <p class="text-muted small">${f.desc}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        };
+
+        window.renderToppersGrid = function() {
+            const grid = document.getElementById('toppersGrid');
+            if (!grid) return;
+            const list = websiteConfig.SectionsData.toppers || [];
+            let html = "";
+            list.forEach(t => {
+                html += `
+                    <div class="col-6 col-md-3">
+                        <div class="topper-card">
+                            <img src="${t.photo || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80'}" alt="Topper" class="topper-img">
+                            <span class="topper-badge">${t.score}</span>
+                            <div class="p-3">
+                                <h6 class="fw-bold m-0 text-dark">${t.name}</h6>
+                                <small class="text-muted">${t.stream}</small>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        };
+
+        // 9. Security Backend RPC Auth & Logout
         window.openEditorModal = function() {
             new bootstrap.Modal(document.getElementById('editorLoginModal')).show();
         };
@@ -1461,7 +1578,7 @@
             const btn = document.getElementById('btnDoEditorLogin');
 
             btn.disabled = true;
-            btn.innerHTML = 'Verifying Credentials...';
+            btn.innerHTML = 'Verifying...';
 
             try {
                 const { data: authResult, error: rpcErr } = await db.rpc('verify_website_editor_login', {
@@ -1505,7 +1622,7 @@
             new bootstrap.Offcanvas(document.getElementById('liveCustomizerDrawer')).show();
         };
 
-        // 8. ✏️ UNIVERSAL CLICK-TO-EDIT ENGINE (With Dedicated Forms for Every Component)
+        // 🚀 10. ✏️ UNIVERSAL INLINE SECTION EDITORS (FOR ALL SECTIONS)
         let activeEditTarget = "";
         window.triggerInlineEdit = function(targetKey) {
             activeEditTarget = targetKey;
@@ -1513,7 +1630,7 @@
             const titleEl = document.getElementById('editModalTitle');
 
             if (targetKey === 'top-info') {
-                titleEl.innerHTML = `<i class="fas fa-info-circle me-2 text-warning"></i>Edit Top Header Bar`;
+                titleEl.innerHTML = `<i class="fas fa-info-circle me-2 text-warning"></i>Edit Top Utility Bar`;
                 container.innerHTML = `
                     <label class="form-label-custom">Helpline Phone Number</label>
                     <input type="text" class="form-control form-control-sm mb-2" id="inModTopPhone" value="${document.getElementById('topPhone').innerText}">
@@ -1529,7 +1646,7 @@
                     <input type="text" class="form-control form-control-sm mb-2" id="inModSchoolName" value="${document.getElementById('schoolNameHeader').innerText}">
                     <label class="form-label-custom">Tagline / Motto</label>
                     <input type="text" class="form-control form-control-sm mb-2" id="inModSchoolTagline" value="${document.getElementById('schoolTagline').innerText}">
-                    <label class="form-label-custom">School Logo URL / Link</label>
+                    <label class="form-label-custom">School Logo URL / Upload</label>
                     <div class="input-group input-group-sm">
                         <input type="text" class="form-control" id="inModSchoolLogo" value="${document.getElementById('schoolLogo').src}">
                         <label class="btn btn-outline-secondary"><i class="fas fa-upload"></i><input type="file" hidden accept="image/*" onchange="window.handleUploadImageToField(this, 'inModSchoolLogo')"></label>
@@ -1580,6 +1697,76 @@
                     <label class="form-label-custom">Announcement Text</label>
                     <textarea class="form-control form-control-sm" id="inModTicker" rows="3">${document.getElementById('newsTickerText').innerText.trim()}</textarea>
                 `;
+            } else if (targetKey === 'academics') {
+                titleEl.innerHTML = `<i class="fas fa-graduation-cap me-2 text-warning"></i>Edit Academic Wings Cards`;
+                const list = websiteConfig.SectionsData.academics || [];
+                let cardsHtml = '<div class="d-flex flex-column gap-3">';
+                list.forEach((c, idx) => {
+                    cardsHtml += `
+                        <div class="p-3 border rounded-3 bg-light">
+                            <h6 class="fw-bold mb-2">Wing #${idx + 1}</h6>
+                            <label class="form-label-custom">Title</label>
+                            <input type="text" class="form-control form-control-sm mb-2" id="inAcadTitle_${idx}" value="${c.title}">
+                            <label class="form-label-custom">FontAwesome Icon</label>
+                            <input type="text" class="form-control form-control-sm mb-2" id="inAcadIcon_${idx}" value="${c.icon}">
+                            <label class="form-label-custom">Description</label>
+                            <textarea class="form-control form-control-sm" id="inAcadDesc_${idx}" rows="2">${c.desc}</textarea>
+                        </div>
+                    `;
+                });
+                cardsHtml += '</div>';
+                container.innerHTML = cardsHtml;
+            } else if (targetKey === 'facilities') {
+                titleEl.innerHTML = `<i class="fas fa-desktop me-2 text-warning"></i>Edit Campus Facilities Cards`;
+                const list = websiteConfig.SectionsData.facilities || [];
+                let cardsHtml = '<div class="d-flex flex-column gap-3">';
+                list.forEach((f, idx) => {
+                    cardsHtml += `
+                        <div class="p-3 border rounded-3 bg-light">
+                            <h6 class="fw-bold mb-2">Facility #${idx + 1}</h6>
+                            <label class="form-label-custom">Facility Title</label>
+                            <input type="text" class="form-control form-control-sm mb-2" id="inFacTitle_${idx}" value="${f.title}">
+                            <label class="form-label-custom">FontAwesome Icon</label>
+                            <input type="text" class="form-control form-control-sm mb-2" id="inFacIcon_${idx}" value="${f.icon}">
+                            <label class="form-label-custom">Description</label>
+                            <textarea class="form-control form-control-sm" id="inFacDesc_${idx}" rows="2">${f.desc}</textarea>
+                        </div>
+                    `;
+                });
+                cardsHtml += '</div>';
+                container.innerHTML = cardsHtml;
+            } else if (targetKey === 'toppers') {
+                titleEl.innerHTML = `<i class="fas fa-award me-2 text-warning"></i>Edit Toppers Cards`;
+                const list = websiteConfig.SectionsData.toppers || [];
+                let cardsHtml = '<div class="d-flex flex-column gap-3">';
+                list.forEach((t, idx) => {
+                    cardsHtml += `
+                        <div class="p-3 border rounded-3 bg-light">
+                            <h6 class="fw-bold mb-2">Topper #${idx + 1}</h6>
+                            <div class="row g-2">
+                                <div class="col-6"><label class="form-label-custom">Student Name</label><input type="text" class="form-control form-control-sm" id="inTopName_${idx}" value="${t.name}"></div>
+                                <div class="col-6"><label class="form-label-custom">Score / %</label><input type="text" class="form-control form-control-sm" id="inTopScore_${idx}" value="${t.score}"></div>
+                                <div class="col-12"><label class="form-label-custom">Class & Stream</label><input type="text" class="form-control form-control-sm" id="inTopStream_${idx}" value="${t.stream}"></div>
+                                <div class="col-12"><label class="form-label-custom">Photo URL / Upload</label>
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control" id="inTopPhoto_${idx}" value="${t.photo}">
+                                        <label class="btn btn-outline-secondary"><i class="fas fa-upload"></i><input type="file" hidden accept="image/*" onchange="window.handleUploadImageToField(this, 'inTopPhoto_${idx}')"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                cardsHtml += '</div>';
+                container.innerHTML = cardsHtml;
+            } else if (targetKey === 'enquiry-info') {
+                titleEl.innerHTML = `<i class="fas fa-envelope-open-text me-2 text-warning"></i>Edit Admission Help Text`;
+                container.innerHTML = `
+                    <label class="form-label-custom">Enquiry Heading</label>
+                    <input type="text" class="form-control form-control-sm mb-2" id="inEnqTitle" value="${document.getElementById('enqLeadTitle').innerText.trim()}">
+                    <label class="form-label-custom">Enquiry Lead Description</label>
+                    <textarea class="form-control form-control-sm" id="inEnqText" rows="3">${document.getElementById('enqLeadText').innerText.trim()}</textarea>
+                `;
             } else if (targetKey === 'contact') {
                 titleEl.innerHTML = `<i class="fas fa-map-marker-alt me-2 text-warning"></i>Edit Contact Information`;
                 container.innerHTML = `
@@ -1622,6 +1809,10 @@
                 if (lg) document.getElementById('schoolLogo').src = lg;
 
                 websiteConfig.SectionsData.brand = { name: sn, tagline: st, logo: lg };
+
+                if (lg && activeSchoolId) {
+                    await db.from('Schools').update({ SchoolLogo: lg }).eq('SchoolID', activeSchoolId);
+                }
 
             } else if (activeEditTarget === 'hero') {
                 const b = document.getElementById('inModBadge').value;
@@ -1678,6 +1869,51 @@
                 document.getElementById('newsTickerText').innerText = tk;
                 websiteConfig.SectionsData.ticker = { text: tk };
 
+            } else if (activeEditTarget === 'academics') {
+                const list = websiteConfig.SectionsData.academics || [];
+                list.forEach((c, idx) => {
+                    const t = document.getElementById(`inAcadTitle_${idx}`)?.value;
+                    const ic = document.getElementById(`inAcadIcon_${idx}`)?.value;
+                    const d = document.getElementById(`inAcadDesc_${idx}`)?.value;
+                    if (t) c.title = t;
+                    if (ic) c.icon = ic;
+                    if (d) c.desc = d;
+                });
+                window.renderAcademicsGrid();
+
+            } else if (activeEditTarget === 'facilities') {
+                const list = websiteConfig.SectionsData.facilities || [];
+                list.forEach((f, idx) => {
+                    const t = document.getElementById(`inFacTitle_${idx}`)?.value;
+                    const ic = document.getElementById(`inFacIcon_${idx}`)?.value;
+                    const d = document.getElementById(`inFacDesc_${idx}`)?.value;
+                    if (t) f.title = t;
+                    if (ic) f.icon = ic;
+                    if (d) f.desc = d;
+                });
+                window.renderFacilitiesGrid();
+
+            } else if (activeEditTarget === 'toppers') {
+                const list = websiteConfig.SectionsData.toppers || [];
+                list.forEach((t, idx) => {
+                    const nm = document.getElementById(`inTopName_${idx}`)?.value;
+                    const sc = document.getElementById(`inTopScore_${idx}`)?.value;
+                    const st = document.getElementById(`inTopStream_${idx}`)?.value;
+                    const ph = document.getElementById(`inTopPhoto_${idx}`)?.value;
+                    if (nm) t.name = nm;
+                    if (sc) t.score = sc;
+                    if (st) t.stream = st;
+                    if (ph) t.photo = ph;
+                });
+                window.renderToppersGrid();
+
+            } else if (activeEditTarget === 'enquiry-info') {
+                const t = document.getElementById('inEnqTitle').value;
+                const tx = document.getElementById('inEnqText').value;
+                if (t) document.getElementById('enqLeadTitle').innerText = t;
+                if (tx) document.getElementById('enqLeadText').innerText = tx;
+                websiteConfig.SectionsData.enquiryInfo = { title: t, text: tx };
+
             } else if (activeEditTarget === 'contact') {
                 const ad = document.getElementById('inModAddr').value;
                 const cp = document.getElementById('inModContactPhone').value;
@@ -1688,50 +1924,68 @@
                 document.getElementById('footerMail').innerText = cm;
 
                 websiteConfig.SectionsData.contact = { address: ad, phone: cp, email: cm };
+
+            } else if (activeEditTarget === 'custom_page_content') {
+                const slug = document.getElementById('inCustomSlug').value;
+                const bd = document.getElementById('inCustomBadge').value;
+                const ti = document.getElementById('inCustomTitle').value;
+                const co = document.getElementById('inCustomContent').value;
+                const im = document.getElementById('inCustomImage').value;
+                const vi = document.getElementById('inCustomVideo').value;
+
+                if (!websiteConfig.SectionsData.customPages) websiteConfig.SectionsData.customPages = {};
+                websiteConfig.SectionsData.customPages[slug] = {
+                    title: ti,
+                    badge: bd,
+                    content: co,
+                    imageUrl: im,
+                    videoUrl: vi
+                };
+
+                window.renderCustomPagesSections();
             }
 
             bootstrap.Modal.getInstance(document.getElementById('universalSectionEditModal')).hide();
             await window.saveLiveWebsiteSettings();
         };
 
-        // 9. Upload Media to R2 / Supabase Storage
+        // 11. Storage Uploader
         window.handleUploadImageToField = async function(inputEl, targetFieldId) {
             const file = inputEl.files[0];
             if (!file) return;
 
             const originalBtn = inputEl.parentNode;
-            originalBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            originalBtn.innerHTML = '<i class="fas fa-spinner fa-spin text-warning"></i> Uploading...';
 
             try {
-                const fd = new FormData();
-                fd.append('file', file);
-                fd.append('schoolId', activeSchoolId || '169701');
-                fd.append('folder', 'website');
+                const ext = file.name.split('.').pop();
+                const cleanFileName = `media_${Date.now()}.${ext}`;
+                const filePath = `${activeSchoolId || '169701'}/website/${cleanFileName}`;
 
-                const res = await fetch('/api/upload', { method: 'POST', body: fd });
-                const json = await res.json();
+                const { error: upErr } = await db.storage
+                    .from('School_Data')
+                    .upload(filePath, file, { cacheControl: '3600', upsert: true });
 
-                if (json && json.url) {
-                    document.getElementById(targetFieldId).value = json.url;
-                    alert("✅ Image uploaded to Cloudflare R2 Storage!");
-                } else {
-                    const ext = file.name.split('.').pop();
-                    const path = `${activeSchoolId}/website/${Date.now()}.${ext}`;
-                    const { error } = await db.storage.from('School_Data').upload(path, file, { upsert: true });
-                    if (error) throw error;
-                    const { data: pub } = db.storage.from('School_Data').getPublicUrl(path);
-                    document.getElementById(targetFieldId).value = pub.publicUrl;
-                    alert("✅ Image uploaded to Storage!");
+                if (upErr) throw upErr;
+
+                const { data: pubData } = db.storage
+                    .from('School_Data')
+                    .getPublicUrl(filePath);
+
+                if (pubData && pubData.publicUrl) {
+                    const finalUrl = `${pubData.publicUrl}?t=${Date.now()}`;
+                    document.getElementById(targetFieldId).value = finalUrl;
+                    alert("✅ Media uploaded successfully to Storage!");
                 }
             } catch(e) {
                 console.warn("Upload exception:", e);
-                alert("Upload failed. You can paste the direct Image URL instead.");
+                alert("Upload failed. You can paste the direct image link.");
             } finally {
                 originalBtn.innerHTML = '<i class="fas fa-upload"></i><input type="file" hidden accept="image/*" onchange="window.handleUploadImageToField(this, \'' + targetFieldId + '\')">';
             }
         };
 
-        // 🚀 10. SAVE MASTER LIVE SETTINGS TO SUPABASE (PERMANENT & BULLETPROOF)
+        // 🚀 12. SAVE MASTER LIVE SETTINGS TO SUPABASE
         window.saveLiveWebsiteSettings = async function() {
             const btn = document.getElementById('btnSaveLiveSettings');
             if (btn) {
@@ -1755,7 +2009,6 @@
 
                 if (error) throw error;
 
-                // Success notification
                 const toast = document.createElement('div');
                 toast.className = 'position-fixed top-0 start-50 translate-middle-x mt-4 p-3 bg-success text-white rounded-4 shadow-lg fw-bold z-3';
                 toast.style.zIndex = "9999";
@@ -1777,7 +2030,7 @@
             }
         };
 
-        // 11. Gallery Filter
+        // 13. Gallery Filter
         window.filterGallery = function(category) {
             document.querySelectorAll('.btn-filter-pill').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
@@ -1792,7 +2045,7 @@
             });
         };
 
-        // 12. Admission Enquiry Submission
+        // 14. Admission Enquiry Submission
         window.submitAdmissionEnquiry = async function(e) {
             e.preventDefault();
             const btn = document.getElementById('btnSubmitEnquiry');
@@ -1825,7 +2078,7 @@
             }
         };
 
-        // 13. Mobile Drawer Smooth Navigation
+        // 15. Mobile Drawer Smooth Navigation
         window.goToEnquiryFromDrawer = function() {
             const drawerEl = document.getElementById('topInfoOffcanvas');
             if (drawerEl) {
