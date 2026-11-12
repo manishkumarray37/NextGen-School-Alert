@@ -2394,5 +2394,62 @@
             }, 350);
         };
     </script>
+	<!-- SCROLL TO TOP BUTTON (COMBINED HTML, CSS & JS)-->
+<style>
+    #scrollTopBtn {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        z-index: 9999;
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, #0284c7, #0369a1);
+        color: #ffffff;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        display: grid;
+        place-items: center;
+        font-size: 18px;
+        box-shadow: 0 10px 25px rgba(2, 132, 199, 0.4);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(20px);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #scrollTopBtn.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    #scrollTopBtn:hover {
+        background: linear-gradient(135deg, #0369a1, #075985);
+        transform: translateY(-4px) scale(1.05);
+        box-shadow: 0 15px 30px rgba(2, 132, 199, 0.5);
+    }
+</style>
+<!-- Scroll to Top Button Element -->
+<button id="scrollTopBtn" onclick="scrollToTop()" title="Go to top">
+    <i class="fas fa-arrow-up"></i>
+</button>
+<script>
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            scrollTopBtn.classList.add('show');
+        } else {
+            scrollTopBtn.classList.remove('show');
+        }
+    });
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+</script>
 </body>
 </html>
