@@ -727,7 +727,7 @@
         <footer class="erp-footer">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-2" style="font-size: 12px;">
                 <div class="text-muted fw-bold">
-                    <i class="fas fa-shield-alt text-success me-1"></i> SCHOOL ALARM ERP &copy; 2026. All rights reserved.
+                    <i class="fas fa-shield-alt text-success me-1"></i> NextGen School Alert &copy; 2026. All rights reserved.
                 </div>    
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                     <a class="text-secondary text-decoration-none fw-semibold" href="javascript:void(0)" onclick="window.openPrivacyPolicyModal()">
@@ -47120,32 +47120,307 @@ body.public-page-mode .main-content {
         </div>
     </div>
 
-    <!-- Modal: Privacy Policy & Terms -->
-    <div class="modal fade" id="privacyPolicyModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 14px;">
-                <div class="modal-header bg-primary text-white py-3">
-                    <h6 class="modal-title fw-bold"><i class="fas fa-shield-alt me-2"></i>Privacy Policy</h6>
-                    <button class="btn-close btn-close-white" data-bs-dismiss="modal" type="button"></button>
+<!-- =================================================================== -->
+    <!-- 🛡️ LEGAL MODALS: DPDP ACT 2023 COMPLIANT PRIVACY POLICY & TERMS     -->
+    <!-- =================================================================== -->
+
+    <!-- 1. PRIVACY POLICY MODAL -->
+    <div class="modal fade" id="privacyPolicyModal" tabindex="-1" aria-labelledby="privacyPolicyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-primary text-white py-3 px-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="modal-title fw-bold m-0" id="privacyPolicyModalLabel">
+                            <i class="fas fa-shield-alt me-2 text-warning"></i>Privacy Policy
+                        </h5>
+                        <small class="text-light opacity-75" style="font-size: 11.5px;">
+                            Compliant with India's Digital Personal Data Protection (DPDP) Act, 2023 &bull; Last updated: November 2026
+                        </small>
+                    </div>
+                    <button class="btn-close btn-close-white" data-bs-dismiss="modal" type="button" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-4" style="font-size: 13px; line-height: 1.6;">
-                    <h6 class="fw-bold text-dark">1. Data Protection</h6>
-                    <p class="text-muted">All institutional records, student dossiers, staff salaries, and fee statements are encrypted and strictly guarded on dedicated cloud infrastructure.</p>
+                
+                <div class="modal-body p-4 p-md-5" style="font-size: 13.5px; line-height: 1.7; color: #334155;">
+                    
+                    <!-- Executive Summary Box -->
+                    <div class="card border-primary border-opacity-25 bg-primary bg-opacity-10 rounded-3 p-3 p-md-4 mb-4">
+                        <h6 class="fw-bold text-primary mb-3"><i class="fas fa-check-double me-2"></i>Executive Summary</h6>
+                        <ul class="mb-0 ps-3">
+                            <li class="mb-2"><strong>Your School Decides:</strong> For student, parent, and staff records in the ERP platform, the educational institution is the Data Fiduciary; we operate strictly as the Data Processor under verified instructions.</li>
+                            <li class="mb-2"><strong>No Data Monetization:</strong> We never sell personal data, nor do we host third-party advertising SDKs or ad networks.</li>
+                            <li class="mb-2"><strong>No AI Model Training:</strong> Institutional and student records are never submitted to train external artificial intelligence or machine-learning models.</li>
+                            <li class="mb-2"><strong>Data Stored in India:</strong> Production data, backups, and operational logs remain within Indian cloud infrastructure.</li>
+                            <li><strong>Statutory Rights:</strong> You retain full rights to access, update, export, and erase personal data under India's DPDP Act. Contact: <a href="mailto:help@schoolalarm.online" class="fw-bold text-primary">help@schoolalarm.online</a>.</li>
+                        </ul>
+                    </div>
+
+                    <!-- 1. Who We Are -->
+                    <h6 class="fw-bold text-dark mt-4">1. Who We Are</h6>
+                    <p>NextGen School Alert is an enterprise school management platform developed, operated, and maintained by A2Z Online Services Pvt Ltd ("we", "us", "our"). We provide multi-school enterprise ERP systems, administrative automation, communication gateways, and dedicated web portals across India.</p>
+                    <div class="p-3 bg-light rounded-3 border mb-3">
+                        <strong class="d-block text-dark">Corporate Address:</strong>
+                        A2Z Online Services Pvt Ltd<br/>
+                        Hajipur, Bihar – 844101, India<br/>
+                        Email: <a href="mailto:info@schoolalarm.online">info@schoolalarm.online</a> | <a href="mailto:help@schoolalarm.online">help@schoolalarm.online</a><br/>
+                        Support Helpline: +91 7079090740
+                    </div>
+
+                    <!-- 2. What This Policy Covers -->
+                    <h6 class="fw-bold text-dark mt-4">2. What This Policy Covers</h6>
+                    <p>This Privacy Policy applies to personal data processed across:</p>
+                    <ul>
+                        <li>The public website accessible via <a href="https://schoolalarm.online" target="_blank">schoolalarm.online</a>, including demo requests, contact inquiries, and trial registrations.</li>
+                        <li>The NextGen School Alert ERP suite, administrative dashboards (<code>app.schoolalarm.online</code>), and super administrator consoles.</li>
+                        <li>Dedicated web and mobile portals utilized by teachers, non-teaching staff, parents, and students.</li>
+                        <li>Our ongoing customer relations with educational institutions: deployment, onboarding, database migration, billing, and technical support.</li>
+                    </ul>
+                    <p class="small text-muted"><strong>Third-Party Portals:</strong> Our platform interfaces with external service providers (such as SMS/WhatsApp gateways and payment processors). Those entities operate under their independent privacy policies, and we advise users to review their disclosures prior to transactions.</p>
+
+                    <!-- 3. Our Dual Role Under the DPDP Act -->
+                    <h6 class="fw-bold text-dark mt-4">3. Our Dual Role Under the DPDP Act</h6>
+                    <p>Under the Digital Personal Data Protection Act, 2023, data governance is categorized between the entity that decides the purpose of data processing (Data Fiduciary) and the entity handling technical execution (Data Processor):</p>
+                    <div class="table-responsive mb-3">
+                        <table class="table table-bordered table-sm align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Data Classification</th>
+                                    <th>Our Role</th>
+                                    <th>Governing Authority</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Student, parent, and teacher records entered into the ERP (e.g., bio-data, admissions, attendance, marks, fees, bus tracking, notices).</td>
+                                    <td><span class="badge bg-secondary">Data Processor</span></td>
+                                    <td>The School (Data Fiduciary). We act solely under documented institutional instructions.</td>
+                                </tr>
+                                <tr>
+                                    <td>Public website inquiries, product demo bookings, partner onboarding, administrative billing, and technical security logs.</td>
+                                    <td><span class="badge bg-primary">Data Fiduciary</span></td>
+                                    <td>NextGen School Alert (A2Z Online Services Pvt Ltd) under this direct policy.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 4. Information We Collect -->
+                    <h6 class="fw-bold text-dark mt-4">4. Information We Collect</h6>
+                    <p><strong>A. Information You Submit:</strong> When booking a demonstration, requesting trial access, or registering an institution, we collect full name, official designation, contact telephone/mobile number, email address, school branch details, state, affiliated education board, student strength, and operational modules required.</p>
+                    <p><strong>B. Automatically Collected Technical Data:</strong> When interacting with our cloud infrastructure, our servers and network shields (via Cloudflare and Supabase) automatically record telemetry necessary for performance and intrusion detection. This includes IP addresses, browser types, operating systems, session timestamps, and referral headers.</p>
+                    <p><strong>C. Mobile Application Logs:</strong> When staff or parents access portal apps, diagnostic data (such as app version, device architecture, crash traces, and push notification tokens) is captured solely to verify session authenticity and dispatch alerts.</p>
+
+                    <!-- 5. Cookies and Web Storage -->
+                    <h6 class="fw-bold text-dark mt-4">5. Cookies and Web Storage</h6>
+                    <p>We implement strictly necessary session identifiers and security cookies to maintain administrative authentication states, prevent Cross-Site Request Forgery (CSRF), and ensure smooth page transitions. We do not deploy third-party advertising cookies or cross-site tracking pixels.</p>
+
+                    <!-- 6. How and Why We Process Data -->
+                    <h6 class="fw-bold text-dark mt-4">6. How and Why We Process Data</h6>
+                    <div class="table-responsive mb-3">
+                        <table class="table table-bordered table-sm align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Processing Purpose</th>
+                                    <th>Lawful Basis</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Responding to inquiries, organizing demos, and provisioning accounts</td>
+                                    <td>Explicit consent provided via submission forms</td>
+                                </tr>
+                                <tr>
+                                    <td>Fulfilling school software contracts, setup, and technical onboarding</td>
+                                    <td>Contractual obligation with the institution</td>
+                                </tr>
+                                <tr>
+                                    <td>Dispatching automated SMS/WhatsApp attendance alerts and fee receipts</td>
+                                    <td>Legitimate operational mandate under institutional instruction</td>
+                                </tr>
+                                <tr>
+                                    <td>Network intrusion prevention, DDoS mitigation, and system integrity logs</td>
+                                    <td>Compliance with regulatory cybersecurity guidelines</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 7. How We Handle School Data -->
+                    <h6 class="fw-bold text-dark mt-4">7. How We Handle School Data</h6>
+                    <p>The school retains uncompromised ownership of all student, parent, and institutional data. We pledge the following commitments within every institutional Service Agreement:</p>
+                    <div class="row g-2 mb-3">
+                        <div class="col-md-6"><div class="p-2 border rounded-2 bg-light"><strong>01. Institutional Instructions Only:</strong> Processed solely on written directions from school management.</div></div>
+                        <div class="col-md-6"><div class="p-2 border rounded-2 bg-light"><strong>02. No AI Training:</strong> School records are never used to train or fine-tune third-party AI models.</div></div>
+                        <div class="col-md-6"><div class="p-2 border rounded-2 bg-light"><strong>03. Absolute Data Segregation:</strong> Multi-tenant isolation ensures zero cross-institution data leaks.</div></div>
+                        <div class="col-md-6"><div class="p-2 border rounded-2 bg-light"><strong>04. Never Sold or Monetized:</strong> No records are ever sold, leased, or licensed to commercial vendors.</div></div>
+                        <div class="col-md-6"><div class="p-2 border rounded-2 bg-light"><strong>05. Zero Advertising SDKs:</strong> No ad networks or behavioral marketing trackers exist in our ERP.</div></div>
+                        <div class="col-md-6"><div class="p-2 border rounded-2 bg-light"><strong>06. Indian Infrastructure:</strong> Production databases and backups reside in secure Indian data centers.</div></div>
+                        <div class="col-md-6"><div class="p-2 border rounded-2 bg-light"><strong>07. Masked Contact Details:</strong> Personal phone numbers are masked by default to ensure communication privacy.</div></div>
+                        <div class="col-md-6"><div class="p-2 border rounded-2 bg-light"><strong>08. Complete Data Portability & Purge:</strong> Full structured data export followed by certified deletion on contract end.</div></div>
+                    </div>
+
+                    <!-- 8. Children's Data Protection -->
+                    <h6 class="fw-bold text-dark mt-4">8. Children's Data Protection</h6>
+                    <p>Under India's DPDP Act, any individual under the age of 18 is classified as a child. Given that student management is a cornerstone of our software:</p>
+                    <ul>
+                        <li>The educational institution is responsible for securing verifiable parental consent prior to digital enrollment.</li>
+                        <li>We enforce a total prohibition on behavioral tracking, targeted commercial messaging, and minor profiling.</li>
+                        <li>System access to sensitive student medical, academic, or disciplinary notes is restricted strictly to designated teachers and administrators via role-based credentials.</li>
+                    </ul>
+
+                    <!-- 9. Service Providers & Sub-processors -->
+                    <h6 class="fw-bold text-dark mt-4">9. Service Providers & Sub-processors</h6>
+                    <p>To deliver a scalable, enterprise-grade cloud experience, we work with enterprise-grade infrastructure providers bound by contractual non-disclosure and security mandates:</p>
+                    <ul>
+                        <li><strong>Cloud Database & Storage:</strong> Supabase Cloud Infrastructure (Enterprise PostgreSQL with Row Level Security).</li>
+                        <li><strong>Edge Security & Routing:</strong> Cloudflare Inc. (SSL termination, DDoS protection, edge routing, and Web Application Firewall).</li>
+                        <li><strong>Communication Infrastructure:</strong> Telecom Regulatory Authority of India (TRAI)-compliant SMS and WhatsApp Business Gateway API partners.</li>
+                        <li><strong>Payment Gateways:</strong> Reserve Bank of India (RBI)-authorized payment aggregators for processing parent fee payments directly into institutional accounts.</li>
+                    </ul>
+
+                    <!-- 10. Where Your Data is Stored -->
+                    <h6 class="fw-bold text-dark mt-4">10. Where Your Data is Stored</h6>
+                    <p>All primary school databases, secondary failovers, and operational logs remain within enterprise-grade data facilities physically located in the India region. We do not store, duplicate, or maintain student records outside Indian territory.</p>
+
+                    <!-- 11. Data Retention & Archival -->
+                    <h6 class="fw-bold text-dark mt-4">11. Data Retention & Archival</h6>
+                    <ul>
+                        <li><strong>General Inquiries:</strong> Contact information provided during demo requests is archived for reference and deleted upon request.</li>
+                        <li><strong>School Records:</strong> Managed throughout the duration of the institutional contract. When a school offboards, data exports are provided, and production databases are purged within statutory timelines.</li>
+                        <li><strong>Financial & Audit Logs:</strong> Access logs, transaction receipts, and fiscal audit records are retained as mandated by applicable regulatory guidelines.</li>
+                    </ul>
+
+                    <!-- 12. Security Safeguards -->
+                    <h6 class="fw-bold text-dark mt-4">12. Security Safeguards</h6>
+                    <p>NextGen School Alert deploys layered defense mechanisms to prevent data interception, compromise, or corruption:</p>
+                    <ul>
+                        <li>End-to-end transport encryption utilizing modern TLS 1.3 cryptographic suites across all endpoints.</li>
+                        <li>Row Level Security (RLS) enforcement on all active database tables, ensuring users access only their assigned institutional partitions.</li>
+                        <li>Role-based access permissions restricting sensitive actions (such as student exit gate passes) behind Multi-Factor Authentication (OTP verification).</li>
+                    </ul>
+
+                    <!-- 13. Security Incident Protocol -->
+                    <h6 class="fw-bold text-dark mt-4">13. Security Incident Protocol</h6>
+                    <p>In the unlikely event of a confirmed security incident affecting institutional records, NextGen School Alert maintains a rapid-response protocol: notifying affected institutions within 24 hours of confirmation, furnishing technical details to support regulatory notifications to the Data Protection Board of India, and taking immediate remediation measures.</p>
+
+                    <!-- 14. Your Statutory Rights -->
+                    <h6 class="fw-bold text-dark mt-4">14. Your Statutory Rights</h6>
+                    <p>Under the DPDP Act, eligible data principals retain statutory rights regarding their personal information: <strong>Right to Access</strong>, <strong>Right to Correction & Updating</strong>, <strong>Right to Erasure</strong>, and <strong>Right to Grievance Redressal</strong>.</p>
+                    <p class="small text-muted"><em>Note for Parents and Students:</em> Because student records are controlled by your educational institution, correction or deletion requests should be directed to your school administration. We execute such requests upon institutional instruction.</p>
+
+                    <!-- 15. Marketing & Communications Policy -->
+                    <h6 class="fw-bold text-dark mt-4">15. Marketing & Communications Policy</h6>
+                    <p>We do not dispatch unsolicited commercial messages. Transactional updates, fee notifications, and emergency school alerts triggered by schools are administrative operational broadcasts and cannot be opted out of, as they are essential to school operations.</p>
+
+                    <!-- 16. Data Protection & Grievance Officer -->
+                    <h6 class="fw-bold text-dark mt-4">16. Data Protection & Grievance Officer</h6>
+                    <div class="p-3 bg-light rounded-3 border mb-3">
+                        <strong class="d-block text-dark mb-1">Grievance Redressal Desk</strong>
+                        Officer: Data Protection & Compliance Desk<br/>
+                        Operating Entity: A2Z Online Services Pvt Ltd<br/>
+                        Registered Address: Hajipur, Bihar – 844101, India<br/>
+                        Designated Compliance Emails: <a href="mailto:help@schoolalarm.online">help@schoolalarm.online</a> | <a href="mailto:info@schoolalarm.online">info@schoolalarm.online</a><br/>
+                        Helpline: +91 7079090740
+                    </div>
+
+                    <!-- 17 & 18. Updates & Contact -->
+                    <h6 class="fw-bold text-dark mt-4">17. Updates to This Privacy Policy</h6>
+                    <p>We reserve the right to revise this Privacy Policy periodically to reflect technological advancements, system upgrades, or statutory clarifications issued under the DPDP Rules. Revisions take effect upon publication on this URL.</p>
+
+                    <h6 class="fw-bold text-dark mt-4">18. Contact Us</h6>
+                    <p class="mb-0">For inquiries regarding this Privacy Policy or institutional data agreements, reach our enterprise support team at <a href="mailto:info@schoolalarm.online" class="fw-bold text-primary">info@schoolalarm.online</a>.</p>
+
+                </div>
+
+                <div class="modal-footer bg-light py-2 px-4 border-top">
+                    <button class="btn btn-primary px-4 fw-bold" data-bs-dismiss="modal" type="button">I Understand & Accept</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="termsOfUseModal" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content border-0 shadow-lg" style="border-radius: 14px;">
-                <div class="modal-header bg-dark text-white py-3">
-                    <h6 class="modal-title fw-bold"><i class="fas fa-file-contract me-2"></i>Terms of Use</h6>
-                    <button class="btn-close btn-close-white" data-bs-dismiss="modal" type="button"></button>
+
+    <!-- 2. TERMS OF USE MODAL -->
+    <div class="modal fade" id="termsOfUseModal" tabindex="-1" aria-labelledby="termsOfUseModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header bg-dark text-white py-3 px-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="modal-title fw-bold m-0" id="termsOfUseModalLabel">
+                            <i class="fas fa-file-contract me-2 text-warning"></i>Terms of Use
+                        </h5>
+                        <small class="text-light opacity-75" style="font-size: 11.5px;">
+                            Legal Agreement for schoolalarm.online &bull; Last updated: November 2026
+                        </small>
+                    </div>
+                    <button class="btn-close btn-close-white" data-bs-dismiss="modal" type="button" aria-label="Close"></button>
                 </div>
-                <div class="modal-body p-4" style="font-size: 13px; line-height: 1.6;">
-                    <h6 class="fw-bold text-dark">1. Authorized Institutional Access</h6>
-                    <p class="text-muted">Access to this portal is restricted solely to verified school administrators, directors, teachers, and accountants.</p>
+                
+                <div class="modal-body p-4 p-md-5" style="font-size: 13.5px; line-height: 1.7; color: #334155;">
+                    
+                    <div class="alert alert-secondary py-2 px-3 small mb-4 border-0 rounded-3">
+                        These terms of use apply strictly to the website <strong>schoolalarm.online</strong> and its associated landing pages. Schools that utilize the NextGen School Alert platform do so under a separate, formal institutional customer agreement.
+                    </div>
+
+                    <!-- 1. Acceptance of These Terms -->
+                    <h6 class="fw-bold text-dark">1. Acceptance of These Terms</h6>
+                    <p>By accessing or using this website, you agree to comply with and be bound by these Terms of Use and our Privacy Policy. If you do not agree with any part of these terms, please do not use our website or services.</p>
+
+                    <!-- 2. Who May Use the Website -->
+                    <h6 class="fw-bold text-dark mt-4">2. Who May Use the Website</h6>
+                    <p>The information provided on this website is intended for school owners, trustees, principals, administrators, teachers, and authorized adults exploring school ERP solutions under Indian law. If you submit any inquiry or demo form on behalf of an institution, you warrant that you possess the full legal authority to represent that school.</p>
+
+                    <!-- 3. Information on the Website -->
+                    <h6 class="fw-bold text-dark mt-4">3. Information on the Website</h6>
+                    <p>We strive to keep all website content accurate and updated. However:</p>
+                    <ul>
+                        <li>Features, modules, software pricing, and integrations are subject to continuous development and may vary depending on the customized plan chosen by a school.</li>
+                        <li>Mock-ups, dashboard screens, and sample data illustrations shown on the website are for visual representation only and do not reflect real institutional data.</li>
+                    </ul>
+
+                    <!-- 4. Demos and Free Trials -->
+                    <h6 class="fw-bold text-dark mt-4">4. Demos and Free Trials</h6>
+                    <p>Institutions can request free product demonstrations and trial access to NextGen School Alert ERP modules. Trials are offered at our discretion and are governed by trial agreements. We reserve the right to suspend or terminate trial access if used for unauthorized or evaluation-unrelated activities.</p>
+
+                    <!-- 5. Accounts and School ERP Platform -->
+                    <h6 class="fw-bold text-dark mt-4">5. Accounts and School ERP Platform</h6>
+                    <p>Access to the core cloud ERP platform (via our secure subdomains) is regulated through separate customer onboarding contracts and Service Level Agreements (SLAs). Those agreements supersede these general website terms in the event of any contractual discrepancy.</p>
+
+                    <!-- 6. Acceptable Use -->
+                    <h6 class="fw-bold text-dark mt-4">6. Acceptable Use</h6>
+                    <p>When interacting with our website and web portals, you agree not to:</p>
+                    <ul>
+                        <li>Violate any local, national, or international laws or regulations.</li>
+                        <li>Submit fraudulent inquiries, malicious scripts, or attempt unauthorized penetration testing.</li>
+                        <li>Scrape, harvest, or copy content or contact information using automated scripts or bots.</li>
+                    </ul>
+
+                    <!-- 7. Intellectual Property -->
+                    <h6 class="fw-bold text-dark mt-4">7. Intellectual Property</h6>
+                    <p>All content, interface designs, software graphics, and trademarks associated with NextGen School Alert belong exclusively to A2Z Online Services Pvt Ltd. Unauthorized reproduction, modification, or commercial distribution of our proprietary assets is strictly prohibited.</p>
+
+                    <!-- 8. Disclaimers & Limitation of Liability -->
+                    <h6 class="fw-bold text-dark mt-4">8. Disclaimers & Limitation of Liability</h6>
+                    <p>The website is provided on an "as-is" and "as-available" basis without warranties of any kind. NextGen School Alert shall not be held liable for any indirect, incidental, or consequential damages arising from the use or inability to use our website resources.</p>
+
+                    <!-- 9. Governing Law and Disputes -->
+                    <h6 class="fw-bold text-dark mt-4">9. Governing Law and Disputes</h6>
+                    <p>These Terms shall be governed by and construed in accordance with the laws of India. Any legal disputes or claims arising out of website usage shall be subject to the exclusive jurisdiction of the courts located in Hajipur, Bihar.</p>
+
+                    <!-- Legal & Corporate Headquarters -->
+                    <div class="card border-0 bg-light rounded-3 p-3 mt-4">
+                        <h6 class="fw-bold text-dark mb-2"><i class="fas fa-building me-2 text-primary"></i>Legal & Corporate Headquarters</h6>
+                        <div class="small">
+                            <strong>Company:</strong> A2Z Online Services Pvt Ltd<br/>
+                            <strong>Location:</strong> Hajipur, Bihar, India<br/>
+                            <strong>Support Emails:</strong> <a href="mailto:help@schoolalarm.online">help@schoolalarm.online</a> | <a href="mailto:info@schoolalarm.online">info@schoolalarm.online</a><br/>
+                            <strong>Helpline:</strong> +91 7079090740
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer bg-light py-2 px-4 border-top">
+                    <button class="btn btn-dark px-4 fw-bold" data-bs-dismiss="modal" type="button">Close Agreement</button>
                 </div>
             </div>
         </div>
