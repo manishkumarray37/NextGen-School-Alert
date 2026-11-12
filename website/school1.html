@@ -16,7 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/config.js"></script>
 
-    <!-- 🎨 Global & Section-Scoped Dynamic Injected CSS Engine -->
+    <!-- 🎨 Dynamic Injected CSS Engine -->
     <style id="dynamicLiveStyles">
         :root {
             --school-primary: #0284c7;
@@ -87,13 +87,15 @@
         .dropdown-menu {
             border-radius: 12px;
             border: 1.5px solid #e2e8f0;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             background: var(--nav-bg);
             padding: 8px;
+            min-width: 200px;
         }
         .dropdown-item {
             border-radius: 8px;
-            padding: 8px 16px !important;
+            padding: 8px 14px !important;
+            font-size: 13.5px;
         }
 
         @media (max-width: 991px) {
@@ -514,7 +516,7 @@
         </div>
     </section>
 
-    <!-- 7. ACADEMICS (CURRICULUM WINGS) -->
+    <!-- 7. ACADEMICS -->
     <section class="py-5 position-relative" id="academics">
         <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('academics')"><i class="fas fa-pencil-alt"></i></button>
         <div class="container py-4">
@@ -522,8 +524,7 @@
                 <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2">CURRICULUM ARCHITECTURE</span>
                 <h2 class="fw-bold" id="acadHeading">Structured Learning Across Academic Wings</h2>
             </div>
-            <div class="row g-4" id="academicsGrid">
-            </div>
+            <div class="row g-4" id="academicsGrid"></div>
         </div>
     </section>
 
@@ -535,12 +536,11 @@
                 <span class="badge bg-success-subtle text-success fw-bold px-3 py-2 rounded-pill mb-2">INFRASTRUCTURE</span>
                 <h2 class="fw-bold" id="facHeading">World-Class Campus Facilities</h2>
             </div>
-            <div class="row g-4" id="facilitiesGrid">
-            </div>
+            <div class="row g-4" id="facilitiesGrid"></div>
         </div>
     </section>
 
-    <!-- 9. TOPPERS (HALL OF FAME) -->
+    <!-- 9. TOPPERS -->
     <section class="py-5 position-relative" id="toppers">
         <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('toppers')"><i class="fas fa-pencil-alt"></i></button>
         <div class="container py-4">
@@ -548,8 +548,7 @@
                 <span class="badge bg-warning-subtle text-warning-emphasis fw-bold px-3 py-2 rounded-pill mb-2">HALL OF FAME</span>
                 <h2 class="fw-bold">Our Outstanding Board Exam Toppers</h2>
             </div>
-            <div class="row g-4 justify-content-center" id="toppersGrid">
-            </div>
+            <div class="row g-4 justify-content-center" id="toppersGrid"></div>
         </div>
     </section>
 
@@ -589,8 +588,7 @@
                 <div class="col-lg-6">
                     <span class="badge bg-danger-subtle text-danger fw-bold px-3 py-2 rounded-pill mb-2">OFFICIAL CIRCULARS</span>
                     <h3 class="fw-bold mb-3">Notice Board & Announcements</h3>
-                    <div class="list-group shadow-sm border-0 rounded-4 overflow-hidden" id="noticeListContainer">
-                    </div>
+                    <div class="list-group shadow-sm border-0 rounded-4 overflow-hidden" id="noticeListContainer"></div>
                 </div>
 
                 <div class="col-lg-6">
@@ -632,8 +630,7 @@
                             <th class="text-center pe-3">Action</th>
                         </tr>
                     </thead>
-                    <tbody id="disclosureTableBody">
-                    </tbody>
+                    <tbody id="disclosureTableBody"></tbody>
                 </table>
             </div>
         </div>
@@ -743,9 +740,6 @@
         </div>
     </section>
 
-    <!-- 🚀 DYNAMIC INLINE-ORDERED SECTIONS WILL RE-ORDER HERE -->
-    <div id="dynamicSectionsAnchor"></div>
-
     <!-- 16. FOOTER -->
     <footer id="sec-footer">
         <div class="container-fluid px-lg-5">
@@ -842,8 +836,8 @@
         </div>
     </div>
 
-    <!-- 🎨 ULTIMATE LIVE WEBSITE STUDIO DRAWER -->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="liveCustomizerDrawer" style="width: 440px;">
+    <!-- 🎨 520px WIDE PROFESSIONAL LIVE WEBSITE STUDIO DRAWER (Screenshot 3 Fix) -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="liveCustomizerDrawer" style="width: 520px; max-width: 95vw;">
         <div class="offcanvas-header bg-dark text-white p-3">
             <h6 class="offcanvas-title fw-bold"><i class="fas fa-sliders-h text-warning me-2"></i>Live Website Studio</h6>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
@@ -884,11 +878,11 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: MENU BUILDER WITH SUBMENU SUPPORT -->
+                <!-- TAB 2: MENU BUILDER WITH REAL SUBMENUS -->
                 <div class="tab-pane fade" id="tabNav">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <label class="form-label-custom m-0">Manage Menus & Submenus</label>
-                        <button class="btn btn-sm btn-outline-success py-0 px-2 fw-bold" onclick="window.promptAddNewMenuItem()">+ Add Item</button>
+                        <label class="form-label-custom m-0">Reorder & Toggle Menu Items</label>
+                        <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="window.promptAddNewMenuItem()">+ Add Item</button>
                     </div>
                     <div class="list-group mb-3" id="studioMenuList"></div>
                 </div>
@@ -913,7 +907,6 @@
             <div class="modal-content rounded-4 border-0 shadow-lg">
                 <div class="modal-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
                     <h6 class="modal-title fw-bold" id="editModalTitle">Edit Component</h6>
-                    <!-- Dual Mode Switcher Tabs (Screenshot 5 Red Box Match!) -->
                     <div class="d-flex gap-2">
                         <button class="btn btn-sm btn-outline-warning active fw-bold py-1 px-3" id="btnModeVisual" onclick="window.switchEditorModalMode('visual')" type="button">
                             <i class="fas fa-edit me-1"></i> Visual Form Mode
@@ -925,12 +918,9 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body p-4">
-                    <!-- 1. Visual Form Mode Container -->
                     <div id="modalVisualContainer">
                         <div id="modalDynamicFieldsContainer"></div>
                     </div>
-
-                    <!-- 2. Raw HTML Code Mode Container -->
                     <div id="modalHtmlContainer" style="display: none;">
                         <label class="form-label-custom text-primary"><i class="fas fa-code me-1"></i>Custom HTML / CSS Code for this Page/Section:</label>
                         <textarea class="form-control font-monospace" id="inRawHtmlCode" rows="12" style="font-size: 12.5px; background: #0f172a; color: #38bdf8;" placeholder="<div>Write or paste custom HTML code here...</div>"></textarea>
@@ -952,7 +942,7 @@
     <!-- ⚡ Comprehensive Multi-School Dynamic Engine & CMS Script -->
     <script>
         let activeSchoolId = "";
-        let currentModalMode = "visual"; // 'visual' or 'html'
+        let currentModalMode = "visual";
         let activeEditTarget = "";
 
         let websiteConfig = {
@@ -1069,7 +1059,7 @@
                     await window.loadCustomWebsiteConfig(activeSchoolId);
                 }
             } catch(e) {
-                console.warn("Dynamic branding fallback applied:", e);
+                console.warn("Dynamic branding load skipped:", e);
             } finally {
                 document.body.classList.remove('loading');
                 document.body.classList.add('loaded');
@@ -1144,6 +1134,11 @@
                     }
 
                     if (webData.NavMenu && Array.isArray(webData.NavMenu)) {
+                        // Ensure every menu item strictly has a unique ID to avoid undefined === undefined bug!
+                        webData.NavMenu.forEach((m, idx) => {
+                            if (!m.id) m.id = "m_" + (m.target || idx) + "_" + idx;
+                            if (typeof m.parentId === 'undefined') m.parentId = "";
+                        });
                         websiteConfig.NavMenu = webData.NavMenu;
                     }
                     window.renderNavbarMenu();
@@ -1151,8 +1146,6 @@
                     if (webData.SectionOrder && Array.isArray(webData.SectionOrder)) {
                         websiteConfig.SectionOrder = webData.SectionOrder;
                     }
-                    window.applySectionOrdersAndStyles();
-                    window.renderSectionManagerList();
 
                     if (webData.SectionsData && typeof webData.SectionsData === 'object') {
                         websiteConfig.SectionsData = Object.assign({}, websiteConfig.SectionsData, webData.SectionsData);
@@ -1207,17 +1200,20 @@
                     window.renderAcademicsGrid();
                     window.renderFacilitiesGrid();
                     window.renderToppersGrid();
-                    window.renderCustomPagesSections();
+                    window.applySectionOrdersAndStyles();
+                    window.renderSectionManagerList();
                 } else {
                     window.renderNavbarMenu();
+                    window.applySectionOrdersAndStyles();
                     window.renderSectionManagerList();
                     window.renderAcademicsGrid();
                     window.renderFacilitiesGrid();
                     window.renderToppersGrid();
                 }
             } catch(err) {
-                console.warn("Website config load skipped:", err);
+                console.warn("Website config load error:", err);
                 window.renderNavbarMenu();
+                window.applySectionOrdersAndStyles();
                 window.renderSectionManagerList();
                 window.renderAcademicsGrid();
                 window.renderFacilitiesGrid();
@@ -1225,7 +1221,7 @@
             }
         };
 
-        // 4. Render Dynamic Navbar Menu (Supports Submenus/Dropdowns & Overflow Fix)
+        // 4. Render Dynamic Navbar Menu (🚀 BULLETPROOF SUBMENU / DROPDOWN FIX!)
         window.renderNavbarMenu = function() {
             const container = document.getElementById('dynamicNavLinks');
             const studioList = document.getElementById('studioMenuList');
@@ -1234,11 +1230,12 @@
             let navHtml = "";
             let studioHtml = "";
 
-            // Separate main menu items and sub-items
-            const rootItems = websiteConfig.NavMenu.filter(m => !m.parentId);
+            // Separate main menu items and sub-items strictly
+            const rootItems = websiteConfig.NavMenu.filter(m => !m.parentId || m.parentId === "");
 
             rootItems.forEach((root, idx) => {
-                const subItems = websiteConfig.NavMenu.filter(m => m.parentId === root.id);
+                // Strict check: Only items that explicitly have parentId matching root.id are sub-items!
+                const subItems = websiteConfig.NavMenu.filter(m => m.parentId && m.parentId === root.id);
                 const hasSubs = (subItems.length > 0);
                 const isVis = (root.visible !== false);
 
@@ -1262,7 +1259,7 @@
                 }
             });
 
-            // Studio Menu Management List (Includes Submenu nesting display)
+            // Studio Menu Management List
             if (studioList) {
                 websiteConfig.NavMenu.forEach((item, idx) => {
                     const isSub = !!item.parentId;
@@ -1281,7 +1278,6 @@
                             <div class="d-flex gap-1">
                                 <button class="btn btn-sm btn-light py-0 px-1 border" onclick="window.moveMenuItem(${idx}, -1)" title="Move Up">&uarr;</button>
                                 <button class="btn btn-sm btn-light py-0 px-1 border" onclick="window.moveMenuItem(${idx}, 1)" title="Move Down">&darr;</button>
-                                <!-- Content Button on EVERY Menu Item (Screenshot 5 Fix) -->
                                 <button class="btn btn-sm btn-outline-primary py-0 px-1" onclick="window.openMenuContentEditor('${item.target}')" title="Edit Page Content">&#128221; Content</button>
                                 <button class="btn btn-sm btn-light py-0 px-1 border" onclick="window.editMenuItem(${idx})" title="Edit Label/Parent">&#9998;</button>
                                 <button class="btn btn-sm btn-outline-danger py-0 px-1" onclick="window.removeMenuItem(${idx})" title="Delete">&times;</button>
@@ -1318,7 +1314,7 @@
             // Submenu parent option
             const availableParents = websiteConfig.NavMenu.filter(m => m.id !== item.id && !m.parentId);
             let pPrompt = "Set Parent Dropdown (Enter 0 for Main Navbar):\n0. Main Navbar (Top Level)\n";
-            availableParents.forEach((p, pIdx) => { pPrompt += `${pIdx + 1}. ${p.label}\n`; });
+            availableParents.forEach((p, pIdx) => { pPrompt += `${pIdx + 1}. Under "${p.label}"\n`; });
             const pChoice = prompt(pPrompt, "0");
 
             if (pChoice && pChoice !== "0") {
@@ -1334,7 +1330,7 @@
         };
 
         window.promptAddNewMenuItem = function() {
-            const label = prompt("Enter Menu Item / Page Name (e.g. My Vision, Notifications, Hostel):");
+            const label = prompt("Enter Menu Item / Page Name (e.g. Our Buildings, Vision, Hostel):");
             if (!label || !label.trim()) return;
 
             const cleanSlug = label.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -1373,7 +1369,7 @@
                 videoUrl: ""
             };
 
-            // Also register in SectionOrder so it can be moved up/down & styled!
+            // Register in SectionOrder so it appears at bottom by default, not at the top!
             if (!websiteConfig.SectionOrder.some(s => s.id === cleanSlug)) {
                 websiteConfig.SectionOrder.push({
                     id: cleanSlug,
@@ -1404,7 +1400,7 @@
             window.renderSectionManagerList();
         };
 
-        // 🚀 5. SECTION REORDER, BG STYLES & BULLETPROOF TEXT COLOR ENGINE (Image 1 & 6 Fix)
+        // 🚀 5. SECTION REORDER, BG STYLES & BULLETPROOF TEXT COLOR ENGINE
         window.renderSectionManagerList = function() {
             const listEl = document.getElementById('studioSectionManagerList');
             if (!listEl) return;
@@ -1447,7 +1443,6 @@
             const el = document.getElementById(sec.id);
             if (el) el.style.display = isVis ? '' : 'none';
 
-            // Sync with nav link
             const navLink = document.querySelector(`li[data-nav-target="${sec.id}"]`);
             if (navLink) navLink.style.display = isVis ? '' : 'none';
         };
@@ -1481,19 +1476,19 @@
             }
         };
 
-        // 🚀 BULLETPROOF ORDERING & STYLES (OVERCOMES BOOTSTRAP OVERRIDES!)
+        // 🚀 BULLETPROOF ORDERING: Renders sections in the exact order defined, always before footer!
         window.applySectionOrdersAndStyles = function() {
             window.renderCustomPagesSections();
 
             let scopedStyles = "";
+            const footerEl = document.getElementById('sec-footer');
 
             websiteConfig.SectionOrder.forEach(sec => {
                 const el = document.getElementById(sec.id);
-                if (el) {
+                if (el && footerEl) {
                     if (sec.visible === false) el.style.display = 'none';
                     else el.style.display = '';
 
-                    // Generate Scoped Forceful CSS Rule for each section
                     let sRules = "";
                     if (sec.bg) {
                         sRules += `background-color: ${sec.bg} !important;`;
@@ -1514,22 +1509,18 @@
                         `;
                     }
 
-                    // Reorder element in DOM (Image 2 & 3 Placement Fix)
-                    el.parentNode.appendChild(el);
+                    // Strict sequential DOM insertion right before footer!
+                    footerEl.parentNode.insertBefore(el, footerEl);
                 }
             });
-
-            // Ensure footer always stays at the absolute bottom
-            const f = document.getElementById('sec-footer');
-            if (f) f.parentNode.appendChild(f);
 
             document.getElementById('dynamicSectionStyles').innerHTML = scopedStyles;
         };
 
-        // 6. RENDER DYNAMIC CUSTOM PAGES IN EXACT SECTION ORDER
+        // 6. RENDER DYNAMIC CUSTOM PAGES
         window.renderCustomPagesSections = function() {
-            const container = document.getElementById('dynamicSectionsAnchor');
-            if (!container) return;
+            const footerEl = document.getElementById('sec-footer');
+            if (!footerEl) return;
 
             const pages = websiteConfig.SectionsData.customPages || {};
             for (const slug in pages) {
@@ -1540,17 +1531,15 @@
                     secEl = document.createElement('section');
                     secEl.className = 'py-5 position-relative border-top custom-page-section';
                     secEl.id = slug;
-                    container.parentNode.insertBefore(secEl, container);
+                    footerEl.parentNode.insertBefore(secEl, footerEl);
                 }
 
                 if (pg.rawHtml && pg.rawHtml.trim()) {
-                    // Raw HTML Code Mode Render
                     secEl.innerHTML = `
                         <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.openMenuContentEditor('${slug}')"><i class="fas fa-pencil-alt"></i></button>
                         <div class="container py-4">${pg.rawHtml}</div>
                     `;
                 } else {
-                    // Visual Form Mode Render
                     secEl.innerHTML = `
                         <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.openMenuContentEditor('${slug}')"><i class="fas fa-pencil-alt"></i></button>
                         <div class="container py-4">
@@ -1724,13 +1713,13 @@
             new bootstrap.Offcanvas(document.getElementById('liveCustomizerDrawer')).show();
         };
 
-        // 🚀 10. UNIVERSAL CONTENT ROUTER FOR ALL MENUS ([📝 Content] on EVERY Menu Item!)
+        // 10. UNIVERSAL CONTENT ROUTER FOR ALL MENUS
         window.openMenuContentEditor = function(targetKey) {
             const cleanTarget = (targetKey || "").replace(/^#/, '').toLowerCase();
             window.triggerInlineEdit(cleanTarget);
         };
 
-        // 🚀 11. DUAL-MODE MODAL SWITCHER (Visual Form vs Raw HTML - Image 5 Match!)
+        // 11. DUAL-MODE MODAL SWITCHER (Visual Form vs Raw HTML)
         window.switchEditorModalMode = function(mode) {
             currentModalMode = mode;
             const btnV = document.getElementById('btnModeVisual');
@@ -1751,16 +1740,14 @@
             }
         };
 
-        // 🚀 12. UNIVERSAL CLICK-TO-EDIT ENGINE (With Dual Visual & HTML Mode)
+        // 12. UNIVERSAL CLICK-TO-EDIT ENGINE (With Dual Visual & HTML Mode)
         window.triggerInlineEdit = function(targetKey) {
             activeEditTarget = targetKey;
             const container = document.getElementById('modalDynamicFieldsContainer');
             const titleEl = document.getElementById('editModalTitle');
 
-            // Reset modal mode to visual
             window.switchEditorModalMode('visual');
 
-            // Load any existing raw HTML
             const rawBox = document.getElementById('inRawHtmlCode');
             const customPage = (websiteConfig.SectionsData.customPages && websiteConfig.SectionsData.customPages[targetKey]) ? websiteConfig.SectionsData.customPages[targetKey] : null;
             if (rawBox) rawBox.value = customPage ? (customPage.rawHtml || "") : "";
@@ -1914,7 +1901,7 @@
                     <input type="email" class="form-control form-control-sm" id="inModContactMail" value="${document.getElementById('footerMail').innerText}">
                 `;
             } else {
-                // Any Custom Page / Section (like My Vision, Notifications, Hostel etc.)
+                // Custom Page / Section
                 const pg = (websiteConfig.SectionsData.customPages && websiteConfig.SectionsData.customPages[targetKey]) ? websiteConfig.SectionsData.customPages[targetKey] : { title: targetKey, badge: "", content: "", imageUrl: "", videoUrl: "", rawHtml: "" };
                 
                 titleEl.innerHTML = `<i class="fas fa-file-alt me-2 text-warning"></i>Edit Page: ${pg.title}`;
@@ -1946,7 +1933,7 @@
         window.applyInlineModalData = async function() {
             if (!websiteConfig.SectionsData) websiteConfig.SectionsData = {};
 
-            // Check if user saved in Raw HTML Mode
+            // Raw HTML Code Mode Save
             if (currentModalMode === 'html') {
                 const code = document.getElementById('inRawHtmlCode').value;
                 if (!websiteConfig.SectionsData.customPages) websiteConfig.SectionsData.customPages = {};
@@ -2102,7 +2089,7 @@
                 websiteConfig.SectionsData.contact = { address: ad, phone: cp, email: cm };
 
             } else {
-                // Custom Page Section Edit
+                // Custom Page
                 const slug = document.getElementById('inCustomSlug')?.value || activeEditTarget;
                 const bd = document.getElementById('inCustomBadge')?.value;
                 const ti = document.getElementById('inCustomTitle')?.value;
