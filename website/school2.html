@@ -1,0 +1,2216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title id="siteTitle">Maple Grove School | Where Bright Futures Begin</title>
+    
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <!-- CSS Dependencies -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400;1,6..72,600;1,6..72,700&display=swap" rel="stylesheet">
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/config.js"></script>
+
+    <!-- 🎨 Real-time Injected CSS Engine -->
+    <style id="dynamicLiveStyles">
+        :root {
+            --school-primary: #be123c;
+            --school-secondary: #0f172a;
+            --school-accent: #f59e0b;
+            --school-cream: #fffbeb;
+            --nav-bg: #ffffff;
+            --nav-text: #1e293b;
+            --footer-bg: #ffffff;
+        }
+    </style>
+    <style id="dynamicSectionStyles"></style>
+
+    <style>
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #334155;
+            background-color: #ffffff;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            opacity: 0;
+            transition: opacity 0.25s ease-in;
+        }
+        body.loaded { opacity: 1; }
+
+        h1, h2, h3, h4, .editorial-font {
+            font-family: 'Newsreader', serif;
+            font-weight: 600;
+        }
+        .italic-accent {
+            font-style: italic;
+            color: var(--school-accent);
+        }
+
+        /* Top Bar */
+        .top-info-bar {
+            background-color: #0f172a;
+            color: #cbd5e1;
+            font-size: 12.5px;
+            padding: 8px 0;
+        }
+        .top-info-bar-mobile {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 7px 16px;
+            font-size: 13px;
+        }
+
+        /* Sticky Navigation Bar */
+        .navbar-main {
+            background-color: var(--nav-bg) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            padding: 14px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            transition: all 0.3s ease;
+        }
+        .school-logo-img { height: 48px; width: auto; object-fit: contain; }
+
+        .nav-link, .dropdown-item {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--nav-text) !important;
+            padding: 8px 14px !important;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .nav-link:hover, .dropdown-item:hover, .nav-link.active {
+            color: var(--school-primary) !important;
+        }
+        .nav-link.active::after {
+            content: "";
+            position: absolute;
+            bottom: 2px;
+            left: 14px;
+            right: 14px;
+            height: 2px;
+            background: var(--school-primary);
+            border-radius: 2px;
+        }
+
+        .btn-pill-primary {
+            background: var(--school-primary);
+            color: #ffffff !important;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 8px 22px;
+            border-radius: 30px;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+        .btn-pill-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(190, 18, 60, 0.3);
+            color: #ffffff;
+        }
+
+        /* Hero Section (Template 2 Maple Grove Style) */
+        .hero-template2 {
+            position: relative;
+            min-height: 88vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.75)), url('https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat;
+            color: #ffffff;
+            padding: 80px 0 100px 0;
+        }
+        .hero-heading-t2 {
+            font-size: clamp(2.6rem, 5.8vw, 4.8rem);
+            font-weight: 600;
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+        .hero-pills-row {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+        }
+        .hero-glass-pill {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Quick Floating Feature Ribbon */
+        .ribbon-features-wrap {
+            margin-top: -50px;
+            position: relative;
+            z-index: 20;
+        }
+        .ribbon-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 22px 20px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            color: #1e293b;
+        }
+        .ribbon-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 35px rgba(15, 23, 42, 0.12);
+            border-color: var(--school-primary);
+            color: var(--school-primary);
+        }
+        .ribbon-icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #fff1f2;
+            color: var(--school-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        /* Two-Column Story Feature */
+        .story-section {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 90px 0;
+            position: relative;
+        }
+        .story-img-wrap {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+        }
+        .story-floating-badge {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            background: #facc15;
+            color: #0f172a;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        /* News Cards Grid */
+        .news-card-t2 {
+            background: #ffffff;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        .news-card-t2:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 35px rgba(15, 23, 42, 0.1);
+        }
+        .news-card-img {
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+        }
+        .news-tag {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--school-primary);
+        }
+
+        /* Events Date List */
+        .event-row-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 18px 20px;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 14px;
+            transition: all 0.2s ease;
+        }
+        .event-row-card:hover {
+            border-color: var(--school-primary);
+            transform: translateX(4px);
+        }
+        .event-date-box {
+            width: 58px;
+            height: 58px;
+            border-radius: 14px;
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: 800;
+        }
+        .event-date-num { font-size: 20px; line-height: 1; color: #0f172a; }
+        .event-date-month { font-size: 10px; text-transform: uppercase; color: #64748b; }
+
+        /* Floating Studio Toolbar */
+        .editor-floating-dock {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 1050;
+            display: none;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+        .btn-dock-studio {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 12px 22px;
+            border-radius: 30px;
+            border: none;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .btn-dock-logout {
+            background: #ef4444;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 12px 18px;
+            border-radius: 30px;
+            border: none;
+            box-shadow: 0 6px 18px rgba(239, 68, 68, 0.35);
+            cursor: pointer;
+        }
+
+        /* ✏️ INLINE VISUAL EDIT PENCIL BUTTONS */
+        .btn-inline-pencil {
+            display: none;
+            background: #fde047;
+            color: #0f172a !important;
+            border: 1.5px solid #0f172a;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            transition: transform 0.2s ease;
+            position: absolute;
+            z-index: 30;
+        }
+        .btn-inline-pencil:hover { transform: scale(1.2); background: #ffffff; }
+
+        /* Floating Gadgets */
+        .gadget-whatsapp {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            z-index: 1040;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: #22c55e;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+            text-decoration: none;
+        }
+        .gadget-quick-enquiry {
+            position: fixed;
+            right: 0;
+            top: 55%;
+            transform: translateY(-50%);
+            z-index: 1040;
+            background: var(--school-primary);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 12.5px;
+            padding: 12px 14px;
+            border-radius: 14px 0 0 14px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            cursor: pointer;
+            box-shadow: -4px 0 15px rgba(190, 18, 60, 0.35);
+            text-decoration: none;
+        }
+
+        /* Clean Minimal Footer */
+        footer {
+            background-color: var(--footer-bg);
+            color: #64748b;
+            font-size: 13.5px;
+            padding: 70px 0 30px 0;
+            border-top: 1.5px solid #e2e8f0;
+            position: relative;
+        }
+        footer h6 { color: #0f172a; font-weight: 700; margin-bottom: 20px; }
+        footer a { color: #64748b; text-decoration: none; }
+        footer a:hover { color: var(--school-primary); }
+
+        .color-dot { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body class="loading">
+
+    <!-- 1. TOP UTILITY BAR (sec-top-bar) -->
+    <div class="top-info-bar d-none d-lg-block position-relative" id="sec-top-bar">
+        <button class="btn-inline-pencil" style="top:4px; left:10px;" onclick="window.triggerInlineEdit('top-info')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-4">
+                <span><i class="fas fa-phone-alt me-2 text-warning"></i><span id="topPhone">+91 7079090740</span></span>
+                <span><i class="fas fa-envelope me-2 text-warning"></i><span id="topEmail">info@schoolalarm.online</span></span>
+                <span><i class="fas fa-award me-2 text-warning"></i><span id="topAffiliation">Affiliated to Board</span></span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a href="https://student.schoolalarm.online" class="text-white text-decoration-none fw-semibold">
+                    <i class="fas fa-graduation-cap me-1 text-info"></i> Student Portal
+                </a>
+                <span class="text-secondary">|</span>
+                <a href="https://app.schoolalarm.online" class="text-white text-decoration-none fw-semibold">
+                    <i class="fas fa-user-shield me-1 text-warning"></i> Staff Login
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1.1 MOBILE TOP BAR -->
+    <div class="top-info-bar-mobile d-block d-lg-none" id="sec-top-bar-mobile">
+        <div class="d-flex justify-content-between align-items-center">
+            <button class="btn btn-sm btn-outline-warning text-white fw-bold d-flex align-items-center gap-1 py-1 px-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#topInfoOffcanvas">
+                <i class="fas fa-bars-staggered text-warning"></i> Portals
+            </button>
+            <a href="tel:+917079090740" class="text-white text-decoration-none fw-bold" id="mobPhoneLink">
+                <i class="fas fa-phone-alt text-warning me-1"></i> <span id="topPhoneMobile">+91 7079090740</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 1.2 MOBILE DRAWER -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="topInfoOffcanvas" style="background:#0f172a; color:#ffffff;">
+        <div class="offcanvas-header border-bottom border-secondary">
+            <h6 class="offcanvas-title fw-bold text-warning"><i class="fas fa-university me-2"></i>Institutional Access</h6>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-4">
+            <div class="d-grid gap-3 mb-4">
+                <a href="https://student.schoolalarm.online" class="btn btn-info py-2 fw-bold text-dark text-start">
+                    <i class="fas fa-graduation-cap me-2"></i> Student & Parent Portal
+                </a>
+                <a href="https://app.schoolalarm.online" class="btn btn-warning py-2 fw-bold text-dark text-start">
+                    <i class="fas fa-user-shield me-2"></i> Staff & Teacher Login
+                </a>
+                <button onclick="window.handleNavClick('enquiry')" class="btn btn-danger py-2 fw-bold text-start w-100" type="button">
+                    <i class="fas fa-paper-plane me-2"></i> Apply Online Admission
+                </button>
+            </div>
+            <h6 class="fw-bold text-secondary text-uppercase small mb-3">Institutional Details</h6>
+            <div class="small text-light d-flex flex-column gap-3">
+                <div><span class="text-secondary d-block">Official Email:</span><span id="offcanvasEmail">info@schoolalarm.online</span></div>
+                <div><span class="text-secondary d-block">Affiliation:</span><span id="offcanvasAffiliation">Affiliated to Board</span></div>
+                <div><span class="text-secondary d-block">Helpline:</span><span id="offcanvasPhone">+91 7079090740</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. MAIN NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-main" id="sec-navbar">
+        <div class="container-fluid px-lg-5 px-3 position-relative">
+            <button class="btn-inline-pencil" style="top:10px; left:6px;" onclick="window.triggerInlineEdit('navbar-brand')"><i class="fas fa-pencil-alt"></i></button>
+            <button class="navbar-toggler border-0 me-2 p-1 order-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <i class="fas fa-bars fa-lg text-dark"></i>
+            </button>
+            
+            <a class="navbar-brand d-flex align-items-center gap-2 gap-sm-3 order-1 me-auto" href="javascript:void(0)" onclick="window.returnToFullLandingPage(event)">
+                <img src="/favicon.png" alt="School Logo" class="school-logo-img" id="schoolLogo">
+                <div>
+                    <h5 class="fw-bold m-0" id="schoolNameHeader">Maple Grove School</h5>
+                    <small class="text-muted d-none d-sm-block" id="schoolTagline" style="font-size: 11px;">Where Bright Futures Begin</small>
+                </div>
+            </a>
+
+            <!-- Dynamic Nav Menu Links -->
+            <div class="collapse navbar-collapse order-2" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-start align-items-lg-center gap-lg-1 py-3 py-lg-0 w-100 justify-content-lg-end" id="dynamicNavLinks">
+                </ul>
+                <div class="ms-lg-3 mt-3 mt-lg-0">
+                    <a href="#enquiry" class="btn-pill-primary">Apply Now</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 3. HERO BANNER SECTION (Maple Grove Warm Editorial Style) -->
+    <section class="hero-template2 position-relative" id="home">
+        <button class="btn-inline-pencil" style="top:25px; left:25px;" onclick="window.triggerInlineEdit('hero')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <h1 class="hero-heading-t2 editorial-font" id="heroHeadline">
+                        Where bright futures <span class="italic-accent">begin.</span>
+                    </h1>
+                    <p class="lead text-light mb-4" id="heroSubtext" style="font-size: 17.5px; max-width: 650px; line-height: 1.7;">
+                        For every classroom that inspires, and every discovery along the journey: championing a place where curiosity grows, passions ignite, and lifelong friendships take root.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="#enquiry" class="btn-pill-primary px-4 py-3" style="font-size: 15px;">
+                            <span>Enrol your child</span> <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                        <a href="#about" class="btn btn-outline-light rounded-pill px-4 py-3 fw-bold" style="font-size: 14.5px;">
+                            Take a Digital Campus Tour
+                        </a>
+                    </div>
+
+                    <!-- 3 Glassmorphism Pills at bottom of Hero -->
+                    <div class="hero-pills-row">
+                        <div class="hero-glass-pill"><i class="fas fa-child text-warning"></i> Kindergarten</div>
+                        <div class="hero-glass-pill"><i class="fas fa-book text-info"></i> Primary Grades 1-6</div>
+                        <div class="hero-glass-pill"><i class="fas fa-palette text-danger"></i> Arts & Sports</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. FLOATING QUICK ACTION CARDS RIBBON -->
+    <div class="ribbon-features-wrap position-relative" id="sec-quick-ribbon">
+        <div class="container-fluid px-lg-5">
+            <div class="row g-3">
+                <div class="col-lg-3 col-6">
+                    <a href="#about" class="ribbon-card">
+                        <div class="ribbon-icon-box"><i class="fas fa-compass"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-0">Tour our school</h6>
+                            <small class="text-muted" style="font-size: 11px;">Explore campus & labs</small>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <a href="#academics" class="ribbon-card">
+                        <div class="ribbon-icon-box" style="background:#ecfdf5; color:#059669;"><i class="fas fa-award"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-0">Academic Wings</h6>
+                            <small class="text-muted" style="font-size: 11px;">Montessori to Grade 12</small>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <a href="#enquiry" class="ribbon-card">
+                        <div class="ribbon-icon-box" style="background:#fef3c7; color:#d97706;"><i class="fas fa-calendar-check"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-0">Admissions 2026</h6>
+                            <small class="text-muted" style="font-size: 11px;">Enrolment open now</small>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-lg-3 col-6">
+                    <a href="#facilities" class="ribbon-card">
+                        <div class="ribbon-icon-box" style="background:#f3e8ff; color:#7c3aed;"><i class="fas fa-bus"></i></div>
+                        <div>
+                            <h6 class="fw-bold mb-0">Safe Transport</h6>
+                            <small class="text-muted" style="font-size: 11px;">GPS tracking on mobile</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. TWO-COLUMN STORY SECTION ("A place to belong. A place to become.") -->
+    <section class="story-section position-relative" id="about">
+        <button class="btn-inline-pencil" style="top:25px; left:25px;" onclick="window.triggerInlineEdit('about')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill mb-3" style="font-size: 11px;">CAMPUS CULTURE</span>
+                    <h2 class="editorial-font display-5 mb-4 text-white">
+                        A place to belong.<br/>A place to <span class="italic-accent">become.</span>
+                    </h2>
+                    <p class="text-light lead mb-4" id="principalMsg" style="font-size: 17px; line-height: 1.8; opacity: 0.9;">
+                        "Education is not merely the acquisition of knowledge; it is the ignition of curiosity, the nurturing of empathy, and the empowerment of character. At our institution, we strive to build a secure, engaging environment where every child discovers their unique potential."
+                    </p>
+                    <div class="d-flex align-items-center gap-3">
+                        <a href="#enquiry" class="btn-pill-primary px-4 py-2">
+                            <span>Discover More</span> <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 position-relative">
+                    <div class="story-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80" alt="Students & Teacher" class="w-100" id="principalPhoto" style="max-height: 480px; object-fit: cover;">
+                        <div class="story-floating-badge">
+                            <i class="fas fa-certificate fa-lg text-dark"></i>
+                            <div>
+                                <span class="d-block" id="principalName">Dr. Sunita Sharma</span>
+                                <small class="fw-normal text-muted" id="principalTitle">Principal & Academic Director</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. CAMPUS NEWS / ACTIVITIES GRID ("Good things are growing.") -->
+    <section class="py-5 position-relative" id="facilities" style="background:#fcfcfd;">
+        <button class="btn-inline-pencil" style="top:20px; left:20px;" onclick="window.triggerInlineEdit('facilities')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5 py-4">
+            <div class="d-flex justify-content-between align-items-end mb-5 flex-wrap gap-2">
+                <div>
+                    <span class="news-tag d-block mb-1">STUDENT LIFE AT OUR SCHOOL</span>
+                    <h2 class="editorial-font display-6 fw-bold m-0 text-dark">
+                        Good things are <span class="italic-accent">growing.</span>
+                    </h2>
+                </div>
+                <a href="#gallery" class="btn btn-outline-dark rounded-pill px-4 py-2 small fw-bold">
+                    View All Stories &rarr;
+                </a>
+            </div>
+
+            <div class="row g-4" id="facilitiesGrid">
+                <!-- 3 Dynamic Story Cards -->
+                <div class="col-lg-4 col-md-6">
+                    <div class="news-card-t2">
+                        <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80" class="news-card-img" alt="Gardening">
+                        <div class="p-4">
+                            <span class="badge bg-success-subtle text-success mb-2 fw-bold" style="font-size:10px;">ENVIRONMENT</span>
+                            <h5 class="fw-bold text-dark mb-2">Gardening, 3 spikes taller.</h5>
+                            <p class="text-muted small mb-3">Hands-on organic farming, sensory botany exploration, and sustainable ecology projects.</p>
+                            <a href="#gallery" class="fw-bold text-danger text-decoration-none small">Read Story &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="news-card-t2">
+                        <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=600&q=80" class="news-card-img" alt="Library">
+                        <div class="p-4">
+                            <span class="badge bg-primary-subtle text-primary mb-2 fw-bold" style="font-size:10px;">ACADEMICS</span>
+                            <h5 class="fw-bold text-dark mb-2">A new chapter in everyday.</h5>
+                            <p class="text-muted small mb-3">Acoustic modern library spaces where quiet curiosity turns into boundless exploration.</p>
+                            <a href="#gallery" class="fw-bold text-danger text-decoration-none small">Read Story &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="news-card-t2">
+                        <img src="https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&w=600&q=80" class="news-card-img" alt="Art Workshop">
+                        <div class="p-4">
+                            <span class="badge bg-warning-subtle text-warning-emphasis mb-2 fw-bold" style="font-size:10px;">CREATIVE ARTS</span>
+                            <h5 class="fw-bold text-dark mb-2">Go out in teamwork.</h5>
+                            <p class="text-muted small mb-3">Vibrant visual arts studios, clay modeling, pottery, and collaborative cultural murals.</p>
+                            <a href="#gallery" class="fw-bold text-danger text-decoration-none small">Read Story &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. UPCOMING EVENTS & CALENDAR ("Days to look forward to.") -->
+    <section class="py-5 position-relative" id="notices" style="background: #f0f4f8;">
+        <button class="btn-inline-pencil" style="top:20px; left:20px;" onclick="window.triggerInlineEdit('notices')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5 py-4">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-5">
+                    <span class="news-tag d-block mb-1">DATES FOR YOUR CALENDAR</span>
+                    <h2 class="editorial-font display-6 fw-bold mb-3 text-dark">
+                        Days to look <span class="italic-accent">forward to.</span>
+                    </h2>
+                    <p class="text-muted mb-4 small" style="line-height: 1.7;">
+                        Stay synchronized with our vibrant institutional schedule. From science symposiums and athletic meets to parent-teacher conferences.
+                    </p>
+                    <a href="javascript:void(0)" class="btn btn-outline-dark rounded-pill px-4 py-2 fw-bold small">
+                        <i class="fas fa-file-pdf me-2 text-danger"></i> Academic Schedule (PDF)
+                    </a>
+                </div>
+
+                <div class="col-lg-7" id="noticeListContainer">
+                    <div class="event-row-card">
+                        <div class="event-date-box">
+                            <span class="event-date-num">16</span>
+                            <span class="event-date-month">Nov</span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="fw-bold text-dark mb-0">Fall Book Festival & Author Visit</h6>
+                            <small class="text-muted">Main Auditorium &bull; 10:00 AM - 2:00 PM</small>
+                        </div>
+                        <i class="fas fa-arrow-right text-muted"></i>
+                    </div>
+
+                    <div class="event-row-card">
+                        <div class="event-date-box">
+                            <span class="event-date-num">20</span>
+                            <span class="event-date-month">Nov</span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="fw-bold text-dark mb-0">Mid-Term Academic Progress Review</h6>
+                            <small class="text-muted">Parent-Teacher Interaction Desk</small>
+                        </div>
+                        <i class="fas fa-arrow-right text-muted"></i>
+                    </div>
+
+                    <div class="event-row-card">
+                        <div class="event-date-box">
+                            <span class="event-date-num">23</span>
+                            <span class="event-date-month">Nov</span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="fw-bold text-dark mb-0">Kindergarten STEM Curiosity Day</h6>
+                            <small class="text-muted">Junior Innovation Quad</small>
+                        </div>
+                        <i class="fas fa-arrow-right text-muted"></i>
+                    </div>
+
+                    <div class="event-row-card">
+                        <div class="event-date-box">
+                            <span class="event-date-num">28</span>
+                            <span class="event-date-month">Nov</span>
+                        </div>
+                        <div class="flex-grow-1">
+                            <h6 class="fw-bold text-dark mb-0">Inter-House Athletic & Sports Meet</h6>
+                            <small class="text-muted">Outdoor Athletic Complex</small>
+                        </div>
+                        <i class="fas fa-arrow-right text-muted"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. COMMUNITY & CAMPUS LIFE ("A school is more than a building.") -->
+    <section class="py-5 position-relative" id="sec-community" style="background:#ffffff;">
+        <div class="container-fluid px-lg-5 py-4">
+            <div class="position-relative rounded-4 overflow-hidden" style="min-height: 480px; background: url('https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1600&q=80') center/cover no-repeat;">
+                <div class="p-4 p-md-5 bg-white rounded-4 shadow-lg position-relative position-md-absolute" style="max-width: 440px; top: 40px; left: 40px;">
+                    <span class="news-tag d-block mb-1">COMMUNITY IMPACT</span>
+                    <h3 class="editorial-font fw-bold text-dark mb-3">
+                        A school is more than a building. <span class="italic-accent">It's all of us.</span>
+                    </h3>
+                    <p class="text-muted small mb-4" style="line-height: 1.7;">
+                        A close-knit community of passionate educators, committed parents, and enthusiastic young learners coming together to create lasting memories.
+                    </p>
+                    <a href="#about" class="btn btn-outline-dark rounded-pill px-4 py-2 small fw-bold">
+                        Meet Our Team &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. PARENT PARTNERSHIP STRIP ("Your family. Our priority.") -->
+    <section class="py-5 position-relative" id="sec-priority" style="background: #0f172a; color: #ffffff;">
+        <div class="container-fluid px-lg-5 py-4">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-5">
+                    <span class="badge bg-warning text-dark fw-bold px-3 py-2 rounded-pill mb-3" style="font-size: 11px;">PARENT PARTNERSHIP</span>
+                    <h2 class="editorial-font display-6 fw-bold mb-3">
+                        Your family.<br/><span class="italic-accent">Our priority.</span>
+                    </h2>
+                    <p class="text-light small mb-0" style="opacity: 0.85; line-height: 1.8;">
+                        Direct access, continuous communication, and complete transparency. Through our mobile ERP portal, parents enjoy instant attendance tracking, fee receipts, and real-time report cards.
+                    </p>
+                </div>
+                <div class="col-lg-7">
+                    <div class="d-flex flex-column gap-3">
+                        <div class="p-3 rounded-3 border border-secondary d-flex justify-content-between align-items-center" style="background: rgba(255,255,255,0.04);">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="fas fa-mobile-alt fa-lg text-warning"></i>
+                                <div>
+                                    <h6 class="fw-bold text-white mb-0">Daily Mobile App Updates</h6>
+                                    <small class="text-muted">Attendance, assignments & circulars on your phone</small>
+                                </div>
+                            </div>
+                            <i class="fas fa-arrow-right text-warning"></i>
+                        </div>
+
+                        <div class="p-3 rounded-3 border border-secondary d-flex justify-content-between align-items-center" style="background: rgba(255,255,255,0.04);">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="fas fa-shield-alt fa-lg text-info"></i>
+                                <div>
+                                    <h6 class="fw-bold text-white mb-0">Child Safety First</h6>
+                                    <small class="text-muted">Full campus CCTV and verified female attendants on buses</small>
+                                </div>
+                            </div>
+                            <i class="fas fa-arrow-right text-info"></i>
+                        </div>
+
+                        <div class="p-3 rounded-3 border border-secondary d-flex justify-content-between align-items-center" style="background: rgba(255,255,255,0.04);">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="fas fa-comments fa-lg text-success"></i>
+                                <div>
+                                    <h6 class="fw-bold text-white mb-0">Open Door Policy</h6>
+                                    <small class="text-muted">Direct appointment booking with principal & educators</small>
+                                </div>
+                            </div>
+                            <i class="fas fa-arrow-right text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. ONLINE ADMISSION ENQUIRY FORM -->
+    <section class="py-5 position-relative" id="enquiry" style="background: #fdfbf7;">
+        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('enquiry-info')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5 py-4">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-5">
+                    <span class="news-tag d-block mb-1">ONLINE ADMISSIONS</span>
+                    <h2 class="editorial-font display-6 fw-bold mb-3 text-dark" id="enqLeadTitle">
+                        There's a place for <span class="italic-accent">you</span> with us.
+                    </h2>
+                    <p class="text-muted mb-4 small" id="enqLeadText" style="line-height: 1.8;">
+                        Admissions for the upcoming academic session are now open. Submit prospective student details and our admissions coordinator will arrange your interactive campus discovery session.
+                    </p>
+                    <div class="p-3 rounded-3 border bg-white d-flex align-items-center gap-3">
+                        <i class="fas fa-headset fa-2x text-danger"></i>
+                        <div>
+                            <h6 class="fw-bold text-dark m-0">Admissions Help Desk</h6>
+                            <small class="text-muted" id="enqHelplineText">+91 7079090740</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="p-4 p-md-5 bg-white rounded-4 shadow-sm border">
+                        <h4 class="editorial-font fw-bold text-dark mb-1">Admission Registration Form</h4>
+                        <p class="text-muted small mb-4">Please submit prospective candidate information.</p>
+
+                        <form id="admissionEnquiryForm" onsubmit="window.submitAdmissionEnquiry(event)">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Student Full Name *</label>
+                                    <input type="text" class="form-control form-control-custom" id="enqStudentName" placeholder="Candidate's Name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Applying For Class *</label>
+                                    <select class="form-select form-control-custom" id="enqClass" required>
+                                        <option value="">-- Loading Classes... --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Parent / Guardian Name *</label>
+                                    <input type="text" class="form-control form-control-custom" id="enqParentName" placeholder="Parent / Guardian Name" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Contact Mobile Number *</label>
+                                    <input type="tel" class="form-control form-control-custom" id="enqMobile" placeholder="10-digit Mobile No." pattern="[0-9]{10}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Email Address (Optional)</label>
+                                    <input type="email" class="form-control form-control-custom" id="enqEmail" placeholder="parent@gmail.com">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Current / Previous School</label>
+                                    <input type="text" class="form-control form-control-custom" id="enqPrevSchool" placeholder="Last School Attended">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label-custom">Questions / Remarks</label>
+                                    <textarea class="form-control" id="enqMessage" rows="2" style="border-radius:8px; font-size:13px;" placeholder="Transport requirement, queries..."></textarea>
+                                </div>
+                                <div class="col-12 pt-2">
+                                    <button type="submit" class="btn-pill-primary w-100 py-3 justify-content-center" id="btnSubmitEnquiry" style="font-size:14.5px;">
+                                        Submit Admission Enquiry &rarr;
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. DYNAMIC INLINE-ORDERED SECTIONS WILL RE-ORDER HERE -->
+    <div id="dynamicSectionsAnchor"></div>
+
+    <!-- 12. CLEAN MINIMAL FOOTER -->
+    <footer id="sec-footer">
+        <div class="container-fluid px-lg-5">
+            <div class="row g-4 justify-content-between">
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <img src="/favicon.png" alt="Logo" style="height:36px;" id="footerLogo">
+                        <h5 class="fw-bold m-0 text-dark" id="footerSchoolName">Maple Grove School</h5>
+                    </div>
+                    <p class="small text-muted mb-3" id="footerAboutDesc">
+                        Where bright futures begin. An institution dedicated to academic achievement, character development, and holistic student growth.
+                    </p>
+                    <div class="small text-muted">
+                        <p class="mb-1"><i class="fas fa-map-marker-alt me-2 text-danger"></i><span id="footerAddr">Main Campus Road</span></p>
+                        <p class="mb-1"><i class="fas fa-phone-alt me-2 text-danger"></i><span id="footerPhone">+91 7079090740</span></p>
+                        <p class="mb-0"><i class="fas fa-envelope me-2 text-danger"></i><span id="footerMail">info@schoolalarm.online</span></p>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-6">
+                    <h6>Quick Links</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2 small" id="footerQuickLinksList">
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-6">
+                    <h6>Institutional Access</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2 small">
+                        <li><a href="https://student.schoolalarm.online">Student & Parent Portal</a></li>
+                        <li><a href="https://app.schoolalarm.online">Teacher & Staff Login</a></li>
+                        <li><a href="#notices">Notice Board & Dates</a></li>
+                        <li><a href="#enquiry">Online Registration</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3">
+                    <h6>Office Hours</h6>
+                    <p class="small text-muted mb-2"><i class="fas fa-clock text-warning me-2"></i><span id="footerTimingText">Mon - Sat: 8:00 AM - 3:00 PM</span></p>
+                    <div class="mt-3">
+                        <a href="javascript:void(0)" onclick="window.openEditorModal()" class="text-secondary small text-decoration-none">
+                            <i class="fas fa-lock me-1"></i> Web Editor Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-divider d-flex justify-content-between align-items-center flex-wrap gap-2 text-muted small mt-5 pt-3">
+                <div>&copy; 2026 <span id="copySchoolName">Maple Grove School</span>. All rights reserved.</div>
+                <div>Powered by <a href="https://schoolalarm.online" class="fw-bold text-dark">School Alarm ERP</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp -->
+    <a href="https://wa.me/917079090740" target="_blank" class="gadget-whatsapp" id="gadget-whatsapp" title="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+    <a href="#enquiry" class="gadget-quick-enquiry" id="gadget-floating-enquiry">
+        <i class="fas fa-edit me-1"></i> ENROL NOW
+    </a>
+
+    <!-- Floating Dock -->
+    <div class="editor-floating-dock" id="editorDockToolbar">
+        <button class="btn-dock-studio" onclick="window.openCustomizerDrawer()" type="button">
+            <i class="fas fa-palette fa-lg"></i> Website Studio
+        </button>
+        <button class="btn-dock-logout" onclick="window.doEditorLogout()" type="button" title="Logout Editor Session">
+            <i class="fas fa-sign-out-alt me-1"></i> Logout
+        </button>
+    </div>
+
+    <!-- Backend Secured Editor Modal -->
+    <div class="modal fade" id="editorLoginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white p-3 border-0">
+                    <h6 class="modal-title fw-bold"><i class="fas fa-user-shield me-2 text-warning"></i>Web Editor Login</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form onsubmit="window.handleEditorAuth(event)">
+                        <div class="mb-3">
+                            <label class="form-label-custom">Editor ID</label>
+                            <input type="text" class="form-control form-control-custom" id="txtEditorId" placeholder="Enter ID" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom">Password</label>
+                            <input type="password" class="form-control form-control-custom" id="txtEditorPass" placeholder="Enter Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" id="btnDoEditorLogin">
+                            Login & Edit
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Website Studio Drawer (520px) -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="liveCustomizerDrawer" style="width: 520px; max-width: 95vw;">
+        <div class="offcanvas-header bg-dark text-white p-3">
+            <h6 class="offcanvas-title fw-bold"><i class="fas fa-sliders-h text-warning me-2"></i>Live Website Studio</h6>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-4">
+            <ul class="nav nav-pills nav-fill mb-3" id="studioTabs">
+                <li class="nav-item"><button class="nav-link active small py-1" data-bs-toggle="pill" data-bs-target="#tabTheme">Colors</button></li>
+                <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabNav">Menu Builder</button></li>
+                <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabSections">Sections & Styles</button></li>
+                <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabFooter">Footer</button></li>
+            </ul>
+
+            <div class="tab-content border-top pt-3">
+                <!-- Tab 1: Theme -->
+                <div class="tab-pane fade show active" id="tabTheme">
+                    <label class="form-label-custom mb-2">Preset Brand Primary Color</label>
+                    <div class="d-flex gap-2 mb-3">
+                        <div class="color-dot" style="background:#be123c;" onclick="window.applyLiveThemeColors('#be123c', null, null, null)" title="Rose Crimson"></div>
+                        <div class="color-dot" style="background:#0284c7;" onclick="window.applyLiveThemeColors('#0284c7', null, null, null)" title="Ocean Blue"></div>
+                        <div class="color-dot" style="background:#059669;" onclick="window.applyLiveThemeColors('#059669', null, null, null)" title="Emerald Green"></div>
+                        <div class="color-dot" style="background:#7c3aed;" onclick="window.applyLiveThemeColors('#7c3aed', null, null, null)" title="Royal Purple"></div>
+                        <div class="color-dot" style="background:#c2410c;" onclick="window.applyLiveThemeColors('#c2410c', null, null, null)" title="Warm Terracotta"></div>
+                    </div>
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label-custom">Navbar BG</label>
+                            <input type="color" class="form-control form-control-color w-100" id="inNavBgColor" value="#ffffff" onchange="window.applyLiveThemeColors(null, this.value, null, null)">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label-custom">Navbar Text</label>
+                            <input type="color" class="form-control form-control-color w-100" id="inNavTextColor" value="#1e293b" onchange="window.applyLiveThemeColors(null, null, this.value, null)">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Menu Builder -->
+                <div class="tab-pane fade" id="tabNav">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label-custom m-0">Menu Structure</label>
+                        <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="window.promptAddNewMenuItem()">+ Add Item</button>
+                    </div>
+                    <div class="list-group mb-3" id="studioMenuList"></div>
+                </div>
+
+                <!-- Tab 3: Sections & Styles -->
+                <div class="tab-pane fade" id="tabSections">
+                    <label class="form-label-custom mb-2">Section Order & Background Colors</label>
+                    <div class="d-flex flex-column gap-2 mb-3" id="studioSectionManagerList"></div>
+                </div>
+
+                <!-- Tab 4: Footer -->
+                <div class="tab-pane fade" id="tabFooter">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label-custom m-0">Footer Links</label>
+                        <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="window.promptAddFooterLink()">+ Add Link</button>
+                    </div>
+                    <div class="list-group mb-3" id="studioFooterLinkList"></div>
+                    <label class="form-label-custom mt-3">School Office Operating Hours</label>
+                    <input type="text" class="form-control form-control-sm mb-3" id="inFooterTiming" value="Mon - Sat: 8:00 AM - 3:00 PM">
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-success w-100 py-3 fw-bold shadow mt-4" id="btnSaveLiveSettings" onclick="window.saveLiveWebsiteSettings()">
+                <i class="fas fa-cloud-upload-alt me-2"></i> SAVE LIVE SETTINGS
+            </button>
+        </div>
+    </div>
+
+    <!-- Dual Mode Universal Modal -->
+    <div class="modal fade" id="universalSectionEditModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+                    <h6 class="modal-title fw-bold" id="editModalTitle">Edit Component</h6>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-warning active fw-bold py-1 px-3" id="btnModeVisual" onclick="window.switchEditorModalMode('visual')" type="button">
+                            <i class="fas fa-edit me-1"></i> Visual Mode
+                        </button>
+                        <button class="btn btn-sm btn-outline-light fw-bold py-1 px-3" id="btnModeRawHtml" onclick="window.switchEditorModalMode('html')" type="button">
+                            <i class="fas fa-code me-1"></i> Raw HTML Mode
+                        </button>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="modalVisualContainer">
+                        <div id="modalDynamicFieldsContainer"></div>
+                    </div>
+                    <div id="modalHtmlContainer" style="display: none;">
+                        <label class="form-label-custom text-primary"><i class="fas fa-code me-1"></i>Custom HTML / CSS Code:</label>
+                        <textarea class="form-control font-monospace" id="inRawHtmlCode" rows="12" style="font-size: 12.5px; background: #0f172a; color: #38bdf8;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer p-3 border-0">
+                    <button type="button" class="btn btn-primary w-100 fw-bold py-2 shadow-sm" onclick="window.applyInlineModalData()">
+                        Apply & Update Live
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ⚡ Multi-School Engine & Live CMS Script for Template 2 -->
+    <script>
+        let activeSchoolId = "";
+        let currentModalMode = "visual";
+        let activeEditTarget = "";
+        let isDedicatedPageMode = false;
+
+        let websiteConfig = {
+            ThemeConfig: {
+                primaryColor: "#be123c",
+                secondaryColor: "#0f172a",
+                navBgColor: "#ffffff",
+                navTextColor: "#1e293b",
+                footerBgColor: "#ffffff"
+            },
+            NavMenu: [
+                { id: "m_home", label: "Home", link: "#home", target: "home", parentId: "", visible: true },
+                { id: "m_about", label: "About", link: "#about", target: "about", parentId: "", visible: true },
+                { id: "m_academics", label: "Academics", link: "#academics", target: "academics", parentId: "", visible: true },
+                { id: "m_facilities", label: "Facilities", link: "#facilities", target: "facilities", parentId: "", visible: true },
+                { id: "m_notices", label: "Calendar & Dates", link: "#notices", target: "notices", parentId: "", visible: true },
+                { id: "m_contact", label: "Contact", link: "#contact", target: "contact", parentId: "", visible: true }
+            ],
+            FooterLinks: [
+                { label: "Our Story", link: "#about" },
+                { label: "Curriculum", link: "#academics" },
+                { label: "Campus Facilities", link: "#facilities" },
+                { label: "Admission Registration", link: "#enquiry" }
+            ],
+            SectionOrder: [
+                { id: "home", label: "Hero Banner", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "sec-quick-ribbon", label: "Quick Action Ribbon", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "about", label: "Story Feature & Principal", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "facilities", label: "News & Campus Life", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "notices", label: "Upcoming Events & Dates", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "sec-community", label: "Community & Life Banner", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "sec-priority", label: "Parent Partnership Strip", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "enquiry", label: "Enrolment Form", visible: true, bg: "", bgImg: "", textColor: "" }
+            ],
+            SectionsData: {
+                customPages: {}
+            }
+        };
+
+        // 1. Initial Loader
+        document.addEventListener("DOMContentLoaded", async function() {
+            const host = window.location.hostname.toLowerCase();
+            const urlParams = new URLSearchParams(window.location.search);
+            const querySchool = urlParams.get('school');
+
+            let searchId = querySchool || "";
+            if (!searchId) {
+                if (host.startsWith('demo.')) {
+                    searchId = "169701";
+                } else if (host.includes('.') && !host.startsWith('www.')) {
+                    searchId = host.split('.')[0];
+                }
+            }
+
+            try {
+                let schoolRecord = null;
+                if (searchId && searchId !== "demo") {
+                    const { data } = await db.from('Schools').select('*').eq('SchoolID', searchId).maybeSingle();
+                    schoolRecord = data;
+                }
+                if (!schoolRecord) {
+                    const { data: fb } = await db.from('Schools').select('*').eq('Status', 'ACTIVE').limit(1).maybeSingle();
+                    schoolRecord = fb;
+                }
+
+                if (schoolRecord) {
+                    activeSchoolId = schoolRecord.SchoolID;
+                    const sName = schoolRecord.SchoolName || "Maple Grove School";
+                    const sPhone = schoolRecord.Phone || "+91 7079090740";
+                    const sMail = schoolRecord.Email || "info@schoolalarm.online";
+                    const sAddr = schoolRecord.Address ? `${schoolRecord.Address}, ${schoolRecord.City || ''}` : "Main Campus Road";
+
+                    document.getElementById('siteTitle').innerText = `${sName} | Where Bright Futures Begin`;
+                    document.getElementById('schoolNameHeader').innerText = sName;
+                    document.getElementById('footerSchoolName').innerText = sName;
+                    document.getElementById('copySchoolName').innerText = sName;
+
+                    if (schoolRecord.SchoolLogo) {
+                        document.getElementById('schoolLogo').src = schoolRecord.SchoolLogo;
+                        document.getElementById('footerLogo').src = schoolRecord.SchoolLogo;
+                    }
+
+                    document.getElementById('topPhone').innerText = sPhone;
+                    document.getElementById('topPhoneMobile').innerText = sPhone;
+                    document.getElementById('offcanvasPhone').innerText = sPhone;
+                    document.getElementById('footerPhone').innerText = sPhone;
+                    document.getElementById('enqHelplineText').innerText = sPhone;
+                    document.getElementById('mobPhoneLink').href = `tel:${sPhone.replace(/[^0-9+]/g, '')}`;
+
+                    const cleanPhone = sPhone.replace(/[^0-9]/g, '');
+                    const waNum = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+                    document.getElementById('gadget-whatsapp').href = `https://wa.me/${waNum}?text=Hello%20${encodeURIComponent(sName)},%20I%20have%20an%20admission%20enquiry.`;
+
+                    document.getElementById('topEmail').innerText = sMail;
+                    document.getElementById('offcanvasEmail').innerText = sMail;
+                    document.getElementById('footerMail').innerText = sMail;
+                    document.getElementById('footerAddr').innerText = sAddr;
+
+                    window.loadSchoolClassesFromConfig(activeSchoolId);
+                    await window.loadCustomWebsiteConfig(activeSchoolId);
+                }
+            } catch(e) {
+                console.warn("Dynamic branding load skipped:", e);
+            } finally {
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+            }
+
+            if (sessionStorage.getItem("website_editor_auth") === "true") {
+                window.enableEditorModeUI();
+            }
+
+            // Auto-hide floating dock when drawer opens
+            const studioDrawerEl = document.getElementById('liveCustomizerDrawer');
+            if (studioDrawerEl) {
+                studioDrawerEl.addEventListener('show.bs.offcanvas', () => {
+                    const dock = document.getElementById('editorDockToolbar');
+                    if (dock) dock.style.display = 'none';
+                });
+                studioDrawerEl.addEventListener('hidden.bs.offcanvas', () => {
+                    if (sessionStorage.getItem("website_editor_auth") === "true") {
+                        const dock = document.getElementById('editorDockToolbar');
+                        if (dock) dock.style.display = 'inline-flex';
+                    }
+                });
+            }
+
+            // ScrollSpy Listener
+            window.addEventListener('scroll', () => {
+                if (isDedicatedPageMode) return;
+                const sections = document.querySelectorAll('section[id]');
+                const scrollPos = window.scrollY + 200;
+
+                sections.forEach(sec => {
+                    const top = sec.offsetTop;
+                    const height = sec.offsetHeight;
+                    const id = sec.getAttribute('id');
+                    if (scrollPos >= top && scrollPos < top + height) {
+                        document.querySelectorAll('.navbar-nav .nav-link').forEach(link => {
+                            const href = link.getAttribute('href');
+                            if (href === `#${id}`) {
+                                link.classList.add('active');
+                            } else {
+                                link.classList.remove('active');
+                            }
+                        });
+                    }
+                });
+            });
+
+            if (window.location.hash) {
+                const targetId = window.location.hash.replace(/^#\/?/, '').trim();
+                setTimeout(() => window.handleNavClick(targetId), 400);
+            }
+        });
+
+        // Dedicated Page Mode Navigation
+        window.handleNavClick = function(targetKey) {
+            const cleanTarget = (targetKey || "").replace(/^#/, '').toLowerCase();
+            if (!cleanTarget || cleanTarget === "home") {
+                window.returnToFullLandingPage();
+                return;
+            }
+
+            const secConfig = websiteConfig.SectionOrder.find(s => s.id === cleanTarget);
+            
+            if (secConfig && secConfig.visible === false) {
+                window.showDedicatedPageView(cleanTarget);
+            } else {
+                if (isDedicatedPageMode) {
+                    window.returnToFullLandingPage(null, cleanTarget);
+                } else {
+                    const el = document.getElementById(cleanTarget);
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        };
+
+        window.showDedicatedPageView = function(sectionId) {
+            isDedicatedPageMode = true;
+
+            websiteConfig.SectionOrder.forEach(sec => {
+                const el = document.getElementById(sec.id);
+                if (el) el.style.display = 'none';
+            });
+
+            const targetEl = document.getElementById(sectionId);
+            if (targetEl) targetEl.style.display = 'block';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.returnToFullLandingPage = function(e, scrollToId) {
+            if (e) e.preventDefault();
+            isDedicatedPageMode = false;
+
+            websiteConfig.SectionOrder.forEach(sec => {
+                const el = document.getElementById(sec.id);
+                if (el) el.style.display = (sec.visible !== false) ? '' : 'none';
+            });
+
+            if (scrollToId) {
+                setTimeout(() => {
+                    const el = document.getElementById(scrollToId);
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            } else {
+                if (window.location.hash) {
+                    history.pushState("", document.title, window.location.pathname + window.location.search);
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            document.querySelectorAll('.navbar-nav .nav-link').forEach(l => l.classList.remove('active'));
+            const homeLink = document.querySelector('.navbar-nav a[href="#home"]') || document.querySelector('.navbar-nav .nav-link');
+            if (homeLink) homeLink.classList.add('active');
+        };
+
+        // 2. Class Replicator
+        window.loadSchoolClassesFromConfig = async function(schId) {
+            const classSelect = document.getElementById('enqClass');
+            if (!classSelect) return;
+
+            try {
+                const { data: configs } = await db
+                    .from('School_Configs')
+                    .select('Value')
+                    .eq('SchoolID', schId)
+                    .eq('Category', 'Class')
+                    .order('Id', { ascending: true });
+
+                if (!configs || configs.length === 0) {
+                    classSelect.innerHTML = `<option value="Kindergarten">Kindergarten</option><option value="Grade 1">Grade 1</option><option value="Grade 5">Grade 5</option>`;
+                    return;
+                }
+
+                configs.sort((a, b) => (a.Value || '').localeCompare(b.Value || '', undefined, { numeric: true, sensitivity: 'base' }));
+                let optionsHtml = '<option value="">-- Select Grade / Class --</option>';
+                configs.forEach(c => {
+                    if (c.Value) optionsHtml += `<option value="${c.Value}">${c.Value}</option>`;
+                });
+                classSelect.innerHTML = optionsHtml;
+            } catch(e) {
+                console.warn("Class config load error:", e);
+            }
+        };
+
+        // 3. Load Custom Website Config
+        window.loadCustomWebsiteConfig = async function(schId) {
+            try {
+                const { data: webData } = await db
+                    .from('School_Websites')
+                    .select('*')
+                    .eq('SchoolID', schId)
+                    .maybeSingle();
+
+                if (webData) {
+                    if (webData.ThemeConfig) {
+                        websiteConfig.ThemeConfig = webData.ThemeConfig;
+                        window.applyLiveThemeColors(
+                            webData.ThemeConfig.primaryColor,
+                            webData.ThemeConfig.navBgColor,
+                            webData.ThemeConfig.navTextColor,
+                            webData.ThemeConfig.footerBgColor
+                        );
+                    }
+
+                    if (webData.NavMenu && Array.isArray(webData.NavMenu)) {
+                        webData.NavMenu.forEach((m, idx) => {
+                            if (!m.id) m.id = "m_" + (m.target || idx) + "_" + idx;
+                            if (typeof m.parentId === 'undefined') m.parentId = "";
+                        });
+                        websiteConfig.NavMenu = webData.NavMenu;
+                    }
+                    window.renderNavbarMenu();
+
+                    if (webData.FooterLinks && Array.isArray(webData.FooterLinks)) {
+                        websiteConfig.FooterLinks = webData.FooterLinks;
+                    }
+                    window.renderFooterLinks();
+
+                    if (webData.SectionOrder && Array.isArray(webData.SectionOrder)) {
+                        websiteConfig.SectionOrder = webData.SectionOrder;
+                    }
+
+                    if (webData.SectionsData && typeof webData.SectionsData === 'object') {
+                        websiteConfig.SectionsData = Object.assign({}, websiteConfig.SectionsData, webData.SectionsData);
+
+                        if (webData.SectionsData.hero) {
+                            const h = webData.SectionsData.hero;
+                            if (h.headline) document.getElementById('heroHeadline').innerHTML = h.headline;
+                            if (h.subtext) document.getElementById('heroSubtext').innerText = h.subtext;
+                        }
+
+                        if (webData.SectionsData.about) {
+                            const a = webData.SectionsData.about;
+                            if (a.principalName) document.getElementById('principalName').innerText = a.principalName;
+                            if (a.principalTitle) document.getElementById('principalTitle').innerText = a.principalTitle;
+                            if (a.principalMsg) document.getElementById('principalMsg').innerText = `"${a.principalMsg}"`;
+                            if (a.principalPhoto) document.getElementById('principalPhoto').src = a.principalPhoto;
+                        }
+
+                        if (webData.SectionsData.top_info && webData.SectionsData.top_info.affiliation) {
+                            document.getElementById('topAffiliation').innerText = webData.SectionsData.top_info.affiliation;
+                            document.getElementById('offcanvasAffiliation').innerText = webData.SectionsData.top_info.affiliation;
+                        }
+
+                        if (webData.SectionsData.enquiryInfo) {
+                            const eq = webData.SectionsData.enquiryInfo;
+                            if (eq.title) document.getElementById('enqLeadTitle').innerText = eq.title;
+                            if (eq.text) document.getElementById('enqLeadText').innerText = eq.text;
+                        }
+                    }
+
+                    window.applySectionOrdersAndStyles();
+                    window.renderSectionManagerList();
+                } else {
+                    window.renderNavbarMenu();
+                    window.renderFooterLinks();
+                    window.applySectionOrdersAndStyles();
+                    window.renderSectionManagerList();
+                }
+            } catch(err) {
+                console.warn("Website config load error:", err);
+                window.renderNavbarMenu();
+                window.renderFooterLinks();
+                window.applySectionOrdersAndStyles();
+                window.renderSectionManagerList();
+            }
+        };
+
+        // 4. Render Dynamic Navbar Menu (with Sub-menu Support)
+        window.renderNavbarMenu = function() {
+            const container = document.getElementById('dynamicNavLinks');
+            const studioList = document.getElementById('studioMenuList');
+            if (!container) return;
+
+            let navHtml = "";
+            let studioHtml = "";
+
+            const rootItems = websiteConfig.NavMenu.filter(m => !m.parentId || m.parentId === "");
+
+            rootItems.forEach((root, idx) => {
+                const subItems = websiteConfig.NavMenu.filter(m => m.parentId && m.parentId === root.id);
+                const hasSubs = (subItems.length > 0);
+                const isVis = (root.visible !== false);
+
+                if (!hasSubs) {
+                    navHtml += `
+                        <li class="nav-item w-100 w-lg-auto" data-nav-target="${root.target}" style="${isVis ? '' : 'display:none;'}">
+                            <a class="nav-link text-start" href="${root.link}" onclick="window.handleNavClick('${root.target}')">${root.label}</a>
+                        </li>
+                    `;
+                } else {
+                    navHtml += `
+                        <li class="nav-item dropdown w-100 w-lg-auto" style="${isVis ? '' : 'display:none;'}">
+                            <a class="nav-link dropdown-toggle text-start" href="#" role="button" data-bs-toggle="dropdown">${root.label}</a>
+                            <ul class="dropdown-menu">
+                                ${subItems.map(sub => `
+                                    <li style="${sub.visible !== false ? '' : 'display:none;'}">
+                                        <a class="dropdown-item" href="${sub.link}" onclick="window.handleNavClick('${sub.target}')">${sub.label}</a>
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </li>
+                    `;
+                }
+            });
+
+            if (studioList) {
+                websiteConfig.NavMenu.forEach((item, idx) => {
+                    const isSub = !!item.parentId;
+                    const parentName = isSub ? (websiteConfig.NavMenu.find(p => p.id === item.parentId)?.label || "Parent") : "";
+                    const isVis = (item.visible !== false);
+
+                    studioHtml += `
+                        <div class="list-group-item d-flex justify-content-between align-items-center p-2 mb-1 border rounded-2 ${isSub ? 'ms-3 bg-light' : ''}">
+                            <div class="d-flex align-items-center gap-2">
+                                <input type="checkbox" class="form-check-input mt-0" ${isVis ? 'checked' : ''} onchange="window.toggleMenuItemVisibility(${idx}, this.checked)" title="Toggle Visibility">
+                                <span class="small fw-bold ${isVis ? '' : 'text-decoration-line-through text-muted'}">
+                                    ${isSub ? '↳ ' : ''}${item.label}
+                                </span>
+                                ${isSub ? `<span class="badge bg-secondary" style="font-size:9px;">Under: ${parentName}</span>` : ''}
+                            </div>
+                            <div class="d-flex gap-1">
+                                <button class="btn btn-sm btn-light py-0 px-1 border" onclick="window.moveMenuItem(${idx}, -1)">&uarr;</button>
+                                <button class="btn btn-sm btn-light py-0 px-1 border" onclick="window.moveMenuItem(${idx}, 1)">&darr;</button>
+                                <button class="btn btn-sm btn-outline-primary py-0 px-1" onclick="window.openMenuContentEditor('${item.target}')">&#128221; Content</button>
+                                <button class="btn btn-sm btn-light py-0 px-1 border" onclick="window.editMenuItem(${idx})">&#9998;</button>
+                                <button class="btn btn-sm btn-outline-danger py-0 px-1" onclick="window.removeMenuItem(${idx})">&times;</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            container.innerHTML = navHtml;
+            if (studioList) studioList.innerHTML = studioHtml;
+        };
+
+        window.toggleMenuItemVisibility = function(idx, isVis) {
+            websiteConfig.NavMenu[idx].visible = isVis;
+            window.renderNavbarMenu();
+        };
+
+        window.moveMenuItem = function(idx, direction) {
+            const newIdx = idx + direction;
+            if (newIdx < 0 || newIdx >= websiteConfig.NavMenu.length) return;
+            const temp = websiteConfig.NavMenu[idx];
+            websiteConfig.NavMenu[idx] = websiteConfig.NavMenu[newIdx];
+            websiteConfig.NavMenu[newIdx] = temp;
+            window.renderNavbarMenu();
+        };
+
+        window.editMenuItem = function(idx) {
+            const item = websiteConfig.NavMenu[idx];
+            const newName = prompt("Edit Menu Label:", item.label);
+            if (!newName) return;
+            const newLink = prompt("Edit Link / Anchor:", item.link);
+
+            const availableParents = websiteConfig.NavMenu.filter(m => m.id !== item.id && !m.parentId);
+            let pPrompt = "Set Parent Dropdown (Enter 0 for Main Navbar):\n0. Main Navbar\n";
+            availableParents.forEach((p, pIdx) => { pPrompt += `${pIdx + 1}. Under "${p.label}"\n`; });
+            const pChoice = prompt(pPrompt, "0");
+
+            if (pChoice && pChoice !== "0") {
+                const selectedP = availableParents[parseInt(pChoice, 10) - 1];
+                if (selectedP) item.parentId = selectedP.id;
+            } else if (pChoice === "0") {
+                item.parentId = "";
+            }
+
+            item.label = newName.trim();
+            if (newLink) item.link = newLink.trim();
+            window.renderNavbarMenu();
+        };
+
+        window.promptAddNewMenuItem = function() {
+            const label = prompt("Enter Menu Item / Page Name:");
+            if (!label || !label.trim()) return;
+
+            const cleanSlug = label.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const link = "#" + cleanSlug;
+            const itemId = "m_" + cleanSlug + "_" + Date.now();
+
+            const availableParents = websiteConfig.NavMenu.filter(m => !m.parentId);
+            let pPrompt = "Set Placement (Enter 0 for Main Navbar, or number to make it a Sub-menu):\n0. Main Navbar\n";
+            availableParents.forEach((p, pIdx) => { pPrompt += `${pIdx + 1}. Under "${p.label}"\n`; });
+            const pChoice = prompt(pPrompt, "0");
+            let parentId = "";
+            if (pChoice && pChoice !== "0") {
+                const selectedP = availableParents[parseInt(pChoice, 10) - 1];
+                if (selectedP) parentId = selectedP.id;
+            }
+
+            websiteConfig.NavMenu.push({
+                id: itemId,
+                label: label.trim(),
+                link: link,
+                target: cleanSlug,
+                parentId: parentId,
+                visible: true,
+                isCustom: true
+            });
+
+            if (!websiteConfig.SectionsData.customPages) websiteConfig.SectionsData.customPages = {};
+            websiteConfig.SectionsData.customPages[cleanSlug] = {
+                title: label.trim(),
+                badge: "INSTITUTIONAL HIGHLIGHT",
+                content: `Welcome to the ${label.trim()} section. You can customize this content with text, images, videos or raw HTML.`,
+                rawHtml: "",
+                imageUrl: "",
+                videoUrl: ""
+            };
+
+            if (!websiteConfig.SectionOrder.some(s => s.id === cleanSlug)) {
+                websiteConfig.SectionOrder.push({
+                    id: cleanSlug,
+                    label: label.trim(),
+                    visible: true,
+                    isCustom: true,
+                    bg: "",
+                    bgImg: "",
+                    textColor: ""
+                });
+            }
+
+            window.renderNavbarMenu();
+            window.applySectionOrdersAndStyles();
+            window.renderSectionManagerList();
+        };
+
+        window.removeMenuItem = function(idx) {
+            if (websiteConfig.NavMenu.length <= 2) { alert("At least 2 items must remain."); return; }
+            const item = websiteConfig.NavMenu[idx];
+            if (!confirm(`Are you sure you want to delete "${item.label}"?`)) return;
+
+            const removed = websiteConfig.NavMenu.splice(idx, 1)[0];
+            if (removed && removed.target) {
+                if (websiteConfig.SectionsData.customPages) delete websiteConfig.SectionsData.customPages[removed.target];
+                websiteConfig.SectionOrder = websiteConfig.SectionOrder.filter(s => s.id !== removed.target);
+            }
+            window.renderNavbarMenu();
+            window.applySectionOrdersAndStyles();
+            window.renderSectionManagerList();
+        };
+
+        // 5. Sections Manager
+        window.renderSectionManagerList = function() {
+            const listEl = document.getElementById('studioSectionManagerList');
+            if (!listEl) return;
+
+            let html = "";
+            websiteConfig.SectionOrder.forEach((sec, idx) => {
+                const isVis = (sec.visible !== false);
+                html += `
+                    <div class="card p-2 shadow-sm border mb-2">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <div class="form-check form-switch mb-0">
+                                <input class="form-check-input" type="checkbox" ${isVis ? 'checked' : ''} onchange="window.toggleSectionVisibility(${idx}, this.checked)">
+                                <label class="form-check-label small fw-bold">${sec.label}</label>
+                            </div>
+                            <div class="d-flex gap-1">
+                                <button class="btn btn-sm btn-light py-0 px-2 border" onclick="window.moveSection(${idx}, -1)">&uarr;</button>
+                                <button class="btn btn-sm btn-light py-0 px-2 border" onclick="window.moveSection(${idx}, 1)">&darr;</button>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center gap-2 mt-1 flex-wrap">
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="small text-muted" style="font-size:10px;">BG:</span>
+                                <input type="color" class="form-control form-control-color p-0" style="width:24px; height:20px;" value="${sec.bg || '#ffffff'}" onchange="window.changeSectionBgColor(${idx}, this.value)">
+                            </div>
+                            <div class="d-flex align-items-center gap-1">
+                                <span class="small text-muted" style="font-size:10px;">Text:</span>
+                                <input type="color" class="form-control form-control-color p-0" style="width:24px; height:20px;" value="${sec.textColor || '#334155'}" onchange="window.changeSectionTextColor(${idx}, this.value)">
+                            </div>
+                            <button class="btn btn-sm btn-outline-secondary py-0 px-1 small" style="font-size:10px;" onclick="window.promptSectionBgImage(${idx})">BG Image</button>
+                        </div>
+                    </div>
+                `;
+            });
+            listEl.innerHTML = html;
+        };
+
+        window.toggleSectionVisibility = function(idx, isVis) {
+            websiteConfig.SectionOrder[idx].visible = isVis;
+            const sec = websiteConfig.SectionOrder[idx];
+            const el = document.getElementById(sec.id);
+            if (el) el.style.display = isVis ? '' : 'none';
+        };
+
+        window.moveSection = function(idx, direction) {
+            const newIdx = idx + direction;
+            if (newIdx < 0 || newIdx >= websiteConfig.SectionOrder.length) return;
+            const temp = websiteConfig.SectionOrder[idx];
+            websiteConfig.SectionOrder[idx] = websiteConfig.SectionOrder[newIdx];
+            websiteConfig.SectionOrder[newIdx] = temp;
+            window.applySectionOrdersAndStyles();
+            window.renderSectionManagerList();
+        };
+
+        window.changeSectionBgColor = function(idx, color) {
+            websiteConfig.SectionOrder[idx].bg = color;
+            window.applySectionOrdersAndStyles();
+        };
+
+        window.changeSectionTextColor = function(idx, color) {
+            websiteConfig.SectionOrder[idx].textColor = color;
+            window.applySectionOrdersAndStyles();
+        };
+
+        window.promptSectionBgImage = function(idx) {
+            const currentImg = websiteConfig.SectionOrder[idx].bgImg || "";
+            const url = prompt("Enter Background Image URL for Section:", currentImg);
+            if (url !== null) {
+                websiteConfig.SectionOrder[idx].bgImg = url.trim();
+                window.applySectionOrdersAndStyles();
+            }
+        };
+
+        window.applySectionOrdersAndStyles = function() {
+            window.renderCustomPagesSections();
+
+            let scopedStyles = "";
+            const footerEl = document.getElementById('sec-footer');
+
+            websiteConfig.SectionOrder.forEach(sec => {
+                const el = document.getElementById(sec.id);
+                if (el && footerEl) {
+                    if (!isDedicatedPageMode) {
+                        el.style.display = (sec.visible === false) ? 'none' : '';
+                    }
+
+                    let sRules = "";
+                    if (sec.bg) sRules += `background-color: ${sec.bg} !important;`;
+                    if (sec.bgImg) sRules += `background-image: url('${sec.bgImg}') !important; background-size: cover !important; background-position: center !important;`;
+                    if (sRules) scopedStyles += `#${sec.id} { ${sRules} }\n`;
+
+                    if (sec.textColor) {
+                        scopedStyles += `
+                            #${sec.id}, #${sec.id} h1, #${sec.id} h2, #${sec.id} h3, #${sec.id} h4, #${sec.id} h5, #${sec.id} h6, 
+                            #${sec.id} p, #${sec.id} span, #${sec.id} small, #${sec.id} .lead, #${sec.id} .text-dark, #${sec.id} .text-secondary {
+                                color: ${sec.textColor} !important;
+                            }
+                        `;
+                    }
+
+                    footerEl.parentNode.insertBefore(el, footerEl);
+                }
+            });
+
+            document.getElementById('dynamicSectionStyles').innerHTML = scopedStyles;
+        };
+
+        window.renderCustomPagesSections = function() {
+            const footerEl = document.getElementById('sec-footer');
+            if (!footerEl) return;
+
+            const pages = websiteConfig.SectionsData.customPages || {};
+            for (const slug in pages) {
+                let secEl = document.getElementById(slug);
+                const pg = pages[slug];
+
+                if (!secEl) {
+                    secEl = document.createElement('section');
+                    secEl.className = 'py-5 position-relative border-top custom-page-section';
+                    secEl.id = slug;
+                    footerEl.parentNode.insertBefore(secEl, footerEl);
+                }
+
+                if (pg.rawHtml && pg.rawHtml.trim()) {
+                    secEl.innerHTML = `
+                        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.openMenuContentEditor('${slug}')"><i class="fas fa-pencil-alt"></i></button>
+                        <div class="container py-4">${pg.rawHtml}</div>
+                    `;
+                } else {
+                    secEl.innerHTML = `
+                        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.openMenuContentEditor('${slug}')"><i class="fas fa-pencil-alt"></i></button>
+                        <div class="container py-4">
+                            <div class="text-center mb-4">
+                                <span class="badge bg-danger-subtle text-danger fw-bold px-3 py-2 rounded-pill mb-2">${pg.badge || 'CAMPUS HIGHLIGHT'}</span>
+                                <h2 class="editorial-font display-6 fw-bold">${pg.title}</h2>
+                            </div>
+                            <div class="row justify-content-center align-items-center g-4">
+                                ${pg.imageUrl ? `<div class="col-lg-6 text-center"><img src="${pg.imageUrl}" alt="${pg.title}" class="rounded-4 shadow-lg w-100" style="max-height:400px; object-fit:cover;"></div>` : ''}
+                                <div class="${pg.imageUrl ? 'col-lg-6' : 'col-lg-10 text-center'}">
+                                    <div class="lead" style="line-height:1.8; font-size:16px;">${pg.content}</div>
+                                    ${pg.videoUrl ? `<div class="mt-4 ratio ratio-16x9 rounded-4 overflow-hidden shadow-sm"><iframe src="${pg.videoUrl}" allowfullscreen></iframe></div>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            if (sessionStorage.getItem("website_editor_auth") === "true") {
+                document.querySelectorAll('.custom-page-section .btn-inline-pencil').forEach(p => p.style.display = 'inline-flex');
+            }
+        };
+
+        // 6. Live Theme Colors
+        window.applyLiveThemeColors = function(primary, navBg, navText, footerBg) {
+            if (primary) {
+                websiteConfig.ThemeConfig.primaryColor = primary;
+                websiteConfig.ThemeConfig.secondaryColor = primary;
+            }
+            if (navBg) websiteConfig.ThemeConfig.navBgColor = navBg;
+            if (navText) websiteConfig.ThemeConfig.navTextColor = navText;
+            if (footerBg) websiteConfig.ThemeConfig.footerBgColor = footerBg;
+
+            const styleEl = document.getElementById('dynamicLiveStyles');
+            if (styleEl) {
+                styleEl.innerHTML = `
+                    :root {
+                        --school-primary: ${websiteConfig.ThemeConfig.primaryColor} !important;
+                        --school-secondary: ${websiteConfig.ThemeConfig.secondaryColor} !important;
+                        --nav-bg: ${websiteConfig.ThemeConfig.navBgColor} !important;
+                        --nav-text: ${websiteConfig.ThemeConfig.navTextColor} !important;
+                        --footer-bg: ${websiteConfig.ThemeConfig.footerBgColor} !important;
+                    }
+                    .btn-pill-primary {
+                        background: ${websiteConfig.ThemeConfig.primaryColor} !important;
+                        color: #ffffff !important;
+                    }
+                    .nav-link.active, .nav-link:hover {
+                        color: ${websiteConfig.ThemeConfig.primaryColor} !important;
+                    }
+                `;
+            }
+        };
+
+        // 7. Footer Manager
+        window.renderFooterLinks = function() {
+            const listContainer = document.getElementById('footerQuickLinksList');
+            const studioFooterList = document.getElementById('studioFooterLinkList');
+            if (!listContainer) return;
+
+            let html = "";
+            let studioHtml = "";
+
+            websiteConfig.FooterLinks.forEach((item, idx) => {
+                html += `<li><a href="${item.link}">${item.label}</a></li>`;
+
+                if (studioFooterList) {
+                    studioHtml += `
+                        <div class="list-group-item d-flex justify-content-between align-items-center p-2 mb-1 border rounded-2">
+                            <span class="small fw-bold">${item.label} <small class="text-muted">(${item.link})</small></span>
+                            <button class="btn btn-sm btn-outline-danger py-0 px-1" onclick="window.removeFooterLink(${idx})" type="button">&times;</button>
+                        </div>
+                    `;
+                }
+            });
+
+            listContainer.innerHTML = html;
+            if (studioFooterList) studioFooterList.innerHTML = studioHtml;
+        };
+
+        window.promptAddFooterLink = function() {
+            const label = prompt("Enter Footer Link Label:");
+            if (!label || !label.trim()) return;
+            const link = prompt("Enter Link URL (e.g. #enquiry):", "#");
+            if (!link) return;
+
+            websiteConfig.FooterLinks.push({ label: label.trim(), link: link.trim() });
+            window.renderFooterLinks();
+        };
+
+        window.removeFooterLink = function(idx) {
+            const item = websiteConfig.FooterLinks[idx];
+            if (!confirm(`Delete footer link "${item.label}"?`)) return;
+            websiteConfig.FooterLinks.splice(idx, 1);
+            window.renderFooterLinks();
+        };
+
+        // 8. Auth
+        window.openEditorModal = function() {
+            new bootstrap.Modal(document.getElementById('editorLoginModal')).show();
+        };
+
+        window.handleEditorAuth = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('txtEditorId').value.trim();
+            const pass = document.getElementById('txtEditorPass').value.trim();
+            const btn = document.getElementById('btnDoEditorLogin');
+
+            btn.disabled = true;
+            btn.innerHTML = 'Verifying...';
+
+            try {
+                const { data: authResult, error: rpcErr } = await db.rpc('verify_website_editor_login', {
+                    p_school_id: activeSchoolId || '169701',
+                    p_login_id: id,
+                    p_password: pass
+                });
+
+                if (rpcErr) throw rpcErr;
+
+                if (authResult && authResult.status === 'success') {
+                    sessionStorage.setItem("website_editor_auth", "true");
+                    bootstrap.Modal.getInstance(document.getElementById('editorLoginModal')).hide();
+                    window.enableEditorModeUI();
+                    alert("✅ Authentication Successful! Visual Controls are unlocked.");
+                } else {
+                    alert("❌ " + (authResult.message || "Invalid Editor Credentials"));
+                }
+            } catch(err) {
+                alert("Login Error: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Login & Edit';
+            }
+        };
+
+        window.enableEditorModeUI = function() {
+            const dock = document.getElementById('editorDockToolbar');
+            if (dock) dock.style.display = 'inline-flex';
+            document.querySelectorAll('.btn-inline-pencil').forEach(p => p.style.display = 'inline-flex');
+        };
+
+        window.doEditorLogout = function() {
+            if (!confirm("Are you sure you want to logout from Website Studio?")) return;
+            sessionStorage.removeItem("website_editor_auth");
+            window.location.reload();
+        };
+
+        window.openCustomizerDrawer = function() {
+            new bootstrap.Offcanvas(document.getElementById('liveCustomizerDrawer')).show();
+        };
+
+        window.openMenuContentEditor = function(targetKey) {
+            const cleanTarget = (targetKey || "").replace(/^#/, '').toLowerCase();
+            window.triggerInlineEdit(cleanTarget);
+        };
+
+        window.switchEditorModalMode = function(mode) {
+            currentModalMode = mode;
+            const btnV = document.getElementById('btnModeVisual');
+            const btnH = document.getElementById('btnModeRawHtml');
+            const boxV = document.getElementById('modalVisualContainer');
+            const boxH = document.getElementById('modalHtmlContainer');
+
+            if (mode === 'visual') {
+                btnV.classList.add('active', 'btn-outline-warning');
+                btnH.classList.remove('active', 'btn-outline-warning');
+                boxV.style.display = 'block';
+                boxH.style.display = 'none';
+            } else {
+                btnH.classList.add('active', 'btn-outline-warning');
+                btnV.classList.remove('active', 'btn-outline-warning');
+                boxV.style.display = 'none';
+                boxH.style.display = 'block';
+            }
+        };
+
+        // 9. Universal Inline Edit
+        window.triggerInlineEdit = function(targetKey) {
+            activeEditTarget = targetKey;
+            const container = document.getElementById('modalDynamicFieldsContainer');
+            const titleEl = document.getElementById('editModalTitle');
+
+            window.switchEditorModalMode('visual');
+
+            const rawBox = document.getElementById('inRawHtmlCode');
+            const customPage = (websiteConfig.SectionsData.customPages && websiteConfig.SectionsData.customPages[targetKey]) ? websiteConfig.SectionsData.customPages[targetKey] : null;
+            if (rawBox) rawBox.value = customPage ? (customPage.rawHtml || "") : "";
+
+            if (targetKey === 'top-info') {
+                titleEl.innerHTML = `<i class="fas fa-info-circle me-2 text-warning"></i>Edit Top Utility Bar`;
+                container.innerHTML = `
+                    <label class="form-label-custom">Helpline Phone Number</label>
+                    <input type="text" class="form-control form-control-sm mb-2" id="inModTopPhone" value="${document.getElementById('topPhone').innerText}">
+                    <label class="form-label-custom">Official Email Address</label>
+                    <input type="email" class="form-control form-control-sm mb-2" id="inModTopEmail" value="${document.getElementById('topEmail').innerText}">
+                    <label class="form-label-custom">Board Affiliation Text</label>
+                    <input type="text" class="form-control form-control-sm" id="inModTopAffiliation" value="${document.getElementById('topAffiliation').innerText}">
+                `;
+            } else if (targetKey === 'navbar-brand' || targetKey === 'brand') {
+                titleEl.innerHTML = `<i class="fas fa-university me-2 text-warning"></i>Edit School Brand`;
+                container.innerHTML = `
+                    <label class="form-label-custom">School Name</label>
+                    <input type="text" class="form-control form-control-sm mb-2" id="inModSchoolName" value="${document.getElementById('schoolNameHeader').innerText}">
+                    <label class="form-label-custom">Tagline / Motto</label>
+                    <input type="text" class="form-control form-control-sm mb-2" id="inModSchoolTagline" value="${document.getElementById('schoolTagline').innerText}">
+                    <label class="form-label-custom">School Logo URL / Upload</label>
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" id="inModSchoolLogo" value="${document.getElementById('schoolLogo').src}">
+                        <label class="btn btn-outline-secondary"><i class="fas fa-upload"></i><input type="file" hidden accept="image/*" onchange="window.handleUploadImageToField(this, 'inModSchoolLogo')"></label>
+                    </div>
+                `;
+            } else if (targetKey === 'hero' || targetKey === 'home') {
+                titleEl.innerHTML = `<i class="fas fa-heading me-2 text-warning"></i>Edit Hero Banner`;
+                container.innerHTML = `
+                    <label class="form-label-custom">Main Headline (HTML formatted)</label>
+                    <input type="text" class="form-control form-control-sm mb-2" id="inModHeadline" value="${document.getElementById('heroHeadline').innerHTML.replace(/"/g, '&quot;')}">
+                    <label class="form-label-custom">Subtitle Paragraph</label>
+                    <textarea class="form-control form-control-sm" id="inModSubtext" rows="3">${document.getElementById('heroSubtext').innerText.trim()}</textarea>
+                `;
+            } else if (targetKey === 'about') {
+                titleEl.innerHTML = `<i class="fas fa-user-tie me-2 text-warning"></i>Edit Principal Desk`;
+                container.innerHTML = `
+                    <label class="form-label-custom">Principal Name</label>
+                    <input type="text" class="form-control form-control-sm mb-2" id="inModName" value="${document.getElementById('principalName').innerText.trim()}">
+                    <label class="form-label-custom">Title / Designation</label>
+                    <input type="text" class="form-control form-control-sm mb-2" id="inModTitle" value="${document.getElementById('principalTitle').innerText.trim()}">
+                    <label class="form-label-custom">Photo URL / Upload</label>
+                    <div class="input-group input-group-sm mb-2">
+                        <input type="text" class="form-control" id="inModPhoto" value="${document.getElementById('principalPhoto').src}">
+                        <label class="btn btn-outline-secondary"><i class="fas fa-upload"></i><input type="file" hidden accept="image/*" onchange="window.handleUploadImageToField(this, 'inModPhoto')"></label>
+                    </div>
+                    <label class="form-label-custom">Message</label>
+                    <textarea class="form-control form-control-sm" id="inModMsg" rows="3">${document.getElementById('principalMsg').innerText.replace(/^"|"$/g, '').trim()}</textarea>
+                `;
+            } else if (targetKey === 'enquiry-info' || targetKey === 'enquiry') {
+                titleEl.innerHTML = `<i class="fas fa-envelope-open-text me-2 text-warning"></i>Edit Admission Help Text`;
+                container.innerHTML = `
+                    <label class="form-label-custom">Enquiry Heading</label>
+                    <input type="text" class="form-control form-control-sm mb-2" id="inEnqTitle" value="${document.getElementById('enqLeadTitle').innerText.trim()}">
+                    <label class="form-label-custom">Enquiry Lead Description</label>
+                    <textarea class="form-control form-control-sm" id="inEnqText" rows="3">${document.getElementById('enqLeadText').innerText.trim()}</textarea>
+                `;
+            } else {
+                const pg = (websiteConfig.SectionsData.customPages && websiteConfig.SectionsData.customPages[targetKey]) ? websiteConfig.SectionsData.customPages[targetKey] : { title: targetKey, badge: "", content: "", imageUrl: "", videoUrl: "", rawHtml: "" };
+                
+                titleEl.innerHTML = `<i class="fas fa-file-alt me-2 text-warning"></i>Edit Page: ${pg.title}`;
+                container.innerHTML = `
+                    <input type="hidden" id="inCustomSlug" value="${targetKey}">
+                    <label class="form-label-custom">Badge Tag</label>
+                    <input type="text" class="form-control form-control-sm mb-2" id="inCustomBadge" value="${pg.badge || ''}">
+
+                    <label class="form-label-custom">Heading Title</label>
+                    <input type="text" class="form-control form-control-sm mb-2" id="inCustomTitle" value="${pg.title || ''}">
+
+                    <label class="form-label-custom">Main Content</label>
+                    <textarea class="form-control form-control-sm mb-2" id="inCustomContent" rows="5">${pg.content || ''}</textarea>
+
+                    <label class="form-label-custom">Image URL or Upload</label>
+                    <div class="input-group input-group-sm mb-2">
+                        <input type="text" class="form-control" id="inCustomImage" value="${pg.imageUrl || ''}">
+                        <label class="btn btn-outline-secondary"><i class="fas fa-upload"></i><input type="file" hidden accept="image/*" onchange="window.handleUploadImageToField(this, 'inCustomImage')"></label>
+                    </div>
+
+                    <label class="form-label-custom">Embed Video URL</label>
+                    <input type="text" class="form-control form-control-sm" id="inCustomVideo" value="${pg.videoUrl || ''}" placeholder="https://www.youtube.com/embed/...">
+                `;
+            }
+
+            new bootstrap.Modal(document.getElementById('universalSectionEditModal')).show();
+        };
+
+        window.applyInlineModalData = async function() {
+            if (!websiteConfig.SectionsData) websiteConfig.SectionsData = {};
+
+            if (currentModalMode === 'html') {
+                const code = document.getElementById('inRawHtmlCode').value;
+                if (!websiteConfig.SectionsData.customPages) websiteConfig.SectionsData.customPages = {};
+                if (!websiteConfig.SectionsData.customPages[activeEditTarget]) {
+                    websiteConfig.SectionsData.customPages[activeEditTarget] = { title: activeEditTarget, content: "" };
+                }
+                websiteConfig.SectionsData.customPages[activeEditTarget].rawHtml = code;
+                window.applySectionOrdersAndStyles();
+                bootstrap.Modal.getInstance(document.getElementById('universalSectionEditModal')).hide();
+                await window.saveLiveWebsiteSettings();
+                return;
+            }
+
+            if (activeEditTarget === 'top-info') {
+                const ph = document.getElementById('inModTopPhone').value;
+                const em = document.getElementById('inModTopEmail').value;
+                const af = document.getElementById('inModTopAffiliation').value;
+
+                document.getElementById('topPhone').innerText = ph;
+                document.getElementById('topEmail').innerText = em;
+                document.getElementById('topAffiliation').innerText = af;
+                document.getElementById('offcanvasAffiliation').innerText = af;
+
+                websiteConfig.SectionsData.top_info = { phone: ph, email: em, affiliation: af };
+
+            } else if (activeEditTarget === 'navbar-brand' || activeEditTarget === 'brand') {
+                const sn = document.getElementById('inModSchoolName').value;
+                const st = document.getElementById('inModSchoolTagline').value;
+                const lg = document.getElementById('inModSchoolLogo').value;
+
+                document.getElementById('schoolNameHeader').innerText = sn;
+                document.getElementById('footerSchoolName').innerText = sn;
+                document.getElementById('copySchoolName').innerText = sn;
+                document.getElementById('schoolTagline').innerText = st;
+                if (lg) {
+                    document.getElementById('schoolLogo').src = lg;
+                    document.getElementById('footerLogo').src = lg;
+                }
+
+                websiteConfig.SectionsData.brand = { name: sn, tagline: st, logo: lg };
+
+                if (lg && activeSchoolId) {
+                    await db.from('Schools').update({ SchoolLogo: lg }).eq('SchoolID', activeSchoolId);
+                }
+
+            } else if (activeEditTarget === 'hero' || activeEditTarget === 'home') {
+                const h = document.getElementById('inModHeadline').value;
+                const s = document.getElementById('inModSubtext').value;
+
+                if (h) document.getElementById('heroHeadline').innerHTML = h;
+                if (s) document.getElementById('heroSubtext').innerText = s;
+
+                websiteConfig.SectionsData.hero = { headline: h, subtext: s };
+
+            } else if (activeEditTarget === 'about') {
+                const n = document.getElementById('inModName').value;
+                const t = document.getElementById('inModTitle').value;
+                const p = document.getElementById('inModPhoto').value;
+                const m = document.getElementById('inModMsg').value;
+
+                if (n) document.getElementById('principalName').innerText = n;
+                if (t) document.getElementById('principalTitle').innerText = t;
+                if (p) document.getElementById('principalPhoto').src = p;
+                if (m) document.getElementById('principalMsg').innerText = `"${m}"`;
+
+                websiteConfig.SectionsData.about = { principalName: n, principalTitle: t, principalPhoto: p, principalMsg: m };
+
+            } else if (activeEditTarget === 'enquiry-info' || activeEditTarget === 'enquiry') {
+                const t = document.getElementById('inEnqTitle').value;
+                const tx = document.getElementById('inEnqText').value;
+                if (t) document.getElementById('enqLeadTitle').innerText = t;
+                if (tx) document.getElementById('enqLeadText').innerText = tx;
+                websiteConfig.SectionsData.enquiryInfo = { title: t, text: tx };
+
+            } else {
+                const slug = document.getElementById('inCustomSlug')?.value || activeEditTarget;
+                const bd = document.getElementById('inCustomBadge')?.value;
+                const ti = document.getElementById('inCustomTitle')?.value;
+                const co = document.getElementById('inCustomContent')?.value;
+                const im = document.getElementById('inCustomImage')?.value;
+                const vi = document.getElementById('inCustomVideo')?.value;
+
+                if (!websiteConfig.SectionsData.customPages) websiteConfig.SectionsData.customPages = {};
+                websiteConfig.SectionsData.customPages[slug] = {
+                    title: ti || slug,
+                    badge: bd || "CAMPUS HIGHLIGHT",
+                    content: co || "",
+                    imageUrl: im || "",
+                    videoUrl: vi || "",
+                    rawHtml: ""
+                };
+
+                window.applySectionOrdersAndStyles();
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('universalSectionEditModal')).hide();
+            await window.saveLiveWebsiteSettings();
+        };
+
+        // 10. Storage Upload
+        window.handleUploadImageToField = async function(inputEl, targetFieldId) {
+            const file = inputEl.files[0];
+            if (!file) return;
+
+            const originalBtn = inputEl.parentNode;
+            originalBtn.innerHTML = '<i class="fas fa-spinner fa-spin text-warning"></i> Uploading...';
+
+            try {
+                const ext = file.name.split('.').pop();
+                const cleanFileName = `t2_${Date.now()}.${ext}`;
+                const filePath = `${activeSchoolId || '169701'}/website/${cleanFileName}`;
+
+                const { error: upErr } = await db.storage
+                    .from('School_Data')
+                    .upload(filePath, file, { cacheControl: '3600', upsert: true });
+
+                if (upErr) throw upErr;
+
+                const { data: pubData } = db.storage
+                    .from('School_Data')
+                    .getPublicUrl(filePath);
+
+                if (pubData && pubData.publicUrl) {
+                    const finalUrl = `${pubData.publicUrl}?t=${Date.now()}`;
+                    document.getElementById(targetFieldId).value = finalUrl;
+                    alert("✅ Media uploaded successfully to Storage!");
+                }
+            } catch(e) {
+                console.warn("Upload error:", e);
+                alert("Upload failed. You can paste the direct image link.");
+            } finally {
+                originalBtn.innerHTML = '<i class="fas fa-upload"></i><input type="file" hidden accept="image/*" onchange="window.handleUploadImageToField(this, \'' + targetFieldId + '\')">';
+            }
+        };
+
+        // 11. Save Settings to Supabase
+        window.saveLiveWebsiteSettings = async function() {
+            const btn = document.getElementById('btnSaveLiveSettings');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Saving Live to Cloud...';
+            }
+
+            const fTiming = document.getElementById('inFooterTiming')?.value.trim();
+            if (!websiteConfig.SectionsData.footerCustom) websiteConfig.SectionsData.footerCustom = {};
+            if (fTiming) {
+                websiteConfig.SectionsData.footerCustom.timing = fTiming;
+                document.getElementById('footerTimingText').innerText = fTiming;
+            }
+
+            const payload = {
+                SchoolID: activeSchoolId || "169701",
+                ThemeConfig: websiteConfig.ThemeConfig,
+                NavMenu: websiteConfig.NavMenu,
+                FooterLinks: websiteConfig.FooterLinks,
+                SectionOrder: websiteConfig.SectionOrder,
+                SectionsData: websiteConfig.SectionsData,
+                UpdatedAt: new Date().toISOString()
+            };
+
+            try {
+                const { error } = await db
+                    .from('School_Websites')
+                    .upsert(payload, { onConflict: 'SchoolID' });
+
+                if (error) throw error;
+
+                const toast = document.createElement('div');
+                toast.className = 'position-fixed top-0 start-50 translate-middle-x mt-4 p-3 bg-success text-white rounded-4 shadow-lg fw-bold z-3';
+                toast.style.zIndex = "9999";
+                toast.innerHTML = '<i class="fas fa-check-circle me-2"></i> Website Changes Saved Live Permanently!';
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 2500);
+
+                const drawer = bootstrap.Offcanvas.getInstance(document.getElementById('liveCustomizerDrawer'));
+                if (drawer) drawer.hide();
+
+            } catch(err) {
+                console.error("Save error:", err);
+                alert("Failed to save: " + err.message);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-cloud-upload-alt me-2"></i> SAVE LIVE SETTINGS';
+                }
+            }
+        };
+
+        // 12. Admission Form Submission
+        window.submitAdmissionEnquiry = async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmitEnquiry');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Submitting...';
+
+            const payload = {
+                "SchoolID": activeSchoolId || "169701",
+                "StudentName": document.getElementById('enqStudentName').value.trim().toUpperCase(),
+                "ParentName": document.getElementById('enqParentName').value.trim().toUpperCase(),
+                "Class": document.getElementById('enqClass').value,
+                "Mobile": document.getElementById('enqMobile').value.trim(),
+                "Email": document.getElementById('enqEmail').value.trim() || null,
+                "PreviousSchool": document.getElementById('enqPrevSchool').value.trim() || "NA",
+                "Message": document.getElementById('enqMessage').value.trim() || "Online Admission Enquiry",
+                "Status": "NEW",
+                "CreatedAt": new Date().toISOString()
+            };
+
+            try {
+                const { error } = await db.from('Student_Enquiries').insert([payload]);
+                if (error) throw error;
+                alert("🎉 Registration Enquiry Submitted Successfully! We will contact you soon.");
+                document.getElementById('admissionEnquiryForm').reset();
+            } catch (err) {
+                alert("❌ Submission Failed: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Submit Admission Enquiry &rarr;';
+            }
+        };
+    </script>
+</body>
+</html>
