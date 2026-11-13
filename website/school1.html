@@ -84,7 +84,6 @@
             color: var(--school-primary) !important;
         }
         
-        /* 🚀 DYNAMIC ACTIVE SCROLLSPY HIGHLIGHT */
         .nav-link.active {
             color: var(--school-primary) !important;
             font-weight: 800 !important;
@@ -311,6 +310,14 @@
         }
         .btn-inline-pencil:hover { transform: scale(1.2); background: #ffffff; }
 
+        /* 🚀 DEDICATED STANDALONE PAGE BREADCRUMB BAR */
+        #dedicatedPageBreadcrumb {
+            display: none;
+            background: #f1f5f9;
+            border-bottom: 1.5px solid #e2e8f0;
+            padding: 14px 0;
+        }
+
         /* Floating Gadgets */
         .gadget-whatsapp {
             position: fixed;
@@ -430,7 +437,7 @@
         </div>
     </div>
 
-    <!-- 2. MAIN NAVBAR (🚀 Brand and Home Click Handled Cleanly) -->
+    <!-- 2. MAIN NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-main" id="sec-navbar">
         <div class="container-fluid px-lg-5 px-3 position-relative">
             <button class="btn-inline-pencil" style="top:10px; left:6px;" onclick="window.triggerInlineEdit('navbar-brand')"><i class="fas fa-pencil-alt"></i></button>
@@ -438,7 +445,7 @@
                 <i class="fas fa-bars fa-lg text-dark"></i>
             </button>
             
-            <a class="navbar-brand d-flex align-items-center gap-2 gap-sm-3 order-1 me-auto" href="javascript:void(0)" onclick="window.goToHomePage(event)">
+            <a class="navbar-brand d-flex align-items-center gap-2 gap-sm-3 order-1 me-auto" href="javascript:void(0)" onclick="window.returnToFullLandingPage(event)">
                 <img src="/favicon.png" alt="School Logo" class="school-logo-img" id="schoolLogo">
                 <div>
                     <h5 class="fw-bold m-0" id="schoolNameHeader"></h5>
@@ -453,6 +460,16 @@
             </div>
         </div>
     </nav>
+
+    <!-- 🚀 BREADCRUMB BAR (Active when opening dedicated page mode) -->
+    <div id="dedicatedPageBreadcrumb">
+        <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center">
+            <button onclick="window.returnToFullLandingPage(event)" class="btn btn-sm btn-outline-dark rounded-pill fw-bold px-3">
+                <i class="fas fa-arrow-left me-1"></i> Back to Homepage
+            </button>
+            <span class="fw-bold text-secondary small" id="lblDedicatedPageTitle"></span>
+        </div>
+    </div>
 
     <!-- 3. TICKER -->
     <div class="ticker-wrap position-relative" id="sec-ticker">
@@ -758,7 +775,7 @@
         </div>
     </section>
 
-    <!-- 16. FOOTER (Managed Dynamically via Footer Manager Tab) -->
+    <!-- 16. FOOTER -->
     <footer id="sec-footer">
         <div class="container-fluid px-lg-5">
             <div class="row g-4">
@@ -771,9 +788,7 @@
 
                 <div class="col-lg-2 col-6">
                     <h6>Quick Links</h6>
-                    <ul class="list-unstyled d-flex flex-column gap-2 small" id="footerQuickLinksList">
-                        <!-- Populated dynamically via footer manager -->
-                    </ul>
+                    <ul class="list-unstyled d-flex flex-column gap-2 small" id="footerQuickLinksList"></ul>
                 </div>
 
                 <div class="col-lg-3 col-6">
@@ -851,7 +866,7 @@
         </div>
     </div>
 
-    <!-- 🎨 520px WIDE LIVE WEBSITE STUDIO DRAWER WITH FOOTER MANAGER -->
+    <!-- 🎨 520px WIDE LIVE WEBSITE STUDIO DRAWER -->
     <div class="offcanvas offcanvas-end" tabindex="-1" id="liveCustomizerDrawer" style="width: 520px; max-width: 95vw;">
         <div class="offcanvas-header bg-dark text-white p-3">
             <h6 class="offcanvas-title fw-bold"><i class="fas fa-sliders-h text-warning me-2"></i>Live Website Studio</h6>
@@ -903,13 +918,15 @@
                     <div class="list-group mb-3" id="studioMenuList"></div>
                 </div>
 
-                <!-- TAB 3: SECTIONS MANAGER (WITH TEXT COLOR PICKER) -->
+                <!-- TAB 3: SECTIONS MANAGER (HOME SCROLL TOGGLE + STYLES) -->
                 <div class="tab-pane fade" id="tabSections">
-                    <label class="form-label-custom mb-2">Reorder, Toggle & Style Sections</label>
+                    <div class="alert alert-info py-2 px-3 small border-0 rounded-3 mb-3">
+                        <i class="fas fa-info-circle me-1"></i> <strong>Homepage Flow Toggle:</strong> Turning a toggle <strong>OFF</strong> removes the section from the homepage scroll, but keeps it active as a clean dedicated page accessible from the menu!
+                    </div>
                     <div class="d-flex flex-column gap-2 mb-3" id="studioSectionManagerList"></div>
                 </div>
 
-                <!-- 🚀 TAB 4: NEW FOOTER MANAGER -->
+                <!-- TAB 4: FOOTER MANAGER -->
                 <div class="tab-pane fade" id="tabFooter">
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <label class="form-label-custom m-0">Footer Quick Links</label>
@@ -975,6 +992,7 @@
         let activeSchoolId = "";
         let currentModalMode = "visual";
         let activeEditTarget = "";
+        let isDedicatedPageMode = false;
 
         let websiteConfig = {
             ThemeConfig: {
@@ -1107,7 +1125,7 @@
                 window.enableEditorModeUI();
             }
 
-            // Studio Drawer event listener
+            // Studio Drawer Dock Auto-Hide Listener
             const studioDrawerEl = document.getElementById('liveCustomizerDrawer');
             if (studioDrawerEl) {
                 studioDrawerEl.addEventListener('show.bs.offcanvas', () => {
@@ -1122,8 +1140,9 @@
                 });
             }
 
-            // 🚀 DYNAMIC SCROLLSPY LISTENER FOR AUTO ACTIVE NAV LINK HIGHLIGHT
+            // 🚀 DYNAMIC SCROLLSPY LISTENER
             window.addEventListener('scroll', () => {
+                if (isDedicatedPageMode) return;
                 const sections = document.querySelectorAll('section[id]');
                 const scrollPos = window.scrollY + 200;
 
@@ -1143,17 +1162,94 @@
                     }
                 });
             });
+
+            // Check if URL has hash on direct load (e.g. #disclosure)
+            if (window.location.hash) {
+                const targetId = window.location.hash.replace(/^#\/?/, '').trim();
+                setTimeout(() => window.handleNavClick(targetId), 400);
+            }
         });
 
-        // 🚀 HOME / BRAND CLICK CONTROLLER (Cleans URL and smooth scrolls to top)
-        window.goToHomePage = function(e) {
-            if (e) e.preventDefault();
-            if (window.location.hash) {
-                history.pushState("", document.title, window.location.pathname + window.location.search);
+        // 🚀 DEDICATED PAGE MODE CONTROLLER (Handles Hidden Homepage Sections Gracefully)
+        window.handleNavClick = function(targetKey) {
+            const cleanTarget = (targetKey || "").replace(/^#/, '').toLowerCase();
+            if (!cleanTarget || cleanTarget === "home") {
+                window.returnToFullLandingPage();
+                return;
             }
+
+            const secConfig = websiteConfig.SectionOrder.find(s => s.id === cleanTarget);
+            
+            // If the section is toggled OFF on home, or is a custom page, open in Dedicated Page Mode!
+            if (secConfig && secConfig.visible === false) {
+                window.showDedicatedPageView(cleanTarget, secConfig.label);
+            } else {
+                // If it is visible on home, ensure landing page is restored and smooth scroll
+                if (isDedicatedPageMode) {
+                    window.returnToFullLandingPage(null, cleanTarget);
+                } else {
+                    const el = document.getElementById(cleanTarget);
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        };
+
+        window.showDedicatedPageView = function(sectionId, title) {
+            isDedicatedPageMode = true;
+
+            // 1. Hide all homepage sections
+            websiteConfig.SectionOrder.forEach(sec => {
+                const el = document.getElementById(sec.id);
+                if (el) el.style.display = 'none';
+            });
+
+            // 2. Show only the target section
+            const targetEl = document.getElementById(sectionId);
+            if (targetEl) {
+                targetEl.style.display = 'block';
+            }
+
+            // 3. Show Breadcrumb Bar
+            const breadcrumbEl = document.getElementById('dedicatedPageBreadcrumb');
+            const titleEl = document.getElementById('lblDedicatedPageTitle');
+            if (breadcrumbEl && titleEl) {
+                titleEl.innerText = title || sectionId.toUpperCase();
+                breadcrumbEl.style.display = 'block';
+            }
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.returnToFullLandingPage = function(e, scrollToId) {
+            if (e) e.preventDefault();
+            isDedicatedPageMode = false;
+
+            // Hide Breadcrumb
+            const breadcrumbEl = document.getElementById('dedicatedPageBreadcrumb');
+            if (breadcrumbEl) breadcrumbEl.style.display = 'none';
+
+            // Restore all sections based on their visibility toggle
+            websiteConfig.SectionOrder.forEach(sec => {
+                const el = document.getElementById(sec.id);
+                if (el) {
+                    el.style.display = (sec.visible !== false) ? '' : 'none';
+                }
+            });
+
+            if (scrollToId) {
+                setTimeout(() => {
+                    const el = document.getElementById(scrollToId);
+                    if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            } else {
+                if (window.location.hash) {
+                    history.pushState("", document.title, window.location.pathname + window.location.search);
+                }
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
             document.querySelectorAll('.navbar-nav .nav-link').forEach(l => l.classList.remove('active'));
-            const homeLink = document.querySelector('.navbar-nav a[href="#home"]');
+            const homeLink = document.querySelector('.navbar-nav a[href="#home"]') || document.querySelector('.navbar-nav .nav-link');
             if (homeLink) homeLink.classList.add('active');
         };
 
@@ -1306,7 +1402,7 @@
             }
         };
 
-        // 4. Render Dynamic Navbar Menu (🚀 STABLE SUBMENU DROPDOWN)
+        // 4. Render Dynamic Navbar Menu (Clean Dropdowns & Click Interception)
         window.renderNavbarMenu = function() {
             const container = document.getElementById('dynamicNavLinks');
             const studioList = document.getElementById('studioMenuList');
@@ -1325,7 +1421,7 @@
                 if (!hasSubs) {
                     navHtml += `
                         <li class="nav-item w-100 w-lg-auto" data-nav-target="${root.target}" style="${isVis ? '' : 'display:none;'}">
-                            <a class="nav-link text-start" href="${root.link}">${root.label}</a>
+                            <a class="nav-link text-start" href="${root.link}" onclick="window.handleNavClick('${root.target}')">${root.label}</a>
                         </li>
                     `;
                 } else {
@@ -1334,7 +1430,9 @@
                             <a class="nav-link dropdown-toggle text-start" href="#" role="button" data-bs-toggle="dropdown">${root.label}</a>
                             <ul class="dropdown-menu">
                                 ${subItems.map(sub => `
-                                    <li style="${sub.visible !== false ? '' : 'display:none;'}"><a class="dropdown-item" href="${sub.link}">${sub.label}</a></li>
+                                    <li style="${sub.visible !== false ? '' : 'display:none;'}">
+                                        <a class="dropdown-item" href="${sub.link}" onclick="window.handleNavClick('${sub.target}')">${sub.label}</a>
+                                    </li>
                                 `).join('')}
                             </ul>
                         </li>
@@ -1466,7 +1564,6 @@
             alert(`🎉 "${label.trim()}" added! Use [📝 Content] to edit text/HTML or [Sections & Styles] to reorder.`);
         };
 
-        // 🚀 VERIFIED MENU DELETE (Confirmation Step Added!)
         window.removeMenuItem = function(idx) {
             if (websiteConfig.NavMenu.length <= 2) { 
                 alert("At least 2 items must remain in navbar."); 
@@ -1523,14 +1620,12 @@
             listEl.innerHTML = html;
         };
 
+        // 🚀 TOGGLE ONLY CONTROLS HOMEPAGE FLOW (NAVBAR LINK REMAINS ACTIVE!)
         window.toggleSectionVisibility = function(idx, isVis) {
             websiteConfig.SectionOrder[idx].visible = isVis;
             const sec = websiteConfig.SectionOrder[idx];
             const el = document.getElementById(sec.id);
             if (el) el.style.display = isVis ? '' : 'none';
-
-            const navLink = document.querySelector(`li[data-nav-target="${sec.id}"]`);
-            if (navLink) navLink.style.display = isVis ? '' : 'none';
         };
 
         window.moveSection = function(idx, direction) {
@@ -1562,7 +1657,6 @@
             }
         };
 
-        // 🚀 BULLETPROOF ORDERING (Strictly Appends Before Footer)
         window.applySectionOrdersAndStyles = function() {
             window.renderCustomPagesSections();
 
@@ -1572,8 +1666,9 @@
             websiteConfig.SectionOrder.forEach(sec => {
                 const el = document.getElementById(sec.id);
                 if (el && footerEl) {
-                    if (sec.visible === false) el.style.display = 'none';
-                    else el.style.display = '';
+                    if (!isDedicatedPageMode) {
+                        el.style.display = (sec.visible === false) ? 'none' : '';
+                    }
 
                     let sRules = "";
                     if (sec.bg) {
@@ -1681,7 +1776,7 @@
             }
         };
 
-        // 🚀 8. FOOTER MANAGER CONTROLLER
+        // 8. Footer Manager Controller
         window.renderFooterLinks = function() {
             const listContainer = document.getElementById('footerQuickLinksList');
             const studioFooterList = document.getElementById('studioFooterLinkList');
@@ -2026,7 +2121,7 @@
                     <label class="form-label-custom">Helpline Phone</label>
                     <input type="text" class="form-control form-control-sm mb-2" id="inModContactPhone" value="${document.getElementById('footerPhone').innerText}">
                     <label class="form-label-custom">Official Email</label>
-                    <input type="email" class="form-control form-control-sm" id="inModContactMail" value="${document.getElementById('footerMail').innerText}">
+                    <input type="email" class="form-control form-control-sm mb-2" id="inModContactMail" value="${document.getElementById('footerMail').innerText}">
                 `;
             } else {
                 const pg = (websiteConfig.SectionsData.customPages && websiteConfig.SectionsData.customPages[targetKey]) ? websiteConfig.SectionsData.customPages[targetKey] : { title: targetKey, badge: "", content: "", imageUrl: "", videoUrl: "", rawHtml: "" };
@@ -2274,7 +2369,7 @@
             }
         };
 
-        // 🚀 15. SAVE MASTER LIVE SETTINGS TO SUPABASE
+        // 15. SAVE MASTER LIVE SETTINGS TO SUPABASE
         window.saveLiveWebsiteSettings = async function() {
             const btn = document.getElementById('btnSaveLiveSettings');
             if (btn) {
@@ -2282,7 +2377,6 @@
                 btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Saving to Cloud...';
             }
 
-            // Sync Footer Form Inputs
             const fTiming = document.getElementById('inFooterTiming')?.value.trim();
             const fAbout = document.getElementById('inFooterAbout')?.value.trim();
             if (!websiteConfig.SectionsData.footerCustom) websiteConfig.SectionsData.footerCustom = {};
@@ -2450,6 +2544,6 @@
             behavior: 'smooth'
         });
     }
-</script>
+    </script>
 </body>
 </html>
