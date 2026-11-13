@@ -461,21 +461,11 @@
         </div>
     </nav>
 
-    <!-- 🚀 BREADCRUMB BAR (Active when opening dedicated page mode) -->
-    <div id="dedicatedPageBreadcrumb">
-        <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center">
-            <button onclick="window.returnToFullLandingPage(event)" class="btn btn-sm btn-outline-dark rounded-pill fw-bold px-3">
-                <i class="fas fa-arrow-left me-1"></i> Back to Homepage
-            </button>
-            <span class="fw-bold text-secondary small" id="lblDedicatedPageTitle"></span>
-        </div>
-    </div>
-
     <!-- 3. TICKER -->
     <div class="ticker-wrap position-relative" id="sec-ticker">
         <button class="btn-inline-pencil" style="top:4px; left:10px;" onclick="window.triggerInlineEdit('ticker')"><i class="fas fa-pencil-alt"></i></button>
         <div class="container-fluid px-lg-5 d-flex align-items-center gap-3">
-            <span class="ticker-title"><i class="fas fa-bullhorn me-1"></i> ANNOUNCEMENT</span>
+            <span class="ticker-title"><i class="fas fa-bullhorn me-1"></i> Announcement</span>
             <marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();" class="fw-bold text-dark small" id="newsTickerText">
             </marquee>
         </div>
@@ -511,7 +501,7 @@
         <div class="container">
             <div class="row g-4 text-center">
                 <div class="col-6 col-md-3">
-                    <h2 class="fw-bold mb-1" id="statYears">25+</h2>
+                    <h2 class="fw-bold mb-1" id="statYears">15+</h2>
                     <p class="fw-semibold m-0 small" id="lblStatYears">Years of Educational Glory</p>
                 </div>
                 <div class="col-6 col-md-3">
@@ -1203,20 +1193,13 @@
                 if (el) el.style.display = 'none';
             });
 
-            // 2. Show only the target section
+            // 2. Show only the target section directly below navbar
             const targetEl = document.getElementById(sectionId);
             if (targetEl) {
                 targetEl.style.display = 'block';
             }
 
-            // 3. Show Breadcrumb Bar
-            const breadcrumbEl = document.getElementById('dedicatedPageBreadcrumb');
-            const titleEl = document.getElementById('lblDedicatedPageTitle');
-            if (breadcrumbEl && titleEl) {
-                titleEl.innerText = title || sectionId.toUpperCase();
-                breadcrumbEl.style.display = 'block';
-            }
-
+            // Scroll smoothly to top of the clean page
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
