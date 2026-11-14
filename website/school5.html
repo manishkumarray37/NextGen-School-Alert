@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title id="siteTitle">NextGen International Academy | Future-Ready Education</title>
+    
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <!-- CSS Dependencies -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/config.js"></script>
+
+    <!-- 🎨 Global & Section-Scoped Dynamic Injected CSS Engine -->
+    <style id="dynamicLiveStyles">
+        :root {
+            --school-primary: #4f46e5;
+            --school-secondary: #06b6d4;
+            --school-dark: #090d16;
+            --nav-bg: rgba(255, 255, 255, 0.85);
+            --nav-text: #0f172a;
+            --footer-bg: #090d16;
+        }
+    </style>
+    <style id="dynamicSectionStyles"></style>
+
+    <style>
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #334155;
+            background-color: #f8fafc;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            opacity: 0;
+            transition: opacity 0.25s ease-in;
+        }
+        body.loaded { opacity: 1; }
+
+        h1, h2, h3, h4, .tech-font {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        /* 1. Sleek Top Micro-Bar */
+        .top-micro-bar {
+            background-color: #090d16;
+            color: #94a3b8;
+            font-size: 12px;
+            padding: 7px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* 2. Frosted Glass Sticky Navbar */
+        .navbar-glass {
+            background: var(--nav-bg) !important;
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            transition: all 0.3s ease;
+        }
+        .school-logo-img { height: 46px; width: auto; object-fit: contain; }
+
+        .nav-link, .dropdown-item {
+            font-weight: 600;
+            font-size: 13.5px;
+            color: var(--nav-text) !important;
+            padding: 8px 14px !important;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--school-primary) !important;
+            background: rgba(79, 70, 229, 0.06);
+        }
+
+        .btn-gradient-cta {
+            background: linear-gradient(135deg, var(--school-primary), var(--school-secondary));
+            color: #ffffff !important;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 9px 22px;
+            border-radius: 12px;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.25);
+            transition: all 0.25s ease;
+        }
+        .btn-gradient-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(79, 70, 229, 0.38);
+            color: #ffffff;
+        }
+
+        /* 3. Futuristic Gradient Mesh Hero */
+        .hero-t5 {
+            background: radial-gradient(circle at 15% 50%, rgba(79, 70, 229, 0.09), transparent 45%),
+                        radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.1), transparent 45%),
+                        #ffffff;
+            padding: 75px 0 90px 0;
+            position: relative;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .hero-pill-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            color: var(--school-primary);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 30px;
+            margin-bottom: 24px;
+        }
+        .hero-title-t5 {
+            font-size: clamp(2.4rem, 5.2vw, 4.3rem);
+            font-weight: 700;
+            line-height: 1.08;
+            color: #090d16;
+            margin-bottom: 22px;
+        }
+        .text-gradient-brand {
+            background: linear-gradient(135deg, var(--school-primary), var(--school-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-visual-box {
+            position: relative;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(15, 23, 42, 0.14);
+            border: 4px solid #ffffff;
+        }
+        .hero-visual-img {
+            width: 100%;
+            height: 440px;
+            object-fit: cover;
+        }
+        .floating-glass-metric {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            padding: 12px 18px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* 4. Bento Grid Campus Highlights (Signature Style) */
+        .bento-card {
+            background: #ffffff;
+            border-radius: 24px;
+            padding: 32px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 25px rgba(15, 23, 42, 0.03);
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .bento-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 45px rgba(79, 70, 229, 0.1);
+            border-color: #c7d2fe;
+        }
+        .bento-card-dark {
+            background: linear-gradient(135deg, #090d16, #1e1b4b);
+            color: #ffffff;
+            border: none;
+        }
+        .bento-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 20px;
+        }
+
+        /* 5. Interactive Wings Tabs */
+        .wing-tab-pill {
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 12px 24px;
+            font-weight: 700;
+            font-size: 13.5px;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .wing-tab-pill:hover { border-color: var(--school-primary); color: var(--school-primary); }
+        .wing-tab-pill.active {
+            background: #090d16;
+            color: #ffffff;
+            border-color: #090d16;
+            box-shadow: 0 8px 20px rgba(9, 13, 22, 0.2);
+        }
+
+        /* 6. Gallery Cards */
+        .gallery-tile {
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            height: 250px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+        }
+        .gallery-tile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .gallery-tile:hover img { transform: scale(1.06); }
+
+        /* Forms & Inputs */
+        .form-label-custom { font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 5px; display: block; }
+        .form-control-custom {
+            height: 44px;
+            font-size: 13.5px;
+            font-weight: 500;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e1;
+            padding: 10px 14px;
+        }
+        .form-control-custom:focus {
+            border-color: var(--school-primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+        }
+
+        /* Floating Studio & Edit Pencils */
+        .editor-floating-dock {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 1050;
+            display: none;
+            gap: 10px;
+        }
+        .btn-dock-studio {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 12px 22px;
+            border-radius: 30px;
+            border: none;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .btn-dock-logout {
+            background: #ef4444;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 12px 18px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-inline-pencil {
+            display: none;
+            background: #fde047;
+            color: #0f172a !important;
+            border: 1.5px solid #0f172a;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            position: absolute;
+            z-index: 30;
+        }
+
+        /* Floating WhatsApp */
+        .gadget-whatsapp {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            z-index: 1040;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: #22c55e;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 8px 24px rgba(34, 197, 94, 0.4);
+            text-decoration: none;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--footer-bg);
+            color: #94a3b8;
+            font-size: 13.5px;
+            padding: 75px 0 30px 0;
+            position: relative;
+        }
+        footer h6 { color: #ffffff; font-weight: 700; margin-bottom: 20px; }
+        footer a { color: #94a3b8; text-decoration: none; transition: 0.2s; }
+        footer a:hover { color: #ffffff; }
+        .footer-divider { border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 25px; margin-top: 50px; }
+
+        .color-dot { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body class="loading">
+
+    <!-- 1. TOP UTILITY MICRO-BAR -->
+    <div class="top-micro-bar position-relative" id="sec-top-bar">
+        <button class="btn-inline-pencil" style="top:3px; left:10px;" onclick="window.triggerInlineEdit('top-info')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-4">
+                <span><i class="fas fa-phone-alt me-1 text-info"></i> <span id="topPhone"></span></span>
+                <span class="d-none d-sm-inline"><i class="fas fa-envelope me-1 text-info"></i> <span id="topEmail"></span></span>
+                <span class="d-none d-md-inline"><i class="fas fa-award me-1 text-warning"></i> <span id="topAffiliation"></span></span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <a href="https://student.schoolalarm.online" class="text-white text-decoration-none fw-semibold"><i class="fas fa-graduation-cap me-1 text-info"></i> Student Portal</a>
+                <span class="text-secondary">|</span>
+                <a href="https://app.schoolalarm.online" class="text-white text-decoration-none fw-semibold"><i class="fas fa-user-shield me-1 text-warning"></i> Staff ERP</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. FROSTED GLASS NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-glass" id="sec-navbar">
+        <div class="container-fluid px-lg-5 px-3 position-relative">
+            <button class="btn-inline-pencil" style="top:10px; left:6px;" onclick="window.triggerInlineEdit('navbar-brand')"><i class="fas fa-pencil-alt"></i></button>
+            <button class="navbar-toggler border-0 me-2 p-1 order-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <i class="fas fa-bars fa-lg text-dark"></i>
+            </button>
+            
+            <a class="navbar-brand d-flex align-items-center gap-2 gap-sm-3 order-1 me-auto" href="javascript:void(0)" onclick="window.returnToFullLandingPage(event)">
+                <img src="/favicon.png" alt="Logo" class="school-logo-img" id="schoolLogo">
+                <div>
+                    <h5 class="tech-font fw-bold m-0 text-dark" id="schoolNameHeader"></h5>
+                    <small class="text-muted d-none d-sm-block" id="schoolTagline" style="font-size: 11px;"></small>
+                </div>
+            </a>
+
+            <div class="collapse navbar-collapse order-2" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-start align-items-lg-center gap-lg-1 py-3 py-lg-0" id="dynamicNavLinks">
+                </ul>
+                <div class="ms-lg-3 mt-2 mt-lg-0">
+                    <a href="#enquiry" class="btn-gradient-cta">Apply Online <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 3. FUTURISTIC HERO SECTION -->
+    <section class="hero-t5 position-relative" id="home">
+        <button class="btn-inline-pencil" style="top:20px; left:20px;" onclick="window.triggerInlineEdit('hero')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <div class="hero-pill-tag" id="heroBadge">
+                        <i class="fas fa-sparkles"></i> ADMISSIONS OPEN &bull; SESSION 2026-27
+                    </div>
+                    <h1 class="hero-title-t5" id="heroHeadline">
+                        Empowering Minds for a <span class="text-gradient-brand">Borderless Future.</span>
+                    </h1>
+                    <p class="lead text-secondary mb-4" id="heroSubtext" style="font-size: 17px; line-height: 1.75;">
+                        Where innovation meets academic excellence. Experience interactive STEM labs, global leadership programs, and personalized digital mentorship.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="#enquiry" class="btn-gradient-cta px-4 py-3" style="font-size: 15px;">
+                            Book Admission Tour <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="#bento" class="btn btn-outline-dark rounded-3 px-4 py-3 fw-bold" style="font-size: 15px;">
+                            Explore Ecosystem
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="hero-visual-box">
+                        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1000&q=80" alt="Smart Classroom" class="hero-visual-img" id="heroVisualPhoto">
+                        
+                        <div class="floating-glass-metric" style="top: 24px; left: 24px;">
+                            <div class="rounded-3 bg-primary text-white p-2"><i class="fas fa-robot fa-lg"></i></div>
+                            <div>
+                                <div class="fw-bold small text-dark">AI & Robotics Lab</div>
+                                <small class="text-muted" style="font-size: 11px;">Integrated STEM Curriculum</small>
+                            </div>
+                        </div>
+
+                        <div class="floating-glass-metric" style="bottom: 24px; right: 24px;">
+                            <div class="rounded-3 bg-success text-white p-2"><i class="fas fa-award fa-lg"></i></div>
+                            <div>
+                                <div class="fw-bold small text-dark">100% Board Results</div>
+                                <small class="text-muted" style="font-size: 11px;">Consistent District Toppers</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. APPLE-STYLE BENTO GRID INFRASTRUCTURE -->
+    <section class="py-5 position-relative" id="bento">
+        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('bento')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5 py-4">
+            <div class="text-center mb-5">
+                <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2">NEXT-GEN ECOSYSTEM</span>
+                <h2 class="tech-font fw-bold display-6 text-dark">Built for Modern Learners</h2>
+            </div>
+
+            <div class="row g-4">
+                <!-- Big Featured Dark Card -->
+                <div class="col-lg-6">
+                    <div class="bento-card bento-card-dark d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="bento-icon bg-primary text-white"><i class="fas fa-microchip"></i></div>
+                            <h3 class="fw-bold mb-3" id="bentoCard1Title">Smart Digital Classrooms & AI Lab</h3>
+                            <p class="text-white-50" id="bentoCard1Desc" style="line-height: 1.7;">
+                                Equipped with 4K interactive touch panels, cloud-enabled learning portals, coding workstations, and hands-on 3D simulation kits for every grade level.
+                            </p>
+                        </div>
+                        <div class="pt-4">
+                            <span class="badge bg-info text-dark fw-bold px-3 py-2 rounded-pill">1:1 Digital Workstation Ratio</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side Asymmetric Grid -->
+                <div class="col-lg-6">
+                    <div class="row g-4 h-100">
+                        <div class="col-md-6">
+                            <div class="bento-card">
+                                <div class="bento-icon bg-success-subtle text-success"><i class="fas fa-shield-alt"></i></div>
+                                <h5 class="fw-bold text-dark mb-2">360° Smart Campus Safety</h5>
+                                <p class="text-muted small mb-0">Live GPS bus tracking on parent mobile apps, RFID attendance alerts, and 24x7 HD surveillance.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="bento-card">
+                                <div class="bento-icon bg-warning-subtle text-warning"><i class="fas fa-trophy"></i></div>
+                                <h5 class="fw-bold text-dark mb-2">Olympic-Standard Sports</h5>
+                                <p class="text-muted small mb-0">Synthetic basketball courts, cricket turf, indoor badminton, chess, and certified athletic coaches.</p>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="bento-card d-flex align-items-center justify-content-between flex-wrap gap-3" style="background: #eef2ff; border-color: #c7d2fe;">
+                                <div>
+                                    <h5 class="fw-bold text-dark mb-1">Unified School Mobile App & Parent Portal</h5>
+                                    <p class="text-secondary small mb-0">Real-time homework, instant fee receipts, digital report cards, and live teacher messaging.</p>
+                                </div>
+                                <a href="https://student.schoolalarm.online" class="btn btn-primary fw-bold rounded-pill px-4">Launch Portal &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. INTERACTIVE ACADEMIC WINGS -->
+    <section class="py-5 position-relative bg-white" id="academics">
+        <div class="container-fluid px-lg-5 py-4">
+            <div class="text-center mb-4">
+                <span class="badge bg-info-subtle text-info-emphasis fw-bold px-3 py-2 rounded-pill mb-2">ACADEMIC FRAMEWORK</span>
+                <h2 class="tech-font fw-bold display-6 text-dark">Curriculum Pathways</h2>
+            </div>
+
+            <!-- Interactive Stage Buttons -->
+            <div class="d-flex justify-content-center gap-2 flex-wrap mb-4">
+                <button class="wing-tab-pill active" onclick="window.switchAcademicWing('foundational', this)">Foundational (K - II)</button>
+                <button class="wing-tab-pill" onclick="window.switchAcademicWing('preparatory', this)">Preparatory (III - V)</button>
+                <button class="wing-tab-pill" onclick="window.switchAcademicWing('middle', this)">Middle School (VI - VIII)</button>
+                <button class="wing-tab-pill" onclick="window.switchAcademicWing('senior', this)">Senior Secondary (IX - XII)</button>
+            </div>
+
+            <!-- Dynamic Wing Content Card -->
+            <div class="p-4 p-md-5 rounded-4 border shadow-sm bg-light">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-7">
+                        <h3 class="tech-font fw-bold text-dark mb-3" id="wingTitle">Foundational Stage (Kindergarten to Grade 2)</h3>
+                        <p class="text-secondary mb-4" id="wingDesc" style="line-height: 1.75;">
+                            Play-based, inquiry-driven learning designed to ignite curiosity, build joyful reading habits, foundational numeracy, and expressive communication skills.
+                        </p>
+                        <div class="row g-2" id="wingPoints">
+                            <div class="col-sm-6 small fw-semibold text-dark"><i class="fas fa-check-circle text-primary me-2"></i>Montessori Sensory Labs</div>
+                            <div class="col-sm-6 small fw-semibold text-dark"><i class="fas fa-check-circle text-primary me-2"></i>Phonics & Storytelling</div>
+                            <div class="col-sm-6 small fw-semibold text-dark"><i class="fas fa-check-circle text-primary me-2"></i>Art, Music & Movement</div>
+                            <div class="col-sm-6 small fw-semibold text-dark"><i class="fas fa-check-circle text-primary me-2"></i>Zero Homework Policy</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 text-center">
+                        <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=700&q=80" alt="Wing" class="rounded-4 shadow-sm w-100" id="wingPhoto" style="height: 280px; object-fit: cover;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. LEADERSHIP DESK -->
+    <section class="py-5 position-relative" id="about">
+        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('about')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container py-4">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-5">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=700&q=80" alt="Principal" class="rounded-4 shadow-lg w-100" id="principalPhoto" style="max-height: 440px; object-fit: cover;">
+                </div>
+                <div class="col-lg-7">
+                    <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2">LEADERSHIP VISION</span>
+                    <h2 class="tech-font fw-bold text-dark mb-3">Message from the Principal</h2>
+                    <p class="lead text-secondary mb-4" id="principalMsg" style="font-size: 16.5px; line-height: 1.8;">
+                        "Our goal is not just to prepare students for exams, but to prepare them for life. By blending strong human values with next-generation technology, we empower every learner to thrive globally."
+                    </p>
+                    <div>
+                        <h5 class="fw-bold text-dark m-0" id="principalName">Dr. Sunita Sharma</h5>
+                        <small class="text-muted fw-semibold" id="principalTitle">Principal & Academic Director</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. CAMPUS GALLERY -->
+    <section class="py-5 position-relative bg-white" id="gallery">
+        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('gallery')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5 py-4">
+            <div class="text-center mb-4">
+                <span class="badge bg-info-subtle text-info-emphasis fw-bold px-3 py-2 rounded-pill mb-2">CAMPUS SHOWCASE</span>
+                <h2 class="tech-font fw-bold display-6 text-dark">Life at Our Campus</h2>
+            </div>
+            <div class="row g-3" id="galleryContainer">
+                <div class="col-md-4 col-6"><div class="gallery-tile"><img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=600&q=80" alt="Campus"></div></div>
+                <div class="col-md-4 col-6"><div class="gallery-tile"><img src="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=600&q=80" alt="Auditorium"></div></div>
+                <div class="col-md-4 col-6"><div class="gallery-tile"><img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=600&q=80" alt="Sports"></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. NOTICE BOARD & DISCLOSURE -->
+    <section class="py-5 position-relative" id="notices">
+        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('notices')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5 py-3">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <h4 class="tech-font fw-bold text-dark mb-3">Notice Board & Circulars</h4>
+                    <div class="list-group rounded-4 shadow-sm border-0 overflow-hidden" id="noticeListContainer">
+                        <a href="javascript:void(0)" class="list-group-item list-group-item-action p-3 d-flex justify-content-between align-items-center">
+                            <div><span class="badge bg-danger me-2">NEW</span><span class="fw-bold small">Admissions Open for Academic Session 2026-27</span></div>
+                            <i class="fas fa-file-pdf text-danger"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="list-group-item list-group-item-action p-3 d-flex justify-content-between align-items-center">
+                            <div><span class="fw-bold small">Updated School Bus Routes & GPS Guidelines</span></div>
+                            <i class="fas fa-file-pdf text-danger"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="list-group-item list-group-item-action p-3 d-flex justify-content-between align-items-center">
+                            <div><span class="fw-bold small">Mandatory Public Disclosure Documents (CBSE)</span></div>
+                            <i class="fas fa-file-pdf text-danger"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-6" id="disclosure">
+                    <h4 class="tech-font fw-bold text-dark mb-3">Transfer Certificate Verification</h4>
+                    <div class="p-4 bg-white rounded-4 shadow-sm border">
+                        <p class="small text-muted mb-3">Verify official Transfer Certificates issued by our academic office online.</p>
+                        <form onsubmit="event.preventDefault(); alert('TC Record Verified & Active.');">
+                            <div class="input-group">
+                                <input type="text" class="form-control form-control-custom" placeholder="Enter TC / Admission No." required>
+                                <button class="btn btn-primary fw-bold px-4" type="submit">Verify</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. ONLINE ADMISSION ENQUIRY -->
+    <section class="py-5 position-relative bg-white" id="enquiry">
+        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('enquiry-info')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container py-4">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-5">
+                    <span class="badge bg-primary-subtle text-primary fw-bold px-3 py-2 rounded-pill mb-2">ADMISSIONS 2026-27</span>
+                    <h2 class="tech-font fw-bold text-dark mb-3" id="enqLeadTitle">Start Your Admission Journey</h2>
+                    <p class="text-secondary small mb-4" id="enqLeadText">Submit the enquiry form below. Our admissions team will reach out within 24 hours to schedule a personal campus visit.</p>
+                    <div class="p-3 bg-light rounded-3 border">
+                        <div class="fw-bold small text-dark"><i class="fas fa-map-marker-alt text-primary me-2"></i>Campus Address</div>
+                        <small class="text-muted" id="footerAddr"></small>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="p-4 p-md-5 bg-light rounded-4 border shadow-sm">
+                        <form id="admissionEnquiryForm" onsubmit="window.submitAdmissionEnquiry(event)">
+                            <div class="row g-3">
+                                <div class="col-md-6"><label class="form-label-custom">Student Name *</label><input type="text" class="form-control form-control-custom" id="enqStudentName" required></div>
+                                <div class="col-md-6"><label class="form-label-custom">Class *</label><select class="form-select form-control-custom" id="enqClass" required><option value="">-- Loading Classes... --</option></select></div>
+                                <div class="col-md-6"><label class="form-label-custom">Parent Name *</label><input type="text" class="form-control form-control-custom" id="enqParentName" required></div>
+                                <div class="col-md-6"><label class="form-label-custom">Mobile Number *</label><input type="tel" class="form-control form-control-custom" id="enqMobile" pattern="[0-9]{10}" required></div>
+                                <div class="col-md-6"><label class="form-label-custom">Email (Optional)</label><input type="email" class="form-control form-control-custom" id="enqEmail"></div>
+                                <div class="col-md-6"><label class="form-label-custom">Previous School</label><input type="text" class="form-control form-control-custom" id="enqPrevSchool"></div>
+                                <div class="col-12"><label class="form-label-custom">Query / Message</label><textarea class="form-control" id="enqMessage" rows="2" style="border-radius:10px; font-size:13px;"></textarea></div>
+                                <div class="col-12 pt-2">
+                                    <button type="submit" class="btn-gradient-cta w-100 py-3 justify-content-center" id="btnSubmitEnquiry">Submit Admission Enquiry &rarr;</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. SLEEK DARK FOOTER -->
+    <footer id="sec-footer">
+        <div class="container-fluid px-lg-5">
+            <div class="row g-4 justify-content-between">
+                <div class="col-lg-4">
+                    <h5 class="tech-font text-white fw-bold mb-3" id="footerSchoolName"></h5>
+                    <p class="small text-secondary mb-3" id="footerAboutDesc">Empowering future global citizens through modern technology, research, and holistic excellence.</p>
+                </div>
+
+                <div class="col-lg-2 col-6">
+                    <h6>Explore</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2 small" id="footerQuickLinksList"></ul>
+                </div>
+
+                <div class="col-lg-3 col-6">
+                    <h6>Portals & Links</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2 small">
+                        <li><a href="https://student.schoolalarm.online">Student Portal</a></li>
+                        <li><a href="https://app.schoolalarm.online">Staff ERP Login</a></li>
+                        <li><a href="#notices">Notices & Circulars</a></li>
+                        <li><a href="#disclosure">Mandatory Disclosure</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3">
+                    <h6>Contact Support</h6>
+                    <p class="small mb-1"><i class="fas fa-phone-alt text-info me-2"></i><span id="footerPhone"></span></p>
+                    <p class="small mb-2"><i class="fas fa-envelope text-info me-2"></i><span id="footerMail"></span></p>
+                    <p class="small text-secondary mb-3" id="footerTimingText">Mon - Sat: 8:00 AM - 3:00 PM</p>
+                    <div class="mt-2">
+                        <a href="javascript:void(0)" onclick="window.openEditorModal()" class="text-warning small text-decoration-none fw-bold">
+                            <i class="fas fa-lock me-1"></i> Web Editor Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-divider d-flex justify-content-between align-items-center flex-wrap gap-2 text-secondary small">
+                <div>&copy; 2026 <span id="copySchoolName"></span>. All rights reserved.</div>
+                <div>Powered by <a href="https://schoolalarm.online" class="text-white fw-bold">School Alarm ERP</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp -->
+    <a href="https://wa.me/917079090740" target="_blank" class="gadget-whatsapp" id="gadget-whatsapp" title="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Floating Dock -->
+    <div class="editor-floating-dock" id="editorDockToolbar">
+        <button class="btn-dock-studio" onclick="window.openCustomizerDrawer()" type="button">
+            <i class="fas fa-palette fa-lg"></i> Website Studio
+        </button>
+        <button class="btn-dock-logout" onclick="window.doEditorLogout()" type="button" title="Logout Editor Session">
+            <i class="fas fa-sign-out-alt me-1"></i> Logout
+        </button>
+    </div>
+
+    <!-- Web Editor Login Modal -->
+    <div class="modal fade" id="editorLoginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white p-3 border-0">
+                    <h6 class="modal-title fw-bold"><i class="fas fa-user-shield me-2 text-warning"></i>Web Editor Login</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form onsubmit="window.handleEditorAuth(event)">
+                        <div class="mb-3"><label class="form-label-custom">Editor ID</label><input type="text" class="form-control form-control-custom" id="txtEditorId" required></div>
+                        <div class="mb-3"><label class="form-label-custom">Password</label><input type="password" class="form-control form-control-custom" id="txtEditorPass" required></div>
+                        <button type="submit" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" id="btnDoEditorLogin">Login & Edit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Website Studio Drawer (520px) -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="liveCustomizerDrawer" style="width: 520px; max-width: 95vw;">
+        <div class="offcanvas-header bg-dark text-white p-3">
+            <h6 class="offcanvas-title fw-bold"><i class="fas fa-sliders-h text-warning me-2"></i>Live Website Studio</h6>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-4">
+            <ul class="nav nav-pills nav-fill mb-3" id="studioTabs">
+                <li class="nav-item"><button class="nav-link active small py-1" data-bs-toggle="pill" data-bs-target="#tabTheme">Colors</button></li>
+                <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabNav">Menu Builder</button></li>
+                <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabSections">Sections & Styles</button></li>
+                <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabFooter">Footer</button></li>
+            </ul>
+
+            <div class="tab-content border-top pt-3">
+                <div class="tab-pane fade show active" id="tabTheme">
+                    <label class="form-label-custom mb-2">Preset Brand Primary Color</label>
+                    <div class="d-flex gap-2 mb-3">
+                        <div class="color-dot" style="background:#4f46e5;" onclick="window.applyLiveThemeColors('#4f46e5', null, null, null)"></div>
+                        <div class="color-dot" style="background:#059669;" onclick="window.applyLiveThemeColors('#059669', null, null, null)"></div>
+                        <div class="color-dot" style="background:#be123c;" onclick="window.applyLiveThemeColors('#be123c', null, null, null)"></div>
+                        <div class="color-dot" style="background:#0284c7;" onclick="window.applyLiveThemeColors('#0284c7', null, null, null)"></div>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6"><label class="form-label-custom">Navbar BG</label><input type="color" class="form-control form-control-color w-100" value="#ffffff" onchange="window.applyLiveThemeColors(null, this.value, null, null)"></div>
+                        <div class="col-6"><label class="form-label-custom">Footer BG</label><input type="color" class="form-control form-control-color w-100" value="#090d16" onchange="window.applyLiveThemeColors(null, null, null, this.value)"></div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="tabNav">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label-custom m-0">Menu Structure</label>
+                        <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="window.promptAddNewMenuItem()">+ Add Item</button>
+                    </div>
+                    <div class="list-group mb-3" id="studioMenuList"></div>
+                </div>
+
+                <div class="tab-pane fade" id="tabSections">
+                    <div class="d-flex flex-column gap-2 mb-3" id="studioSectionManagerList"></div>
+                </div>
+
+                <div class="tab-pane fade" id="tabFooter">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label-custom m-0">Footer Links</label>
+                        <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="window.promptAddFooterLink()">+ Add Link</button>
+                    </div>
+                    <div class="list-group mb-3" id="studioFooterLinkList"></div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-success w-100 py-3 fw-bold shadow mt-4" id="btnSaveLiveSettings" onclick="window.saveLiveWebsiteSettings()">
+                <i class="fas fa-cloud-upload-alt me-2"></i> SAVE LIVE SETTINGS
+            </button>
+        </div>
+    </div>
+
+    <!-- Universal Dual Mode Edit Modal -->
+    <div class="modal fade" id="universalSectionEditModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+                    <h6 class="modal-title fw-bold" id="editModalTitle">Edit Component</h6>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-warning active fw-bold py-1 px-3" id="btnModeVisual" onclick="window.switchEditorModalMode('visual')" type="button">Visual Mode</button>
+                        <button class="btn btn-sm btn-outline-light fw-bold py-1 px-3" id="btnModeRawHtml" onclick="window.switchEditorModalMode('html')" type="button">Raw HTML Mode</button>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="modalVisualContainer"><div id="modalDynamicFieldsContainer"></div></div>
+                    <div id="modalHtmlContainer" style="display: none;">
+                        <label class="form-label-custom text-primary">Custom HTML / CSS Code:</label>
+                        <textarea class="form-control font-monospace" id="inRawHtmlCode" rows="12" style="font-size: 12.5px; background: #0f172a; color: #38bdf8;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer p-3 border-0">
+                    <button type="button" class="btn btn-primary w-100 fw-bold py-2 shadow-sm" onclick="window.applyInlineModalData()">Apply & Update Live</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ⚡ Interactive CMS Engine for Template 5 -->
+    <script>
+        let activeSchoolId = "";
+        let currentModalMode = "visual";
+        let activeEditTarget = "";
+        let isDedicatedPageMode = false;
+
+        // Interactive Academic Wings Data
+        const academicWingsMap = {
+            foundational: {
+                title: "Foundational Stage (Kindergarten to Grade 2)",
+                desc: "Play-based, inquiry-driven learning designed to ignite curiosity, build joyful reading habits, foundational numeracy, and expressive communication skills.",
+                points: ["Montessori Sensory Labs", "Phonics & Storytelling", "Art, Music & Movement", "Zero Homework Policy"],
+                img: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=700&q=80"
+            },
+            preparatory: {
+                title: "Preparatory Stage (Grades 3 to 5)",
+                desc: "Discovery-oriented classroom models bridging early literacy to structured analytical mathematics, environmental sciences, and block coding.",
+                points: ["Hands-on STEM Kits", "Creative Writing Studios", "Visual Block Coding", "Environmental Ecology"],
+                img: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=700&q=80"
+            },
+            middle: {
+                title: "Middle School (Grades 6 to 8)",
+                desc: "Critical thinking, experiential lab research, robotics engineering, foreign languages, and structured public speaking & leadership clubs.",
+                points: ["Physics & Chemistry Labs", "Python & Robotics", "Model United Nations", "Competitive Olympiad Prep"],
+                img: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=700&q=80"
+            },
+            senior: {
+                title: "Senior Secondary (Grades 9 to 12)",
+                desc: "Focused streams in Science (PCM/PCB), Commerce, and Humanities paired with university counseling and career mentorship.",
+                points: ["NEET / JEE / CUET Guidance", "AI & Data Science", "Career Counseling Cell", "Research & Internships"],
+                img: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=700&q=80"
+            }
+        };
+
+        window.switchAcademicWing = function(key, btnEl) {
+            document.querySelectorAll('.wing-tab-pill').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+            const w = academicWingsMap[key];
+            if (!w) return;
+            document.getElementById('wingTitle').innerText = w.title;
+            document.getElementById('wingDesc').innerText = w.desc;
+            document.getElementById('wingPhoto').src = w.img;
+            document.getElementById('wingPoints').innerHTML = w.points.map(p => `<div class="col-sm-6 small fw-semibold text-dark"><i class="fas fa-check-circle text-primary me-2"></i>${p}</div>`).join('');
+        };
+
+        let websiteConfig = {
+            ThemeConfig: { primaryColor: "#4f46e5", secondaryColor: "#06b6d4", navBgColor: "rgba(255,255,255,0.85)", navTextColor: "#0f172a", footerBgColor: "#090d16" },
+            NavMenu: [
+                { id: "m_home", label: "Home", link: "#home", target: "home", parentId: "", visible: true },
+                { id: "m_bento", label: "Ecosystem", link: "#bento", target: "bento", parentId: "", visible: true },
+                { id: "m_academics", label: "Academics", link: "#academics", target: "academics", parentId: "", visible: true },
+                { id: "m_about", label: "Leadership", link: "#about", target: "about", parentId: "", visible: true },
+                { id: "m_gallery", label: "Gallery", link: "#gallery", target: "gallery", parentId: "", visible: true },
+                { id: "m_notices", label: "Notices", link: "#notices", target: "notices", parentId: "", visible: true }
+            ],
+            FooterLinks: [
+                { label: "Home", link: "#home" },
+                { label: "Ecosystem", link: "#bento" },
+                { label: "Academics", link: "#academics" },
+                { label: "Admissions", link: "#enquiry" }
+            ],
+            SectionOrder: [
+                { id: "home", label: "Hero Visual Banner", visible: true },
+                { id: "bento", label: "Bento Grid Highlights", visible: true },
+                { id: "academics", label: "Interactive Wings Tabs", visible: true },
+                { id: "about", label: "Principal Desk", visible: true },
+                { id: "gallery", label: "Campus Gallery", visible: true },
+                { id: "notices", label: "Notice Board & TC Check", visible: true },
+                { id: "enquiry", label: "Admission Enquiry", visible: true }
+            ],
+            SectionsData: { customPages: {} }
+        };
+
+        // Initial Dynamic Loader
+        document.addEventListener("DOMContentLoaded", async function() {
+            const host = window.location.hostname.toLowerCase();
+            const urlParams = new URLSearchParams(window.location.search);
+            const querySchool = urlParams.get('school');
+
+            let searchId = querySchool || "";
+            if (!searchId) {
+                if (host.startsWith('demo.')) searchId = "169701";
+                else if (host.includes('.') && !host.startsWith('www.')) searchId = host.split('.')[0];
+            }
+
+            try {
+                let schoolRecord = null;
+                if (searchId && searchId !== "demo") {
+                    const { data } = await db.from('Schools').select('*').eq('SchoolID', searchId).maybeSingle();
+                    schoolRecord = data;
+                }
+                if (!schoolRecord) {
+                    const { data: fb } = await db.from('Schools').select('*').eq('Status', 'ACTIVE').limit(1).maybeSingle();
+                    schoolRecord = fb;
+                }
+
+                if (schoolRecord) {
+                    activeSchoolId = schoolRecord.SchoolID;
+                    const sName = schoolRecord.SchoolName || "NextGen International Academy";
+                    const sPhone = schoolRecord.Phone || "+91 7079090740";
+                    const sMail = schoolRecord.Email || "info@schoolalarm.online";
+                    const sAddr = schoolRecord.Address ? `${schoolRecord.Address}, ${schoolRecord.City || ''}` : "Main Campus Road";
+
+                    document.getElementById('siteTitle').innerText = `${sName} | Future-Ready Education`;
+                    document.getElementById('schoolNameHeader').innerText = sName;
+                    document.getElementById('footerSchoolName').innerText = sName;
+                    document.getElementById('copySchoolName').innerText = sName;
+
+                    if (schoolRecord.SchoolLogo) document.getElementById('schoolLogo').src = schoolRecord.SchoolLogo;
+                    document.getElementById('topPhone').innerText = sPhone;
+                    document.getElementById('footerPhone').innerText = sPhone;
+                    document.getElementById('topEmail').innerText = sMail;
+                    document.getElementById('footerMail').innerText = sMail;
+                    document.getElementById('footerAddr').innerText = sAddr;
+
+                    const cleanPhone = sPhone.replace(/[^0-9]/g, '');
+                    const waNum = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+                    document.getElementById('gadget-whatsapp').href = `https://wa.me/${waNum}?text=Hello%20${encodeURIComponent(sName)},%20I%20have%20an%20admission%20enquiry.`;
+
+                    window.loadSchoolClassesFromConfig(activeSchoolId);
+                    await window.loadCustomWebsiteConfig(activeSchoolId);
+                }
+            } catch(e) {}
+            finally {
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+            }
+
+            if (sessionStorage.getItem("website_editor_auth") === "true") window.enableEditorModeUI();
+            const studioDrawerEl = document.getElementById('liveCustomizerDrawer');
+            if (studioDrawerEl) {
+                studioDrawerEl.addEventListener('show.bs.offcanvas', () => { document.getElementById('editorDockToolbar').style.display = 'none'; });
+                studioDrawerEl.addEventListener('hidden.bs.offcanvas', () => {
+                    if (sessionStorage.getItem("website_editor_auth") === "true") document.getElementById('editorDockToolbar').style.display = 'inline-flex';
+                });
+            }
+        });
+
+        window.handleNavClick = function(targetKey) {
+            const clean = (targetKey || "").replace(/^#/, '').toLowerCase();
+            if (!clean || clean === "home") { window.returnToFullLandingPage(); return; }
+            const sec = websiteConfig.SectionOrder.find(s => s.id === clean);
+            if (sec && sec.visible === false) {
+                isDedicatedPageMode = true;
+                websiteConfig.SectionOrder.forEach(s => { const el = document.getElementById(s.id); if (el) el.style.display = 'none'; });
+                const tEl = document.getElementById(clean); if (tEl) tEl.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                if (isDedicatedPageMode) window.returnToFullLandingPage(null, clean);
+                else { const el = document.getElementById(clean); if (el) el.scrollIntoView({ behavior: 'smooth' }); }
+            }
+        };
+
+        window.returnToFullLandingPage = function(e, scrollToId) {
+            if (e) e.preventDefault();
+            isDedicatedPageMode = false;
+            websiteConfig.SectionOrder.forEach(sec => {
+                const el = document.getElementById(sec.id);
+                if (el) el.style.display = (sec.visible !== false) ? '' : 'none';
+            });
+            if (scrollToId) setTimeout(() => { const el = document.getElementById(scrollToId); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100);
+            else window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.loadSchoolClassesFromConfig = async function(schId) {
+            const classSelect = document.getElementById('enqClass');
+            if (!classSelect) return;
+            try {
+                const { data: configs } = await db.from('School_Configs').select('Value').eq('SchoolID', schId).eq('Category', 'Class').order('Id', { ascending: true });
+                if (!configs || configs.length === 0) { classSelect.innerHTML = `<option value="Class 1">Class 1</option><option value="Class 10">Class 10</option>`; return; }
+                configs.sort((a, b) => (a.Value || '').localeCompare(b.Value || '', undefined, { numeric: true, sensitivity: 'base' }));
+                classSelect.innerHTML = '<option value="">-- Select Class --</option>' + configs.map(c => `<option value="${c.Value}">${c.Value}</option>`).join('');
+            } catch(e) {}
+        };
+
+        window.loadCustomWebsiteConfig = async function(schId) {
+            try {
+                const { data: webData } = await db.from('School_Websites').select('*').eq('SchoolID', schId).maybeSingle();
+                if (webData) {
+                    if (webData.ThemeConfig) {
+                        websiteConfig.ThemeConfig = webData.ThemeConfig;
+                        window.applyLiveThemeColors(webData.ThemeConfig.primaryColor, webData.ThemeConfig.navBgColor, webData.ThemeConfig.navTextColor, webData.ThemeConfig.footerBgColor);
+                    }
+                    if (webData.NavMenu && Array.isArray(webData.NavMenu)) websiteConfig.NavMenu = webData.NavMenu;
+                    if (webData.FooterLinks && Array.isArray(webData.FooterLinks)) websiteConfig.FooterLinks = webData.FooterLinks;
+                    if (webData.SectionOrder && Array.isArray(webData.SectionOrder)) websiteConfig.SectionOrder = webData.SectionOrder;
+                    if (webData.SectionsData) websiteConfig.SectionsData = Object.assign({}, websiteConfig.SectionsData, webData.SectionsData);
+                }
+            } catch(e) {}
+            window.renderNavbarMenu();
+            window.renderFooterLinks();
+            window.applySectionOrdersAndStyles();
+            window.renderSectionManagerList();
+        };
+
+        window.renderNavbarMenu = function() {
+            const container = document.getElementById('dynamicNavLinks');
+            const studioList = document.getElementById('studioMenuList');
+            if (!container) return;
+
+            let navHtml = "", studioHtml = "";
+            websiteConfig.NavMenu.filter(m => !m.parentId).forEach(root => {
+                const subs = websiteConfig.NavMenu.filter(m => m.parentId === root.id);
+                const isVis = (root.visible !== false);
+                if (subs.length === 0) {
+                    navHtml += `<li class="nav-item" style="${isVis ? '' : 'display:none;'}"><a class="nav-link" href="${root.link}" onclick="window.handleNavClick('${root.target}')">${root.label}</a></li>`;
+                } else {
+                    navHtml += `<li class="nav-item dropdown" style="${isVis ? '' : 'display:none;'}"><a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">${root.label}</a><ul class="dropdown-menu">${subs.map(s => `<li><a class="dropdown-item" href="${s.link}" onclick="window.handleNavClick('${s.target}')">${s.label}</a></li>`).join('')}</ul></li>`;
+                }
+            });
+
+            if (studioList) {
+                websiteConfig.NavMenu.forEach((item, idx) => {
+                    studioHtml += `<div class="list-group-item d-flex justify-content-between align-items-center p-2 mb-1 border"><span class="small fw-bold">${item.label}</span><div class="d-flex gap-1"><button class="btn btn-sm btn-outline-primary py-0 px-1" onclick="window.openMenuContentEditor('${item.target}')">&#128221; Content</button><button class="btn btn-sm btn-outline-danger py-0 px-1" onclick="window.removeMenuItem(${idx})">&times;</button></div></div>`;
+                });
+            }
+            container.innerHTML = navHtml;
+            if (studioList) studioList.innerHTML = studioHtml;
+        };
+
+        window.promptAddNewMenuItem = function() {
+            const l = prompt("Enter Menu Name:"); if (!l) return;
+            const slug = l.toLowerCase().replace(/[^a-z0-9]/g, '');
+            websiteConfig.NavMenu.push({ id: "m_" + slug, label: l, link: "#" + slug, target: slug, parentId: "", visible: true });
+            if (!websiteConfig.SectionsData.customPages) websiteConfig.SectionsData.customPages = {};
+            websiteConfig.SectionsData.customPages[slug] = { title: l, content: "Custom section content.", rawHtml: "" };
+            websiteConfig.SectionOrder.push({ id: slug, label: l, visible: true });
+            window.renderNavbarMenu();
+            window.applySectionOrdersAndStyles();
+            window.renderSectionManagerList();
+        };
+
+        window.removeMenuItem = function(idx) {
+            if (confirm("Delete menu item?")) { websiteConfig.NavMenu.splice(idx, 1); window.renderNavbarMenu(); }
+        };
+
+        window.renderSectionManagerList = function() {
+            const listEl = document.getElementById('studioSectionManagerList');
+            if (!listEl) return;
+            listEl.innerHTML = websiteConfig.SectionOrder.map((sec, idx) => `
+                <div class="card p-2 shadow-sm border mb-1">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="form-check form-switch mb-0">
+                            <input class="form-check-input" type="checkbox" ${sec.visible !== false ? 'checked' : ''} onchange="window.toggleSectionVisibility(${idx}, this.checked)">
+                            <label class="form-check-label small fw-bold">${sec.label}</label>
+                        </div>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-sm btn-light py-0 px-2 border" onclick="window.moveSection(${idx}, -1)">&uarr;</button>
+                            <button class="btn btn-sm btn-light py-0 px-2 border" onclick="window.moveSection(${idx}, 1)">&darr;</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        window.toggleSectionVisibility = function(idx, isVis) {
+            websiteConfig.SectionOrder[idx].visible = isVis;
+            const el = document.getElementById(websiteConfig.SectionOrder[idx].id);
+            if (el) el.style.display = isVis ? '' : 'none';
+        };
+
+        window.moveSection = function(idx, dir) {
+            const n = idx + dir;
+            if (n < 0 || n >= websiteConfig.SectionOrder.length) return;
+            const t = websiteConfig.SectionOrder[idx]; websiteConfig.SectionOrder[idx] = websiteConfig.SectionOrder[n]; websiteConfig.SectionOrder[n] = t;
+            window.applySectionOrdersAndStyles();
+            window.renderSectionManagerList();
+        };
+
+        window.applySectionOrdersAndStyles = function() {
+            const footerEl = document.getElementById('sec-footer');
+            if (!footerEl) return;
+            const pages = websiteConfig.SectionsData.customPages || {};
+            for (const slug in pages) {
+                let secEl = document.getElementById(slug);
+                const pg = pages[slug];
+                if (!secEl) {
+                    secEl = document.createElement('section');
+                    secEl.className = 'py-5 position-relative border-top';
+                    secEl.id = slug;
+                    footerEl.parentNode.insertBefore(secEl, footerEl);
+                }
+                secEl.innerHTML = pg.rawHtml ? `<div class="container py-4">${pg.rawHtml}</div>` : `<div class="container py-4 text-center"><h2 class="tech-font fw-bold mb-3">${pg.title}</h2><p class="lead">${pg.content}</p></div>`;
+            }
+            websiteConfig.SectionOrder.forEach(sec => {
+                const el = document.getElementById(sec.id);
+                if (el) {
+                    if (!isDedicatedPageMode) el.style.display = (sec.visible === false) ? 'none' : '';
+                    footerEl.parentNode.insertBefore(el, footerEl);
+                }
+            });
+        };
+
+        window.applyLiveThemeColors = function(primary, navBg, navText, footerBg) {
+            if (primary) { websiteConfig.ThemeConfig.primaryColor = primary; websiteConfig.ThemeConfig.secondaryColor = primary; }
+            if (navBg) websiteConfig.ThemeConfig.navBgColor = navBg;
+            if (footerBg) websiteConfig.ThemeConfig.footerBgColor = footerBg;
+            document.getElementById('dynamicLiveStyles').innerHTML = `
+                :root {
+                    --school-primary: ${websiteConfig.ThemeConfig.primaryColor} !important;
+                    --nav-bg: ${websiteConfig.ThemeConfig.navBgColor} !important;
+                    --footer-bg: ${websiteConfig.ThemeConfig.footerBgColor} !important;
+                }
+            `;
+        };
+
+        window.renderFooterLinks = function() {
+            const listContainer = document.getElementById('footerQuickLinksList');
+            const studioFooterList = document.getElementById('studioFooterLinkList');
+            if (!listContainer) return;
+            listContainer.innerHTML = websiteConfig.FooterLinks.map(i => `<li><a href="${i.link}">${i.label}</a></li>`).join('');
+            if (studioFooterList) studioFooterList.innerHTML = websiteConfig.FooterLinks.map((i, idx) => `<div class="list-group-item d-flex justify-content-between p-2 mb-1 border"><span>${i.label}</span><button class="btn btn-sm btn-outline-danger py-0" onclick="window.removeFooterLink(${idx})">&times;</button></div>`).join('');
+        };
+        window.promptAddFooterLink = function() {
+            const l = prompt("Link Label:"); const u = prompt("URL:", "#");
+            if (l && u) { websiteConfig.FooterLinks.push({ label: l, link: u }); window.renderFooterLinks(); }
+        };
+        window.removeFooterLink = function(idx) {
+            if (confirm("Delete footer link?")) { websiteConfig.FooterLinks.splice(idx, 1); window.renderFooterLinks(); }
+        };
+
+        window.openEditorModal = function() { new bootstrap.Modal(document.getElementById('editorLoginModal')).show(); };
+        window.handleEditorAuth = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('txtEditorId').value.trim();
+            const pass = document.getElementById('txtEditorPass').value.trim();
+            const { data: res } = await db.rpc('verify_website_editor_login', { p_school_id: activeSchoolId || '169701', p_login_id: id, p_password: pass });
+            if (res && res.status === 'success') {
+                sessionStorage.setItem("website_editor_auth", "true");
+                bootstrap.Modal.getInstance(document.getElementById('editorLoginModal')).hide();
+                window.enableEditorModeUI();
+            } else { alert("Invalid credentials"); }
+        };
+        window.enableEditorModeUI = function() {
+            document.getElementById('editorDockToolbar').style.display = 'inline-flex';
+            document.querySelectorAll('.btn-inline-pencil').forEach(p => p.style.display = 'inline-flex');
+        };
+        window.doEditorLogout = function() { sessionStorage.removeItem("website_editor_auth"); window.location.reload(); };
+        window.openCustomizerDrawer = function() { new bootstrap.Offcanvas(document.getElementById('liveCustomizerDrawer')).show(); };
+        window.openMenuContentEditor = function(targetKey) { window.triggerInlineEdit((targetKey || "").replace(/^#/, '').toLowerCase()); };
+
+        window.switchEditorModalMode = function(mode) {
+            currentModalMode = mode;
+            document.getElementById('modalVisualContainer').style.display = (mode === 'visual') ? 'block' : 'none';
+            document.getElementById('modalHtmlContainer').style.display = (mode === 'html') ? 'block' : 'none';
+        };
+
+        window.triggerInlineEdit = function(targetKey) {
+            activeEditTarget = targetKey;
+            const container = document.getElementById('modalDynamicFieldsContainer');
+            document.getElementById('editModalTitle').innerText = "Edit Component: " + targetKey;
+            container.innerHTML = `<label class="form-label-custom">Custom Title</label><input type="text" class="form-control form-control-sm mb-2" id="inCustTitle" value=""><label class="form-label-custom">Content</label><textarea class="form-control form-control-sm" id="inCustCont" rows="4"></textarea>`;
+            new bootstrap.Modal(document.getElementById('universalSectionEditModal')).show();
+        };
+
+        window.applyInlineModalData = async function() {
+            if (currentModalMode === 'html') {
+                const code = document.getElementById('inRawHtmlCode').value;
+                if (!websiteConfig.SectionsData.customPages) websiteConfig.SectionsData.customPages = {};
+                websiteConfig.SectionsData.customPages[activeEditTarget] = { title: activeEditTarget, rawHtml: code };
+                window.applySectionOrdersAndStyles();
+            }
+            bootstrap.Modal.getInstance(document.getElementById('universalSectionEditModal')).hide();
+            await window.saveLiveWebsiteSettings();
+        };
+
+        window.saveLiveWebsiteSettings = async function() {
+            const payload = {
+                SchoolID: activeSchoolId || "169701",
+                ThemeConfig: websiteConfig.ThemeConfig,
+                NavMenu: websiteConfig.NavMenu,
+                FooterLinks: websiteConfig.FooterLinks,
+                SectionOrder: websiteConfig.SectionOrder,
+                SectionsData: websiteConfig.SectionsData,
+                UpdatedAt: new Date().toISOString()
+            };
+            const { error } = await db.from('School_Websites').upsert(payload, { onConflict: 'SchoolID' });
+            if (!error) alert("🎉 Saved Live!");
+        };
+
+        window.submitAdmissionEnquiry = async function(e) {
+            e.preventDefault();
+            const payload = {
+                "SchoolID": activeSchoolId || "169701",
+                "StudentName": document.getElementById('enqStudentName').value.trim().toUpperCase(),
+                "ParentName": document.getElementById('enqParentName').value.trim().toUpperCase(),
+                "Class": document.getElementById('enqClass').value,
+                "Mobile": document.getElementById('enqMobile').value.trim(),
+                "Status": "NEW",
+                "CreatedAt": new Date().toISOString()
+            };
+            const { error } = await db.from('Student_Enquiries').insert([payload]);
+            if (!error) { alert("🎉 Enquiry Submitted!"); e.target.reset(); }
+        };
+    </script>
+</body>
+</html>
