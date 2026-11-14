@@ -28,6 +28,9 @@
   (function() {
     function syncAppViewState() {
       try {
+	  if (window.location.search.includes("sso=")) {
+          document.documentElement.classList.add("user-logged-in");
+        }
         const rawUser = localStorage.getItem("a2z_user");
         if (rawUser) {
           const u = JSON.parse(rawUser || "{}");
@@ -48661,7 +48664,46 @@ window.finalSubmit = async function(btn) {
     });
 
     // Boot
-    window.onload = function() {
+    window.onload = async function() {
+        // 1. Check for Superadmin 1-Click SSO Handoff Token
+        const _ssoParams = new URLSearchParams(window.location.search);
+        const _ssoToken = _ssoParams.get('sso');
+        const _ssoSid = _ssoParams.get('sid');
+
+        if (_ssoToken && _ssoSid) {
+            try {
+                const { data: ssoRes, error: ssoErr } = await db.rpc('verify_sa_sso_token', {
+                    p_token: _ssoToken,
+                    p_school_id: _ssoSid
+                });
+
+                if (!ssoErr && ssoRes && ssoRes.status === 'success' && ssoRes.user) {
+                    const sessionData = {
+                        name: ssoRes.user.FullName || "Super Administrator",
+                        role: "SUPER ADMIN",
+                        schoolId: _ssoSid,
+                        schoolName: ssoRes.schoolName || "School Portal",
+                        loginId: ssoRes.user.LoginID,
+                        avatar: ssoRes.user.ProfileAvatarUrl || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+                        isImpersonating: true
+                    };
+                    localStorage.setItem("a2z_user", JSON.stringify(sessionData));
+                    userData = sessionData;
+
+                    // Remove SSO token from URL bar cleanly
+                    history.replaceState({}, document.title, window.location.pathname);
+
+                    document.getElementById("main-app").style.display = "block";
+                    document.getElementById("login-overlay").style.display = "none";
+                    initDashboard();
+                    return;
+                }
+            } catch (e) {
+                console.error("SSO Verification Error:", e);
+            }
+        }
+
+        // 2. Normal Session Boot
         const saved = localStorage.getItem("a2z_user");
         if (saved) {
             try {
@@ -48670,10 +48712,12 @@ window.finalSubmit = async function(btn) {
                 document.getElementById("login-overlay").style.display = "none";
                 initDashboard();
             } catch(e) {
+                document.documentElement.classList.remove("user-logged-in");
                 document.getElementById("login-overlay").style.display = "flex";
                 document.getElementById("main-app").style.display = "none";
             }
         } else {
+            document.documentElement.classList.remove("user-logged-in");
             document.getElementById("login-overlay").style.display = "flex";
             document.getElementById("main-app").style.display = "none";
         }

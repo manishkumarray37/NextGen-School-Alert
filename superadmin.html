@@ -1214,26 +1214,50 @@
       tbody.innerHTML = html;
     };
 
-    window.launchSchoolPortal = function(schoolId, encSchoolName) {
-      const schoolName = decodeURIComponent(encSchoolName);
+    // 🚀 SECURE 1-CLICK SSO LAUNCH TO SCHOOL ERP IN NEW TAB
+    window.launchSchoolPortal = async function(schoolId, encSchoolName) {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      user.schoolId = schoolId;
-      user.schoolName = schoolName;
-      // Mark as superadmin impersonating a school
-      user.isImpersonating = true;
-      localStorage.setItem("a2z_user", JSON.stringify(user));
+      if (!user || !user.loginId) {
+        alert("Superadmin session invalid. Please log in again.");
+        return;
+      }
 
-      // Smart URL Redirection (Handles localhost, pages.dev and Custom Domains)
-      const host = window.location.hostname.toLowerCase();
-      const protocol = window.location.protocol;
+      // Open new tab synchronously inside click event to prevent browser popup blockers
+      const newTab = window.open('about:blank', '_blank');
+      if (newTab) {
+        newTab.document.write('<div style="font-family:sans-serif;text-align:center;margin-top:25vh;color:#0284c7;"><h2>&#128640; Establishing Secure ERP Session...</h2><p style="color:#64748b;">Authenticating Superadmin SSO access, please wait...</p></div>');
+      }
 
-      if (host.endsWith('.pages.dev') || host === 'localhost' || host === '127.0.0.1') {
-        window.location.href = '/app.html';
-      } else {
-        const parts = host.split('.');
-        let baseDomain = host;
-        if (parts.length > 2) baseDomain = parts.slice(1).join('.');
-        window.location.href = `${protocol}//app.${baseDomain}`;
+      try {
+        const { data: res, error } = await db.rpc('create_sa_sso_token', {
+          p_login_id: user.loginId
+        });
+
+        if (error || !res || res.status !== 'success') {
+          throw new Error(res?.message || error?.message || "Failed to generate SSO token");
+        }
+
+        const host = window.location.hostname.toLowerCase();
+        const protocol = window.location.protocol;
+        let baseAppUrl = "/app.html";
+
+        if (!host.endsWith('.pages.dev') && host !== 'localhost' && host !== '127.0.0.1') {
+          const parts = host.split('.');
+          const baseDomain = (parts.length > 2) ? parts.slice(1).join('.') : host;
+          baseAppUrl = `${protocol}//app.${baseDomain}`;
+        }
+
+        const targetUrl = `${baseAppUrl}?sso=${encodeURIComponent(res.token)}&sid=${encodeURIComponent(schoolId)}`;
+
+        if (newTab) {
+          newTab.location.href = targetUrl;
+        } else {
+          window.open(targetUrl, '_blank');
+        }
+
+      } catch (err) {
+        if (newTab) newTab.close();
+        alert("Unable to launch school ERP: " + err.message);
       }
     };
 
