@@ -48942,6 +48942,63 @@ window.finalSubmit = async function(btn) {
     }
 })();
 </script>
+<!-- ⚡ DYNAMIC CROSS-TAB AUTH SYNC (APP PORTAL - ZERO HARDCODED DOMAINS) -->
+<script type="text/javascript">
+(function() {
+    // Dynamically resolves current app portal root (works on any custom domain, pages.dev, or localhost)
+    function getDynamicAppRoot() {
+        const host = window.location.hostname.toLowerCase();
 
+        // Path-based environments (*.pages.dev / localhost)
+        if (host.endsWith('.pages.dev') || host.endsWith('.workers.dev') || host === 'localhost' || host === '127.0.0.1') {
+            return window.location.origin + '/app';
+        }
+
+        // Any live custom subdomain (app.yourdomain.com / app.newdomain.in)
+        return window.location.origin + '/';
+    }
+
+    let isCurrentlyLoggedIn = !!localStorage.getItem("a2z_user");
+
+    // Native Cross-Tab Storage Listener (fires ONLY in other tabs)
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'a2z_user') {
+            const hasUserNow = !!e.newValue;
+
+            // Logged out in another tab -> Clean logout this tab to app login
+            if (isCurrentlyLoggedIn && !hasUserNow) {
+                isCurrentlyLoggedIn = false;
+                sessionStorage.clear();
+                document.documentElement.classList.remove("user-logged-in");
+                window.location.href = getDynamicAppRoot();
+                return;
+            }
+
+            // Logged in from another tab -> Reload this tab to open dashboard
+            if (!isCurrentlyLoggedIn && hasUserNow) {
+                isCurrentlyLoggedIn = true;
+                window.location.reload();
+                return;
+            }
+        }
+    });
+
+    // Zero-lag cross-tab messaging channel
+    try {
+        const authChannel = new BroadcastChannel('erp_auth_channel');
+        authChannel.onmessage = function(ev) {
+            if (ev.data === 'FORCE_LOGOUT' && isCurrentlyLoggedIn) {
+                isCurrentlyLoggedIn = false;
+                sessionStorage.clear();
+                document.documentElement.classList.remove("user-logged-in");
+                window.location.href = getDynamicAppRoot();
+            } else if (ev.data === 'FORCE_LOGIN' && !isCurrentlyLoggedIn) {
+                isCurrentlyLoggedIn = true;
+                window.location.reload();
+            }
+        };
+    } catch (err) {}
+})();
+</script>
 </body>
 </html>

@@ -6471,92 +6471,62 @@
   };
 })();
 </script>
-<!-- ⚡ UNIVERSAL CROSS-TAB AUTO-LOGIN & AUTO-LOGOUT SYNC ENGINE -->
+<!-- ⚡ DYNAMIC CROSS-TAB AUTH SYNC (STUDENT PORTAL - ZERO HARDCODED DOMAINS) -->
 <script type="text/javascript">
 (function() {
-    // 1. Read unique session signature (LoginID + Role + SchoolID)
-    function getActiveSessionSignature() {
-        try {
-            const raw = localStorage.getItem("a2z_user");
-            if (!raw) return null;
-            const u = JSON.parse(raw);
-            if (!u || (!u.loginId && !u.role)) return null;
-            return `${u.loginId || ''}_${u.role || ''}_${u.schoolId || ''}`;
-        } catch (e) {
-            return null;
-        }
-    }
-
-    // 2. Get clean portal login root URL (works on custom subdomains & pages.dev)
-    function getCleanPortalRootUrl() {
+    // Dynamically resolves current student portal root
+    function getDynamicStudentRoot() {
         const host = window.location.hostname.toLowerCase();
-        const path = window.location.pathname.toLowerCase();
 
-        // On *.pages.dev or localhost testing
+        // Path-based environments (*.pages.dev / localhost)
         if (host.endsWith('.pages.dev') || host.endsWith('.workers.dev') || host === 'localhost' || host === '127.0.0.1') {
-            if (path.startsWith('/student')) return window.location.origin + '/student';
-            if (path.startsWith('/superadmin') || path.startsWith('/admin')) return window.location.origin + '/superadmin';
-            if (path.startsWith('/app')) return window.location.origin + '/app';
+            return window.location.origin + '/student';
         }
 
-        // On live subdomains (app., student., admin.)
+        // Any live custom subdomain (student.yourdomain.com / student.newdomain.in)
         return window.location.origin + '/';
     }
 
-    let initialSessionSignature = getActiveSessionSignature();
-    let isSyncing = false;
+    let isCurrentlyLoggedIn = !!localStorage.getItem("a2z_user");
 
-    // 3. Synchronization Handler
-    function syncCrossTabAuthState() {
-        if (isSyncing) return;
-        const currentSignature = getActiveSessionSignature();
-
-        // Case A: Logged out in another tab -> Force clean logout in this tab
-        if (initialSessionSignature !== null && currentSignature === null) {
-            isSyncing = true;
-            sessionStorage.clear();
-            document.documentElement.classList.remove("user-logged-in", "superadmin-logged-in", "student-mode");
-            window.location.href = getCleanPortalRootUrl();
-            return;
-        }
-
-        // Case B: Logged in from another tab -> Auto-login this tab
-        if (initialSessionSignature === null && currentSignature !== null) {
-            isSyncing = true;
-            window.location.reload();
-            return;
-        }
-
-        // Case C: Different user or school switched in another tab -> Sync this tab
-        if (initialSessionSignature !== currentSignature) {
-            isSyncing = true;
-            window.location.reload();
-        }
-    }
-
-    // Listen to localStorage changes across all open tabs
+    // Native Cross-Tab Storage Listener (fires ONLY in other tabs)
     window.addEventListener('storage', function(e) {
-        if (!e.key || e.key === 'a2z_user' || e.key === 'a2z_logout_trigger') {
-            syncCrossTabAuthState();
+        if (e.key === 'a2z_user') {
+            const hasUserNow = !!e.newValue;
+
+            // Logged out in another tab -> Clean logout to student login screen
+            if (isCurrentlyLoggedIn && !hasUserNow) {
+                isCurrentlyLoggedIn = false;
+                sessionStorage.clear();
+                document.documentElement.classList.remove("user-logged-in", "student-mode");
+                window.location.href = getDynamicStudentRoot();
+                return;
+            }
+
+            // Logged in from another tab -> Reload to open student portal
+            if (!isCurrentlyLoggedIn && hasUserNow) {
+                isCurrentlyLoggedIn = true;
+                window.location.reload();
+                return;
+            }
         }
     });
-    // Listen to BroadcastChannel for instant zero-lag messaging
+
+    // Zero-lag cross-tab messaging channel
     try {
         const authChannel = new BroadcastChannel('erp_auth_channel');
         authChannel.onmessage = function(ev) {
-            if (ev.data === 'FORCE_LOGOUT' || ev.data === 'FORCE_LOGIN') {
-                syncCrossTabAuthState();
+            if (ev.data === 'FORCE_LOGOUT' && isCurrentlyLoggedIn) {
+                isCurrentlyLoggedIn = false;
+                sessionStorage.clear();
+                document.documentElement.classList.remove("user-logged-in", "student-mode");
+                window.location.href = getDynamicStudentRoot();
+            } else if (ev.data === 'FORCE_LOGIN' && !isCurrentlyLoggedIn) {
+                isCurrentlyLoggedIn = true;
+                window.location.reload();
             }
         };
-    } catch (e) {}
-
-    // Fallback check when user switches back to a sleeping background tab
-    document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState === 'visible') {
-            syncCrossTabAuthState();
-        }
-    });
-    window.addEventListener('focus', syncCrossTabAuthState);
+    } catch (err) {}
 })();
 </script>
 </body>
