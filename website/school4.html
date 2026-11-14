@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title id="siteTitle">Elementary Academy | Where Big Curiosity Grows</title>
+    
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <!-- CSS Dependencies -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/config.js"></script>
+
+    <!-- 🎨 Global Dynamic Injected CSS Engine -->
+    <style id="dynamicLiveStyles">
+        :root {
+            --school-primary: #1d4ed8;
+            --school-secondary: #1e3a8a;
+            --school-accent: #facc15;
+            --nav-bg: #ffffff;
+            --nav-text: #1e293b;
+            --footer-bg: #172554;
+        }
+    </style>
+    <style id="dynamicSectionStyles"></style>
+
+    <style>
+        * { box-sizing: border-box; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #334155;
+            background-color: #ffffff;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            opacity: 0;
+            transition: opacity 0.25s ease-in;
+        }
+        body.loaded { opacity: 1; }
+
+        h1, h2, h3, h4, h5, .display-font { font-family: 'Outfit', sans-serif; }
+
+        /* 1. Top Sunny Yellow Strip */
+        .top-yellow-strip {
+            background-color: #fde047;
+            color: #0f172a;
+            font-size: 12.5px;
+            font-weight: 600;
+            padding: 8px 0;
+        }
+
+        /* 2. Sticky Clean Navbar */
+        .navbar-main {
+            background-color: var(--nav-bg) !important;
+            padding: 14px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+        }
+        .school-logo-img { height: 42px; width: auto; object-fit: contain; }
+        .nav-link, .dropdown-item {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--nav-text) !important;
+            padding: 8px 14px !important;
+            transition: 0.2s;
+        }
+        .nav-link:hover, .nav-link.active, .dropdown-item:hover {
+            color: var(--school-primary) !important;
+        }
+
+        .btn-cobalt-pill {
+            background: var(--school-primary);
+            color: #ffffff !important;
+            font-weight: 700;
+            font-size: 13.5px;
+            padding: 9px 22px;
+            border-radius: 30px;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s ease;
+        }
+        .btn-cobalt-pill:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(29, 78, 216, 0.3); }
+
+        .btn-yellow-pill {
+            background: var(--school-accent);
+            color: #0f172a !important;
+            font-weight: 800;
+            font-size: 13.5px;
+            padding: 11px 24px;
+            border-radius: 30px;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s ease;
+        }
+        .btn-yellow-pill:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(250, 204, 21, 0.45); }
+
+        /* 3. Hero Section (Organic Arch & Dotted Frame) */
+        .hero-t4 {
+            padding: 60px 0 80px 0;
+            background: radial-gradient(circle at top right, #eff6ff 0%, #ffffff 55%);
+            position: relative;
+        }
+        .hero-title-t4 {
+            font-size: clamp(2.5rem, 5vw, 4.2rem);
+            font-weight: 900;
+            line-height: 1.08;
+            color: #0f172a;
+            letter-spacing: -1px;
+        }
+        .text-curiosity-accent {
+            color: var(--school-primary);
+            position: relative;
+            display: inline-block;
+        }
+        .text-curiosity-accent::after {
+            content: "";
+            position: absolute;
+            bottom: 4px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(250, 204, 21, 0.55);
+            z-index: -1;
+            border-radius: 4px;
+        }
+
+        .hero-arch-frame {
+            position: relative;
+            border-radius: 32px;
+            background: #e0f2fe;
+            padding: 12px;
+        }
+        .hero-arch-img {
+            width: 100%;
+            height: 410px;
+            object-fit: cover;
+            border-radius: 26px;
+        }
+        .sticker-enrolling {
+            position: absolute;
+            top: 25px;
+            left: -20px;
+            width: 82px;
+            height: 82px;
+            border-radius: 50%;
+            background: var(--school-accent);
+            color: #0f172a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 11px;
+            text-align: center;
+            line-height: 1.15;
+            transform: rotate(-12deg);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+        .sun-badge-top {
+            position: absolute;
+            top: -25px;
+            right: -15px;
+            color: #facc15;
+            font-size: 64px;
+            z-index: 10;
+        }
+        .floating-event-card {
+            position: absolute;
+            bottom: -18px;
+            right: 20px;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 12px 18px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #e2e8f0;
+            z-index: 10;
+        }
+        .date-box-mini {
+            background: #ef4444;
+            color: #ffffff;
+            border-radius: 10px;
+            padding: 6px 10px;
+            text-align: center;
+            line-height: 1.1;
+            font-weight: 800;
+        }
+
+        /* 4. Stats 4-Card Bar */
+        .stats-bar-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.04);
+        }
+        .stat-icon-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* 5. Why Us Arch Photo */
+        .arch-photo-wrap {
+            position: relative;
+            border-top-left-radius: 180px;
+            border-top-right-radius: 180px;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.1);
+        }
+        .books-badge-circle {
+            position: absolute;
+            top: 40px;
+            right: 15px;
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: var(--school-primary);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 13px;
+            text-align: center;
+            line-height: 1.1;
+            box-shadow: 0 10px 25px rgba(29, 78, 216, 0.35);
+            z-index: 5;
+        }
+
+        /* 6. Learning By Grade Interactive Tabs */
+        .grade-section-box {
+            background: #eef2ff;
+            border-radius: 32px;
+            padding: 50px 30px;
+        }
+        .grade-pill-btn {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 16px;
+            padding: 12px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 95px;
+        }
+        .grade-pill-btn:hover { border-color: var(--school-primary); transform: translateY(-2px); }
+        .grade-pill-btn.active {
+            border-color: #0f172a;
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.12);
+        }
+        .grade-circle-num {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .grade-pill-btn.active .grade-circle-num {
+            background: var(--school-primary);
+            color: #ffffff;
+        }
+        .signature-project-box {
+            background: #fefce8;
+            border: 1.5px dashed #eab308;
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        /* 7. After-School Clubs Pills & Cards */
+        .day-filter-btn {
+            background: #ffffff;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 25px;
+            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .day-filter-btn.active {
+            background: #0f172a;
+            color: #ffffff;
+            border-color: #0f172a;
+        }
+        .club-card {
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 24px;
+            height: 100%;
+            transition: 0.25s ease;
+        }
+        .club-card:hover { transform: translateY(-5px); box-shadow: 0 15px 35px rgba(15,23,42,0.08); }
+        .day-mini-tag {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 10px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .day-mini-tag.on {
+            background: var(--school-primary);
+            color: #ffffff;
+        }
+
+        /* 8. School Calendar Grid */
+        .calendar-wrapper-box {
+            background: #fefce8;
+            border-radius: 32px;
+            padding: 50px 30px;
+        }
+        .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+        .cal-day-header {
+            text-align: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: #64748b;
+            padding-bottom: 8px;
+        }
+        .cal-cell {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            min-height: 62px;
+            padding: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            position: relative;
+        }
+        .cal-cell-badge {
+            font-size: 9px;
+            padding: 2px 5px;
+            border-radius: 4px;
+            display: block;
+            margin-top: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 9. Parent Portal & Admissions Banner */
+        .portal-banner-box {
+            background: #eff6ff;
+            border-radius: 28px;
+            padding: 40px;
+        }
+        .portal-mini-tile {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid #e2e8f0;
+            height: 100%;
+            transition: 0.2s;
+        }
+        .portal-mini-tile:hover { border-color: var(--school-primary); transform: translateY(-3px); }
+
+        .enrolling-cobalt-banner {
+            background: linear-gradient(135deg, #1d4ed8, #1e3a8a);
+            color: #ffffff;
+            border-radius: 28px;
+            padding: 50px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+        .key-dates-glass {
+            background: rgba(15, 23, 42, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 24px;
+        }
+
+        /* Floating Studio Toolbar & Pencils */
+        .editor-floating-dock {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 1050;
+            display: none;
+            gap: 10px;
+        }
+        .btn-dock-studio {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 12px 22px;
+            border-radius: 30px;
+            border: none;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .btn-dock-logout {
+            background: #ef4444;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 12px 18px;
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-inline-pencil {
+            display: none;
+            background: #fde047;
+            color: #0f172a !important;
+            border: 1.5px solid #0f172a;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+            position: absolute;
+            z-index: 30;
+        }
+
+        /* Wave Footer */
+        footer {
+            background-color: var(--footer-bg);
+            color: #cbd5e1;
+            font-size: 13.5px;
+            padding: 70px 0 30px 0;
+            position: relative;
+        }
+        footer h6 { color: #ffffff; font-weight: 700; margin-bottom: 18px; }
+        footer a { color: #cbd5e1; text-decoration: none; }
+        footer a:hover { color: #facc15; }
+        .footer-divider { border-top: 1px solid rgba(255, 255, 255, 0.15); padding-top: 25px; margin-top: 40px; }
+
+        .color-dot { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 2px solid #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+        .form-label-custom { font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 4px; display: block; }
+        .form-control-custom { height: 42px; font-size: 13px; font-weight: 500; border-radius: 8px; border: 1.5px solid #cbd5e1; padding: 8px 12px; }
+    </style>
+</head>
+<body class="loading">
+
+    <!-- 1. TOP YELLOW STRIP -->
+    <div class="top-yellow-strip position-relative" id="sec-top-bar">
+        <button class="btn-inline-pencil" style="top:3px; left:10px;" onclick="window.triggerInlineEdit('top-info')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div>
+                <i class="fas fa-sun me-1 text-danger"></i>
+                <span id="newsTickerText">Open mornings every Saturday. <a href="#enquiry" class="text-dark fw-bold text-decoration-underline">Book a place</a></span>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <span><i class="fas fa-phone-alt me-1"></i> <span id="topPhone"></span></span>
+                <span class="d-none d-sm-inline">|</span>
+                <a href="https://student.schoolalarm.online" class="text-dark text-decoration-none fw-bold"><i class="fas fa-key me-1"></i> Parent Portal</a>
+                <a href="https://app.schoolalarm.online" class="text-dark text-decoration-none fw-bold d-none d-md-inline"><i class="fas fa-user-shield me-1"></i> Staff Login</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. STICKY CLEAN NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-main" id="sec-navbar">
+        <div class="container-fluid px-lg-5 px-3 position-relative">
+            <button class="btn-inline-pencil" style="top:10px; left:6px;" onclick="window.triggerInlineEdit('navbar-brand')"><i class="fas fa-pencil-alt"></i></button>
+            <button class="navbar-toggler border-0 me-2 p-1 order-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <i class="fas fa-bars fa-lg text-dark"></i>
+            </button>
+            
+            <a class="navbar-brand d-flex align-items-center gap-2 order-1 me-auto" href="javascript:void(0)" onclick="window.returnToFullLandingPage(event)">
+                <img src="/favicon.png" alt="Logo" class="school-logo-img" id="schoolLogo">
+                <div>
+                    <h5 class="display-font fw-bold m-0 text-dark" id="schoolNameHeader"></h5>
+                    <small class="text-muted d-block" id="schoolTagline" style="font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase;">ELEMENTARY &bull; K-12</small>
+                </div>
+            </a>
+
+            <div class="collapse navbar-collapse order-2" id="navMenu">
+                <ul class="navbar-nav ms-auto align-items-start align-items-lg-center gap-lg-1 py-3 py-lg-0" id="dynamicNavLinks">
+                </ul>
+                <div class="ms-lg-3 mt-2 mt-lg-0">
+                    <a href="#enquiry" class="btn-cobalt-pill">Book a visit</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 3. HERO SECTION (Treehouse Style) -->
+    <section class="hero-t4 position-relative" id="home">
+        <button class="btn-inline-pencil" style="top:20px; left:20px;" onclick="window.triggerInlineEdit('hero')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-6">
+                    <div class="d-inline-flex align-items-center gap-2 mb-3">
+                        <span style="width:8px; height:8px; background:#eab308; border-radius:50%;"></span>
+                        <small class="fw-bold text-uppercase text-secondary" id="heroBadge" style="letter-spacing: 1px;">INDEPENDENT K-12 SCHOOL</small>
+                    </div>
+                    <h1 class="hero-title-t4 display-font mb-4" id="heroHeadline">
+                        A small school where big <span class="text-curiosity-accent">curiosity</span> grows
+                    </h1>
+                    <p class="lead text-secondary mb-4" id="heroSubtext" style="font-size: 16.5px; line-height: 1.7;">
+                        Specialist teachers from day one and an inspiring campus environment help every child learn to read, reason, and belong.
+                    </p>
+                    <div class="d-flex flex-wrap gap-3 mb-4">
+                        <a href="#enquiry" class="btn-yellow-pill">
+                            Book an open morning <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="#academics" class="btn btn-outline-dark rounded-pill px-4 py-2 fw-bold d-inline-flex align-items-center">
+                            Explore academics
+                        </a>
+                    </div>
+                    <div class="d-flex flex-wrap gap-4 small fw-semibold text-secondary pt-2">
+                        <span><i class="fas fa-users text-primary me-1"></i> Small class ratio</span>
+                        <span><i class="fas fa-music text-primary me-1"></i> Specialist teachers</span>
+                        <span><i class="fas fa-clock text-primary me-1"></i> Care 7:30 am to 6 pm</span>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="hero-arch-frame">
+                        <div class="sun-badge-top"><i class="fas fa-sun"></i></div>
+                        <div class="sticker-enrolling">K-12<br/>now enrolling</div>
+                        <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80" alt="Classroom" class="hero-arch-img" id="heroBannerPhoto">
+                        <div class="floating-event-card">
+                            <div class="date-box-mini">
+                                <div style="font-size: 9px;">OCT</div>
+                                <div style="font-size: 16px;">17</div>
+                            </div>
+                            <div>
+                                <div class="fw-bold small text-dark">Next open morning</div>
+                                <div class="text-muted" style="font-size: 11px;">Saturday &bull; 9:30 am &bull; <a href="#enquiry" class="text-primary fw-bold text-decoration-none">Save a place</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. FLOATING 4-CARD STATS BAR -->
+    <section class="py-4 position-relative" id="sec-stats">
+        <button class="btn-inline-pencil" style="top:10px; left:10px;" onclick="window.triggerInlineEdit('stats')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5">
+            <div class="stats-bar-card">
+                <div class="row g-4">
+                    <div class="col-lg-3 col-6 d-flex align-items-center gap-3">
+                        <div class="stat-icon-circle text-primary"><i class="fas fa-users"></i></div>
+                        <div>
+                            <h4 class="fw-bold m-0" id="statYears">16</h4>
+                            <small class="text-muted" style="font-size: 11.5px;" id="lblStatYears">Children per class, never more</small>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6 d-flex align-items-center gap-3">
+                        <div class="stat-icon-circle text-warning"><i class="fas fa-star"></i></div>
+                        <div>
+                            <h4 class="fw-bold m-0" id="statResults">60+</h4>
+                            <small class="text-muted" style="font-size: 11.5px;" id="lblStatResults">Specialist teachers on staff</small>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6 d-flex align-items-center gap-3">
+                        <div class="stat-icon-circle text-success"><i class="fas fa-tree"></i></div>
+                        <div>
+                            <h4 class="fw-bold m-0" id="statFaculty">4 acres</h4>
+                            <small class="text-muted" style="font-size: 11.5px;" id="lblStatFaculty">Green campus & outdoor learning</small>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-6 d-flex align-items-center gap-3">
+                        <div class="stat-icon-circle text-danger"><i class="fas fa-heart"></i></div>
+                        <div>
+                            <h4 class="fw-bold m-0" id="statStudents">98%</h4>
+                            <small class="text-muted" style="font-size: 11.5px;" id="lblStatStudents">Of families re-enroll each year</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. WHY US (Arched Photo + 2x2 Feature Grid) -->
+    <section class="py-5 position-relative" id="about">
+        <button class="btn-inline-pencil" style="top:15px; left:15px;" onclick="window.triggerInlineEdit('about')"><i class="fas fa-pencil-alt"></i></button>
+        <div class="container-fluid px-lg-5 py-4">
+            <div class="row align-items-center g-5">
+                <div class="col-lg-5">
+                    <div class="arch-photo-wrap">
+                        <div class="books-badge-circle">4,200+<br/><small style="font-size:9px; font-weight:600;">library books</small></div>
+                        <img src="https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=700&q=80" alt="Classroom" class="w-100" id="principalPhoto" style="height: 460px; object-fit: cover;">
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="d-inline-flex align-items-center gap-2 mb-2">
+                        <span style="width:8px; height:8px; background:#ef4444; border-radius:50%;"></span>
+                        <small class="fw-bold text-uppercase text-muted" style="letter-spacing: 1px;">WHY CHOOSE US</small>
+                    </div>
+                    <h2 class="display-font fw-bold display-5 text-dark mb-3" id="principalName">
+                        Small enough to know every child by name
+                    </h2>
+                    <p class="text-secondary mb-4" id="principalMsg" style="line-height: 1.75;">
+                        Our teachers know each child's reading level, favorite book, and best friend. That personal attention is how children here grow confident, and how talents are nurtured early.
+                    </p>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="d-flex gap-3">
+                                <div class="stat-icon-circle text-primary"><i class="fas fa-user-friends"></i></div>
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-1">Small classes</h6>
+                                    <p class="text-muted small mb-0">Individual attention with a lead teacher and assistant in primary grades.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex gap-3">
+                                <div class="stat-icon-circle text-warning"><i class="fas fa-palette"></i></div>
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-1">Specialist teachers</h6>
+                                    <p class="text-muted small mb-0">Music, art, PE, coding, and STEM taught by subject specialists from day one.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex gap-3">
+                                <div class="stat-icon-circle text-success"><i class="fas fa-seedling"></i></div>
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-1">Learning outdoors</h6>
+                                    <p class="text-muted small mb-0">Dedicated nature and environmental workshops every week in all seasons.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex gap-3">
+                                <div class="stat-icon-circle text-info"><i class="fas fa-clock"></i></div>
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-1">Care that fits work</h6>
+                                    <p class="text-muted small mb-0">Extended after-school care, homework guidance, and enrichment clubs.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. LEARNING BY GRADE (Interactive Grade Tab Switcher) -->
+    <section class="py-5 position-relative" id="academics">
+        <div class="container-fluid px-lg-5">
+            <div class="grade-section-box">
+                <div class="text-center mb-4">
+                    <small class="fw-bold text-uppercase text-primary" style="letter-spacing:1px;">&bull; LEARNING BY GRADE</small>
+                    <h2 class="display-font fw-bold display-6 text-dark mt-1">What your child learns, year by year</h2>
+                    <p class="text-muted small mx-auto" style="max-width: 550px;">Each grade builds on the last. Pick a grade to see the core goals, signature project, and classroom overview.</p>
+                </div>
+
+                <!-- Interactive Grade Buttons -->
+                <div class="d-flex justify-content-center gap-2 gap-md-3 flex-wrap mb-4" id="gradeTabsRow">
+                    <button class="grade-pill-btn active" onclick="window.selectGradeTab('K', this)" type="button">
+                        <span class="grade-circle-num">K</span>
+                        <span class="small fw-bold">Kindergarten</span>
+                    </button>
+                    <button class="grade-pill-btn" onclick="window.selectGradeTab('1', this)" type="button">
+                        <span class="grade-circle-num">1</span>
+                        <span class="small fw-bold">Grade 1</span>
+                    </button>
+                    <button class="grade-pill-btn" onclick="window.selectGradeTab('2', this)" type="button">
+                        <span class="grade-circle-num">2</span>
+                        <span class="small fw-bold">Grade 2</span>
+                    </button>
+                    <button class="grade-pill-btn" onclick="window.selectGradeTab('3', this)" type="button">
+                        <span class="grade-circle-num">3</span>
+                        <span class="small fw-bold">Grade 3</span>
+                    </button>
+                    <button class="grade-pill-btn" onclick="window.selectGradeTab('4', this)" type="button">
+                        <span class="grade-circle-num">4</span>
+                        <span class="small fw-bold">Grade 4</span>
+                    </button>
+                    <button class="grade-pill-btn" onclick="window.selectGradeTab('5', this)" type="button">
+                        <span class="grade-circle-num">5</span>
+                        <span class="small fw-bold">Grade 5</span>
+                    </button>
+                </div>
+
+                <!-- Dynamic Active Grade Card -->
+                <div class="bg-white rounded-4 p-4 p-md-5 shadow-sm border" id="activeGradeDetailsCard">
+                    <div class="row g-4 align-items-center">
+                        <div class="col-lg-6">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <h3 class="display-font fw-bold m-0" id="grdTitle">Kindergarten</h3>
+                                <span class="badge bg-primary-subtle text-primary rounded-pill px-3" id="grdAge">Ages 5–6</span>
+                            </div>
+                            <p class="text-secondary small mb-4" id="grdDesc" style="line-height: 1.7;">
+                                Kindergarten is about falling in love with school. Children learn through play, stories, and hands-on projects while building letter sounds, number sense, and friendships.
+                            </p>
+                            <ul class="list-unstyled small d-flex flex-column gap-2" id="grdBullets">
+                                <li><i class="fas fa-check-circle text-warning me-2"></i>Daily phonics in small groups of four to six</li>
+                                <li><i class="fas fa-check-circle text-warning me-2"></i>Counting, sorting and shapes with hands-on materials</li>
+                                <li><i class="fas fa-check-circle text-warning me-2"></i>Choice time in block, art and reading corners</li>
+                                <li><i class="fas fa-check-circle text-warning me-2"></i>Weekly afternoon in the outdoor garden classroom</li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="signature-project-box mb-3">
+                                <small class="fw-bold text-uppercase text-warning-emphasis d-block mb-1"><i class="fas fa-sparkles me-1"></i> SIGNATURE PROJECT</small>
+                                <p class="small text-dark fw-semibold mb-0" id="grdProject">The Kindergarten Café: children plan a menu, make price tags and run a pretend café for their families.</p>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="p-3 bg-light rounded-3">
+                                        <small class="text-muted d-block" style="font-size:10px; font-weight:800;">CLASS SIZE</small>
+                                        <span class="fw-bold small text-dark" id="grdSize">14 children</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-3 bg-light rounded-3">
+                                        <small class="text-muted d-block" style="font-size:10px; font-weight:800;">IN THE ROOM</small>
+                                        <span class="fw-bold small text-dark" id="grdTeachers">2 teachers</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-3 bg-light rounded-3">
+                                        <small class="text-muted d-block" style="font-size:10px; font-weight:800;">HOMEWORK</small>
+                                        <span class="fw-bold small text-dark" id="grdHw">Share a picture book</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-3 bg-light rounded-3">
+                                        <small class="text-muted d-block" style="font-size:10px; font-weight:800;">SPECIALISTS</small>
+                                        <span class="fw-bold small text-dark" id="grdSpec">9 lessons a week</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. AFTER-SCHOOL CLUBS (Interactive Filterable by Day) -->
+    <section class="py-5 position-relative" id="clubs">
+        <div class="container-fluid px-lg-5 py-3">
+            <small class="fw-bold text-uppercase text-danger d-block mb-1" style="letter-spacing:1px;">&bull; AFTER-SCHOOL CLUBS</small>
+            <h2 class="display-font fw-bold display-6 text-dark mb-2">Twelve clubs, from robots to puppets</h2>
+            <p class="text-muted small mb-4">Clubs run from 3:15 pm straight after school. Filter by day to explore weekly schedules.</p>
+
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                <button class="day-filter-btn active" onclick="window.filterClubs('all', this)">All week</button>
+                <button class="day-filter-btn" onclick="window.filterClubs('M', this)">Mon</button>
+                <button class="day-filter-btn" onclick="window.filterClubs('T', this)">Tue</button>
+                <button class="day-filter-btn" onclick="window.filterClubs('W', this)">Wed</button>
+                <button class="day-filter-btn" onclick="window.filterClubs('Th', this)">Thu</button>
+                <button class="day-filter-btn" onclick="window.filterClubs('F', this)">Fri</button>
+            </div>
+
+            <div class="row g-4" id="clubsGrid">
+                <div class="col-lg-4 col-md-6 club-item" data-days="M,W,F">
+                    <div class="club-card">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="stat-icon-circle text-danger"><i class="fas fa-code"></i></div>
+                            <span class="badge bg-primary-subtle text-primary rounded-pill">Included</span>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Coding & Robotics Club</h5>
+                        <p class="text-muted small mb-3">Make games and animations with block-based code, then take first steps into typed robotics.</p>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top small text-muted">
+                            <span><i class="fas fa-clock me-1"></i>3:15 – 4:15 pm</span>
+                            <div class="d-flex gap-1">
+                                <span class="day-mini-tag on">M</span><span class="day-mini-tag">T</span><span class="day-mini-tag on">W</span><span class="day-mini-tag">T</span><span class="day-mini-tag on">F</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 club-item" data-days="T,Th">
+                    <div class="club-card">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="stat-icon-circle text-warning"><i class="fas fa-globe"></i></div>
+                            <span class="badge bg-success-subtle text-success rounded-pill">Free</span>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Language & Storytelling</h5>
+                        <p class="text-muted small mb-3">Songs, picture books, and interactive communication games with bilingual educators.</p>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top small text-muted">
+                            <span><i class="fas fa-clock me-1"></i>3:15 – 4:00 pm</span>
+                            <div class="d-flex gap-1">
+                                <span class="day-mini-tag">M</span><span class="day-mini-tag on">T</span><span class="day-mini-tag">W</span><span class="day-mini-tag on">T</span><span class="day-mini-tag">F</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 club-item" data-days="M,F">
+                    <div class="club-card">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="stat-icon-circle text-primary"><i class="fas fa-masks-theater"></i></div>
+                            <span class="badge bg-primary-subtle text-primary rounded-pill">Included</span>
+                        </div>
+                        <h5 class="fw-bold text-dark mb-2">Drama & Puppet Theater</h5>
+                        <p class="text-muted small mb-3">Build stage confidence, write short scripts, and perform live shows for parents each term.</p>
+                        <div class="d-flex justify-content-between align-items-center pt-2 border-top small text-muted">
+                            <span><i class="fas fa-clock me-1"></i>3:15 – 4:30 pm</span>
+                            <div class="d-flex gap-1">
+                                <span class="day-mini-tag on">M</span><span class="day-mini-tag">T</span><span class="day-mini-tag">W</span><span class="day-mini-tag">T</span><span class="day-mini-tag on">F</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. SCHOOL CALENDAR & EVENTS (Cream Box Layout) -->
+    <section class="py-5 position-relative" id="calendar">
+        <div class="container-fluid px-lg-5">
+            <div class="calendar-wrapper-box">
+                <div class="text-center mb-5">
+                    <small class="fw-bold text-uppercase text-warning-emphasis" style="letter-spacing:1px;">&bull; SCHOOL CALENDAR</small>
+                    <h2 class="display-font fw-bold display-6 text-dark mt-1">What's coming up this term</h2>
+                    <p class="text-muted small">Concerts, sports fixtures, conference days, and holidays all in one place.</p>
+                </div>
+
+                <div class="row g-4">
+                    <!-- Left: Monthly Grid -->
+                    <div class="col-lg-7">
+                        <div class="bg-white rounded-4 p-4 shadow-sm border h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="fw-bold m-0 text-dark">November 2026</h5>
+                                <span class="badge bg-primary-subtle text-primary rounded-pill">Academic Term 1</span>
+                            </div>
+                            <div class="cal-grid">
+                                <div class="cal-day-header">SUN</div><div class="cal-day-header">MON</div><div class="cal-day-header">TUE</div><div class="cal-day-header">WED</div><div class="cal-day-header">THU</div><div class="cal-day-header">FRI</div><div class="cal-day-header">SAT</div>
+                                <div class="cal-cell">1</div><div class="cal-cell">2</div><div class="cal-cell">3</div>
+                                <div class="cal-cell">4<span class="cal-cell-badge bg-warning-subtle text-dark">PTM</span></div>
+                                <div class="cal-cell">5</div><div class="cal-cell">6</div><div class="cal-cell">7</div>
+                                <div class="cal-cell">8</div><div class="cal-cell">9</div><div class="cal-cell">10</div>
+                                <div class="cal-cell">11<span class="cal-cell-badge bg-primary-subtle text-primary">Assembly</span></div>
+                                <div class="cal-cell">12</div><div class="cal-cell">13</div>
+                                <div class="cal-cell bg-warning-subtle border-warning">14<span class="cal-cell-badge bg-warning text-dark">Open day</span></div>
+                                <div class="cal-cell">15</div><div class="cal-cell">16</div><div class="cal-cell">17</div>
+                                <div class="cal-cell">18<span class="cal-cell-badge bg-warning-subtle text-dark">Poetry</span></div>
+                                <div class="cal-cell">19<span class="cal-cell-badge bg-danger-subtle text-danger">Sports</span></div>
+                                <div class="cal-cell">20<span class="cal-cell-badge bg-primary-subtle text-primary">Food drive</span></div>
+                                <div class="cal-cell">21</div>
+                                <div class="cal-cell">22</div><div class="cal-cell">23</div><div class="cal-cell">24</div>
+                                <div class="cal-cell bg-light text-muted">25<span class="cal-cell-badge bg-secondary-subtle text-dark">Holiday</span></div>
+                                <div class="cal-cell bg-light text-muted">26<span class="cal-cell-badge bg-secondary-subtle text-dark">Holiday</span></div>
+                                <div class="cal-cell bg-light text-muted">27<span class="cal-cell-badge bg-secondary-subtle text-dark">Holiday</span></div>
+                                <div class="cal-cell">28</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Events List -->
+                    <div class="col-lg-5">
+                        <div class="bg-white rounded-4 p-4 shadow-sm border h-100">
+                            <h6 class="fw-bold text-dark mb-3">Upcoming Events</h6>
+                            <div class="d-flex flex-column gap-3">
+                                <div class="d-flex gap-3 pb-2 border-bottom">
+                                    <div class="bg-warning-subtle text-dark rounded-3 p-2 text-center" style="min-width:48px;"><small class="d-block fw-bold" style="font-size:9px;">NOV</small><span class="fw-bold">4</span></div>
+                                    <div><div class="fw-bold small text-dark">Parent-teacher conferences</div><small class="text-muted">1:00 PM to 6:00 PM</small></div>
+                                </div>
+                                <div class="d-flex gap-3 pb-2 border-bottom">
+                                    <div class="bg-primary-subtle text-primary rounded-3 p-2 text-center" style="min-width:48px;"><small class="d-block fw-bold" style="font-size:9px;">NOV</small><span class="fw-bold">14</span></div>
+                                    <div><div class="fw-bold small text-dark">Admissions open morning</div><small class="text-muted">Saturday &bull; 9:30 AM</small></div>
+                                </div>
+                                <div class="d-flex gap-3 pb-2 border-bottom">
+                                    <div class="bg-danger-subtle text-danger rounded-3 p-2 text-center" style="min-width:48px;"><small class="d-block fw-bold" style="font-size:9px;">NOV</small><span class="fw-bold">19</span></div>
+                                    <div><div class="fw-bold small text-dark">Cross-country league final</div><small class="text-muted">Thursday &bull; 3:30 PM</small></div>
+                                </div>
+                                <div class="d-flex gap-3">
+                                    <div class="bg-secondary-subtle text-dark rounded-3 p-2 text-center" style="min-width:48px;"><small class="d-block fw-bold" style="font-size:9px;">NOV</small><span class="fw-bold">25</span></div>
+                                    <div><div class="fw-bold small text-dark">Autumn break, no school</div><small class="text-muted">25 Nov – 27 Nov</small></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. LATEST NEWS / NOTICE BOARD -->
+    <section class="py-5 position-relative" id="news">
+        <div class="container-fluid px-lg-5 py-3">
+            <div class="d-flex justify-content-between align-items-end mb-4">
+                <div>
+                    <small class="fw-bold text-uppercase text-danger d-block mb-1">&bull; LATEST NEWS</small>
+                    <h2 class="display-font fw-bold display-6 text-dark m-0">From the notice board</h2>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                        <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80" class="card-img-top" style="height:210px; object-fit:cover;" alt="News">
+                        <div class="card-body p-4">
+                            <span class="badge bg-success-subtle text-success mb-2">Outdoor learning</span>
+                            <h6 class="fw-bold text-dark mb-2">The Garden Crew's first harvest fed the whole school</h6>
+                            <p class="text-muted small mb-0">Students cultivated organic vegetables in our eco-garden beds for the school community lunch.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                        <img src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=600&q=80" class="card-img-top" style="height:210px; object-fit:cover;" alt="News">
+                        <div class="card-body p-4">
+                            <span class="badge bg-primary-subtle text-primary mb-2">Reading</span>
+                            <h6 class="fw-bold text-dark mb-2">Grade 3 readers set a 1,000-book goal for the Reading Tree</h6>
+                            <p class="text-muted small mb-0">Every finished book earns a leaf on our hallway reading tree. Over 200 leaves added this month!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                        <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=600&q=80" class="card-img-top" style="height:210px; object-fit:cover;" alt="News">
+                        <div class="card-body p-4">
+                            <span class="badge bg-warning-subtle text-warning-emphasis mb-2">Music & Arts</span>
+                            <h6 class="fw-bold text-dark mb-2">School Choir & Symphony open to every student</h6>
+                            <p class="text-muted small mb-0">No auditions required—discover how our music teachers nurture every child's voice.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. PARENT PORTAL BANNER -->
+    <section class="py-4 position-relative" id="sec-parent-portal">
+        <div class="container-fluid px-lg-5">
+            <div class="portal-banner-box">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-5">
+                        <div class="stat-icon-circle bg-warning text-dark mb-3"><i class="fas fa-key"></i></div>
+                        <h3 class="display-font fw-bold text-dark mb-2">Parent portal</h3>
+                        <p class="text-secondary small mb-4">Already a part of our family? Sign in to check daily attendance, fee receipts, lunch menus, and academic progress.</p>
+                        <a href="https://student.schoolalarm.online" class="btn-cobalt-pill">
+                            Sign in to the portal <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    <div class="col-lg-7">
+                        <div class="row g-3">
+                            <div class="col-6 col-md-4"><div class="portal-mini-tile"><i class="fas fa-calendar-check text-primary mb-2"></i><div class="fw-bold small">Daily Attendance</div><small class="text-muted" style="font-size:10px;">Live mobile alerts</small></div></div>
+                            <div class="col-6 col-md-4"><div class="portal-mini-tile"><i class="fas fa-utensils text-danger mb-2"></i><div class="fw-bold small">Lunch menu</div><small class="text-muted" style="font-size:10px;">This week & next</small></div></div>
+                            <div class="col-6 col-md-4"><div class="portal-mini-tile"><i class="fas fa-file-signature text-warning mb-2"></i><div class="fw-bold small">Permission slips</div><small class="text-muted" style="font-size:10px;">Digital parent sign</small></div></div>
+                            <div class="col-6 col-md-4"><div class="portal-mini-tile"><i class="fas fa-book-open text-success mb-2"></i><div class="fw-bold small">Learning notes</div><small class="text-muted" style="font-size:10px;">Posted every Friday</small></div></div>
+                            <div class="col-6 col-md-4"><div class="portal-mini-tile"><i class="fas fa-bus text-info mb-2"></i><div class="fw-bold small">Bus routes</div><small class="text-muted" style="font-size:10px;">Live GPS tracking</small></div></div>
+                            <div class="col-6 col-md-4"><div class="portal-mini-tile"><i class="fas fa-file-invoice-dollar text-primary mb-2"></i><div class="fw-bold small">Fee Receipts</div><small class="text-muted" style="font-size:10px;">Instant PDF download</small></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. ADMISSIONS COBALT BANNER + ENQUIRY FORM -->
+    <section class="py-5 position-relative" id="enquiry">
+        <div class="container-fluid px-lg-5">
+            <div class="enrolling-cobalt-banner mb-5">
+                <div class="row align-items-center g-4">
+                    <div class="col-lg-7">
+                        <small class="fw-bold text-warning text-uppercase d-block mb-2">&bull; ADMISSIONS 2026-27</small>
+                        <h2 class="display-font fw-bold display-5 mb-3">Now enrolling for Kindergarten to Grade 12</h2>
+                        <p class="small text-light mb-4 opacity-75">Come and see our campus for yourself. Open mornings run every Saturday, and private campus tours are available weekdays.</p>
+                        <div class="d-flex flex-wrap gap-3">
+                            <a href="#admissionFormBox" class="btn-yellow-pill">Book an open morning &rarr;</a>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="key-dates-glass">
+                            <h6 class="fw-bold text-white mb-3">Key dates</h6>
+                            <div class="d-flex flex-column gap-2 small">
+                                <div class="d-flex align-items-center gap-3"><span class="badge bg-warning text-dark">Oct 17</span><span>Open morning, 9:30 am</span></div>
+                                <div class="d-flex align-items-center gap-3"><span class="badge bg-warning text-dark">Nov 14</span><span>Open morning, 9:30 am</span></div>
+                                <div class="d-flex align-items-center gap-3"><span class="badge bg-warning text-dark">Jan 15</span><span>Applications due</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Admission Form Connected to Supabase -->
+            <div class="row justify-content-center" id="admissionFormBox">
+                <div class="col-lg-8">
+                    <div class="p-4 p-md-5 bg-white rounded-4 shadow-sm border">
+                        <h4 class="display-font fw-bold text-dark mb-1">Online Admission Enquiry</h4>
+                        <p class="text-muted small mb-4">Submit student details to book a campus tour or receive fee brochure.</p>
+
+                        <form id="admissionEnquiryForm" onsubmit="window.submitAdmissionEnquiry(event)">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Student Full Name *</label>
+                                    <input type="text" class="form-control form-control-custom" id="enqStudentName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Seeking Admission For Class *</label>
+                                    <select class="form-select form-control-custom" id="enqClass" required>
+                                        <option value="">-- Loading Classes... --</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Parent Name *</label>
+                                    <input type="text" class="form-control form-control-custom" id="enqParentName" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Mobile Number *</label>
+                                    <input type="tel" class="form-control form-control-custom" id="enqMobile" pattern="[0-9]{10}" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Email (Optional)</label>
+                                    <input type="email" class="form-control form-control-custom" id="enqEmail">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-custom">Previous School</label>
+                                    <input type="text" class="form-control form-control-custom" id="enqPrevSchool">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label-custom">Remarks / Tour Preference</label>
+                                    <textarea class="form-control" id="enqMessage" rows="2" style="border-radius:8px; font-size:13px;"></textarea>
+                                </div>
+                                <div class="col-12 pt-2">
+                                    <button type="submit" class="btn-cobalt-pill w-100 py-3 justify-content-center" id="btnSubmitEnquiry">
+                                        Submit Admission Enquiry &rarr;
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 12. DEEP NAVY FOOTER -->
+    <footer id="sec-footer">
+        <div class="container-fluid px-lg-5">
+            <div class="row g-4 justify-content-between">
+                <div class="col-lg-4">
+                    <h5 class="display-font text-white fw-bold mb-3" id="footerSchoolName"></h5>
+                    <p class="small text-white-50 mb-3" id="footerAboutDesc">
+                        An independent school where small classes, specialist teachers, and an inspiring environment help every child grow into confident learners.
+                    </p>
+                </div>
+
+                <div class="col-lg-2 col-6">
+                    <h6>Explore</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2 small" id="footerQuickLinksList"></ul>
+                </div>
+
+                <div class="col-lg-3 col-6">
+                    <h6>For families</h6>
+                    <ul class="list-unstyled d-flex flex-column gap-2 small">
+                        <li><a href="https://student.schoolalarm.online">Parent Portal</a></li>
+                        <li><a href="#news">Latest News</a></li>
+                        <li><a href="#calendar">School Calendar</a></li>
+                        <li><a href="#clubs">After-School Clubs</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3">
+                    <h6>Visit us</h6>
+                    <p class="small text-white-50 mb-1" id="footerAddr"></p>
+                    <p class="small text-white-50 mb-1" id="footerPhone"></p>
+                    <p class="small text-white-50 mb-3" id="footerMail"></p>
+                    <p class="small text-warning mb-2" id="footerTimingText">Weekdays: 7:30 am – 4:30 pm</p>
+                    <div class="mt-2">
+                        <a href="javascript:void(0)" onclick="window.openEditorModal()" class="text-warning small text-decoration-none fw-bold">
+                            <i class="fas fa-lock me-1"></i> Web Editor Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-divider d-flex justify-content-between align-items-center flex-wrap gap-2 text-white-50 small">
+                <div>&copy; 2026 <span id="copySchoolName"></span>. All rights reserved.</div>
+                <div>Powered by <a href="https://schoolalarm.online" class="text-white fw-bold">School Alarm ERP</a></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp -->
+    <a href="https://wa.me/917079090740" target="_blank" class="gadget-whatsapp" id="gadget-whatsapp" title="Chat on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Floating Studio Dock -->
+    <div class="editor-floating-dock" id="editorDockToolbar">
+        <button class="btn-dock-studio" onclick="window.openCustomizerDrawer()" type="button">
+            <i class="fas fa-palette fa-lg"></i> Website Studio
+        </button>
+        <button class="btn-dock-logout" onclick="window.doEditorLogout()" type="button" title="Logout Editor Session">
+            <i class="fas fa-sign-out-alt me-1"></i> Logout
+        </button>
+    </div>
+
+    <!-- Web Editor Login Modal -->
+    <div class="modal fade" id="editorLoginModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white p-3 border-0">
+                    <h6 class="modal-title fw-bold"><i class="fas fa-user-shield me-2 text-warning"></i>Web Editor Login</h6>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form onsubmit="window.handleEditorAuth(event)">
+                        <div class="mb-3">
+                            <label class="form-label-custom">Editor ID</label>
+                            <input type="text" class="form-control form-control-custom" id="txtEditorId" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label-custom">Password</label>
+                            <input type="password" class="form-control form-control-custom" id="txtEditorPass" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100 fw-bold py-2 shadow-sm" id="btnDoEditorLogin">
+                            Login & Edit
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Website Studio Drawer (520px) -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="liveCustomizerDrawer" style="width: 520px; max-width: 95vw;">
+        <div class="offcanvas-header bg-dark text-white p-3">
+            <h6 class="offcanvas-title fw-bold"><i class="fas fa-sliders-h text-warning me-2"></i>Live Website Studio</h6>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body p-4">
+            <ul class="nav nav-pills nav-fill mb-3" id="studioTabs">
+                <li class="nav-item"><button class="nav-link active small py-1" data-bs-toggle="pill" data-bs-target="#tabTheme">Colors</button></li>
+                <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabNav">Menu Builder</button></li>
+                <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabSections">Sections & Styles</button></li>
+                <li class="nav-item"><button class="nav-link small py-1" data-bs-toggle="pill" data-bs-target="#tabFooter">Footer</button></li>
+            </ul>
+
+            <div class="tab-content border-top pt-3">
+                <div class="tab-pane fade show active" id="tabTheme">
+                    <label class="form-label-custom mb-2">Preset Brand Primary Color</label>
+                    <div class="d-flex gap-2 mb-3">
+                        <div class="color-dot" style="background:#1d4ed8;" onclick="window.applyLiveThemeColors('#1d4ed8', null, null, null)"></div>
+                        <div class="color-dot" style="background:#059669;" onclick="window.applyLiveThemeColors('#059669', null, null, null)"></div>
+                        <div class="color-dot" style="background:#be123c;" onclick="window.applyLiveThemeColors('#be123c', null, null, null)"></div>
+                        <div class="color-dot" style="background:#7c3aed;" onclick="window.applyLiveThemeColors('#7c3aed', null, null, null)"></div>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6"><label class="form-label-custom">Navbar BG</label><input type="color" class="form-control form-control-color w-100" value="#ffffff" onchange="window.applyLiveThemeColors(null, this.value, null, null)"></div>
+                        <div class="col-6"><label class="form-label-custom">Footer BG</label><input type="color" class="form-control form-control-color w-100" value="#172554" onchange="window.applyLiveThemeColors(null, null, null, this.value)"></div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="tabNav">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label-custom m-0">Menu Structure</label>
+                        <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="window.promptAddNewMenuItem()">+ Add Item</button>
+                    </div>
+                    <div class="list-group mb-3" id="studioMenuList"></div>
+                </div>
+
+                <div class="tab-pane fade" id="tabSections">
+                    <div class="d-flex flex-column gap-2 mb-3" id="studioSectionManagerList"></div>
+                </div>
+
+                <div class="tab-pane fade" id="tabFooter">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label-custom m-0">Footer Links</label>
+                        <button class="btn btn-sm btn-outline-success py-1 px-2 fw-bold" onclick="window.promptAddFooterLink()">+ Add Link</button>
+                    </div>
+                    <div class="list-group mb-3" id="studioFooterLinkList"></div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-success w-100 py-3 fw-bold shadow mt-4" id="btnSaveLiveSettings" onclick="window.saveLiveWebsiteSettings()">
+                <i class="fas fa-cloud-upload-alt me-2"></i> SAVE LIVE SETTINGS
+            </button>
+        </div>
+    </div>
+
+    <!-- Universal Dual Mode Edit Modal -->
+    <div class="modal fade" id="universalSectionEditModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+                    <h6 class="modal-title fw-bold" id="editModalTitle">Edit Component</h6>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-sm btn-outline-warning active fw-bold py-1 px-3" id="btnModeVisual" onclick="window.switchEditorModalMode('visual')" type="button">Visual Mode</button>
+                        <button class="btn btn-sm btn-outline-light fw-bold py-1 px-3" id="btnModeRawHtml" onclick="window.switchEditorModalMode('html')" type="button">Raw HTML Mode</button>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div id="modalVisualContainer"><div id="modalDynamicFieldsContainer"></div></div>
+                    <div id="modalHtmlContainer" style="display: none;">
+                        <label class="form-label-custom text-primary">Custom HTML / CSS Code:</label>
+                        <textarea class="form-control font-monospace" id="inRawHtmlCode" rows="12" style="font-size: 12.5px; background: #0f172a; color: #38bdf8;"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer p-3 border-0">
+                    <button type="button" class="btn btn-primary w-100 fw-bold py-2 shadow-sm" onclick="window.applyInlineModalData()">Apply & Update Live</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ⚡ Multi-School Interactive CMS Script for Template 4 -->
+    <script>
+        let activeSchoolId = "";
+        let currentModalMode = "visual";
+        let activeEditTarget = "";
+        let isDedicatedPageMode = false;
+
+        // Interactive Grade Curriculum Dictionary
+        const gradeCurriculumMap = {
+            'K': {
+                title: 'Kindergarten', age: 'Ages 5–6',
+                desc: 'Kindergarten is about falling in love with school. Children learn through play, stories, and hands-on projects while building letter sounds, number sense, and friendships.',
+                bullets: ['Daily phonics in small groups of four to six', 'Counting, sorting and shapes with hands-on materials', 'Choice time in block, art and reading corners', 'Weekly afternoon in the outdoor garden classroom'],
+                project: 'The Kindergarten Café: children plan a menu, make price tags and run a pretend café for their families.',
+                size: '14 children', teachers: '2 teachers', hw: 'Share a picture book', spec: '9 lessons a week'
+            },
+            '1': {
+                title: 'Grade 1', age: 'Ages 6–7',
+                desc: 'Building reading fluency, early addition/subtraction, and scientific observation through structured curiosity.',
+                bullets: ['Guided reading & storytelling workshops', 'Place value & geometric puzzles', 'Plant life cycles & weather journals', 'Weekly music & rhythm sessions'],
+                project: 'My Neighborhood Map: students explore community helpers and construct a 3D classroom scale town.',
+                size: '16 children', teachers: '2 teachers', hw: '15 mins daily reading', spec: '10 lessons a week'
+            },
+            '2': {
+                title: 'Grade 2', age: 'Ages 7–8',
+                desc: 'Expanding creative writing, multiplication concepts, and collaborative team research.',
+                bullets: ['Paragraph writing & poetry cafés', 'Mental arithmetic & word problem challenges', 'Simple machines & habitat models', 'Coding fundamentals with visual blocks'],
+                project: 'Author’s Showcase: every student writes, illustrates, and binds their own short storybook.',
+                size: '16 children', teachers: '1 lead + specialist', hw: '20 mins reading & math', spec: '10 lessons a week'
+            },
+            '3': {
+                title: 'Grade 3', age: 'Ages 8–9',
+                desc: 'Transitioning to independent reading comprehension, fractions, and foundational earth sciences.',
+                bullets: ['1,000-book class reading challenge', 'Multiplication mastery & fractions', 'Solar system & geology investigations', 'Introduction to robotics kits'],
+                project: 'Science Expo: designing working solar ovens and clean water filtration models.',
+                size: '16 children', teachers: 'Subject specialists', hw: '25 mins daily', spec: '12 lessons a week'
+            },
+            '4': {
+                title: 'Grade 4', age: 'Ages 9–10',
+                desc: 'Developing analytical reasoning, multi-digit operations, regional history, and digital literacy.',
+                bullets: ['Debate & structured public speaking', 'Decimals, angles & data graphing', 'Historical timeline research', 'Block-to-text coding transition'],
+                project: 'Heritage Museum: students curate interactive historical exhibits for visiting parents.',
+                size: '16 children', teachers: 'Subject specialists', hw: '30 mins daily', spec: '12 lessons a week'
+            },
+            '5': {
+                title: 'Grade 5', age: 'Ages 10–11',
+                desc: 'Capstone primary year preparing scholars for middle school with leadership and critical inquiry.',
+                bullets: ['Essay composition & literary analysis', 'Pre-algebra ratios & geometry', 'Chemistry reactions & human biology', 'Student council & peer mentoring'],
+                project: 'Young Entrepreneurs Fair: students design eco-friendly products, calculate costs, and host a school market.',
+                size: '16 children', teachers: 'Subject specialists', hw: '35 mins daily', spec: '14 lessons a week'
+            }
+        };
+
+        window.selectGradeTab = function(gradeKey, btnEl) {
+            document.querySelectorAll('.grade-pill-btn').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+
+            const g = gradeCurriculumMap[gradeKey] || gradeCurriculumMap['K'];
+            document.getElementById('grdTitle').innerText = g.title;
+            document.getElementById('grdAge').innerText = g.age;
+            document.getElementById('grdDesc').innerText = g.desc;
+            document.getElementById('grdProject').innerText = g.project;
+            document.getElementById('grdSize').innerText = g.size;
+            document.getElementById('grdTeachers').innerText = g.teachers;
+            document.getElementById('grdHw').innerText = g.hw;
+            document.getElementById('grdSpec').innerText = g.spec;
+            document.getElementById('grdBullets').innerHTML = g.bullets.map(b => `<li><i class="fas fa-check-circle text-warning me-2"></i>${b}</li>`).join('');
+        };
+
+        window.filterClubs = function(dayCode, btnEl) {
+            document.querySelectorAll('.day-filter-btn').forEach(b => b.classList.remove('active'));
+            if (btnEl) btnEl.classList.add('active');
+
+            document.querySelectorAll('.club-item').forEach(card => {
+                const days = card.getAttribute('data-days') || '';
+                card.style.display = (dayCode === 'all' || days.split(',').includes(dayCode)) ? 'block' : 'none';
+            });
+        };
+
+        let websiteConfig = {
+            ThemeConfig: { primaryColor: "#1d4ed8", secondaryColor: "#1e3a8a", navBgColor: "#ffffff", navTextColor: "#1e293b", footerBgColor: "#172554" },
+            NavMenu: [
+                { id: "m_home", label: "Home", link: "#home", target: "home", parentId: "", visible: true },
+                { id: "m_academics", label: "Academics", link: "#academics", target: "academics", parentId: "", visible: true },
+                { id: "m_admissions", label: "Admissions", link: "#enquiry", target: "enquiry", parentId: "", visible: true },
+                { id: "m_clubs", label: "Clubs", link: "#clubs", target: "clubs", parentId: "", visible: true },
+                { id: "m_calendar", label: "Calendar", link: "#calendar", target: "calendar", parentId: "", visible: true },
+                { id: "m_news", label: "News", link: "#news", target: "news", parentId: "", visible: true }
+            ],
+            FooterLinks: [
+                { label: "Academics", link: "#academics" },
+                { label: "Admissions", link: "#enquiry" },
+                { label: "After-School Clubs", link: "#clubs" },
+                { label: "School Calendar", link: "#calendar" }
+            ],
+            SectionOrder: [
+                { id: "home", label: "Hero Banner", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "sec-stats", label: "4-Card Stats Ribbon", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "about", label: "Why Choose Us Section", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "academics", label: "Learning by Grade Tabs", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "clubs", label: "After-School Clubs", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "calendar", label: "School Calendar", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "news", label: "Notice Board News", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "sec-parent-portal", label: "Parent Portal Card", visible: true, bg: "", bgImg: "", textColor: "" },
+                { id: "enquiry", label: "Admissions Banner & Form", visible: true, bg: "", bgImg: "", textColor: "" }
+            ],
+            SectionsData: { customPages: {} }
+        };
+
+        // Dynamic School Loader
+        document.addEventListener("DOMContentLoaded", async function() {
+            const host = window.location.hostname.toLowerCase();
+            const urlParams = new URLSearchParams(window.location.search);
+            const querySchool = urlParams.get('school');
+
+            let searchId = querySchool || "";
+            if (!searchId) {
+                if (host.startsWith('demo.')) searchId = "169701";
+                else if (host.includes('.') && !host.startsWith('www.')) searchId = host.split('.')[0];
+            }
+
+            try {
+                let schoolRecord = null;
+                if (searchId && searchId !== "demo") {
+                    const { data } = await db.from('Schools').select('*').eq('SchoolID', searchId).maybeSingle();
+                    schoolRecord = data;
+                }
+                if (!schoolRecord) {
+                    const { data: fb } = await db.from('Schools').select('*').eq('Status', 'ACTIVE').limit(1).maybeSingle();
+                    schoolRecord = fb;
+                }
+
+                if (schoolRecord) {
+                    activeSchoolId = schoolRecord.SchoolID;
+                    const sName = schoolRecord.SchoolName || "Elementary Campus";
+                    const sPhone = schoolRecord.Phone || "+91 7079090740";
+                    const sMail = schoolRecord.Email || "info@schoolalarm.online";
+                    const sAddr = schoolRecord.Address ? `${schoolRecord.Address}, ${schoolRecord.City || ''}` : "Main Campus Road";
+
+                    document.getElementById('siteTitle').innerText = `${sName} | Official Website`;
+                    document.getElementById('schoolNameHeader').innerText = sName;
+                    document.getElementById('footerSchoolName').innerText = sName;
+                    document.getElementById('copySchoolName').innerText = sName;
+
+                    if (schoolRecord.SchoolLogo) document.getElementById('schoolLogo').src = schoolRecord.SchoolLogo;
+                    document.getElementById('topPhone').innerText = sPhone;
+                    document.getElementById('footerPhone').innerText = sPhone;
+                    document.getElementById('footerMail').innerText = sMail;
+                    document.getElementById('footerAddr').innerText = sAddr;
+
+                    const cleanPhone = sPhone.replace(/[^0-9]/g, '');
+                    const waNum = cleanPhone.length === 10 ? `91${cleanPhone}` : cleanPhone;
+                    document.getElementById('gadget-whatsapp').href = `https://wa.me/${waNum}?text=Hello%20${encodeURIComponent(sName)},%20I%20have%20an%20admission%20enquiry.`;
+
+                    window.loadSchoolClassesFromConfig(activeSchoolId);
+                    await window.loadCustomWebsiteConfig(activeSchoolId);
+                }
+            } catch(e) {}
+            finally {
+                document.body.classList.remove('loading');
+                document.body.classList.add('loaded');
+            }
+
+            if (sessionStorage.getItem("website_editor_auth") === "true") window.enableEditorModeUI();
+            const studioDrawerEl = document.getElementById('liveCustomizerDrawer');
+            if (studioDrawerEl) {
+                studioDrawerEl.addEventListener('show.bs.offcanvas', () => { document.getElementById('editorDockToolbar').style.display = 'none'; });
+                studioDrawerEl.addEventListener('hidden.bs.offcanvas', () => {
+                    if (sessionStorage.getItem("website_editor_auth") === "true") document.getElementById('editorDockToolbar').style.display = 'inline-flex';
+                });
+            }
+        });
+
+        // Common CMS Methods
+        window.handleNavClick = function(targetKey) {
+            const clean = (targetKey || "").replace(/^#/, '').toLowerCase();
+            if (!clean || clean === "home") { window.returnToFullLandingPage(); return; }
+            const sec = websiteConfig.SectionOrder.find(s => s.id === clean);
+            if (sec && sec.visible === false) {
+                isDedicatedPageMode = true;
+                websiteConfig.SectionOrder.forEach(s => { const el = document.getElementById(s.id); if (el) el.style.display = 'none'; });
+                const tEl = document.getElementById(clean); if (tEl) tEl.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                if (isDedicatedPageMode) window.returnToFullLandingPage(null, clean);
+                else { const el = document.getElementById(clean); if (el) el.scrollIntoView({ behavior: 'smooth' }); }
+            }
+        };
+
+        window.returnToFullLandingPage = function(e, scrollToId) {
+            if (e) e.preventDefault();
+            isDedicatedPageMode = false;
+            websiteConfig.SectionOrder.forEach(sec => {
+                const el = document.getElementById(sec.id);
+                if (el) el.style.display = (sec.visible !== false) ? '' : 'none';
+            });
+            if (scrollToId) setTimeout(() => { const el = document.getElementById(scrollToId); if (el) el.scrollIntoView({ behavior: 'smooth' }); }, 100);
+            else window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.loadSchoolClassesFromConfig = async function(schId) {
+            const classSelect = document.getElementById('enqClass');
+            if (!classSelect) return;
+            try {
+                const { data: configs } = await db.from('School_Configs').select('Value').eq('SchoolID', schId).eq('Category', 'Class').order('Id', { ascending: true });
+                if (!configs || configs.length === 0) { classSelect.innerHTML = `<option value="Kindergarten">Kindergarten</option><option value="Grade 1">Grade 1</option>`; return; }
+                configs.sort((a, b) => (a.Value || '').localeCompare(b.Value || '', undefined, { numeric: true, sensitivity: 'base' }));
+                classSelect.innerHTML = '<option value="">-- Select Class --</option>' + configs.map(c => `<option value="${c.Value}">${c.Value}</option>`).join('');
+            } catch(e) {}
+        };
+
+        window.loadCustomWebsiteConfig = async function(schId) {
+            try {
+                const { data: webData } = await db.from('School_Websites').select('*').eq('SchoolID', schId).maybeSingle();
+                if (webData) {
+                    if (webData.ThemeConfig) {
+                        websiteConfig.ThemeConfig = webData.ThemeConfig;
+                        window.applyLiveThemeColors(webData.ThemeConfig.primaryColor, webData.ThemeConfig.navBgColor, webData.ThemeConfig.navTextColor, webData.ThemeConfig.footerBgColor);
+                    }
+                    if (webData.NavMenu && Array.isArray(webData.NavMenu)) websiteConfig.NavMenu = webData.NavMenu;
+                    if (webData.FooterLinks && Array.isArray(webData.FooterLinks)) websiteConfig.FooterLinks = webData.FooterLinks;
+                    if (webData.SectionOrder && Array.isArray(webData.SectionOrder)) websiteConfig.SectionOrder = webData.SectionOrder;
+                    if (webData.SectionsData) websiteConfig.SectionsData = Object.assign({}, websiteConfig.SectionsData, webData.SectionsData);
+                }
+            } catch(e) {}
+            window.renderNavbarMenu();
+            window.renderFooterLinks();
+            window.applySectionOrdersAndStyles();
+            window.renderSectionManagerList();
+        };
+
+        window.renderNavbarMenu = function() {
+            const container = document.getElementById('dynamicNavLinks');
+            const studioList = document.getElementById('studioMenuList');
+            if (!container) return;
+
+            let navHtml = "", studioHtml = "";
+            websiteConfig.NavMenu.filter(m => !m.parentId).forEach(root => {
+                const subs = websiteConfig.NavMenu.filter(m => m.parentId === root.id);
+                const isVis = (root.visible !== false);
+                if (subs.length === 0) {
+                    navHtml += `<li class="nav-item" style="${isVis ? '' : 'display:none;'}"><a class="nav-link" href="${root.link}" onclick="window.handleNavClick('${root.target}')">${root.label}</a></li>`;
+                } else {
+                    navHtml += `<li class="nav-item dropdown" style="${isVis ? '' : 'display:none;'}"><a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">${root.label}</a><ul class="dropdown-menu">${subs.map(s => `<li><a class="dropdown-item" href="${s.link}" onclick="window.handleNavClick('${s.target}')">${s.label}</a></li>`).join('')}</ul></li>`;
+                }
+            });
+
+            if (studioList) {
+                websiteConfig.NavMenu.forEach((item, idx) => {
+                    studioHtml += `<div class="list-group-item d-flex justify-content-between align-items-center p-2 mb-1 border"><span class="small fw-bold">${item.label}</span><div class="d-flex gap-1"><button class="btn btn-sm btn-outline-primary py-0 px-1" onclick="window.openMenuContentEditor('${item.target}')">&#128221; Content</button><button class="btn btn-sm btn-outline-danger py-0 px-1" onclick="window.removeMenuItem(${idx})">&times;</button></div></div>`;
+                });
+            }
+            container.innerHTML = navHtml;
+            if (studioList) studioList.innerHTML = studioHtml;
+        };
+
+        window.promptAddNewMenuItem = function() {
+            const l = prompt("Enter Menu Name:"); if (!l) return;
+            const slug = l.toLowerCase().replace(/[^a-z0-9]/g, '');
+            websiteConfig.NavMenu.push({ id: "m_" + slug, label: l, link: "#" + slug, target: slug, parentId: "", visible: true });
+            if (!websiteConfig.SectionsData.customPages) websiteConfig.SectionsData.customPages = {};
+            websiteConfig.SectionsData.customPages[slug] = { title: l, content: "Custom section content.", rawHtml: "" };
+            websiteConfig.SectionOrder.push({ id: slug, label: l, visible: true });
+            window.renderNavbarMenu();
+            window.applySectionOrdersAndStyles();
+            window.renderSectionManagerList();
+        };
+
+        window.removeMenuItem = function(idx) {
+            if (confirm("Delete menu item?")) { websiteConfig.NavMenu.splice(idx, 1); window.renderNavbarMenu(); }
+        };
+
+        window.renderSectionManagerList = function() {
+            const listEl = document.getElementById('studioSectionManagerList');
+            if (!listEl) return;
+            listEl.innerHTML = websiteConfig.SectionOrder.map((sec, idx) => `
+                <div class="card p-2 shadow-sm border mb-1">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="form-check form-switch mb-0">
+                            <input class="form-check-input" type="checkbox" ${sec.visible !== false ? 'checked' : ''} onchange="window.toggleSectionVisibility(${idx}, this.checked)">
+                            <label class="form-check-label small fw-bold">${sec.label}</label>
+                        </div>
+                        <div class="d-flex gap-1">
+                            <button class="btn btn-sm btn-light py-0 px-2 border" onclick="window.moveSection(${idx}, -1)">&uarr;</button>
+                            <button class="btn btn-sm btn-light py-0 px-2 border" onclick="window.moveSection(${idx}, 1)">&darr;</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        window.toggleSectionVisibility = function(idx, isVis) {
+            websiteConfig.SectionOrder[idx].visible = isVis;
+            const el = document.getElementById(websiteConfig.SectionOrder[idx].id);
+            if (el) el.style.display = isVis ? '' : 'none';
+        };
+
+        window.moveSection = function(idx, dir) {
+            const n = idx + dir;
+            if (n < 0 || n >= websiteConfig.SectionOrder.length) return;
+            const t = websiteConfig.SectionOrder[idx]; websiteConfig.SectionOrder[idx] = websiteConfig.SectionOrder[n]; websiteConfig.SectionOrder[n] = t;
+            window.applySectionOrdersAndStyles();
+            window.renderSectionManagerList();
+        };
+
+        window.applySectionOrdersAndStyles = function() {
+            const footerEl = document.getElementById('sec-footer');
+            if (!footerEl) return;
+            const pages = websiteConfig.SectionsData.customPages || {};
+            for (const slug in pages) {
+                let secEl = document.getElementById(slug);
+                const pg = pages[slug];
+                if (!secEl) {
+                    secEl = document.createElement('section');
+                    secEl.className = 'py-5 position-relative border-top';
+                    secEl.id = slug;
+                    footerEl.parentNode.insertBefore(secEl, footerEl);
+                }
+                secEl.innerHTML = pg.rawHtml ? `<div class="container py-4">${pg.rawHtml}</div>` : `<div class="container py-4 text-center"><h2 class="display-font fw-bold mb-3">${pg.title}</h2><p class="lead">${pg.content}</p></div>`;
+            }
+            websiteConfig.SectionOrder.forEach(sec => {
+                const el = document.getElementById(sec.id);
+                if (el) {
+                    if (!isDedicatedPageMode) el.style.display = (sec.visible === false) ? 'none' : '';
+                    footerEl.parentNode.insertBefore(el, footerEl);
+                }
+            });
+        };
+
+        window.applyLiveThemeColors = function(primary, navBg, navText, footerBg) {
+            if (primary) { websiteConfig.ThemeConfig.primaryColor = primary; websiteConfig.ThemeConfig.secondaryColor = primary; }
+            if (navBg) websiteConfig.ThemeConfig.navBgColor = navBg;
+            if (footerBg) websiteConfig.ThemeConfig.footerBgColor = footerBg;
+            document.getElementById('dynamicLiveStyles').innerHTML = `
+                :root {
+                    --school-primary: ${websiteConfig.ThemeConfig.primaryColor} !important;
+                    --nav-bg: ${websiteConfig.ThemeConfig.navBgColor} !important;
+                    --footer-bg: ${websiteConfig.ThemeConfig.footerBgColor} !important;
+                }
+            `;
+        };
+
+        window.renderFooterLinks = function() {
+            const listContainer = document.getElementById('footerQuickLinksList');
+            const studioFooterList = document.getElementById('studioFooterLinkList');
+            if (!listContainer) return;
+            listContainer.innerHTML = websiteConfig.FooterLinks.map(i => `<li><a href="${i.link}">${i.label}</a></li>`).join('');
+            if (studioFooterList) studioFooterList.innerHTML = websiteConfig.FooterLinks.map((i, idx) => `<div class="list-group-item d-flex justify-content-between p-2 mb-1 border"><span>${i.label}</span><button class="btn btn-sm btn-outline-danger py-0" onclick="window.removeFooterLink(${idx})">&times;</button></div>`).join('');
+        };
+        window.promptAddFooterLink = function() {
+            const l = prompt("Link Label:"); const u = prompt("URL:", "#");
+            if (l && u) { websiteConfig.FooterLinks.push({ label: l, link: u }); window.renderFooterLinks(); }
+        };
+        window.removeFooterLink = function(idx) {
+            if (confirm("Delete footer link?")) { websiteConfig.FooterLinks.splice(idx, 1); window.renderFooterLinks(); }
+        };
+
+        window.openEditorModal = function() { new bootstrap.Modal(document.getElementById('editorLoginModal')).show(); };
+        window.handleEditorAuth = async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('txtEditorId').value.trim();
+            const pass = document.getElementById('txtEditorPass').value.trim();
+            const { data: res } = await db.rpc('verify_website_editor_login', { p_school_id: activeSchoolId || '169701', p_login_id: id, p_password: pass });
+            if (res && res.status === 'success') {
+                sessionStorage.setItem("website_editor_auth", "true");
+                bootstrap.Modal.getInstance(document.getElementById('editorLoginModal')).hide();
+                window.enableEditorModeUI();
+            } else { alert("Invalid credentials"); }
+        };
+        window.enableEditorModeUI = function() {
+            document.getElementById('editorDockToolbar').style.display = 'inline-flex';
+            document.querySelectorAll('.btn-inline-pencil').forEach(p => p.style.display = 'inline-flex');
+        };
+        window.doEditorLogout = function() { sessionStorage.removeItem("website_editor_auth"); window.location.reload(); };
+        window.openCustomizerDrawer = function() { new bootstrap.Offcanvas(document.getElementById('liveCustomizerDrawer')).show(); };
+        window.openMenuContentEditor = function(targetKey) { window.triggerInlineEdit((targetKey || "").replace(/^#/, '').toLowerCase()); };
+
+        window.switchEditorModalMode = function(mode) {
+            currentModalMode = mode;
+            document.getElementById('modalVisualContainer').style.display = (mode === 'visual') ? 'block' : 'none';
+            document.getElementById('modalHtmlContainer').style.display = (mode === 'html') ? 'block' : 'none';
+        };
+
+        window.triggerInlineEdit = function(targetKey) {
+            activeEditTarget = targetKey;
+            const container = document.getElementById('modalDynamicFieldsContainer');
+            document.getElementById('editModalTitle').innerText = "Edit Component: " + targetKey;
+            container.innerHTML = `<label class="form-label-custom">Custom Title</label><input type="text" class="form-control form-control-sm mb-2" id="inCustTitle" value=""><label class="form-label-custom">Content</label><textarea class="form-control form-control-sm" id="inCustCont" rows="4"></textarea>`;
+            new bootstrap.Modal(document.getElementById('universalSectionEditModal')).show();
+        };
+
+        window.applyInlineModalData = async function() {
+            if (currentModalMode === 'html') {
+                const code = document.getElementById('inRawHtmlCode').value;
+                if (!websiteConfig.SectionsData.customPages) websiteConfig.SectionsData.customPages = {};
+                websiteConfig.SectionsData.customPages[activeEditTarget] = { title: activeEditTarget, rawHtml: code };
+                window.applySectionOrdersAndStyles();
+            }
+            bootstrap.Modal.getInstance(document.getElementById('universalSectionEditModal')).hide();
+            await window.saveLiveWebsiteSettings();
+        };
+
+        window.saveLiveWebsiteSettings = async function() {
+            const payload = {
+                SchoolID: activeSchoolId || "169701",
+                ThemeConfig: websiteConfig.ThemeConfig,
+                NavMenu: websiteConfig.NavMenu,
+                FooterLinks: websiteConfig.FooterLinks,
+                SectionOrder: websiteConfig.SectionOrder,
+                SectionsData: websiteConfig.SectionsData,
+                UpdatedAt: new Date().toISOString()
+            };
+            const { error } = await db.from('School_Websites').upsert(payload, { onConflict: 'SchoolID' });
+            if (!error) alert("🎉 Saved Live!");
+        };
+
+        window.submitAdmissionEnquiry = async function(e) {
+            e.preventDefault();
+            const payload = {
+                "SchoolID": activeSchoolId || "169701",
+                "StudentName": document.getElementById('enqStudentName').value.trim().toUpperCase(),
+                "ParentName": document.getElementById('enqParentName').value.trim().toUpperCase(),
+                "Class": document.getElementById('enqClass').value,
+                "Mobile": document.getElementById('enqMobile').value.trim(),
+                "Status": "NEW",
+                "CreatedAt": new Date().toISOString()
+            };
+            const { error } = await db.from('Student_Enquiries').insert([payload]);
+            if (!error) { alert("🎉 Enquiry Submitted!"); e.target.reset(); }
+        };
+    </script>
+</body>
+</html>
