@@ -34898,6 +34898,1924 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </script>
 </template>
 
+<!-- =================================================================== -->
+<!-- OMR MODULE 1: BLUEPRINT & MULTI-SUBJECT RANGE DESIGNER              -->
+<!-- =================================================================== -->
+<template id='tpl-OmrDesigner'>
+  <style>
+    .omr-card { border-radius: 14px; border: none; }
+    .omr-filter-box { background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    .omr-label { font-size: 0.78rem; font-weight: 700; color: #334155; margin-bottom: 4px; display: block; }
+    
+    /* SUMMARY METRICS BAR (EXACT ERP MATCH) */
+    .omr-kpi-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #ffffff;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .omr-kpi-tile {
+      padding: 10px 14px;
+      text-align: center;
+      border-right: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .omr-kpi-tile:last-child { border-right: none; }
+    .omr-kpi-25 { background: #eff6ff; color: #2563eb; }
+    .omr-kpi-50 { background: #fef2f2; color: #dc2626; }
+    .omr-kpi-100 { background: #fffbeb; color: #d97706; }
+    .omr-kpi-180 { background: #f0fdf4; color: #0284c7; }
+    .omr-kpi-total { background: #f0fdf4; color: #059669; }
+
+    .omr-kpi-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: #ffffff;
+    }
+    .omr-kpi-25 .omr-kpi-badge { background: #0284c7; }
+    .omr-kpi-50 .omr-kpi-badge { background: #ef4444; }
+    .omr-kpi-100 .omr-kpi-badge { background: #f59e0b; }
+    .omr-kpi-180 .omr-kpi-badge { background: #0284c7; }
+    .omr-kpi-total .omr-kpi-badge { background: #059669; }
+
+    /* TABLE DESIGN */
+    .table-omr th { background: #f8fafc; font-size: 0.78rem; text-transform: uppercase; color: #334155; font-weight: 800; border-bottom: 2px solid #e2e8f0; padding: 12px 10px; text-align: center; }
+    .table-omr td { font-size: 0.82rem; vertical-align: middle; padding: 10px; border-bottom: 1px solid #f1f5f9; font-weight: 600; }
+    
+    .format-badge { background: #eff6ff; color: #1d4ed8; font-weight: 800; padding: 3px 8px; border-radius: 6px; border: 1px solid #bfdbfe; font-size: 11px; }
+    .subject-pill { background: #f1f5f9; color: #334155; font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 4px; margin: 2px; display: inline-block; border: 1px solid #cbd5e1; }
+
+    @media (max-width: 992px) {
+      .omr-kpi-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+
+  <div class='card omr-card shadow-sm animate__animated animate__fadeIn mb-5'>
+    <!-- CARD HEADER -->
+    <div class='card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center'>
+      <div class='d-flex align-items-center gap-2'>
+        <i class='fas fa-drafting-compass text-primary'></i>
+        <h6 class='m-0 fw-bold text-dark'>OMR Blueprint &amp; Multi-Subject Designer</h6>
+      </div>
+      <div class='d-flex gap-2'>
+        <button class='btn btn-outline-primary btn-sm px-3 fw-bold shadow-sm' onclick='window.loadOmrBlueprintsList(true)' type='button'>
+          <i class='fas fa-sync-alt me-1'></i> Refresh List
+        </button>
+      </div>
+    </div>
+
+    <div class='card-body p-2'>
+      
+      <!-- 1. BLUEPRINT SETUP BUILDER -->
+      <div class='omr-filter-box mb-3'>
+        <h6 class='fw-bold text-primary mb-3'><i class='fas fa-sliders-h me-1'></i> Step 1: Examination Profile &amp; Layout Format</h6>
+        
+        <div class='row g-3 mb-3'>
+          <div class='col-md-3'>
+            <label class='omr-label'>Exam Name / Title *</label>
+            <input class='form-control form-control-sm fw-bold' id='omrBpExamName' placeholder='e.g., Term 1 Composite Exam' type='text'>
+          </div>
+          <div class='col-md-3'>
+            <label class='omr-label'>Target Class *</label>
+            <select class='form-select form-select-sm fw-bold' id='omrBpClassSelect'></select>
+          </div>
+          <div class='col-md-3'>
+            <label class='omr-label'>Template Question Format *</label>
+            <select class='form-select form-select-sm fw-bold text-primary' id='omrBpTemplateFormat' onchange='window.validateOmrRangeMapping()'>
+              <option value='25'>25 Questions (2 Columns)</option>
+              <option value='50'>50 Questions (2 Columns)</option>
+              <option value='100' selected='selected'>100 Questions (4 Columns)</option>
+              <option value='120'>120 Questions (4 Columns)</option>
+              <option value='180'>180 Questions (4 Columns)</option>
+            </select>
+          </div>
+          <div class='col-md-3'>
+            <label class='omr-label'>Blueprint Reference ID</label>
+            <input class='form-control form-control-sm text-muted bg-light' id='omrBpReferenceId' readonly='readonly' type='text'>
+          </div>
+        </div>
+
+        <!-- 2. DYNAMIC SUBJECT RANGE MAPPING -->
+        <div class='pt-2 border-top'>
+          <div class='d-flex justify-content-between align-items-center mb-2'>
+            <label class='omr-label m-0'><i class='fas fa-layer-group text-primary me-1'></i> Step 2: Subject Range Partitioning (Multi-Subject Mapping)</label>
+            <button class='btn btn-outline-success btn-sm py-1 px-3 fw-bold' onclick='window.addOmrSubjectRangeRow()' type='button'>
+              <i class='fas fa-plus me-1'></i> Add Subject Range
+            </button>
+          </div>
+
+          <div class='table-responsive border rounded-3 bg-white mb-2'>
+            <table class='table table-bordered table-sm text-center align-middle mb-0'>
+              <thead class='table-light'>
+                <tr style='font-size: 11px;'>
+                  <th style='text-align: left; padding-left: 12px;'>Subject Name</th>
+                  <th style='width: 130px;'>Start Question</th>
+                  <th style='width: 130px;'>End Question</th>
+                  <th style='width: 140px;'>Total Questions</th>
+                  <th style='width: 60px;'>Action</th>
+                </tr>
+              </thead>
+              <tbody id='omrSubjectRangesTbody'>
+                <!-- Default Subject Rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Dynamic Validation Warning -->
+          <div class='alert alert-info py-2 small mb-3 fw-bold' id='omrValidationNotice'>
+            <i class='fas fa-info-circle me-1'></i> Define contiguous question boundaries matching your selected question capacity.
+          </div>
+
+          <div class='d-flex justify-content-end gap-2'>
+            <button class='btn btn-primary btn-sm px-4 fw-bold shadow-sm' id='btnSaveOmrBlueprint' onclick='window.submitOmrBlueprintRecord()' type='button'>
+              <i class='fas fa-save me-1'></i> Save Examination Blueprint
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 2. SUMMARY METRICS BAR ================= -->
+      <div class='omr-kpi-bar' id='omrKpiSummaryBar'>
+        <div class='omr-kpi-tile omr-kpi-25'>25 Questions <span class='omr-kpi-badge' id='cntBp25'>0</span></div>
+        <div class='omr-kpi-tile omr-kpi-50'>50 Questions <span class='omr-kpi-badge' id='cntBp50'>0</span></div>
+        <div class='omr-kpi-tile omr-kpi-100'>100 Questions <span class='omr-kpi-badge' id='cntBp100'>0</span></div>
+        <div class='omr-kpi-tile omr-kpi-180'>120/180 Qs <span class='omr-kpi-badge' id='cntBpLarge'>0</span></div>
+        <div class='omr-kpi-tile omr-kpi-total'>Total Blueprints <span class='omr-kpi-badge' id='cntBpTotal'>0</span></div>
+      </div>
+
+      <!-- ================= 3. SAVED BLUEPRINTS TABLE ================= -->
+      <div class='table-responsive border rounded-3 bg-white mb-3'>
+        <table class='table table-hover table-omr align-middle text-center mb-0'>
+          <thead>
+            <tr>
+              <th style='width: 60px;'>#</th>
+              <th style='text-align: left; padding-left: 14px;'>Exam Title</th>
+              <th style='width: 110px;'>Class</th>
+              <th style='width: 130px;'>OMR Template</th>
+              <th style='text-align: left; padding-left: 12px;'>Subjects &amp; Question Ranges</th>
+              <th style='width: 140px;'>Action</th>
+            </tr>
+          </thead>
+          <tbody id='omrBlueprintsListTbody'>
+            <tr><td class='text-center py-4 text-muted fw-bold' colspan='6'><i class='fas fa-spinner fa-spin me-2 text-primary'></i>Loading active blueprints...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. SCOPED JAVASCRIPT ENGINE -->
+  <script type='text/javascript'>
+  // <![CDATA[
+  (async function() {
+    let savedBlueprintsList = [];
+    let localClassMap = {};
+
+    // ⚡ 1. INITIALIZE MODULE & LOAD CLASSES
+    window.initOmrDesignerModule = async function() {
+      // Generate unique Blueprint Reference
+      document.getElementById('omrBpReferenceId').value = "BP-" + Date.now().toString(36).toUpperCase();
+
+      // Populate Class dropdown from ERP master config
+      const cfg = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
+      if (cfg && cfg.classMap) {
+        localClassMap = cfg.classMap;
+        const clsDrop = document.getElementById('omrBpClassSelect');
+        clsDrop.innerHTML = Object.keys(localClassMap).map(c => `<option value="${c}">${c}</option>`).join('');
+      }
+
+      // Populate initial 4-subject range template
+      window.setupDefaultSubjectRangeRows();
+      await window.loadOmrBlueprintsList();
+    };
+
+    // ⚡ 2. SETUP DEFAULT ROWS
+    window.setupDefaultSubjectRangeRows = function() {
+      const tbody = document.getElementById('omrSubjectRangesTbody');
+      tbody.innerHTML = `
+        <tr>
+          <td><input type="text" class="form-control form-control-sm fw-bold omr-sub-name" value="Hindi"></td>
+          <td><input type="number" class="form-control form-control-sm text-center fw-bold omr-sub-start" value="1" oninput="window.validateOmrRangeMapping()"></td>
+          <td><input type="number" class="form-control form-control-sm text-center fw-bold omr-sub-end" value="25" oninput="window.validateOmrRangeMapping()"></td>
+          <td><input type="text" class="form-control form-control-sm text-center text-primary fw-bold omr-sub-total bg-light" value="25" readonly></td>
+          <td class="text-center"><button class="btn btn-sm btn-outline-danger" onclick="window.removeOmrSubjectRangeRow(this)" type="button"><i class="fas fa-times"></i></button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="form-control form-control-sm fw-bold omr-sub-name" value="English"></td>
+          <td><input type="number" class="form-control form-control-sm text-center fw-bold omr-sub-start" value="26" oninput="window.validateOmrRangeMapping()"></td>
+          <td><input type="number" class="form-control form-control-sm text-center fw-bold omr-sub-end" value="50" oninput="window.validateOmrRangeMapping()"></td>
+          <td><input type="text" class="form-control form-control-sm text-center text-primary fw-bold omr-sub-total bg-light" value="25" readonly></td>
+          <td class="text-center"><button class="btn btn-sm btn-outline-danger" onclick="window.removeOmrSubjectRangeRow(this)" type="button"><i class="fas fa-times"></i></button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="form-control form-control-sm fw-bold omr-sub-name" value="Mathematics"></td>
+          <td><input type="number" class="form-control form-control-sm text-center fw-bold omr-sub-start" value="51" oninput="window.validateOmrRangeMapping()"></td>
+          <td><input type="number" class="form-control form-control-sm text-center fw-bold omr-sub-end" value="75" oninput="window.validateOmrRangeMapping()"></td>
+          <td><input type="text" class="form-control form-control-sm text-center text-primary fw-bold omr-sub-total bg-light" value="25" readonly></td>
+          <td class="text-center"><button class="btn btn-sm btn-outline-danger" onclick="window.removeOmrSubjectRangeRow(this)" type="button"><i class="fas fa-times"></i></button></td>
+        </tr>
+        <tr>
+          <td><input type="text" class="form-control form-control-sm fw-bold omr-sub-name" value="Science"></td>
+          <td><input type="number" class="form-control form-control-sm text-center fw-bold omr-sub-start" value="76" oninput="window.validateOmrRangeMapping()"></td>
+          <td><input type="number" class="form-control form-control-sm text-center fw-bold omr-sub-end" value="100" oninput="window.validateOmrRangeMapping()"></td>
+          <td><input type="text" class="form-control form-control-sm text-center text-primary fw-bold omr-sub-total bg-light" value="25" readonly></td>
+          <td class="text-center"><button class="btn btn-sm btn-outline-danger" onclick="window.removeOmrSubjectRangeRow(this)" type="button"><i class="fas fa-times"></i></button></td>
+        </tr>
+      `;
+      window.validateOmrRangeMapping();
+    };
+
+    // ⚡ 3. DYNAMICALLY ADD SUBJECT ROW
+    window.addOmrSubjectRangeRow = function() {
+      const tbody = document.getElementById('omrSubjectRangesTbody');
+      const rows = tbody.querySelectorAll('tr');
+      let nextStart = 1;
+
+      if (rows.length > 0) {
+        const lastEnd = parseInt(rows[rows.length - 1].querySelector('.omr-sub-end').value, 10);
+        if (!isNaN(lastEnd)) nextStart = lastEnd + 1;
+      }
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" class="form-control form-control-sm fw-bold omr-sub-name" placeholder="Subject Name"></td>
+        <td><input type="number" class="form-control form-control-sm text-center fw-bold omr-sub-start" value="${nextStart}" oninput="window.validateOmrRangeMapping()"></td>
+        <td><input type="number" class="form-control form-control-sm text-center fw-bold omr-sub-end" value="${nextStart + 19}" oninput="window.validateOmrRangeMapping()"></td>
+        <td><input type="text" class="form-control form-control-sm text-center text-primary fw-bold omr-sub-total bg-light" value="20" readonly></td>
+        <td class="text-center"><button class="btn btn-sm btn-outline-danger" onclick="window.removeOmrSubjectRangeRow(this)" type="button"><i class="fas fa-times"></i></button></td>
+      `;
+      tbody.appendChild(tr);
+      window.validateOmrRangeMapping();
+    };
+
+    window.removeOmrSubjectRangeRow = function(btn) {
+      btn.closest('tr').remove();
+      window.validateOmrRangeMapping();
+    };
+
+    // ⚡ 4. VALIDATE QUESTION RANGES
+    window.validateOmrRangeMapping = function() {
+      const templateCap = parseInt(document.getElementById('omrBpTemplateFormat').value, 10);
+      const rows = document.querySelectorAll('#omrSubjectRangesTbody tr');
+      const notice = document.getElementById('omrValidationNotice');
+      const saveBtn = document.getElementById('btnSaveOmrBlueprint');
+
+      let currentExpectedStart = 1;
+      let totalQuestionsAllocated = 0;
+      let isSequentialValid = true;
+
+      rows.forEach(r => {
+        const s = parseInt(r.querySelector('.omr-sub-start').value, 10);
+        const e = parseInt(r.querySelector('.omr-sub-end').value, 10);
+        const totField = r.querySelector('.omr-sub-total');
+
+        if (!isNaN(s) && !isNaN(e) && e >= s) {
+          const count = (e - s) + 1;
+          totField.value = count;
+          totalQuestionsAllocated += count;
+
+          if (s !== currentExpectedStart) isSequentialValid = false;
+          currentExpectedStart = e + 1;
+        } else {
+          isSequentialValid = false;
+        }
+      });
+
+      if (isSequentialValid && totalQuestionsAllocated === templateCap) {
+        notice.className = "alert alert-success py-2 small mb-3 fw-bold";
+        notice.innerHTML = `<i class="fas fa-check-circle me-1"></i> Valid Blueprint: Exact ${totalQuestionsAllocated} questions allocated sequentially across ${rows.length} subjects.`;
+        saveBtn.disabled = false;
+        return true;
+      } else {
+        notice.className = "alert alert-danger py-2 small mb-3 fw-bold";
+        notice.innerHTML = `<i class="fas fa-exclamation-triangle me-1"></i> Invalid Range: Ranges must start at Q1, have no gaps, and sum to exactly ${templateCap} questions (Allocated: ${totalQuestionsAllocated}).`;
+        saveBtn.disabled = true;
+        return false;
+      }
+    };
+
+    // ⚡ 5. SUBMIT TO SUPABASE "OMR_Blueprints"
+    window.submitOmrBlueprintRecord = async function() {
+      if (!window.validateOmrRangeMapping()) return;
+
+      const examName = document.getElementById('omrBpExamName').value.trim();
+      const cls = document.getElementById('omrBpClassSelect').value;
+      const tplType = parseInt(document.getElementById('omrBpTemplateFormat').value, 10);
+      const bpId = document.getElementById('omrBpReferenceId').value.trim();
+      const saveBtn = document.getElementById('btnSaveOmrBlueprint');
+
+      if (!examName) {
+        alert("Please enter the Examination Name!");
+        return;
+      }
+
+      const subjectsList = [];
+      document.querySelectorAll('#omrSubjectRangesTbody tr').forEach(r => {
+        subjectsList.push({
+          name: r.querySelector('.omr-sub-name').value.trim() || "Subject",
+          start_q: parseInt(r.querySelector('.omr-sub-start').value, 10),
+          end_q: parseInt(r.querySelector('.omr-sub-end').value, 10),
+          total: parseInt(r.querySelector('.omr-sub-total').value, 10)
+        });
+      });
+
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Saving Blueprint...';
+
+      try {
+        const { error } = await db
+          .from('OMR_Blueprints')
+          .insert([{
+            SchoolID: schoolId,
+            BlueprintID: bpId,
+            ExamName: examName,
+            Class: cls,
+            TemplateType: tplType,
+            Subjects: subjectsList
+          }]);
+
+        if (error) throw error;
+
+        alert(`✅ Examination Blueprint [${bpId}] Saved Successfully!`);
+        document.getElementById('omrBpExamName').value = "";
+        document.getElementById('omrBpReferenceId').value = "BP-" + Date.now().toString(36).toUpperCase();
+        await window.loadOmrBlueprintsList(true);
+
+      } catch(err) {
+        console.error("Save Blueprint Error:", err);
+        alert("Error saving blueprint: " + err.message);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fas fa-save me-1"></i> Save Examination Blueprint';
+      }
+    };
+
+    // ⚡ 6. FETCH & RENDER SAVED BLUEPRINTS TABLE
+    window.loadOmrBlueprintsList = async function(force) {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+      const tbody = document.getElementById('omrBlueprintsListTbody');
+
+      try {
+        const { data, error } = await db
+          .from('OMR_Blueprints')
+          .select('*')
+          .eq('SchoolID', schoolId)
+          .order('Id', { ascending: false });
+
+        if (error) throw error;
+        savedBlueprintsList = data || [];
+
+        // Update KPIs
+        let c25 = 0, c50 = 0, c100 = 0, cLarge = 0;
+        savedBlueprintsList.forEach(b => {
+          const t = parseInt(b.TemplateType, 10);
+          if (t === 25) c25++;
+          else if (t === 50) c50++;
+          else if (t === 100) c100++;
+          else cLarge++;
+        });
+
+        document.getElementById('cntBp25').innerText = c25;
+        document.getElementById('cntBp50').innerText = c50;
+        document.getElementById('cntBp100').innerText = c100;
+        document.getElementById('cntBpLarge').innerText = cLarge;
+        document.getElementById('cntBpTotal').innerText = savedBlueprintsList.length;
+
+        if (savedBlueprintsList.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted fw-bold">No examination blueprints configured yet. Create one above!</td></tr>`;
+          return;
+        }
+
+        let html = "";
+        savedBlueprintsList.forEach((b, idx) => {
+          const subjects = b.Subjects || [];
+          const subjectPills = subjects.map(s => `<span class="subject-pill">${s.name} (Q${s.start_q}-${s.end_q})</span>`).join('');
+
+          html += `
+            <tr>
+              <td>${idx + 1}</td>
+              <td class="text-start ps-3">
+                <div class="fw-bold text-dark">${b.ExamName}</div>
+                <div class="text-muted small" style="font-size: 10px;">ID: <code>${b.BlueprintID}</code></div>
+              </td>
+              <td><span class="badge bg-light text-primary border">${b.Class}</span></td>
+              <td><span class="format-badge shadow-sm">${b.TemplateType} Questions</span></td>
+              <td class="text-start ps-2">${subjectPills}</td>
+              <td>
+                <div class="d-flex justify-content-center gap-1">
+                  <button class="btn btn-outline-danger btn-sm py-1 px-2 fw-bold" onclick="window.deleteOmrBlueprintRecord('${b.BlueprintID}')" title="Delete Blueprint" type="button">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+
+        tbody.innerHTML = html;
+
+      } catch(err) {
+        console.error("Load Blueprints Error:", err);
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger fw-bold">Failed to load blueprints: ${err.message}</td></tr>`;
+      }
+    };
+
+    // ⚡ 7. DELETE BLUEPRINT
+    window.deleteOmrBlueprintRecord = async function(bpId) {
+      if (!confirm(`Are you sure you want to delete Blueprint [${bpId}]?`)) return;
+
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+
+      try {
+        const { error } = await db
+          .from('OMR_Blueprints')
+          .delete()
+          .eq('SchoolID', schoolId)
+          .eq('BlueprintID', bpId);
+
+        if (error) throw error;
+        alert("✅ Blueprint Deleted Successfully!");
+        await window.loadOmrBlueprintsList(true);
+      } catch(err) {
+        alert("Error deleting blueprint: " + err.message);
+      }
+    };
+
+    // Run Initial Boot
+    window.initOmrDesignerModule();
+  })();
+  // ]]>
+  </script>
+</template>
+
+<!-- =================================================================== -->
+<!-- OMR MODULE 2: BULK STUDENT A4 OMR SHEET GENERATOR & PRINT DESK      -->
+<!-- =================================================================== -->
+<template id='tpl-OmrPrint'>
+  <style>
+    .omr-card { border-radius: 14px; border: none; }
+    .omr-filter-box { background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    .omr-label { font-size: 0.78rem; font-weight: 700; color: #334155; margin-bottom: 4px; display: block; }
+
+    /* SUMMARY METRICS BAR (EXACT ERP MATCH) */
+    .omr-kpi-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #ffffff;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .omr-kpi-tile {
+      padding: 10px 14px;
+      text-align: center;
+      border-right: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .omr-kpi-tile:last-child { border-right: none; }
+    .omr-kpi-class { background: #eff6ff; color: #2563eb; }
+    .omr-kpi-sec { background: #fffbeb; color: #d97706; }
+    .omr-kpi-total-stu { background: #f0fdf4; color: #0284c7; }
+    .omr-kpi-selected { background: #fdf2f8; color: #db2777; }
+    .omr-kpi-format { background: #f0fdf4; color: #059669; }
+
+    .omr-kpi-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: #ffffff;
+    }
+    .omr-kpi-class .omr-kpi-badge { background: #0284c7; }
+    .omr-kpi-sec .omr-kpi-badge { background: #f59e0b; }
+    .omr-kpi-total-stu .omr-kpi-badge { background: #0284c7; }
+    .omr-kpi-selected .omr-kpi-badge { background: #db2777; }
+    .omr-kpi-format .omr-kpi-badge { background: #059669; }
+
+    /* TABLE DESIGN */
+    .table-omr th { background: #f8fafc; font-size: 0.78rem; text-transform: uppercase; color: #334155; font-weight: 800; border-bottom: 2px solid #e2e8f0; padding: 12px 10px; text-align: center; }
+    .table-omr td { font-size: 0.82rem; vertical-align: middle; padding: 10px; border-bottom: 1px solid #f1f5f9; font-weight: 600; }
+    .stu-avatar-sm { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1px solid #cbd5e1; }
+    .roll-badge { background: #eff6ff; color: #1d4ed8; font-weight: 800; padding: 3px 8px; border-radius: 6px; border: 1px solid #bfdbfe; font-size: 11.5px; }
+
+    @media (max-width: 992px) {
+      .omr-kpi-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+
+  <div class='card omr-card shadow-sm animate__animated animate__fadeIn mb-5'>
+    <!-- CARD HEADER -->
+    <div class='card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center'>
+      <div class='d-flex align-items-center gap-2'>
+        <i class='fas fa-print text-primary'></i>
+        <h6 class='m-0 fw-bold text-dark'>Print Student OMR Sheets (A4 Vector Pack)</h6>
+      </div>
+      <div>
+        <button class='btn btn-outline-primary btn-sm px-3 fw-bold shadow-sm' onclick='window.initOmrPrintModule()' type='button'>
+          <i class='fas fa-sync-alt me-1'></i> Refresh
+        </button>
+      </div>
+    </div>
+
+    <div class='card-body p-2'>
+      
+      <!-- 1. FILTER CONTROLS -->
+      <div class='omr-filter-box mb-3'>
+        <div class='row g-3 align-items-end'>
+          <div class='col-md-4'>
+            <label class='omr-label'>Select Examination Blueprint *</label>
+            <select class='form-select form-select-sm fw-bold text-primary' id='printBpSelect' onchange='window.onPrintBlueprintChange()'>
+              <option value=''>-- Select Active Blueprint --</option>
+            </select>
+          </div>
+          <div class='col-md-3'>
+            <label class='omr-label'>Assigned Class</label>
+            <input class='form-control form-control-sm fw-bold bg-light' id='printClassInput' readonly='readonly' placeholder='Select Blueprint' type='text'>
+          </div>
+          <div class='col-md-3'>
+            <label class='omr-label'>Section *</label>
+            <select class='form-select form-select-sm fw-bold' id='printSectionSelect' onchange='window.fetchStudentsForOmrPrint()'>
+              <option value=''>-- Select Section --</option>
+            </select>
+          </div>
+          <div class='col-md-2'>
+            <button class='btn btn-primary btn-sm w-100 fw-bold shadow-sm' onclick='window.fetchStudentsForOmrPrint()' type='button'>
+              <i class='fas fa-search me-1'></i> Load Students
+            </button>
+          </div>
+        </div>
+
+        <!-- Print Action Toolbar -->
+        <div class='d-flex justify-content-between align-items-center pt-3 mt-3 border-top flex-wrap gap-2'>
+          <div class='small text-muted'>
+            <i class='fas fa-info-circle text-primary me-1'></i>
+            QR Code with candidate metadata will be auto-rendered on top-right of every sheet.
+          </div>
+          <div class='d-flex gap-2'>
+            <button class='btn btn-success btn-sm px-4 fw-bold shadow-sm' id='btnGenerateOmrPdf' onclick='window.startBulkOmrPdfGeneration()' disabled='disabled' type='button'>
+              <i class='fas fa-file-pdf me-1'></i> Download OMR Sheet Pack (.PDF)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 2. SUMMARY METRICS BAR ================= -->
+      <div class='omr-kpi-bar' id='omrPrintSummaryBar'>
+        <div class='omr-kpi-tile omr-kpi-class'>Target Class <span class='omr-kpi-badge' id='printKpiClass'>-</span></div>
+        <div class='omr-kpi-tile omr-kpi-sec'>Section <span class='omr-kpi-badge' id='printKpiSec'>-</span></div>
+        <div class='omr-kpi-tile omr-kpi-format'>Grid Capacity <span class='omr-kpi-badge' id='printKpiFormat'>-</span></div>
+        <div class='omr-kpi-tile omr-kpi-total-stu'>Roster Count <span class='omr-kpi-badge' id='printKpiRosterCount'>0</span></div>
+        <div class='omr-kpi-tile omr-kpi-selected'>Selected For Print <span class='omr-kpi-badge' id='printKpiSelectedCount'>0</span></div>
+      </div>
+
+      <!-- ================= 3. STUDENTS SELECTION ROSTER TABLE ================= -->
+      <div class='table-responsive border rounded-3 bg-white mb-3'>
+        <table class='table table-hover table-omr align-middle text-center mb-0'>
+          <thead>
+            <tr>
+              <th style='width: 45px;'>
+                <input class='form-check-input' id='chkSelectAllStudents' onchange='window.toggleSelectAllPrintStudents(this)' type='checkbox'>
+              </th>
+              <th style='width: 60px;'>#</th>
+              <th style='text-align: left; padding-left: 14px;'>Student Name &amp; ID</th>
+              <th style='width: 100px;'>Roll No</th>
+              <th style='width: 130px;'>Admission No</th>
+              <th style='text-align: left; padding-left: 12px;'>Father Name</th>
+              <th style='width: 130px;'>Sheet Status</th>
+            </tr>
+          </thead>
+          <tbody id='omrStudentsPrintTbody'>
+            <tr><td class='text-center py-4 text-muted fw-bold' colspan='7'><i class='fas fa-file-alt fa-2x mb-2 text-secondary d-block'></i>Select Examination Blueprint &amp; Section above to view student roster</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. SCOPED JAVASCRIPT ENGINE -->
+  <script type='text/javascript'>
+  // <![CDATA[
+  (async function() {
+    let availableBlueprints = [];
+    let activeSelectedBlueprint = null;
+    let loadedStudentsList = [];
+    let localClassMap = {};
+
+    // ⚡ 1. INITIALIZE MODULE
+    window.initOmrPrintModule = async function() {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+
+      // Reset state
+      activeSelectedBlueprint = null;
+      loadedStudentsList = [];
+      document.getElementById('btnGenerateOmrPdf').disabled = true;
+      document.getElementById('printClassInput').value = "";
+      document.getElementById('printSectionSelect').innerHTML = '<option value="">-- Select Section --</option>';
+
+      // Load school class configurations
+      const cfg = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
+      if (cfg && cfg.classMap) {
+        localClassMap = cfg.classMap;
+      }
+
+      // Fetch saved Blueprints from Supabase
+      try {
+        const { data, error } = await db
+          .from('OMR_Blueprints')
+          .select('*')
+          .eq('SchoolID', schoolId)
+          .order('Id', { ascending: false });
+
+        if (error) throw error;
+        availableBlueprints = data || [];
+
+        const bpDrop = document.getElementById('printBpSelect');
+        if (availableBlueprints.length === 0) {
+          bpDrop.innerHTML = '<option value="">No Blueprints Found! Create in Step 1</option>';
+          return;
+        }
+
+        bpDrop.innerHTML = '<option value="">-- Select Active Blueprint --</option>' + 
+          availableBlueprints.map(b => `<option value="${b.BlueprintID}">[${b.Class}] ${b.ExamName} (${b.TemplateType} Questions)</option>`).join('');
+
+      } catch(e) {
+        console.error("Fetch Blueprints Error:", e);
+      }
+    };
+
+    // ⚡ 2. ON BLUEPRINT SELECTION CHANGE
+    window.onPrintBlueprintChange = function() {
+      const selectedId = document.getElementById('printBpSelect').value;
+      activeSelectedBlueprint = availableBlueprints.find(b => b.BlueprintID === selectedId) || null;
+
+      const clsInput = document.getElementById('printClassInput');
+      const secDrop = document.getElementById('printSectionSelect');
+      const tbody = document.getElementById('omrStudentsPrintTbody');
+      tbody.innerHTML = `<tr><td class='text-center py-4 text-muted fw-bold' colspan='7'>Click <b>Load Students</b> to preview candidate roster.</td></tr>`;
+
+      if (!activeSelectedBlueprint) {
+        clsInput.value = "";
+        secDrop.innerHTML = '<option value="">-- Select Section --</option>';
+        document.getElementById('printKpiClass').innerText = "-";
+        document.getElementById('printKpiFormat').innerText = "-";
+        document.getElementById('btnGenerateOmrPdf').disabled = true;
+        return;
+      }
+
+      const cls = activeSelectedBlueprint.Class;
+      clsInput.value = cls;
+      document.getElementById('printKpiClass').innerText = cls;
+      document.getElementById('printKpiFormat').innerText = `${activeSelectedBlueprint.TemplateType} Qs`;
+
+      // Populate sections based on class
+      const rawSecs = localClassMap[cls] || "A,B,C,D";
+      secDrop.innerHTML = '<option value="">-- Select Section --</option>' + 
+        rawSecs.split(',').map(s => `<option value="${s.trim()}">Section ${s.trim()}</option>`).join('');
+    };
+
+    // ⚡ 3. FETCH ROSTER FROM SUPABASE "Students" TABLE
+    window.fetchStudentsForOmrPrint = async function() {
+      if (!activeSelectedBlueprint) {
+        alert("Please select an Examination Blueprint first!");
+        return;
+      }
+
+      const cls = activeSelectedBlueprint.Class;
+      const sec = document.getElementById('printSectionSelect').value;
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+      const tbody = document.getElementById('omrStudentsPrintTbody');
+
+      if (!sec) {
+        alert("Please select a Section!");
+        return;
+      }
+
+      document.getElementById('printKpiSec').innerText = sec;
+      tbody.innerHTML = `<tr><td colspan='7' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin fa-2x mb-2 text-primary d-block'></i>Fetching student roster for Class ${cls} - ${sec}...</td></tr>`;
+
+      try {
+        const { data, error } = await db
+          .from('Students')
+          .select('*')
+          .eq('SchoolID', schoolId)
+          .eq('Class', cls)
+          .eq('Section', sec)
+          .eq('Status', 'ACTIVE');
+
+        if (error) throw error;
+        loadedStudentsList = data || [];
+
+        // Sort numerically by Roll No
+        loadedStudentsList.sort((a, b) => {
+          const rA = parseInt(a.RollNo || a.roll_no, 10);
+          const rB = parseInt(b.RollNo || b.roll_no, 10);
+          if (!isNaN(rA) && !isNaN(rB) && rA !== rB) return rA - rB;
+          return 0;
+        });
+
+        // Update KPIs
+        document.getElementById('printKpiRosterCount').innerText = loadedStudentsList.length;
+        document.getElementById('printKpiSelectedCount').innerText = loadedStudentsList.length;
+
+        if (loadedStudentsList.length === 0) {
+          tbody.innerHTML = `<tr><td colspan='7' class='text-center py-4 text-danger fw-bold'>No active students found in Class ${cls} - Section ${sec}!</td></tr>`;
+          document.getElementById('btnGenerateOmrPdf').disabled = true;
+          return;
+        }
+
+        // Render Roster
+        let html = "";
+        loadedStudentsList.forEach((s, idx) => {
+          const photo = s.StudentPhoto || s.student_photo || "";
+          const photoUrl = (photo && photo.startsWith("http")) ? photo : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+          const fullName = `${s.StudentName || s.student_name || ""} ${s.LastName || s.last_name || ""}`.trim();
+          const studId = s.StudId || s.stud_id || s.AdmissionNo || s.admission_no;
+          const roll = s.RollNo || s.roll_no || "-";
+          const adm = s.AdmissionNo || s.admission_no || "-";
+          const father = s.FatherName || s.father_name || "-";
+
+          html += `
+            <tr>
+              <td>
+                <input class='form-check-input chk-student-print' type='checkbox' value='${studId}' checked='checked' onchange='window.updateSelectedPrintCount()'>
+              </td>
+              <td>${idx + 1}</td>
+              <td class='text-start ps-3'>
+                <div class='d-flex align-items-center gap-2'>
+                  <img src='${photoUrl}' class='stu-avatar-sm shadow-sm' onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'">
+                  <div>
+                    <div class='fw-bold text-dark'>${fullName}</div>
+                    <div class='text-muted' style='font-size: 10px;'>ID: <code>${studId}</code></div>
+                  </div>
+                </div>
+              </td>
+              <td><span class='roll-badge shadow-sm'>${roll}</span></td>
+              <td class='text-secondary fw-bold'>${adm}</td>
+              <td class='text-start ps-2'>${father}</td>
+              <td><span class='badge bg-success-subtle text-success fw-bold px-2 py-1'><i class='fas fa-check-circle me-1'></i>Ready</span></td>
+            </tr>
+          `;
+        });
+
+        tbody.innerHTML = html;
+        document.getElementById('chkSelectAllStudents').checked = true;
+        document.getElementById('btnGenerateOmrPdf').disabled = false;
+
+      } catch(err) {
+        console.error("Fetch Student Error:", err);
+        tbody.innerHTML = `<tr><td colspan='7' class='text-center py-4 text-danger fw-bold'>Error loading roster: ${err.message}</td></tr>`;
+      }
+    };
+
+    // ⚡ 4. CHECKBOX CONTROLLERS
+    window.toggleSelectAllPrintStudents = function(masterChk) {
+      const checkboxes = document.querySelectorAll('.chk-student-print');
+      checkboxes.forEach(c => c.checked = masterChk.checked);
+      window.updateSelectedPrintCount();
+    };
+
+    window.updateSelectedPrintCount = function() {
+      const selected = document.querySelectorAll('.chk-student-print:checked');
+      document.getElementById('printKpiSelectedCount').innerText = selected.length;
+      document.getElementById('btnGenerateOmrPdf').disabled = (selected.length === 0);
+    };
+
+    // ⚡ 5. TRIGGER BULK OMR PDF GENERATION VIA "omr-engine.js"
+    window.startBulkOmrPdfGeneration = async function() {
+      if (!window.OMREngine || typeof window.OMREngine.generatePdf !== 'function') {
+        alert("OMR Engine is not loaded properly. Please refresh page.");
+        return;
+      }
+
+      const selectedCheckboxes = document.querySelectorAll('.chk-student-print:checked');
+      if (selectedCheckboxes.length === 0) {
+        alert("Please select at least 1 student to generate OMR sheets!");
+        return;
+      }
+
+      const selectedIds = Array.from(selectedCheckboxes).map(c => c.value);
+      const targetStudents = loadedStudentsList.filter(s => {
+        const id = s.StudId || s.stud_id || s.AdmissionNo || s.admission_no;
+        return selectedIds.includes(String(id));
+      });
+
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const btn = document.getElementById('btnGenerateOmrPdf');
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-2'></i> Generating ${targetStudents.length} Vector Sheets...`;
+
+      try {
+        await window.OMREngine.generatePdf(activeSelectedBlueprint, targetStudents, {
+          schoolName: user.schoolName || "Royal International Public School",
+          schoolId: user.schoolId
+        });
+
+        alert(`🎉 Success! Master PDF containing ${targetStudents.length} customized OMR sheets has been generated.`);
+
+      } catch(err) {
+        console.error("PDF Generation Failure:", err);
+        alert("Failed to generate PDF: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class='fas fa-file-pdf me-1'></i> Download OMR Sheet Pack (.PDF)`;
+      }
+    };
+
+    // Boot
+    window.initOmrPrintModule();
+  })();
+  // ]]>
+  </script>
+</template>
+
+<!-- =================================================================== -->
+<!-- OMR MODULE 3: MASTER ANSWER KEY & MARKING SCHEME SETUP              -->
+<!-- =================================================================== -->
+<template id='tpl-OmrAnswerKey'>
+  <style>
+    .omr-card { border-radius: 14px; border: none; }
+    .omr-filter-box { background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    .omr-label { font-size: 0.78rem; font-weight: 700; color: #334155; margin-bottom: 4px; display: block; }
+
+    /* SUMMARY METRICS BAR (EXACT ERP MATCH) */
+    .omr-kpi-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #ffffff;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .omr-kpi-tile {
+      padding: 10px 14px;
+      text-align: center;
+      border-right: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .omr-kpi-tile:last-child { border-right: none; }
+    .omr-kpi-total-q { background: #eff6ff; color: #2563eb; }
+    .omr-kpi-configured { background: #f0fdf4; color: #059669; }
+    .omr-kpi-pending { background: #fef2f2; color: #dc2626; }
+    .omr-kpi-bonus { background: #fffbeb; color: #d97706; }
+    .omr-kpi-marking { background: #fdf2f8; color: #db2777; }
+
+    .omr-kpi-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: #ffffff;
+    }
+    .omr-kpi-total-q .omr-kpi-badge { background: #0284c7; }
+    .omr-kpi-configured .omr-kpi-badge { background: #059669; }
+    .omr-kpi-pending .omr-kpi-badge { background: #ef4444; }
+    .omr-kpi-bonus .omr-kpi-badge { background: #f59e0b; }
+    .omr-kpi-marking .omr-kpi-badge { background: #db2777; }
+
+    /* BUBBLE SELECTION BUTTONS */
+    .bubble-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #334155;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin: 0 1.5px;
+      transition: all 0.15s ease;
+    }
+    .bubble-btn:hover {
+      background: #f1f5f9;
+      border-color: #64748b;
+    }
+    .bubble-btn.active {
+      background: #0f172a !important;
+      color: #ffffff !important;
+      border-color: #0f172a !important;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.3);
+    }
+    .bubble-btn.bonus.active {
+      background: #f59e0b !important;
+      color: #ffffff !important;
+      border-color: #d97706 !important;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.4);
+    }
+
+    .key-subject-card {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .key-subject-header {
+      background: #f8fafc;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding: 10px 14px;
+      font-weight: 800;
+      font-size: 12.5px;
+      color: #0284c7;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    @media (max-width: 992px) {
+      .omr-kpi-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+
+  <div class='card omr-card shadow-sm animate__animated animate__fadeIn mb-5'>
+    <!-- CARD HEADER -->
+    <div class='card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center'>
+      <div class='d-flex align-items-center gap-2'>
+        <i class='fas fa-key text-primary'></i>
+        <h6 class='m-0 fw-bold text-dark'>Master Answer Key &amp; Marking Scheme Setup</h6>
+      </div>
+      <div>
+        <button class='btn btn-outline-primary btn-sm px-3 fw-bold shadow-sm' onclick='window.initOmrAnswerKeyModule()' type='button'>
+          <i class='fas fa-sync-alt me-1'></i> Refresh
+        </button>
+      </div>
+    </div>
+
+    <div class='card-body p-2'>
+      
+      <!-- 1. CONTROLS & MARKING SCHEME SETUP -->
+      <div class='omr-filter-box mb-3'>
+        <div class='row g-3 mb-3'>
+          <div class='col-md-5'>
+            <label class='omr-label'>Select Examination Blueprint *</label>
+            <select class='form-select form-select-sm fw-bold text-primary' id='akBpSelect' onchange='window.onAkBlueprintChange()'>
+              <option value=''>-- Select Active Blueprint --</option>
+            </select>
+          </div>
+          <div class='col-md-7'>
+            <div class='row g-2'>
+              <div class='col-4'>
+                <label class='omr-label text-success'><i class='fas fa-plus-circle me-1'></i>Right Mark (+)</label>
+                <input class='form-control form-control-sm text-center fw-bold' id='akRightMarks' type='number' step='0.25' value='1.0' oninput='window.updateAkSummaryKpi()'>
+              </div>
+              <div class='col-4'>
+                <label class='omr-label text-danger'><i class='fas fa-minus-circle me-1'></i>Wrong Mark (-)</label>
+                <input class='form-control form-control-sm text-center fw-bold' id='akWrongMarks' type='number' step='0.25' value='0.0' oninput='window.updateAkSummaryKpi()'>
+              </div>
+              <div class='col-4'>
+                <label class='omr-label text-secondary'><i class='fas fa-circle me-1'></i>Blank Mark (0)</label>
+                <input class='form-control form-control-sm text-center fw-bold' id='akBlankMarks' type='number' step='0.25' value='0.0'>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Paste Tool Bar -->
+        <div class='p-3 bg-light rounded-3 border mb-3'>
+          <label class='omr-label'><i class='fas fa-magic text-warning me-1'></i> Quick Auto-Fill Tool (Paste Answer Sequence String)</label>
+          <div class='input-group'>
+            <input class='form-control form-control-sm text-uppercase font-monospace fw-bold' id='akQuickPasteInput' placeholder='e.g., ABCDABDC... or paste with * for bonus' type='text'>
+            <button class='btn btn-secondary btn-sm px-3 fw-bold' onclick='window.executeQuickKeyAutoFill()' type='button'>
+              <i class='fas fa-bolt me-1'></i> Populate Answers
+            </button>
+          </div>
+          <small class='text-muted' style='font-size: 10.5px;'>Paste continuous answers. Valid characters: A, B, C, D, or * (for Bonus question).</small>
+        </div>
+
+        <div class='d-flex justify-content-between align-items-center pt-2 border-top flex-wrap gap-2'>
+          <div class='small text-muted'>
+            <i class='fas fa-info-circle text-primary me-1'></i>
+            Select <b>*</b> button for defective questions to award automatic bonus marks to all students.
+          </div>
+          <button class='btn btn-primary btn-sm px-4 fw-bold shadow-sm' id='btnSaveAnswerKeyRecord' onclick='window.submitMasterAnswerKey()' disabled='disabled' type='button'>
+            <i class='fas fa-lock me-1'></i> Lock &amp; Save Answer Key
+          </button>
+        </div>
+      </div>
+
+      <!-- ================= 2. SUMMARY METRICS BAR ================= -->
+      <div class='omr-kpi-bar' id='akKpiSummaryBar'>
+        <div class='omr-kpi-tile omr-kpi-total-q'>Total Questions <span class='omr-kpi-badge' id='akKpiTotal'>0</span></div>
+        <div class='omr-kpi-tile omr-kpi-configured'>Configured <span class='omr-kpi-badge' id='akKpiConfigured'>0</span></div>
+        <div class='omr-kpi-tile omr-kpi-pending'>Pending Unset <span class='omr-kpi-badge' id='akKpiPending'>0</span></div>
+        <div class='omr-kpi-tile omr-kpi-bonus'>Bonus Questions <span class='omr-kpi-badge' id='akKpiBonus'>0</span></div>
+        <div class='omr-kpi-tile omr-kpi-marking'>Mark Scheme <span class='omr-kpi-badge' id='akKpiScheme'>+1.0 / 0.0</span></div>
+      </div>
+
+      <!-- ================= 3. MULTI-SUBJECT QUESTION ANSWER GRID ================= -->
+      <div class='row g-3' id='akSubjectsGridContainer'>
+        <div class='col-12 text-center py-5 text-muted fw-bold'>
+          <i class='fas fa-key fa-2x mb-2 text-secondary d-block'></i>
+          Select an Examination Blueprint above to setup answer keys
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. SCOPED JAVASCRIPT ENGINE -->
+  <script type='text/javascript'>
+  // <![CDATA[
+  (async function() {
+    let availableBlueprints = [];
+    let activeSelectedBlueprint = null;
+    let answerKeysDictionary = {};
+
+    // ⚡ 1. INITIALIZE MODULE
+    window.initOmrAnswerKeyModule = async function() {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+
+      activeSelectedBlueprint = null;
+      answerKeysDictionary = {};
+      document.getElementById('btnSaveAnswerKeyRecord').disabled = true;
+      document.getElementById('akSubjectsGridContainer').innerHTML = `<div class='col-12 text-center py-5 text-muted fw-bold'><i class='fas fa-key fa-2x mb-2 text-secondary d-block'></i>Select an Examination Blueprint above to setup answer keys</div>`;
+
+      try {
+        const { data, error } = await db
+          .from('OMR_Blueprints')
+          .select('*')
+          .eq('SchoolID', schoolId)
+          .order('Id', { ascending: false });
+
+        if (error) throw error;
+        availableBlueprints = data || [];
+
+        const bpDrop = document.getElementById('akBpSelect');
+        if (availableBlueprints.length === 0) {
+          bpDrop.innerHTML = '<option value="">No Blueprints Found! Create in Step 1</option>';
+          return;
+        }
+
+        bpDrop.innerHTML = '<option value="">-- Select Active Blueprint --</option>' + 
+          availableBlueprints.map(b => `<option value="${b.BlueprintID}">[${b.Class}] ${b.ExamName} (${b.TemplateType} Questions)</option>`).join('');
+
+      } catch(e) {
+        console.error("Fetch Blueprints Error:", e);
+      }
+    };
+
+    // ⚡ 2. ON BLUEPRINT CHANGE: FETCH SAVED KEY (IF EXISTS) & RENDER GRID
+    window.onAkBlueprintChange = async function() {
+      const selectedId = document.getElementById('akBpSelect').value;
+      activeSelectedBlueprint = availableBlueprints.find(b => b.BlueprintID === selectedId) || null;
+      answerKeysDictionary = {};
+
+      const gridContainer = document.getElementById('akSubjectsGridContainer');
+
+      if (!activeSelectedBlueprint) {
+        gridContainer.innerHTML = `<div class='col-12 text-center py-5 text-muted fw-bold'><i class='fas fa-key fa-2x mb-2 text-secondary d-block'></i>Select an Examination Blueprint above</div>`;
+        document.getElementById('btnSaveAnswerKeyRecord').disabled = true;
+        window.updateAkSummaryKpi();
+        return;
+      }
+
+      gridContainer.innerHTML = `<div class='col-12 text-center py-5 text-muted'><i class='fas fa-spinner fa-spin fa-2x mb-2 text-primary d-block'></i>Loading questions and checking stored answer keys...</div>`;
+
+      // Check if an existing Answer Key is already in Supabase
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+
+      try {
+        const { data: savedKey, error } = await db
+          .from('OMR_AnswerKeys')
+          .select('*')
+          .eq('SchoolID', schoolId)
+          .eq('BlueprintID', activeSelectedBlueprint.BlueprintID)
+          .maybeSingle();
+
+        if (!error && savedKey) {
+          document.getElementById('akRightMarks').value = savedKey.RightMarks ?? 1.0;
+          document.getElementById('akWrongMarks').value = savedKey.WrongMarks ?? 0.0;
+          document.getElementById('akBlankMarks').value = savedKey.BlankMarks ?? 0.0;
+          answerKeysDictionary = savedKey.Keys || {};
+        }
+
+        window.renderAnswerKeySubjectColumns();
+        document.getElementById('btnSaveAnswerKeyRecord').disabled = false;
+
+      } catch(err) {
+        console.error("Fetch Saved Key Error:", err);
+        window.renderAnswerKeySubjectColumns();
+        document.getElementById('btnSaveAnswerKeyRecord').disabled = false;
+      }
+    };
+
+    // ⚡ 3. RENDER MULTI-SUBJECT COLUMNS & BUBBLE ROWS
+    window.renderAnswerKeySubjectColumns = function() {
+      const gridContainer = document.getElementById('akSubjectsGridContainer');
+      gridContainer.innerHTML = "";
+
+      const subjects = activeSelectedBlueprint.Subjects || [];
+
+      subjects.forEach(sub => {
+        const col = document.createElement('div');
+        col.className = 'col-lg-3 col-md-6 col-12';
+
+        let rowsHtml = "";
+        for (let q = sub.start_q; q <= sub.end_q; q++) {
+          const activeVal = answerKeysDictionary[q] || answerKeysDictionary[String(q)] || "";
+
+          rowsHtml += `
+            <div class='d-flex align-items-center justify-content-between p-1.5 border-bottom'>
+              <span class='fw-bold small text-dark' style='width: 28px;'>${String(q).padStart(2, '0')}.</span>
+              <div class='d-flex align-items-center'>
+                <button type='button' class='bubble-btn ${activeVal === "A" ? "active" : ""}' data-q='${q}' data-opt='A' onclick='window.setAnswerOption(${q}, "A")'>A</button>
+                <button type='button' class='bubble-btn ${activeVal === "B" ? "active" : ""}' data-q='${q}' data-opt='B' onclick='window.setAnswerOption(${q}, "B")'>B</button>
+                <button type='button' class='bubble-btn ${activeVal === "C" ? "active" : ""}' data-q='${q}' data-opt='C' onclick='window.setAnswerOption(${q}, "C")'>C</button>
+                <button type='button' class='bubble-btn ${activeVal === "D" ? "active" : ""}' data-q='${q}' data-opt='D' onclick='window.setAnswerOption(${q}, "D")'>D</button>
+                <button type='button' class='bubble-btn bonus ${activeVal === "*" ? "active" : ""}' data-q='${q}' data-opt='*' onclick='window.setAnswerOption(${q}, "*")' title='Bonus Marks to All'>*</button>
+              </div>
+            </div>
+          `;
+        }
+
+        col.innerHTML = `
+          <div class='key-subject-card'>
+            <div class='key-subject-header'>
+              <span><i class='fas fa-book me-1'></i> ${sub.name}</span>
+              <span class='badge bg-light text-primary border'>Q${sub.start_q} - Q${sub.end_q} (${sub.total} Qs)</span>
+            </div>
+            <div style='max-height: 480px; overflow-y: auto;' class='p-1'>
+              ${rowsHtml}
+            </div>
+          </div>
+        `;
+
+        gridContainer.appendChild(col);
+      });
+
+      window.updateAkSummaryKpi();
+    };
+
+    // ⚡ 4. SET BUBBLE ANSWER INTERACTIVELY
+    window.setAnswerOption = function(q, opt) {
+      if (answerKeysDictionary[q] === opt) {
+        delete answerKeysDictionary[q]; // Unset on second click
+      } else {
+        answerKeysDictionary[q] = opt;
+      }
+
+      // Update button UI
+      document.querySelectorAll(`.bubble-btn[data-q='${q}']`).forEach(b => {
+        const bOpt = b.getAttribute('data-opt');
+        b.classList.toggle('active', bOpt === (answerKeysDictionary[q] || ""));
+      });
+
+      window.updateAkSummaryKpi();
+    };
+
+    // ⚡ 5. EXECUTE QUICK PASTE AUTO-FILL (ABCD STRING)
+    window.executeQuickKeyAutoFill = function() {
+      if (!activeSelectedBlueprint) {
+        alert("Please select a Blueprint first!");
+        return;
+      }
+
+      const raw = (document.getElementById('akQuickPasteInput').value || "").trim().toUpperCase();
+      if (!raw) {
+        alert("Please paste an answer string e.g. ABCDABBA...");
+        return;
+      }
+
+      const totalCap = activeSelectedBlueprint.TemplateType;
+      let countFilled = 0;
+
+      for (let i = 0; i < raw.length; i++) {
+        const q = i + 1;
+        if (q > totalCap) break;
+
+        const char = raw[i];
+        if (["A", "B", "C", "D", "*"].includes(char)) {
+          answerKeysDictionary[q] = char;
+          countFilled++;
+        }
+      }
+
+      window.renderAnswerKeySubjectColumns();
+      alert(`⚡ Successfully populated ${countFilled} questions from your pasted string!`);
+    };
+
+    // ⚡ 6. UPDATE SUMMARY KPIS
+    window.updateAkSummaryKpi = function() {
+      if (!activeSelectedBlueprint) {
+        document.getElementById('akKpiTotal').innerText = "0";
+        document.getElementById('akKpiConfigured').innerText = "0";
+        document.getElementById('akKpiPending').innerText = "0";
+        document.getElementById('akKpiBonus').innerText = "0";
+        document.getElementById('akKpiScheme').innerText = "+1.0 / 0.0";
+        return;
+      }
+
+      const totalQ = activeSelectedBlueprint.TemplateType;
+      let configured = 0;
+      let bonus = 0;
+
+      for (let q = 1; q <= totalQ; q++) {
+        const v = answerKeysDictionary[q] || answerKeysDictionary[String(q)];
+        if (v) {
+          configured++;
+          if (v === "*") bonus++;
+        }
+      }
+
+      const rMarks = document.getElementById('akRightMarks').value || "1.0";
+      const wMarks = document.getElementById('akWrongMarks').value || "0.0";
+
+      document.getElementById('akKpiTotal').innerText = totalQ;
+      document.getElementById('akKpiConfigured').innerText = configured;
+      document.getElementById('akKpiPending').innerText = totalQ - configured;
+      document.getElementById('akKpiBonus').innerText = bonus;
+      document.getElementById('akKpiScheme').innerText = `+${rMarks} / ${wMarks}`;
+    };
+
+    // ⚡ 7. SUBMIT TO SUPABASE "OMR_AnswerKeys" TABLE
+    window.submitMasterAnswerKey = async function() {
+      if (!activeSelectedBlueprint) return;
+
+      const totalQ = activeSelectedBlueprint.TemplateType;
+      const configuredCount = Object.keys(answerKeysDictionary).length;
+
+      if (configuredCount < totalQ) {
+        if (!confirm(`Warning: Only ${configuredCount} of ${totalQ} questions have answers set. Do you want to save anyway?`)) {
+          return;
+        }
+      }
+
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+      const saveBtn = document.getElementById('btnSaveAnswerKeyRecord');
+
+      const payload = {
+        SchoolID: schoolId,
+        BlueprintID: activeSelectedBlueprint.BlueprintID,
+        RightMarks: parseFloat(document.getElementById('akRightMarks').value) || 1.0,
+        WrongMarks: parseFloat(document.getElementById('akWrongMarks').value) || 0.0,
+        BlankMarks: parseFloat(document.getElementById('akBlankMarks').value) || 0.0,
+        Keys: answerKeysDictionary,
+        UpdatedAt: new Date().toISOString()
+      };
+
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Locking Key in Database...';
+
+      try {
+        // Upsert Answer Key (Delete existing and insert fresh record)
+        await db
+          .from('OMR_AnswerKeys')
+          .delete()
+          .eq('SchoolID', schoolId)
+          .eq('BlueprintID', activeSelectedBlueprint.BlueprintID);
+
+        const { error } = await db
+          .from('OMR_AnswerKeys')
+          .insert([payload]);
+
+        if (error) throw error;
+
+        alert(`🎉 Success! Master Answer Key for [${activeSelectedBlueprint.ExamName}] has been locked in database.`);
+
+      } catch(err) {
+        console.error("Save Answer Key Error:", err);
+        alert("Failed to save answer key: " + err.message);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<i class="fas fa-lock me-1"></i> Lock & Save Answer Key';
+      }
+    };
+
+    // Boot Module
+    window.initOmrAnswerKeyModule();
+  })();
+  // ]]>
+  </script>
+</template>
+
+<!-- =================================================================== -->
+<!-- OMR MODULE 4: OPTICAL CAMERA SCANNER, EXCEPTION DESK & ERP SYNC     -->
+<!-- =================================================================== -->
+<template id='tpl-OmrScanner'>
+  <style>
+    .omr-card { border-radius: 14px; border: none; }
+    .omr-filter-box { background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    .omr-label { font-size: 0.78rem; font-weight: 700; color: #334155; margin-bottom: 4px; display: block; }
+
+    /* SUMMARY METRICS BAR (EXACT ERP MATCH) */
+    .omr-kpi-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #ffffff;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .omr-kpi-tile {
+      padding: 10px 14px;
+      text-align: center;
+      border-right: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .omr-kpi-tile:last-child { border-right: none; }
+    .omr-kpi-scanned { background: #eff6ff; color: #2563eb; }
+    .omr-kpi-verified { background: #f0fdf4; color: #059669; }
+    .omr-kpi-flagged { background: #fef2f2; color: #dc2626; }
+    .omr-kpi-highest { background: #fffbeb; color: #d97706; }
+    .omr-kpi-average { background: #fdf2f8; color: #db2777; }
+
+    .omr-kpi-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: #ffffff;
+    }
+    .omr-kpi-scanned .omr-kpi-badge { background: #0284c7; }
+    .omr-kpi-verified .omr-kpi-badge { background: #059669; }
+    .omr-kpi-flagged .omr-kpi-badge { background: #ef4444; }
+    .omr-kpi-highest .omr-kpi-badge { background: #f59e0b; }
+    .omr-kpi-average .omr-kpi-badge { background: #db2777; }
+
+    /* DROPZONE UPLOADER */
+    .omr-dropzone {
+      border: 2px dashed #38bdf8;
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .omr-dropzone:hover {
+      background: #f0f9ff;
+      border-color: #0284c7;
+    }
+
+    /* TABLE DESIGN */
+    .table-omr th { background: #f8fafc; font-size: 0.78rem; text-transform: uppercase; color: #334155; font-weight: 800; border-bottom: 2px solid #e2e8f0; padding: 12px 10px; text-align: center; }
+    .table-omr td { font-size: 0.82rem; vertical-align: middle; padding: 10px; border-bottom: 1px solid #f1f5f9; font-weight: 600; }
+    
+    .subject-score-tag {
+      font-size: 11px;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin: 1.5px;
+    }
+    .subject-score-tag b { color: #0284c7; }
+
+    @media (max-width: 992px) {
+      .omr-kpi-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+
+  <div class='card omr-card shadow-sm animate__animated animate__fadeIn mb-5'>
+    <!-- CARD HEADER -->
+    <div class='card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center'>
+      <div class='d-flex align-items-center gap-2'>
+        <i class='fas fa-camera text-primary'></i>
+        <h6 class='m-0 fw-bold text-dark'>Optical Mark Scanner &amp; Evaluation Desk</h6>
+      </div>
+      <div class='d-flex gap-2'>
+        <button class='btn btn-outline-primary btn-sm px-3 fw-bold shadow-sm' onclick='window.initOmrScannerModule()' type='button'>
+          <i class='fas fa-sync-alt me-1'></i> Refresh Desk
+        </button>
+      </div>
+    </div>
+
+    <div class='card-body p-2'>
+      
+      <!-- 1. BLUEPRINT SELECTOR & SCAN DROPZONE -->
+      <div class='omr-filter-box mb-3'>
+        <div class='row g-3 mb-3'>
+          <div class='col-md-6'>
+            <label class='omr-label'>Select Examination Blueprint *</label>
+            <select class='form-select form-select-sm fw-bold text-primary' id='scanBpSelect' onchange='window.onScanBlueprintChange()'>
+              <option value=''>-- Select Active Blueprint --</option>
+            </select>
+          </div>
+          <div class='col-md-3'>
+            <label class='omr-label'>Assigned Class</label>
+            <input class='form-control form-control-sm fw-bold bg-light' id='scanClassInput' readonly='readonly' placeholder='Select Blueprint' type='text'>
+          </div>
+          <div class='col-md-3'>
+            <label class='omr-label'>Linked Answer Key Status</label>
+            <div id='scanKeyStatusBadge' class='badge bg-secondary p-2 w-100' style='font-size: 11px;'>
+              <i class='fas fa-lock me-1'></i> Waiting Blueprint
+            </div>
+          </div>
+        </div>
+
+        <!-- Multi-Image Dropzone -->
+        <div class='omr-dropzone mb-3' id='omrUploadDropzone' onclick='document.getElementById("omrBatchFileInput").click()'>
+          <i class='fas fa-cloud-upload-alt fa-3x text-primary mb-2'></i>
+          <h6 class='fw-bold text-dark m-0'>Click or Drag &amp; Drop Student OMR Sheet Images</h6>
+          <p class='small text-muted mb-0'>Supports multiple JPG, PNG photos clicked via Mobile Phone Camera or Flatbed / ADF Scanner.</p>
+          <input type='file' id='omrBatchFileInput' multiple='multiple' accept='image/*' style='display: none;' onchange='window.handleBatchOmrUpload(event)'>
+        </div>
+
+        <!-- Scanning Progress Bar -->
+        <div id='omrScanProgressContainer' class='progress mb-3' style='height: 12px; display: none;'>
+          <div id='omrScanProgressBar' class='progress-bar progress-bar-striped progress-bar-animated bg-success' style='width: 0%;'></div>
+        </div>
+
+        <!-- Toolbar Buttons -->
+        <div class='d-flex justify-content-between align-items-center pt-2 border-top flex-wrap gap-2'>
+          <div class='small text-muted'>
+            <i class='fas fa-microchip text-primary me-1'></i>
+            100% Client-Side Computer Vision Pipeline (OpenCV.js &bull; jsQR &bull; Homography Warp).
+          </div>
+          <div class='d-flex gap-2'>
+            <button class='btn btn-success btn-sm px-3 fw-bold shadow-sm' id='btnExportOmrExcel' onclick='window.exportOmrResultsExcel()' disabled='disabled' type='button'>
+              <i class='fas fa-file-excel me-1'></i> Download Excel (.xlsx)
+            </button>
+            <button class='btn btn-primary btn-sm px-4 fw-bold shadow-sm' id='btnSyncOmrToErp' onclick='window.pushOmrResultsToErpLedger()' disabled='disabled' type='button'>
+              <i class='fas fa-cloud-upload-alt me-1'></i> Push Marks to ERP Report Cards
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 2. SUMMARY METRICS BAR ================= -->
+      <div class='omr-kpi-bar' id='omrScanSummaryBar'>
+        <div class='omr-kpi-tile omr-kpi-scanned'>Sheets Scanned <span class='omr-kpi-badge' id='scanKpiTotal'>0</span></div>
+        <div class='omr-kpi-tile omr-kpi-verified'>Verified Clean <span class='omr-kpi-badge' id='scanKpiVerified'>0</span></div>
+        <div class='omr-kpi-tile omr-kpi-flagged'>Flagged Multi/Blank <span class='omr-kpi-badge' id='scanKpiFlagged'>0</span></div>
+        <div class='omr-kpi-tile omr-kpi-highest'>Highest Score <span class='omr-kpi-badge' id='scanKpiHighest'>0</span></div>
+        <div class='omr-kpi-tile omr-kpi-average'>Class Average <span class='omr-kpi-badge' id='scanKpiAverage'>0%</span></div>
+      </div>
+
+      <!-- ================= 3. SCANNED EVALUATION RESULTS TABLE ================= -->
+      <div class='table-responsive border rounded-3 bg-white mb-3'>
+        <table class='table table-hover table-omr align-middle text-center mb-0'>
+          <thead>
+            <tr>
+              <th style='width: 50px;'>#</th>
+              <th style='width: 80px;'>Roll No</th>
+              <th style='text-align: left; padding-left: 12px;'>Candidate Name &amp; ID</th>
+              <th style='text-align: left; padding-left: 10px;'>Subject-wise Scores (Right / Wrong)</th>
+              <th style='width: 75px;' class='text-success'>Right</th>
+              <th style='width: 75px;' class='text-danger'>Wrong</th>
+              <th style='width: 75px;' class='text-secondary'>Blank</th>
+              <th style='width: 100px;' class='text-primary'>Total Score</th>
+              <th style='width: 140px;'>Status</th>
+              <th style='width: 100px;'>Action</th>
+            </tr>
+          </thead>
+          <tbody id='omrEvaluationResultsTbody'>
+            <tr><td colspan='10' class='text-center py-4 text-muted fw-bold'><i class='fas fa-camera fa-2x mb-2 text-secondary d-block'></i>Select Examination Blueprint and upload scanned OMR images above</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. MANUAL OVERRIDE MODAL -->
+  <div class='modal fade' id='omrOverrideModal' tabindex='-1'>
+    <div class='modal-dialog modal-dialog-centered'>
+      <div class='modal-content'>
+        <div class='modal-header py-2 bg-primary text-white'>
+          <h6 class='modal-title fw-bold'><i class='fas fa-edit me-2'></i>Candidate Response Override</h6>
+          <button class='btn-close btn-close-white' data-bs-dismiss='modal' type='button'></button>
+        </div>
+        <div class='modal-body p-3 text-center'>
+          <div class='alert alert-warning py-1.5 small mb-3 fw-bold' id='overrideQuestionNotice'>
+            Question Review
+          </div>
+          <p class='small text-muted mb-2'>Choose verified option mark to override computer vision result:</p>
+          <div class='d-flex justify-content-center gap-2 mb-3'>
+            <button type='button' class='btn btn-outline-dark fw-bold px-3' onclick='window.applyManualQuestionOverride("A")'>A</button>
+            <button type='button' class='btn btn-outline-dark fw-bold px-3' onclick='window.applyManualQuestionOverride("B")'>B</button>
+            <button type='button' class='btn btn-outline-dark fw-bold px-3' onclick='window.applyManualQuestionOverride("C")'>C</button>
+            <button type='button' class='btn btn-outline-dark fw-bold px-3' onclick='window.applyManualQuestionOverride("D")'>D</button>
+            <button type='button' class='btn btn-outline-secondary fw-bold px-3' onclick='window.applyManualQuestionOverride("BLANK")'>BLANK</button>
+          </div>
+        </div>
+        <div class='modal-footer py-2'>
+          <button class='btn btn-secondary btn-sm' data-bs-dismiss='modal' type='button'>Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. SCOPED JAVASCRIPT ENGINE -->
+  <script type='text/javascript'>
+  // <![CDATA[
+  (async function() {
+    let availableBlueprints = [];
+    let activeSelectedBlueprint = null;
+    let activeLinkedAnswerKey = null;
+    let studentsRosterCache = [];
+    let scannedEvaluationResults = [];
+    let currentOverrideCandidateIdx = null;
+    let currentOverrideQuestionNo = null;
+
+    // ⚡ 1. INITIALIZE MODULE
+    window.initOmrScannerModule = async function() {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+
+      activeSelectedBlueprint = null;
+      activeLinkedAnswerKey = null;
+      scannedEvaluationResults = [];
+      document.getElementById('btnExportOmrExcel').disabled = true;
+      document.getElementById('btnSyncOmrToErp').disabled = true;
+      document.getElementById('scanClassInput').value = "";
+      document.getElementById('scanKeyStatusBadge').className = "badge bg-secondary p-2 w-100";
+      document.getElementById('scanKeyStatusBadge').innerHTML = '<i class="fas fa-lock me-1"></i> Waiting Blueprint';
+      document.getElementById('omrEvaluationResultsTbody').innerHTML = `<tr><td colspan='10' class='text-center py-4 text-muted fw-bold'><i class='fas fa-camera fa-2x mb-2 text-secondary d-block'></i>Select Examination Blueprint and upload scanned OMR images above</td></tr>`;
+
+      try {
+        const { data, error } = await db
+          .from('OMR_Blueprints')
+          .select('*')
+          .eq('SchoolID', schoolId)
+          .order('Id', { ascending: false });
+
+        if (error) throw error;
+        availableBlueprints = data || [];
+
+        const bpDrop = document.getElementById('scanBpSelect');
+        if (availableBlueprints.length === 0) {
+          bpDrop.innerHTML = '<option value="">No Blueprints Found! Create in Step 1</option>';
+          return;
+        }
+
+        bpDrop.innerHTML = '<option value="">-- Select Active Blueprint --</option>' + 
+          availableBlueprints.map(b => `<option value="${b.BlueprintID}">[${b.Class}] ${b.ExamName} (${b.TemplateType} Questions)</option>`).join('');
+
+        window.updateScannerKpis();
+
+      } catch(e) {
+        console.error("Fetch Blueprints Error:", e);
+      }
+    };
+
+    // ⚡ 2. ON BLUEPRINT SELECTION: VERIFY LINKED ANSWER KEY & ROSTER
+    window.onScanBlueprintChange = async function() {
+      const selectedId = document.getElementById('scanBpSelect').value;
+      activeSelectedBlueprint = availableBlueprints.find(b => b.BlueprintID === selectedId) || null;
+      activeLinkedAnswerKey = null;
+      scannedEvaluationResults = [];
+
+      const badge = document.getElementById('scanKeyStatusBadge');
+      const clsInput = document.getElementById('scanClassInput');
+      const tbody = document.getElementById('omrEvaluationResultsTbody');
+      tbody.innerHTML = `<tr><td colspan='10' class='text-center py-4 text-muted fw-bold'>Upload OMR images to view evaluation results</td></tr>`;
+
+      if (!activeSelectedBlueprint) {
+        clsInput.value = "";
+        badge.className = "badge bg-secondary p-2 w-100";
+        badge.innerHTML = '<i class="fas fa-lock me-1"></i> Waiting Blueprint';
+        window.updateScannerKpis();
+        return;
+      }
+
+      clsInput.value = activeSelectedBlueprint.Class;
+      badge.className = "badge bg-warning text-dark p-2 w-100";
+      badge.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Checking Answer Key...';
+
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+
+      try {
+        // Fetch Linked Master Answer Key
+        const { data: keyRecord, error: keyErr } = await db
+          .from('OMR_AnswerKeys')
+          .select('*')
+          .eq('SchoolID', schoolId)
+          .eq('BlueprintID', activeSelectedBlueprint.BlueprintID)
+          .maybeSingle();
+
+        if (keyErr || !keyRecord) {
+          badge.className = "badge bg-danger p-2 w-100";
+          badge.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i> Missing Answer Key (Step 3)';
+          alert("Notice: No Answer Key found for this blueprint! Please lock Answer Key in Step 3 first.");
+          return;
+        }
+
+        activeLinkedAnswerKey = keyRecord;
+        badge.className = "badge bg-success p-2 w-100";
+        badge.innerHTML = `<i class="fas fa-check-circle me-1"></i> Key Locked (+${keyRecord.RightMarks || 1} / ${keyRecord.WrongMarks || 0})`;
+
+        // Cache Students for lookup
+        const { data: stuData } = await db
+          .from('Students')
+          .select('StudId, RollNo, AdmissionNo, StudentName, LastName, Class, Section')
+          .eq('SchoolID', schoolId)
+          .eq('Class', activeSelectedBlueprint.Class)
+          .eq('Status', 'ACTIVE');
+
+        studentsRosterCache = stuData || [];
+
+      } catch(err) {
+        console.error("Answer Key Link Error:", err);
+      }
+    };
+
+    // ⚡ 3. BATCH IMAGE UPLOAD & OPENCV VISION PROCESSING
+    window.handleBatchOmrUpload = async function(event) {
+      if (!activeSelectedBlueprint || !activeLinkedAnswerKey) {
+        alert("Please select a valid Examination Blueprint with locked Answer Key first!");
+        return;
+      }
+
+      if (!window.OMREngine || typeof window.OMREngine.evaluateImage !== 'function') {
+        alert("OMR Engine is not ready. Please refresh the page.");
+        return;
+      }
+
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+
+      const progressContainer = document.getElementById('omrScanProgressContainer');
+      const progressBar = document.getElementById('omrScanProgressBar');
+      progressContainer.style.display = 'flex';
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const pct = Math.round(((i + 1) / files.length) * 100);
+        progressBar.style.width = `${pct}%`;
+
+        await window.processSingleOmrFile(file);
+      }
+
+      setTimeout(() => {
+        progressContainer.style.display = 'none';
+        document.getElementById('omrBatchFileInput').value = ""; // Reset file input
+        window.updateScannerKpis();
+      }, 300);
+    };
+
+    window.processSingleOmrFile = function(file) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.onload = async function() {
+            try {
+              const evalPayload = await window.OMREngine.evaluateImage(img, activeSelectedBlueprint, activeLinkedAnswerKey);
+              
+              // Enrich with student roster names
+              const matchedStudent = studentsRosterCache.find(s => 
+                (s.StudId === evalPayload.studentId) || (s.AdmissionNo === evalPayload.studentId) || (s.RollNo === evalPayload.rollNo)
+              );
+
+              if (matchedStudent) {
+                evalPayload.studentName = `${matchedStudent.StudentName || ""} ${matchedStudent.LastName || ""}`.trim();
+                evalPayload.rollNo = matchedStudent.RollNo || evalPayload.rollNo;
+                evalPayload.class = matchedStudent.Class || evalPayload.class;
+                evalPayload.section = matchedStudent.Section || "A";
+              } else {
+                evalPayload.studentName = `Student (${evalPayload.studentId})`;
+                evalPayload.section = "A";
+              }
+
+              scannedEvaluationResults.push(evalPayload);
+              window.renderEvaluationTable();
+
+            } catch(cvErr) {
+              console.error("Computer Vision Parse Failure:", cvErr);
+            }
+            resolve();
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    };
+
+    // ⚡ 4. RENDER EVALUATION TABLE
+    window.renderEvaluationTable = function() {
+      const tbody = document.getElementById('omrEvaluationResultsTbody');
+      tbody.innerHTML = "";
+
+      if (scannedEvaluationResults.length === 0) {
+        tbody.innerHTML = `<tr><td colspan='10' class='text-center py-4 text-muted fw-bold'>No evaluation results yet.</td></tr>`;
+        return;
+      }
+
+      scannedEvaluationResults.forEach((res, idx) => {
+        const subjectsHtml = Object.keys(res.subjectsScore).map(subName => {
+          const sc = res.subjectsScore[subName];
+          return `<span class='subject-score-tag'>${subName}: <b>R${sc.R}</b> / <span class='text-danger'>W${sc.W}</span></span>`;
+        }).join('');
+
+        const statusBadge = res.hasFlags
+          ? `<span class='badge bg-warning-subtle text-warning-emphasis fw-bold px-2 py-1'><i class='fas fa-exclamation-triangle me-1'></i>Flagged (Multi)</span>`
+          : `<span class='badge bg-success-subtle text-success fw-bold px-2 py-1'><i class='fas fa-check-circle me-1'></i>Verified Clean</span>`;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${idx + 1}</td>
+          <td><span class='badge bg-light text-primary border fw-bold'>${res.rollNo}</span></td>
+          <td class='text-start ps-3'>
+            <div class='fw-bold text-dark'>${res.studentName}</div>
+            <div class='text-muted' style='font-size: 10px;'>ID: <code>${res.studentId}</code></div>
+          </td>
+          <td class='text-start ps-2'>${subjectsHtml}</td>
+          <td class='text-success fw-bold text-center'>${res.totalRight}</td>
+          <td class='text-danger fw-bold text-center'>${res.totalWrong}</td>
+          <td class='text-secondary fw-bold text-center'>${res.totalBlank}</td>
+          <td class='text-primary fw-bold text-center' style='font-size: 13.5px;'>${res.totalMarks}</td>
+          <td>${statusBadge}</td>
+          <td>
+            <button class='btn btn-outline-secondary btn-sm py-1 px-2 fw-bold' onclick='window.openOmrOverrideModal(${idx})' title='Review Answers' type='button'>
+              <i class='fas fa-pencil-alt'></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('btnExportOmrExcel').disabled = false;
+      document.getElementById('btnSyncOmrToErp').disabled = false;
+    };
+
+    // ⚡ 5. UPDATE SCANNER SUMMARY KPIS
+    window.updateScannerKpis = function() {
+      const count = scannedEvaluationResults.length;
+      document.getElementById('scanKpiTotal').innerText = count;
+
+      if (count === 0) {
+        document.getElementById('scanKpiVerified').innerText = "0";
+        document.getElementById('scanKpiFlagged').innerText = "0";
+        document.getElementById('scanKpiHighest').innerText = "0";
+        document.getElementById('scanKpiAverage').innerText = "0%";
+        return;
+      }
+
+      let verified = 0, flagged = 0, maxScore = 0, totalSum = 0;
+      scannedEvaluationResults.forEach(r => {
+        if (r.hasFlags) flagged++;
+        else verified++;
+
+        if (r.totalMarks > maxScore) maxScore = r.totalMarks;
+        totalSum += r.totalMarks;
+      });
+
+      const avg = (totalSum / count).toFixed(1);
+      document.getElementById('scanKpiVerified').innerText = verified;
+      document.getElementById('scanKpiFlagged').innerText = flagged;
+      document.getElementById('scanKpiHighest').innerText = maxScore;
+      document.getElementById('scanKpiAverage').innerText = avg;
+    };
+
+    // ⚡ 6. MANUAL EXCEPTION OVERRIDE
+    window.openOmrOverrideModal = function(idx) {
+      currentOverrideCandidateIdx = idx;
+      const res = scannedEvaluationResults[idx];
+      
+      // Find first question with MULTI or default to Q1
+      const multiQ = Object.keys(res.rawAnswers).find(q => res.rawAnswers[q] === "MULTI") || "1";
+      currentOverrideQuestionNo = parseInt(multiQ, 10);
+
+      document.getElementById('overrideQuestionNotice').innerText = `Candidate: ${res.studentName} | Question #${currentOverrideQuestionNo} (Captured: ${res.rawAnswers[currentOverrideQuestionNo]})`;
+      new bootstrap.Modal(document.getElementById('omrOverrideModal')).show();
+    };
+
+    window.applyManualQuestionOverride = function(opt) {
+      if (currentOverrideCandidateIdx === null) return;
+      const res = scannedEvaluationResults[currentOverrideCandidateIdx];
+
+      res.rawAnswers[currentOverrideQuestionNo] = opt;
+      res.hasFlags = Object.keys(res.rawAnswers).some(q => res.rawAnswers[q] === "MULTI");
+
+      // Recalculate using OMR Engine
+      const recalculated = window.OMREngine.recalculate(
+        { sid: res.studentId, r: res.rollNo },
+        res.rawAnswers,
+        {},
+        activeSelectedBlueprint,
+        activeLinkedAnswerKey
+      );
+
+      // Merge updated counts
+      res.subjectsScore = recalculated.subjectsScore;
+      res.totalRight = recalculated.totalRight;
+      res.totalWrong = recalculated.totalWrong;
+      res.totalBlank = recalculated.totalBlank;
+      res.totalMarks = recalculated.totalMarks;
+
+      bootstrap.Modal.getInstance(document.getElementById('omrOverrideModal')).hide();
+      window.renderEvaluationTable();
+      window.updateScannerKpis();
+    };
+
+    // ⚡ 7. DUAL EXPORT 1: DOWNLOAD FORMATTED EXCEL (.XLSX)
+    window.exportOmrResultsExcel = function() {
+      if (scannedEvaluationResults.length === 0) {
+        alert("No scanned records to export!");
+        return;
+      }
+      try {
+        window.OMREngine.exportExcel(scannedEvaluationResults, activeSelectedBlueprint);
+      } catch(e) {
+        alert("Excel export error: " + e.message);
+      }
+    };
+
+    // ⚡ 8. DUAL EXPORT 2: PUSH DIRECTLY TO SUPABASE "OMR_Results" TABLE
+    window.pushOmrResultsToErpLedger = async function() {
+      if (scannedEvaluationResults.length === 0) return;
+
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+      const syncBtn = document.getElementById('btnSyncOmrToErp');
+
+      syncBtn.disabled = true;
+      syncBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Syncing to Report Cards...';
+
+      const payloadBatch = scannedEvaluationResults.map(r => ({
+        SchoolID: schoolId,
+        BlueprintID: r.blueprintId,
+        ExamName: r.examName,
+        StudentID: r.studentId,
+        RollNo: r.rollNo,
+        StudentName: r.studentName,
+        Class: r.class,
+        Section: r.section,
+        SubjectsScore: r.subjectsScore,
+        TotalRight: r.totalRight,
+        TotalWrong: r.totalWrong,
+        TotalBlank: r.totalBlank,
+        TotalMarks: r.totalMarks,
+        Status: r.hasFlags ? 'FLAGGED' : 'VERIFIED',
+        CreatedAt: new Date().toISOString()
+      }));
+
+      try {
+        const { error } = await db
+          .from('OMR_Results')
+          .insert(payloadBatch);
+
+        if (error) throw error;
+
+        alert(`🎉 Success! Synchronized ${payloadBatch.length} student results into the Examination Ledger. Report Cards are now ready to print!`);
+
+      } catch(err) {
+        console.error("Sync Error:", err);
+        alert("Failed to sync marks: " + err.message);
+      } finally {
+        syncBtn.disabled = false;
+        syncBtn.innerHTML = '<i class="fas fa-cloud-upload-alt me-1"></i> Push Marks to ERP Report Cards';
+      }
+    };
+
+    // Boot Module
+    window.initOmrScannerModule();
+  })();
+  // ]]>
+  </script>
+</template>
+
 <!-- MODULE: SUBJECT-WISE MARKS ENTRY (FOR SUBJECT TEACHERS)             -->
 <template id='tpl-SubjectMarksEntry'>
   <style>
@@ -46376,9 +48294,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       box-shadow: 0 2px 6px rgba(217,119,6,0.3);
     }
   </style>
-
   <div class='container-fluid px-0 py-3 animate__animated animate__fadeIn'>
-    
     <!-- 1. HEADER -->
     <div class='card border-0 shadow-sm rounded-3 mb-4'>
       <div class='card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center flex-wrap gap-2'>
@@ -46917,10 +48833,7 @@ body.public-page-mode .main-content {
   </div>
 </template>
 
-    <!-- =================================================================== -->
-    <!-- 4. MODALS (PROFILE, PASSWORDS, STAFF INBOX & SUPPORT TICKETS)       -->
-    <!-- =================================================================== -->
-
+    <!-- 4. MODALS (PROFILE, PASSWORDS, STAFF INBOX & SUPPORT TICKETS) -->
     <!-- Modal: Profile & Photo -->
     <div class="modal fade" id="userProfileModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
@@ -47132,10 +49045,7 @@ body.public-page-mode .main-content {
         </div>
     </div>
 
-<!-- =================================================================== -->
-    <!-- 🛡️ LEGAL MODALS: DPDP ACT 2023 COMPLIANT PRIVACY POLICY & TERMS     -->
-    <!-- =================================================================== -->
-
+    <!-- 🛡️ LEGAL MODALS: DPDP ACT 2023 COMPLIANT PRIVACY POLICY & TERMS -->
     <!-- 1. PRIVACY POLICY MODAL -->
     <div class="modal fade" id="privacyPolicyModal" tabindex="-1" aria-labelledby="privacyPolicyModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable">
