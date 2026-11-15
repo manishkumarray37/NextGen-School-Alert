@@ -15,6 +15,7 @@ window.OMREngine = (function () {
     const configs = {
       25:  { cols: 2, qPerCol: [13, 12], startY: 280, rowH: 42, colX: [140, 560], r: 12, optGap: 55, numOffset: 45 },
       50:  { cols: 2, qPerCol: [25, 25], startY: 260, rowH: 38, colX: [140, 560], r: 11, optGap: 55, numOffset: 45 },
+	  75:  { cols: 3, qPerCol: [25, 25, 25], startY: 260, rowH: 38, colX: [110, 410, 710], r: 10, optGap: 42, numOffset: 32 },
       100: { cols: 4, qPerCol: [25, 25, 25, 25], startY: 260, rowH: 38, colX: [85, 305, 525, 745], r: 9.5, optGap: 32, numOffset: 28 },
       120: { cols: 4, qPerCol: [30, 30, 30, 30], startY: 250, rowH: 33, colX: [85, 305, 525, 745], r: 8.5, optGap: 32, numOffset: 28 },
       180: { cols: 4, qPerCol: [45, 45, 45, 45], startY: 235, rowH: 23, colX: [85, 305, 525, 745], r: 7.0, optGap: 32, numOffset: 28 }
