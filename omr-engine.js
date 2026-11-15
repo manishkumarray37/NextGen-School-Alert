@@ -1,50 +1,78 @@
-/**
- * ===================================================================
- * 🧠 ENTERPRISE OMR OPTICAL EVALUATION & PDF GENERATION ENGINE
- * ===================================================================
- * Dependencies: jsPDF, QRCode, OpenCV.js, jsQR, SheetJS (xlsx)
- * Standard Normalized Dimension: 1000 x 1414 px (A4 Ratio)
- */
-
-window.OMREngine = (function () {
-  'use strict';
-
-  // 1. DETERMINISTIC COORDINATE DICTIONARY FOR 5 A4 FORMATS
+// 1. DETERMINISTIC COORDINATE DICTIONARY (SUPPORTS ARBITRARY CUSTOM Qs e.g. 30, 50, 75, 100...)
   function getTemplateCoordinates(templateType) {
-    const type = parseInt(templateType, 10);
-    const configs = {
-      25:  { cols: 2, qPerCol: [13, 12], startY: 280, rowH: 42, colX: [140, 560], r: 12, optGap: 55, numOffset: 45 },
-      50:  { cols: 2, qPerCol: [25, 25], startY: 260, rowH: 38, colX: [140, 560], r: 11, optGap: 55, numOffset: 45 },
-	  75:  { cols: 3, qPerCol: [25, 25, 25], startY: 260, rowH: 38, colX: [110, 410, 710], r: 10, optGap: 42, numOffset: 32 },
-      100: { cols: 4, qPerCol: [25, 25, 25, 25], startY: 260, rowH: 38, colX: [85, 305, 525, 745], r: 9.5, optGap: 32, numOffset: 28 },
-      120: { cols: 4, qPerCol: [30, 30, 30, 30], startY: 250, rowH: 33, colX: [85, 305, 525, 745], r: 8.5, optGap: 32, numOffset: 28 },
-      180: { cols: 4, qPerCol: [45, 45, 45, 45], startY: 235, rowH: 23, colX: [85, 305, 525, 745], r: 7.0, optGap: 32, numOffset: 28 }
-    };
+    const type = parseInt(templateType, 10) || 100;
+    
+    // Dynamic Layout Calculation for ANY Custom Question Count (e.g. 30 Qs)
+    let cols = 4;
+    let colW = 195;
+    let r = 9.5;
+    let optGap = 32;
+    let numOffset = 28;
+    let startY = 260;
+    let rowH = 38;
 
-    const cfg = configs[type];
-    if (!cfg) throw new Error(`Unsupported OMR template format: ${type}`);
+    if (type <= 30) {
+      cols = 2;
+      colW = 360;
+      r = 12;
+      optGap = 55;
+      numOffset = 45;
+      startY = 280;
+      rowH = Math.max(26, Math.floor(950 / Math.ceil(type / 2)));
+    } else if (type <= 60) {
+      cols = 2;
+      colW = 360;
+      r = 11;
+      optGap = 55;
+      numOffset = 45;
+      startY = 260;
+      rowH = Math.max(24, Math.floor(980 / Math.ceil(type / 2)));
+    } else if (type <= 90) {
+      cols = 3;
+      colW = 260;
+      r = 10;
+      optGap = 42;
+      numOffset = 34;
+      startY = 260;
+      rowH = Math.max(22, Math.floor(980 / Math.ceil(type / 3)));
+    } else {
+      cols = 4;
+      colW = 195;
+      r = type > 120 ? 7.0 : 8.5;
+      optGap = 32;
+      numOffset = 28;
+      startY = 245;
+      rowH = Math.max(19, Math.floor(1000 / Math.ceil(type / 4)));
+    }
+
+    const qPerCol = Math.ceil(type / cols);
+    const colX = [];
+    const totalContentW = cols * colW;
+    const startX = Math.floor((1000 - totalContentW) / 2) + 20;
+
+    for (let c = 0; c < cols; c++) {
+      colX.push(startX + (c * colW));
+    }
 
     const questions = {};
     let currentQ = 1;
 
-    for (let c = 0; c < cfg.cols; c++) {
-      const qCount = cfg.qPerCol[c];
-      const originX = cfg.colX[c];
-
-      for (let r = 0; r < qCount; r++) {
+    for (let c = 0; c < cols; c++) {
+      for (let rIdx = 0; rIdx < qPerCol; rIdx++) {
         if (currentQ > type) break;
-        const y = cfg.startY + (r * cfg.rowH);
+        const y = startY + (rIdx * rowH);
+        const originX = colX[c];
 
         questions[currentQ] = {
           q: currentQ,
           col: c,
-          row: r,
+          row: rIdx,
           labelPos: { x: originX, y: y },
           bubbles: {
-            A: { x: originX + cfg.numOffset + (0 * cfg.optGap), y: y, r: cfg.r },
-            B: { x: originX + cfg.numOffset + (1 * cfg.optGap), y: y, r: cfg.r },
-            C: { x: originX + cfg.numOffset + (2 * cfg.optGap), y: y, r: cfg.r },
-            D: { x: originX + cfg.numOffset + (3 * cfg.optGap), y: y, r: cfg.r }
+            A: { x: originX + numOffset + (0 * optGap), y: y, r: r },
+            B: { x: originX + numOffset + (1 * optGap), y: y, r: r },
+            C: { x: originX + numOffset + (2 * optGap), y: y, r: r },
+            D: { x: originX + numOffset + (3 * optGap), y: y, r: r }
           }
         };
         currentQ++;

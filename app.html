@@ -34899,7 +34899,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 </template>
 
 <!-- =================================================================== -->
-<!-- OMR MODULE 1: PURE OMR TEMPLATES MANAGER & LIVE VECTOR PREVIEW      -->
+<!-- OMR MODULE 1: PURE OMR TEMPLATES MANAGER & ULTRA-HD VECTOR PREVIEW  -->
 <!-- =================================================================== -->
 <template id='tpl-OmrDesigner'>
   <style>
@@ -34921,12 +34921,12 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       justify-content: space-between;
     }
     .preset-card:hover {
-      background: #eff6ff;
-      border-color: #0284c7;
+      background: #fef2f2;
+      border-color: #b91c1c;
       transform: translateY(-3px);
-      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.15);
+      box-shadow: 0 6px 16px rgba(185, 28, 28, 0.15);
     }
-    .preset-title { font-size: 16px; font-weight: 800; color: #0f172a; }
+    .preset-title { font-size: 15px; font-weight: 800; color: #b91c1c; }
     .preset-desc { font-size: 11px; color: #64748b; font-weight: 600; margin-bottom: 10px; }
 
     /* SUMMARY METRICS BAR (EXACT ERP MATCH) */
@@ -34953,11 +34953,11 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     }
     .omr-kpi-tile:last-child { border-right: none; }
     .omr-kpi-25 { background: #eff6ff; color: #2563eb; }
-    .omr-kpi-50 { background: #fef2f2; color: #dc2626; }
-    .omr-kpi-75 { background: #fffbeb; color: #d97706; }
-    .omr-kpi-100 { background: #fdf2f8; color: #db2777; }
-    .omr-kpi-large { background: #f0fdf4; color: #0284c7; }
-    .omr-kpi-total { background: #f0fdf4; color: #059669; }
+    .omr-kpi-30 { background: #fef2f2; color: #b91c1c; }
+    .omr-kpi-50 { background: #fffbeb; color: #d97706; }
+    .omr-kpi-75 { background: #fdf2f8; color: #db2777; }
+    .omr-kpi-100 { background: #f0fdf4; color: #059669; }
+    .omr-kpi-total { background: #f8fafc; color: #0284c7; }
 
     .omr-kpi-badge {
       font-size: 10.5px;
@@ -34967,26 +34967,26 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       color: #ffffff;
     }
     .omr-kpi-25 .omr-kpi-badge { background: #0284c7; }
-    .omr-kpi-50 .omr-kpi-badge { background: #ef4444; }
-    .omr-kpi-75 .omr-kpi-badge { background: #f59e0b; }
-    .omr-kpi-100 .omr-kpi-badge { background: #db2777; }
-    .omr-kpi-large .omr-kpi-badge { background: #0284c7; }
-    .omr-kpi-total .omr-kpi-badge { background: #059669; }
+    .omr-kpi-30 .omr-kpi-badge { background: #b91c1c; }
+    .omr-kpi-50 .omr-kpi-badge { background: #f59e0b; }
+    .omr-kpi-75 .omr-kpi-badge { background: #db2777; }
+    .omr-kpi-100 .omr-kpi-badge { background: #059669; }
+    .omr-kpi-total .omr-kpi-badge { background: #0284c7; }
 
     /* TABLE DESIGN */
     .table-omr th { background: #f8fafc; font-size: 0.78rem; text-transform: uppercase; color: #334155; font-weight: 800; border-bottom: 2px solid #e2e8f0; padding: 12px 10px; text-align: center; }
     .table-omr td { font-size: 0.82rem; vertical-align: middle; padding: 10px; border-bottom: 1px solid #f1f5f9; font-weight: 600; }
-    .format-badge { background: #eff6ff; color: #1d4ed8; font-weight: 800; padding: 3px 8px; border-radius: 6px; border: 1px solid #bfdbfe; font-size: 11px; }
+    .format-badge { background: #fef2f2; color: #b91c1c; font-weight: 800; padding: 3px 8px; border-radius: 6px; border: 1px solid #fecaca; font-size: 11px; }
 
-    /* PREVIEW SHEET SHEET CONTAINER (A4 SCALED) */
+    /* ULTRA-HD SCALED A4 CANVAS VIEWPORT */
     .omr-sheet-viewport {
       background: #ffffff;
       border: 1px solid #cbd5e1;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
       width: 100%;
-      max-width: 650px;
+      max-width: 620px;
       margin: 0 auto;
-      border-radius: 4px;
+      border-radius: 6px;
       overflow: hidden;
       position: relative;
     }
@@ -35000,11 +35000,11 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     <!-- CARD HEADER -->
     <div class='card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center'>
       <div class='d-flex align-items-center gap-2'>
-        <i class='fas fa-drafting-compass text-primary'></i>
+        <i class='fas fa-drafting-compass text-danger'></i>
         <h6 class='m-0 fw-bold text-dark'>OMR Sheet Template Designer &amp; Library</h6>
       </div>
       <div>
-        <button class='btn btn-outline-primary btn-sm px-3 fw-bold shadow-sm' onclick='window.loadOmrMasterTemplates(true)' type='button'>
+        <button class='btn btn-outline-danger btn-sm px-3 fw-bold shadow-sm' onclick='window.loadOmrMasterTemplates(true)' type='button'>
           <i class='fas fa-sync-alt me-1'></i> Refresh Library
         </button>
       </div>
@@ -35012,16 +35012,16 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
     <div class='card-body p-2'>
       
-      <!-- 1. PRESET STANDARD OMR TEMPLATES (6 CARDS WITH PREVIEW & USE) -->
+      <!-- 1. PRESET TEMPLATES FAST CARDS -->
       <div class='mb-4'>
-        <label class='omr-label'><i class='fas fa-th-large text-primary me-1'></i> Standard Pre-Built OMR Templates (Ready-to-Use):</label>
+        <label class='omr-label'><i class='fas fa-th-large text-danger me-1'></i> Standard OMR Sheet Formats (Ready-to-Use):</label>
         <div class='row g-2'>
           
           <div class='col-6 col-md-2'>
             <div class='preset-card'>
-              <div class='preset-title'>25 Questions</div>
+              <div class='preset-title'>25 Qs</div>
               <div class='preset-desc'>2 Columns (13 + 12)</div>
-              <button class='btn btn-outline-primary btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(25)' type='button'>
+              <button class='btn btn-outline-danger btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(25)' type='button'>
                 <i class='fas fa-eye me-1'></i> Preview
               </button>
             </div>
@@ -35029,9 +35029,19 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
           <div class='col-6 col-md-2'>
             <div class='preset-card'>
-              <div class='preset-title'>50 Questions</div>
+              <div class='preset-title'>30 Qs</div>
+              <div class='preset-desc'>2 Columns (15 + 15)</div>
+              <button class='btn btn-outline-danger btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(30)' type='button'>
+                <i class='fas fa-eye me-1'></i> Preview
+              </button>
+            </div>
+          </div>
+
+          <div class='col-6 col-md-2'>
+            <div class='preset-card'>
+              <div class='preset-title'>50 Qs</div>
               <div class='preset-desc'>2 Columns (25 + 25)</div>
-              <button class='btn btn-outline-primary btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(50)' type='button'>
+              <button class='btn btn-outline-danger btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(50)' type='button'>
                 <i class='fas fa-eye me-1'></i> Preview
               </button>
             </div>
@@ -35039,19 +35049,19 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
           <div class='col-6 col-md-2'>
             <div class='preset-card'>
-              <div class='preset-title'>75 Questions</div>
+              <div class='preset-title'>75 Qs</div>
               <div class='preset-desc'>3 Columns (25 x 3)</div>
-              <button class='btn btn-outline-primary btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(75)' type='button'>
+              <button class='btn btn-outline-danger btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(75)' type='button'>
                 <i class='fas fa-eye me-1'></i> Preview
               </button>
             </div>
           </div>
 
           <div class='col-6 col-md-2'>
-            <div class='preset-card border-primary bg-primary-subtle'>
-              <div class='preset-title text-primary'>100 Questions</div>
+            <div class='preset-card border-danger bg-danger-subtle'>
+              <div class='preset-title'>100 Qs</div>
               <div class='preset-desc'>4 Columns (25 x 4)</div>
-              <button class='btn btn-primary btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(100)' type='button'>
+              <button class='btn btn-danger btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(100)' type='button'>
                 <i class='fas fa-eye me-1'></i> Preview
               </button>
             </div>
@@ -35059,19 +35069,9 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
           <div class='col-6 col-md-2'>
             <div class='preset-card'>
-              <div class='preset-title'>120 Questions</div>
-              <div class='preset-desc'>4 Columns (30 x 4)</div>
-              <button class='btn btn-outline-primary btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(120)' type='button'>
-                <i class='fas fa-eye me-1'></i> Preview
-              </button>
-            </div>
-          </div>
-
-          <div class='col-6 col-md-2'>
-            <div class='preset-card'>
-              <div class='preset-title'>180 Questions</div>
-              <div class='preset-desc'>4 Columns (45 x 4)</div>
-              <button class='btn btn-outline-primary btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(180)' type='button'>
+              <div class='preset-title'>120/180 Qs</div>
+              <div class='preset-desc'>4 Columns (Full Sheet)</div>
+              <button class='btn btn-outline-danger btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(120)' type='button'>
                 <i class='fas fa-eye me-1'></i> Preview
               </button>
             </div>
@@ -35080,49 +35080,46 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         </div>
       </div>
 
-      <!-- 2. CREATE NEW CUSTOM OMR TEMPLATE FORM -->
+      <!-- 2. CREATE ANY CUSTOM QUESTION OMR TEMPLATE -->
       <div class='omr-filter-box mb-3'>
-        <h6 class='fw-bold text-primary mb-3'><i class='fas fa-plus-circle me-1'></i> Create New Custom OMR Template Format</h6>
+        <h6 class='fw-bold text-danger mb-3'><i class='fas fa-plus-circle me-1'></i> Create Custom Question Count OMR Template</h6>
         
         <div class='row g-3 align-items-end'>
-          <div class='col-md-4'>
+          <div class='col-md-5'>
             <label class='omr-label'>Template Title / Label *</label>
-            <input class='form-control form-control-sm fw-bold' id='customTplTitle' placeholder='e.g., Weekly Test 50 Questions Sheet' type='text'>
+            <input class='form-control form-control-sm fw-bold' id='customTplTitle' placeholder='e.g., Class 10 Math Test 30 Marks' type='text'>
           </div>
           <div class='col-md-3'>
-            <label class='omr-label'>Question Capacity *</label>
-            <select class='form-select form-select-sm fw-bold text-primary' id='customTplCapacity'>
-              <option value='25'>25 Questions (2 Columns)</option>
-              <option value='50'>50 Questions (2 Columns)</option>
-              <option value='75'>75 Questions (3 Columns)</option>
-              <option value='100' selected='selected'>100 Questions (4 Columns)</option>
-              <option value='120'>120 Questions (4 Columns)</option>
-              <option value='180'>180 Questions (4 Columns)</option>
-            </select>
+            <label class='omr-label'>Exact Question / Marks Count *</label>
+            <input class='form-control form-control-sm fw-bold text-danger text-center' id='customTplCapacity' type='number' min='10' max='200' value='30' placeholder='Enter any number (e.g. 30, 45, 60)'>
           </div>
-          <div class='col-md-3'>
-            <label class='omr-label'>Bubble Options Per Question</label>
+          <div class='col-md-2'>
+            <label class='omr-label'>Bubble Options</label>
             <select class='form-select form-select-sm fw-bold' id='customTplOptions'>
               <option value='4' selected='selected'>4 Options (A, B, C, D)</option>
               <option value='5'>5 Options (A, B, C, D, E)</option>
             </select>
           </div>
           <div class='col-md-2'>
-            <button class='btn btn-success btn-sm w-100 fw-bold shadow-sm' id='btnSaveCustomTemplate' onclick='window.saveCustomOmrTemplate()' type='button'>
+            <button class='btn btn-danger btn-sm w-100 fw-bold shadow-sm' id='btnSaveCustomTemplate' onclick='window.saveCustomOmrTemplate()' type='button'>
               <i class='fas fa-save me-1'></i> Save Template
             </button>
           </div>
         </div>
+        <small class='text-muted mt-2 d-block' style='font-size: 11px;'>
+          <i class='fas fa-info-circle text-danger me-1'></i> 
+          Type any custom count (like <b>30</b>, <b>40</b>, <b>60</b>, or <b>90</b>). The mathematical layout engine automatically splits questions into balanced columns.
+        </small>
       </div>
 
       <!-- ================= 3. SUMMARY METRICS BAR ================= -->
       <div class='omr-kpi-bar' id='omrKpiSummaryBar'>
         <div class='omr-kpi-tile omr-kpi-25'>25 Qs <span class='omr-kpi-badge' id='cntTpl25'>1</span></div>
+        <div class='omr-kpi-tile omr-kpi-30'>30 Qs <span class='omr-kpi-badge' id='cntTpl30'>1</span></div>
         <div class='omr-kpi-tile omr-kpi-50'>50 Qs <span class='omr-kpi-badge' id='cntTpl50'>1</span></div>
         <div class='omr-kpi-tile omr-kpi-75'>75 Qs <span class='omr-kpi-badge' id='cntTpl75'>1</span></div>
         <div class='omr-kpi-tile omr-kpi-100'>100 Qs <span class='omr-kpi-badge' id='cntTpl100'>1</span></div>
-        <div class='omr-kpi-tile omr-kpi-large'>120/180 Qs <span class='omr-kpi-badge' id='cntTplLarge'>2</span></div>
-        <div class='omr-kpi-tile omr-kpi-total'>Available Templates <span class='omr-kpi-badge' id='cntTplTotal'>6</span></div>
+        <div class='omr-kpi-tile omr-kpi-total'>All Templates <span class='omr-kpi-badge' id='cntTplTotal'>7</span></div>
       </div>
 
       <!-- ================= 4. TEMPLATES LIBRARY TABLE ================= -->
@@ -35132,15 +35129,15 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             <tr>
               <th style='width: 60px;'>#</th>
               <th style='text-align: left; padding-left: 14px;'>Template Name &amp; ID</th>
-              <th style='width: 140px;'>Capacity</th>
-              <th style='width: 130px;'>Grid Columns</th>
+              <th style='width: 140px;'>Question Capacity</th>
+              <th style='width: 140px;'>Column Structure</th>
               <th style='width: 130px;'>Bubble Options</th>
-              <th style='width: 110px;'>Category</th>
+              <th style='width: 120px;'>Type</th>
               <th style='width: 180px;'>Actions</th>
             </tr>
           </thead>
           <tbody id='omrTemplatesMasterTbody'>
-            <!-- Dynamic Templates List -->
+            <!-- Dynamic Templates Rows -->
           </tbody>
         </table>
       </div>
@@ -35148,11 +35145,11 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     </div>
   </div>
 
-  <!-- ================= 5. LIVE OMR SHEET PREVIEW MODAL ================= -->
+  <!-- ================= 5. ULTRA-HD LIVE OMR SHEET PREVIEW MODAL ================= -->
   <div class='modal fade' id='omrPreviewModal' tabindex='-1'>
     <div class='modal-dialog modal-dialog-centered modal-lg'>
       <div class='modal-content'>
-        <div class='modal-header py-2.5 bg-primary text-white d-flex justify-content-between align-items-center'>
+        <div class='modal-header py-2.5 bg-danger text-white d-flex justify-content-between align-items-center'>
           <h6 class='modal-title fw-bold' id='omrPreviewModalTitle'>
             <i class='fas fa-file-alt me-2'></i>OMR Sheet Layout Preview
           </h6>
@@ -35160,20 +35157,20 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         </div>
         <div class='modal-body p-3 text-center bg-light'>
           
-          <div class='alert alert-info py-1.5 small mb-2 fw-bold text-start'>
-            <i class='fas fa-info-circle me-1'></i> 
-            Pure Vector Layout Preview: Notice the 4 corner alignment squares. Student details &amp; QR code will be pre-printed in Module 2 (Print Desk).
+          <div class='alert alert-warning py-1.5 small mb-2 fw-bold text-start'>
+            <i class='fas fa-check-circle text-danger me-1'></i> 
+            Authentic OMR Red Theme Preview: Corner alignment squares are solid black for camera scanning. Student details will be pre-printed in Module 2 (Print Desk).
           </div>
 
-          <!-- A4 Scaled Canvas Preview -->
+          <!-- Ultra-HD Canvas Viewport (1200 x 1696 for Zero Blur) -->
           <div class='omr-sheet-viewport'>
-            <canvas id='omrPreviewCanvas' width='600' height='848' style='width: 100%; display: block;'></canvas>
+            <canvas id='omrPreviewCanvas' width='1200' height='1696' style='width: 100%; height: auto; display: block;'></canvas>
           </div>
 
         </div>
         <div class='modal-footer py-2 d-flex justify-content-between'>
           <button class='btn btn-secondary btn-sm fw-bold' data-bs-dismiss='modal' type='button'>Close Preview</button>
-          <button class='btn btn-success btn-sm fw-bold px-3 shadow-sm' id='btnDownloadSamplePdf' onclick='window.downloadSampleBlankPdf()' type='button'>
+          <button class='btn btn-danger btn-sm fw-bold px-3 shadow-sm' id='btnDownloadSamplePdf' onclick='window.downloadSampleBlankPdf()' type='button'>
             <i class='fas fa-download me-1'></i> Download Sample Blank PDF
           </button>
         </div>
@@ -35188,14 +35185,15 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     let customSavedTemplates = [];
     let currentPreviewingTemplate = null;
 
-    // Core Standard Presets (Available Out of Box)
+    // Standard Presets with authentic OMR column layouts
     const standardPresets = [
-      { id: "STD-25", name: "Standard 25 Questions Sheet", cap: 25, cols: "2 Columns (13+12)", opts: "A, B, C, D", isPreset: true },
-      { id: "STD-50", name: "Standard 50 Questions Sheet", cap: 50, cols: "2 Columns (25+25)", opts: "A, B, C, D", isPreset: true },
-      { id: "STD-75", name: "Standard 75 Questions Sheet", cap: 75, cols: "3 Columns (25x3)", opts: "A, B, C, D", isPreset: true },
-      { id: "STD-100", name: "Standard 100 Questions Sheet", cap: 100, cols: "4 Columns (25x4)", opts: "A, B, C, D", isPreset: true },
-      { id: "STD-120", name: "Standard 120 Questions Sheet", cap: 120, cols: "4 Columns (30x4)", opts: "A, B, C, D", isPreset: true },
-      { id: "STD-180", name: "Standard 180 Questions Sheet", cap: 180, cols: "4 Columns (45x4)", opts: "A, B, C, D", isPreset: true }
+      { id: "STD-25", name: "Standard 25 Questions Sheet", cap: 25, isPreset: true },
+      { id: "STD-30", name: "Standard 30 Questions Sheet", cap: 30, isPreset: true },
+      { id: "STD-50", name: "Standard 50 Questions Sheet", cap: 50, isPreset: true },
+      { id: "STD-75", name: "Standard 75 Questions Sheet", cap: 75, isPreset: true },
+      { id: "STD-100", name: "Standard 100 Questions Sheet", cap: 100, isPreset: true },
+      { id: "STD-120", name: "Standard 120 Questions Sheet", cap: 120, isPreset: true },
+      { id: "STD-180", name: "Standard 180 Questions Sheet", cap: 180, isPreset: true }
     ];
 
     // ⚡ 1. INITIALIZE MODULE
@@ -35203,7 +35201,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       await window.loadOmrMasterTemplates();
     };
 
-    // ⚡ 2. LOAD MASTER TEMPLATES (PRESETS + SUPABASE CUSTOM)
+    // ⚡ 2. LOAD TEMPLATES LIBRARY (PRESETS + SUPABASE SAVED)
     window.loadOmrMasterTemplates = async function(force) {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const schoolId = user.schoolId;
@@ -35221,8 +35219,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             id: d.BlueprintID,
             name: d.ExamName,
             cap: parseInt(d.TemplateType, 10),
-            cols: (d.TemplateType <= 50 ? "2 Columns" : (d.TemplateType === 75 ? "3 Columns" : "4 Columns")),
-            opts: "A, B, C, D",
             isPreset: false
           }));
         }
@@ -35238,32 +35234,33 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       const tbody = document.getElementById('omrTemplatesMasterTbody');
       const allTemplates = [...standardPresets, ...customSavedTemplates];
 
-      // Update KPIs
-      let c25 = 0, c50 = 0, c75 = 0, c100 = 0, cLarge = 0;
+      let c25 = 0, c30 = 0, c50 = 0, c75 = 0, c100 = 0;
       allTemplates.forEach(t => {
         if (t.cap === 25) c25++;
+        else if (t.cap === 30) c30++;
         else if (t.cap === 50) c50++;
         else if (t.cap === 75) c75++;
-        else if (t.cap === 100) c100++;
-        else cLarge++;
+        else if (t.cap >= 100) c100++;
       });
 
       document.getElementById('cntTpl25').innerText = c25;
+      document.getElementById('cntTpl30').innerText = c30;
       document.getElementById('cntTpl50').innerText = c50;
       document.getElementById('cntTpl75').innerText = c75;
       document.getElementById('cntTpl100').innerText = c100;
-      document.getElementById('cntTplLarge').innerText = cLarge;
       document.getElementById('cntTplTotal').innerText = allTemplates.length;
 
       let html = "";
       allTemplates.forEach((t, idx) => {
         const categoryBadge = t.isPreset 
           ? `<span class="badge bg-secondary-subtle text-secondary fw-bold px-2 py-1">Standard Preset</span>`
-          : `<span class="badge bg-primary-subtle text-primary fw-bold px-2 py-1">Custom Saved</span>`;
+          : `<span class="badge bg-danger-subtle text-danger fw-bold px-2 py-1">Custom Saved</span>`;
 
         const deleteBtn = t.isPreset 
           ? `<button class="btn btn-sm btn-light border text-muted" disabled title="Standard preset cannot be deleted"><i class="fas fa-lock"></i></button>`
           : `<button class="btn btn-sm btn-outline-danger" onclick="window.deleteCustomOmrTemplate('${t.id}')" title="Delete"><i class="fas fa-trash-alt"></i></button>`;
+
+        const colText = t.cap <= 60 ? "2 Columns" : (t.cap <= 90 ? "3 Columns" : "4 Columns");
 
         html += `
           <tr>
@@ -35272,13 +35269,13 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               <div class="fw-bold text-dark">${t.name}</div>
               <div class="text-muted small" style="font-size: 10px;">ID: <code>${t.id}</code></div>
             </td>
-            <td><span class="format-badge shadow-sm">${t.cap} Questions</span></td>
-            <td><span class="small fw-semibold text-secondary">${t.cols}</span></td>
-            <td><span class="badge bg-light text-dark border">${t.opts}</span></td>
+            <td><span class="format-badge shadow-sm">${t.cap} Questions / Marks</span></td>
+            <td><span class="small fw-bold text-secondary">${colText}</span></td>
+            <td><span class="badge bg-light text-dark border">4 Options (A-D)</span></td>
             <td>${categoryBadge}</td>
             <td>
               <div class="d-flex justify-content-center gap-1.5">
-                <button class="btn btn-sm btn-primary fw-bold px-2.5 py-1" onclick="window.openOmrPreviewQuick(${t.cap}, '${t.name}')" type="button">
+                <button class="btn btn-sm btn-danger fw-bold px-2.5 py-1" onclick="window.openOmrPreviewQuick(${t.cap}, '${t.name}')" type="button">
                   <i class="fas fa-eye me-1"></i> Preview OMR
                 </button>
                 ${deleteBtn}
@@ -35291,7 +35288,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       tbody.innerHTML = html;
     };
 
-    // ⚡ 4. SAVE NEW CUSTOM TEMPLATE
+    // ⚡ 4. SAVE NEW CUSTOM TEMPLATE (e.g. 30, 45, 60 Qs)
     window.saveCustomOmrTemplate = async function() {
       const title = document.getElementById('customTplTitle').value.trim();
       const cap = parseInt(document.getElementById('customTplCapacity').value, 10);
@@ -35299,6 +35296,10 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       if (!title) {
         alert("Please enter a Template Title!");
+        return;
+      }
+      if (isNaN(cap) || cap < 10 || cap > 200) {
+        alert("Please enter a valid Question Count between 10 and 200!");
         return;
       }
 
@@ -35318,12 +35319,12 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             ExamName: title,
             Class: "Template",
             TemplateType: cap,
-            Subjects: [] // Pure template layout without hardcoded subjects
+            Subjects: []
           }]);
 
         if (error) throw error;
 
-        alert(`✅ Custom OMR Template [${title}] saved successfully!`);
+        alert(`✅ Custom OMR Template [${title} - ${cap} Questions] saved to library!`);
         document.getElementById('customTplTitle').value = "";
         await window.loadOmrMasterTemplates(true);
 
@@ -35352,13 +35353,12 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         if (error) throw error;
         alert("Template deleted successfully.");
         await window.loadOmrMasterTemplates(true);
-
       } catch(err) {
         alert("Delete failed: " + err.message);
       }
     };
 
-    // ⚡ 6. LIVE OMR SHEET CANVAS PREVIEW ENGINE (NO STUDENT DATA)
+    // ⚡ 6. ULTRA-HD CRISP OMR PREVIEW ENGINE (ZERO BLUR + REAL OMR RED THEME)
     window.openOmrPreviewQuick = function(cap, title) {
       currentPreviewingTemplate = {
         TemplateType: cap,
@@ -35366,60 +35366,72 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         BlueprintID: `PRESET-${cap}`
       };
 
-      document.getElementById('omrPreviewModalTitle').innerHTML = `<i class="fas fa-file-alt me-2"></i>Preview: Standard ${cap} Questions OMR Sheet (A4 Layout)`;
+      document.getElementById('omrPreviewModalTitle').innerHTML = `<i class="fas fa-file-alt me-2"></i>Preview: ${cap} Questions OMR Sheet (Authentic Red Layout)`;
 
-      // Render crisp vector preview on HTML5 Canvas
-      window.renderOmrCanvasPreview(cap);
+      // Render ultra-sharp 1200x1696 canvas
+      window.renderUltraHdOmrCanvas(cap);
 
       new bootstrap.Modal(document.getElementById('omrPreviewModal')).show();
     };
 
-    window.renderOmrCanvasPreview = function(totalQ) {
+    window.renderUltraHdOmrCanvas = function(totalQ) {
       const cvs = document.getElementById('omrPreviewCanvas');
       const ctx = cvs.getContext('2d');
-      const W = cvs.width;  // 600
-      const H = cvs.height; // 848 (A4 proportion)
+      const W = cvs.width;  // 1200 px (Retina Sharp)
+      const H = cvs.height; // 1696 px
 
-      // Background
+      // Clean Pure White Background
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(0, 0, W, H);
 
-      // 4 Black Corner Squares (6mm fiducial markers)
-      const sqSize = 18;
+      // 1. 4 Solid Black Corner Alignment Squares (36x36 px)
+      const sqSize = 36;
       ctx.fillStyle = "#000000";
-      ctx.fillRect(20, 20, sqSize, sqSize);         // TL
-      ctx.fillRect(W - 20 - sqSize, 20, sqSize, sqSize); // TR
-      ctx.fillRect(20, H - 20 - sqSize, sqSize, sqSize); // BL
-      ctx.fillRect(W - 20 - sqSize, H - 20 - sqSize, sqSize, sqSize); // BR
+      ctx.fillRect(40, 40, sqSize, sqSize);             // Top-Left
+      ctx.fillRect(W - 40 - sqSize, 40, sqSize, sqSize); // Top-Right
+      ctx.fillRect(40, H - 40 - sqSize, sqSize, sqSize); // Bottom-Left
+      ctx.fillRect(W - 40 - sqSize, H - 40 - sqSize, sqSize, sqSize); // Bottom-Right
 
-      // Generic Blank Header Info Box (No Student Data!)
-      ctx.strokeStyle = "#0f172a";
-      ctx.lineWidth = 1.2;
-      ctx.strokeRect(48, 20, W - 96, 68);
+      // 2. Clear Header Container (Comfortably between corner squares, no overlap!)
+      const headerX = 96;
+      const headerY = 40;
+      const headerW = W - 192;
+      const headerH = 150;
 
+      // Authentic OMR Crimson Red Borders & Elements
+      ctx.strokeStyle = "#b91c1c";
+      ctx.lineWidth = 2.2;
+      ctx.strokeRect(headerX, headerY, headerW, headerH);
+
+      // School Title
+      ctx.fillStyle = "#b91c1c";
+      ctx.font = "bold 26px sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("ROYAL INTERNATIONAL PUBLIC SCHOOL", headerX + 24, headerY + 40);
+
+      ctx.fillStyle = "#334155";
+      ctx.font = "bold 16px sans-serif";
+      ctx.fillText(`OMR EVALUATION SHEET &bull; TOTAL QUESTIONS: ${totalQ}`, headerX + 24, headerY + 74);
+
+      // Clean fill-in line fields
+      ctx.font = "bold 15px sans-serif";
       ctx.fillStyle = "#0f172a";
-      ctx.font = "bold 13px sans-serif";
-      ctx.fillText("SCHOOL NAME / EXAMINATION BOARD HERE", 60, 40);
+      ctx.fillText("CANDIDATE NAME: _________________________________    ROLL NO: ____________", headerX + 24, headerY + 115);
 
-      ctx.font = "bold 9px sans-serif";
-      ctx.fillStyle = "#475569";
-      ctx.fillText(`OMR ANSWER SHEET &bull; CAPACITY: ${totalQ} QUESTIONS`, 60, 56);
-      ctx.fillText("STUDENT NAME: ___________________________    ROLL NO: ___________    DATE: ___________", 60, 74);
+      // Instructions bar
+      ctx.font = "italic 14px sans-serif";
+      ctx.fillStyle = "#b91c1c";
+      ctx.fillText("Instructions: Use Dark Blue or Black Ballpoint Pen only. Darken circles completely. Do not fold or tear.", headerX, headerY + headerH + 32);
 
-      // Instruction Line
-      ctx.font = "italic 8px sans-serif";
-      ctx.fillStyle = "#64748b";
-      ctx.fillText("Instructions: Use Dark Blue or Black Ballpoint Pen only. Fill circles completely. Do not write or mark outside the grid.", 48, 102);
-
-      // Divider Line
-      ctx.strokeStyle = "#e2e8f0";
-      ctx.lineWidth = 1;
+      // Thin separation line
+      ctx.strokeStyle = "#fecaca";
+      ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.moveTo(48, 108);
-      ctx.lineTo(W - 48, 108);
+      ctx.moveTo(headerX, headerY + headerH + 46);
+      ctx.lineTo(headerX + headerW, headerY + headerH + 46);
       ctx.stroke();
 
-      // Render Bubble Columns
+      // 3. Render Dynamic Bubble Columns in Authentic Dark Red
       const coordMap = window.OMREngine.getCoordinates(totalQ);
       const scaleX = W / 1000;
       const scaleY = H / 1414;
@@ -35431,30 +35443,32 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         const lx = qData.labelPos.x * scaleX;
         const ly = qData.labelPos.y * scaleY;
 
-        // Question Number
-        ctx.fillStyle = "#0f172a";
-        ctx.font = "bold 9px sans-serif";
+        // Question Number in Dark Red
+        ctx.fillStyle = "#991b1b";
+        ctx.font = "bold 17px sans-serif";
         ctx.textAlign = "left";
-        ctx.fillText(String(q).padStart(2, "0"), lx, ly + 3);
+        ctx.fillText(String(q).padStart(2, "0"), lx, ly + 5);
 
-        // Bubbles A, B, C, D
+        // Bubbles A, B, C, D in Real OMR Crimson Red
         ["A", "B", "C", "D"].forEach(opt => {
           const b = qData.bubbles[opt];
           const bx = b.x * scaleX;
           const by = b.y * scaleY;
           const br = b.r * scaleX;
 
-          ctx.strokeStyle = "#64748b";
-          ctx.lineWidth = 0.8;
+          // Crisp Circle Border
+          ctx.strokeStyle = "#b91c1c";
+          ctx.lineWidth = 1.8;
           ctx.beginPath();
           ctx.arc(bx, by, br, 0, Math.PI * 2);
           ctx.stroke();
 
-          ctx.fillStyle = "#334155";
-          ctx.font = "8px sans-serif";
+          // Option Letter Centered
+          ctx.fillStyle = "#b91c1c";
+          ctx.font = "bold 14px sans-serif";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          ctx.fillText(opt, bx, by + 0.5);
+          ctx.fillText(opt, bx, by + 1.2);
         });
       }
     };
@@ -35473,7 +35487,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         ];
 
         await window.OMREngine.generatePdf(currentPreviewingTemplate, sampleStudent, {
-          schoolName: "INSTITUTIONAL EXAMINATION ASSESSMENT"
+          schoolName: "ROYAL INTERNATIONAL PUBLIC SCHOOL"
         });
 
       } catch(err) {
