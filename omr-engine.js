@@ -1,54 +1,63 @@
-// 1. DETERMINISTIC COORDINATE DICTIONARY (SUPPORTS ARBITRARY CUSTOM Qs e.g. 30, 50, 75, 100...)
+/**
+ * ===================================================================
+ * ?? ENTERPRISE OMR OPTICAL EVALUATION & RED PDF ENGINE (UNIVERSAL)
+ * ===================================================================
+ * Supports: ANY Custom Question Count (30, 50, 75, 100, 120, 180...)
+ * Real OMR Crimson Red Color: RGB(185, 28, 28) / #b91c1c
+ * 4 Corner Alignment Fiducials: Solid Pitch Black (0, 0, 0)
+ */
+
+window.OMREngine = (function () {
+  'use strict';
+
+  // 1. UNIVERSAL DYNAMIC COORDINATE GENERATOR (SUPPORTS 30, 50, 75, 100 & ANY COUNT)
   function getTemplateCoordinates(templateType) {
     const type = parseInt(templateType, 10) || 100;
-    
-    // Dynamic Layout Calculation for ANY Custom Question Count (e.g. 30 Qs)
+
     let cols = 4;
     let colW = 195;
-    let r = 9.5;
+    let r = 9.0;
     let optGap = 32;
     let numOffset = 28;
-    let startY = 260;
-    let rowH = 38;
+    let startY = 250;
 
     if (type <= 30) {
       cols = 2;
       colW = 360;
-      r = 12;
+      r = 12.0;
       optGap = 55;
       numOffset = 45;
-      startY = 280;
-      rowH = Math.max(26, Math.floor(950 / Math.ceil(type / 2)));
+      startY = 270;
     } else if (type <= 60) {
       cols = 2;
       colW = 360;
-      r = 11;
+      r = 11.0;
       optGap = 55;
       numOffset = 45;
       startY = 260;
-      rowH = Math.max(24, Math.floor(980 / Math.ceil(type / 2)));
     } else if (type <= 90) {
       cols = 3;
       colW = 260;
-      r = 10;
+      r = 10.0;
       optGap = 42;
       numOffset = 34;
-      startY = 260;
-      rowH = Math.max(22, Math.floor(980 / Math.ceil(type / 3)));
+      startY = 255;
     } else {
       cols = 4;
       colW = 195;
       r = type > 120 ? 7.0 : 8.5;
       optGap = 32;
       numOffset = 28;
-      startY = 245;
-      rowH = Math.max(19, Math.floor(1000 / Math.ceil(type / 4)));
+      startY = 240;
     }
 
     const qPerCol = Math.ceil(type / cols);
+    const availableHeight = 1330 - startY;
+    const rowH = Math.min(42, Math.max(18, Math.floor(availableHeight / qPerCol)));
+
     const colX = [];
     const totalContentW = cols * colW;
-    const startX = Math.floor((1000 - totalContentW) / 2) + 20;
+    const startX = Math.floor((1000 - totalContentW) / 2) + 15;
 
     for (let c = 0; c < cols; c++) {
       colX.push(startX + (c * colW));
@@ -93,17 +102,18 @@
     };
   }
 
-  // 2. VECTOR A4 STUDENT OMR SHEET GENERATOR (PRE-PRINTED WITH QR CODE)
+  // 2. VECTOR A4 OMR PDF GENERATOR (AUTHENTIC OMR CRIMSON RED: RGB 185, 28, 28)
   async function generateStudentOmrPdf(blueprint, studentsList, schoolMeta) {
     if (!window.jspdf || !window.jspdf.jsPDF) {
       throw new Error("jsPDF library is not loaded.");
     }
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-    const coordMap = getTemplateCoordinates(blueprint.TemplateType || blueprint.template_type || 100);
-    const scale = 0.21; // 1000px canvas = 210mm A4 width factor
+    const totalQuestions = parseInt(blueprint.TemplateType || blueprint.template_type || 100, 10);
+    const coordMap = getTemplateCoordinates(totalQuestions);
+    const scale = 0.21; // 1000px canvas to 210mm A4 width
 
-    // Create invisible QR sandbox element if not present
+    // Temporary invisible QR container
     let qrBox = document.getElementById("omr_qr_temp_box");
     if (!qrBox) {
       qrBox = document.createElement("div");
@@ -112,111 +122,103 @@
       document.body.appendChild(qrBox);
     }
 
-    const subjectHeaders = {};
-    const subjects = blueprint.Subjects || blueprint.subjects || [];
-    subjects.forEach(s => {
-      subjectHeaders[s.start_q] = `${s.name} (Q${s.start_q}-${s.end_q})`;
-    });
-
     const students = (studentsList && studentsList.length > 0) ? studentsList : [
-      { StudId: "DEMO-101", RollNo: "01", StudentName: "Sample Student Candidate" }
+      { StudId: "", RollNo: "", StudentName: "_______________________________" }
     ];
 
     for (let i = 0; i < students.length; i++) {
       if (i > 0) doc.addPage();
       const st = students[i];
 
-      // A. 4 Solid Black Fiducial Corner Anchors (6mm x 6mm)
+      // A. 4 SOLID BLACK CORNER ALIGNMENT SQUARES (6mm x 6mm)
       doc.setFillColor(0, 0, 0);
       doc.rect(8, 8, 6, 6, "F");       // Top-Left
       doc.rect(196, 8, 6, 6, "F");     // Top-Right
       doc.rect(8, 283, 6, 6, "F");     // Bottom-Left
       doc.rect(196, 283, 6, 6, "F");   // Bottom-Right
 
-      // B. Header Information Box
-      doc.setDrawColor(15, 23, 42);
-      doc.setLineWidth(0.4);
+      // B. HEADER BOX (AUTHENTIC OMR CRIMSON RED BORDER)
+      doc.setDrawColor(185, 28, 28); // #b91c1c Dark Red
+      doc.setLineWidth(0.45);
       doc.rect(17, 8, 143, 27);
 
+      // School Title in Dark Red
       doc.setFont("helvetica", "bold");
       doc.setFontSize(12);
-      doc.text(String(schoolMeta.schoolName || "INSTITUTIONAL EXAMINATION BOARD").toUpperCase(), 20, 14);
+      doc.setTextColor(185, 28, 28);
+      doc.text(String(schoolMeta.schoolName || "INSTITUTIONAL EXAMINATION ASSESSMENT").toUpperCase(), 20, 14);
 
+      // Assessment Info
       doc.setFont("helvetica", "normal");
       doc.setFontSize(8.5);
-      doc.text(`Exam: ${blueprint.ExamName || blueprint.title || "Periodic Assessment"} | Class: ${blueprint.Class || blueprint.class_id || "All"}`, 20, 19);
-      doc.text(`Candidate: ${st.StudentName || st.name || "Student"} | Roll No: ${st.RollNo || st.roll || "00"} | ID: ${st.StudId || st.id || "NA"}`, 20, 24);
+      doc.setTextColor(15, 23, 42); // Clean dark text
+      doc.text(`Exam: ${blueprint.ExamName || "Periodic Test"} | Capacity: ${totalQuestions} Questions`, 20, 19);
 
-      const subRanges = subjects.map(s => `${s.name}(${s.start_q}-${s.end_q})`).join(" | ");
-      doc.setFontSize(7.5);
-      doc.setTextColor(71, 85, 105);
-      doc.text(`Subjects: ${subRanges}`, 20, 30);
-      doc.setTextColor(0, 0, 0);
-
-      // C. Render High-Density Metadata QR Code
-      const qrData = JSON.stringify({
-        sid: st.StudId || st.id,
-        bpid: blueprint.BlueprintID || blueprint.blueprint_id,
-        r: st.RollNo || st.roll
-      });
-
-      qrBox.innerHTML = "";
-      new QRCode(qrBox, { text: qrData, width: 90, height: 90, correctLevel: QRCode.CorrectLevel.M });
-      await new Promise(r => setTimeout(r, 45));
-
-      const qrCanvas = qrBox.querySelector("canvas");
-      if (qrCanvas) {
-        const qrBase64 = qrCanvas.toDataURL("image/png");
-        doc.addImage(qrBase64, "PNG", 164, 8, 27, 27);
+      if (st.StudId) {
+        doc.text(`Candidate: ${st.StudentName || "Student"} | Roll No: ${st.RollNo || "-"} | ID: ${st.StudId}`, 20, 24);
+      } else {
+        doc.text(`CANDIDATE NAME: ___________________________    ROLL NO: ____________`, 20, 24);
       }
 
-      // D. Candidate Instruction Bar
+      doc.setFontSize(7.5);
+      doc.setTextColor(185, 28, 28);
+      doc.text(`Standard Authentic OMR Assessment Sheet &bull; Session 2026-27`, 20, 30);
+      doc.setTextColor(0, 0, 0);
+
+      // C. QR Code (Only if candidate ID is present, else blank space)
+      if (st.StudId) {
+        const qrData = JSON.stringify({
+          sid: st.StudId,
+          bpid: blueprint.BlueprintID,
+          r: st.RollNo
+        });
+
+        qrBox.innerHTML = "";
+        new QRCode(qrBox, { text: qrData, width: 90, height: 90, correctLevel: QRCode.CorrectLevel.M });
+        await new Promise(r => setTimeout(r, 45));
+
+        const qrCanvas = qrBox.querySelector("canvas");
+        if (qrCanvas) {
+          const qrBase64 = qrCanvas.toDataURL("image/png");
+          doc.addImage(qrBase64, "PNG", 164, 8, 27, 27);
+        }
+      }
+
+      // D. Candidate Instructions (Dark Red Italic)
       doc.setFontSize(7);
       doc.setFont("helvetica", "italic");
-      doc.text("Instructions: Use Dark Blue or Black Ballpoint Pen only. Fill bubbles completely. Do not fold, crinkle or staple this sheet.", 17, 39);
+      doc.setTextColor(185, 28, 28);
+      doc.text("Instructions: Use Dark Blue or Black Ballpoint Pen only. Darken circles completely. Do not fold or tear this sheet.", 17, 39);
 
-      // E. Render Question Grid and Bubbles
-      const totalQuestions = blueprint.TemplateType || blueprint.template_type || 100;
+      // E. Render Questions & Bubbles in Authentic OMR Dark Red
+      doc.setFont("helvetica", "bold");
+      doc.setDrawColor(185, 28, 28);  // Circle border color: Dark Red
+      doc.setTextColor(185, 28, 28);  // Text color: Dark Red
+      doc.setLineWidth(0.28);
 
       for (let q = 1; q <= totalQuestions; q++) {
         const qData = coordMap.questions[q];
         if (!qData) continue;
 
-        // Print subject separator header if question begins a subject range
-        if (subjectHeaders[q]) {
-          doc.setFillColor(241, 245, 249);
-          doc.rect((qData.labelPos.x - 3) * scale, (qData.labelPos.y - 18) * scale, 34, 3.8, "F");
-          doc.setFont("helvetica", "bold");
-          doc.setFontSize(6.5);
-          doc.setTextColor(2, 132, 199);
-          doc.text(`[ ${subjectHeaders[q].toUpperCase()} ]`, (qData.labelPos.x - 1) * scale, (qData.labelPos.y - 11) * scale);
-          doc.setTextColor(0, 0, 0);
-        }
-
         // Question Number
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(7);
+        doc.setFontSize(7.5);
         doc.text(String(q).padStart(2, "0"), qData.labelPos.x * scale, (qData.labelPos.y + 3) * scale);
 
-        // Bubbles A, B, C, D
-        doc.setFont("helvetica", "normal");
+        // Bubbles: A, B, C, D
         doc.setFontSize(6.5);
-
         ["A", "B", "C", "D"].forEach(opt => {
           const b = qData.bubbles[opt];
           const bx = b.x * scale;
           const by = b.y * scale;
           const br = b.r * scale;
 
-          doc.setDrawColor(100, 116, 139);
-          doc.setLineWidth(0.2);
           doc.circle(bx, by, br, "S");
           doc.text(opt, bx - 0.9, by + 1.0);
         });
       }
     }
 
-    doc.save(`OMR_${blueprint.Class || "Class"}_${blueprint.BlueprintID || "Exam"}.pdf`);
+    doc.save(`OMR_${totalQuestions}Q_${Date.now()}.pdf`);
   }
 
   // 3. OPENCV COMPUTER VISION PERSPECTIVE HOMOGRAPHY & BUBBLE EVALUATOR
@@ -235,12 +237,10 @@
     const contours = new cv.MatVector();
     const hierarchy = new cv.Mat();
 
-    // A. Preprocessing: Grayscale -> Gaussian Blur -> Adaptive Binary Inversion
     cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
     cv.GaussianBlur(gray, blurred, new cv.Size(5, 5), 0);
     cv.adaptiveThreshold(blurred, thresh, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY_INV, 15, 3);
 
-    // B. Locate 4 Solid Black Fiducial Corner Squares
     cv.findContours(thresh, contours, hierarchy, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE);
 
     const squareCandidates = [];
@@ -248,7 +248,7 @@
       const cnt = contours.get(i);
       const area = cv.contourArea(cnt);
 
-      if (area > 300 && area < 45000) {
+      if (area > 280 && area < 45000) {
         const peri = cv.arcLength(cnt, true);
         const approx = new cv.Mat();
         cv.approxPolyDP(cnt, approx, 0.04 * peri, true);
@@ -256,7 +256,7 @@
         if (approx.rows === 4) {
           const rect = cv.boundingRect(approx);
           const aspect = rect.width / rect.height;
-          if (aspect >= 0.78 && aspect <= 1.28) {
+          if (aspect >= 0.75 && aspect <= 1.30) {
             const m = cv.moments(cnt);
             if (m.m00 !== 0) {
               squareCandidates.push({ x: m.m10 / m.m00, y: m.m01 / m.m00, area: area });
@@ -271,7 +271,6 @@
     let warpedThresh = new cv.Mat();
 
     if (squareCandidates.length >= 4) {
-      // Sort corners geometrically
       squareCandidates.sort((a, b) => (a.x + a.y) - (b.x + b.y));
       const tl = squareCandidates[0];
       const br = squareCandidates[squareCandidates.length - 1];
@@ -293,12 +292,11 @@
       cv.resize(src, warped, new cv.Size(WARP_W, WARP_H));
     }
 
-    // C. Binarize Warped Image for Bubble Reading
     const warpedGray = new cv.Mat();
     cv.cvtColor(warped, warpedGray, cv.COLOR_RGBA2GRAY);
     cv.adaptiveThreshold(warpedGray, warpedThresh, 255, cv.ADAPTIVE_THRESH_GAUSSIAN_C, cv.THRESH_BINARY_INV, 11, 2);
 
-    // D. Extract and Decode QR Code (Upper Right Corner)
+    // QR Code extraction
     let studentMeta = { sid: "UNKNOWN", r: "NA" };
     if (window.jsQR) {
       const offCanvas = document.createElement("canvas");
@@ -317,8 +315,8 @@
       }
     }
 
-    // E. Extract Bubble Darkness Ratios
-    const totalQ = blueprint.TemplateType || blueprint.template_type || 100;
+    // Evaluate bubbles
+    const totalQ = parseInt(blueprint.TemplateType || blueprint.template_type || 100, 10);
     const coordMap = getTemplateCoordinates(totalQ);
     const studentAnswers = {};
     const flags = {};
@@ -344,7 +342,6 @@
         roi.delete();
       });
 
-      // Threshold: > 52% dark pixels qualifies as marked
       const marked = Object.keys(fillRatios).filter(opt => fillRatios[opt] > 0.52);
 
       if (marked.length === 1) {
@@ -357,7 +354,6 @@
       }
     }
 
-    // Clean up OpenCV memory
     src.delete();
     gray.delete();
     blurred.delete();
@@ -368,22 +364,25 @@
     warpedGray.delete();
     warpedThresh.delete();
 
-    // F. Evaluate Scores Subject by Subject
     return computeEvaluationPayload(studentMeta, studentAnswers, flags, blueprint, answerKeyConfig);
   }
 
-  // 4. MULTI-SUBJECT SCORING & TALLY CALCULATOR
+  // 4. SCORING & TALLY CALCULATOR
   function computeEvaluationPayload(studentMeta, studentAnswers, flags, blueprint, answerKeyConfig) {
-    const markR = parseFloat(answerKeyConfig.RightMarks || answerKeyConfig.right || 1.0);
-    const markW = parseFloat(answerKeyConfig.WrongMarks || answerKeyConfig.wrong || 0.0);
-    const markB = parseFloat(answerKeyConfig.BlankMarks || answerKeyConfig.blank || 0.0);
-    const keys = answerKeyConfig.Keys || answerKeyConfig.keys || {};
-    const subjects = blueprint.Subjects || blueprint.subjects || [];
+    const markR = parseFloat(answerKeyConfig.RightMarks || 1.0);
+    const markW = parseFloat(answerKeyConfig.WrongMarks || 0.0);
+    const markB = parseFloat(answerKeyConfig.BlankMarks || 0.0);
+    const keys = answerKeyConfig.Keys || {};
+    const totalQ = parseInt(blueprint.TemplateType || 100, 10);
 
     let totalR = 0;
     let totalW = 0;
     let totalBlank = 0;
     const subjectsScore = {};
+
+    const subjects = (blueprint.Subjects && blueprint.Subjects.length > 0) 
+      ? blueprint.Subjects 
+      : [{ name: "General Assessment", start_q: 1, end_q: totalQ, total: totalQ }];
 
     subjects.forEach(sub => {
       let subR = 0;
@@ -411,9 +410,9 @@
     return {
       studentId: studentMeta.sid || "UNKNOWN",
       rollNo: studentMeta.r || "00",
-      blueprintId: blueprint.BlueprintID || blueprint.blueprint_id,
-      examName: blueprint.ExamName || blueprint.title,
-      class: blueprint.Class || blueprint.class_id,
+      blueprintId: blueprint.BlueprintID || "TPL",
+      examName: blueprint.ExamName || "Exam",
+      class: blueprint.Class || "All",
       subjectsScore: subjectsScore,
       totalRight: totalR,
       totalWrong: totalW,
@@ -425,12 +424,11 @@
     };
   }
 
-  // 5. EXCEL SPREADSHEET EXPORTER (.XLSX)
+  // 5. EXCEL EXPORTER (.XLSX)
   function exportToExcel(resultsArray, blueprint) {
     if (!window.XLSX) {
       throw new Error("SheetJS (xlsx) library is not loaded.");
     }
-    const subjects = blueprint.Subjects || blueprint.subjects || [];
 
     const rows = resultsArray.map(r => {
       const row = {
@@ -444,11 +442,10 @@
         "Status": r.hasFlags ? "FLAGGED (MULTI)" : "VERIFIED"
       };
 
-      subjects.forEach(s => {
-        const sc = r.subjectsScore[s.name] || { R: 0, W: 0 };
-        row[`${s.name} (Right)`] = sc.R;
-        row[`${s.name} (Wrong)`] = sc.W;
-        row[`${s.name} (Blank)`] = s.total - (sc.R + sc.W);
+      Object.keys(r.subjectsScore).forEach(subName => {
+        const sc = r.subjectsScore[subName];
+        row[`${subName} (Right)`] = sc.R;
+        row[`${subName} (Wrong)`] = sc.W;
       });
 
       return row;
@@ -460,7 +457,7 @@
     XLSX.writeFile(wb, `OMR_Report_${blueprint.BlueprintID || "Exam"}.xlsx`);
   }
 
-  // Public Interface
+  // Public API Interface
   return {
     getCoordinates: getTemplateCoordinates,
     generatePdf: generateStudentOmrPdf,
