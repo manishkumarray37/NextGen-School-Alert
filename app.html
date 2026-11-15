@@ -34899,7 +34899,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 </template>
 
 <!-- =================================================================== -->
-<!-- OMR MODULE 1: PURE OMR SHEET TEMPLATE DESIGNER & PRE-BUILT LIBRARY  -->
+<!-- OMR MODULE 1: PURE OMR TEMPLATES MANAGER & LIVE VECTOR PREVIEW      -->
 <!-- =================================================================== -->
 <template id='tpl-OmrDesigner'>
   <style>
@@ -34907,24 +34907,27 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     .omr-filter-box { background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
     .omr-label { font-size: 0.78rem; font-weight: 700; color: #334155; margin-bottom: 4px; display: block; }
 
-    /* PRESET TEMPLATE BADGES */
+    /* PRESET TEMPLATE CARDS */
     .preset-card {
       background: #f8fafc;
       border: 1.5px solid #cbd5e1;
-      border-radius: 10px;
-      padding: 12px;
+      border-radius: 12px;
+      padding: 14px 10px;
       text-align: center;
-      cursor: pointer;
       transition: all 0.2s ease;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
-    .preset-card:hover, .preset-card.active {
+    .preset-card:hover {
       background: #eff6ff;
       border-color: #0284c7;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.15);
     }
-    .preset-title { font-size: 14px; font-weight: 800; color: #0f172a; }
-    .preset-desc { font-size: 11px; color: #64748b; font-weight: 600; }
+    .preset-title { font-size: 16px; font-weight: 800; color: #0f172a; }
+    .preset-desc { font-size: 11px; color: #64748b; font-weight: 600; margin-bottom: 10px; }
 
     /* SUMMARY METRICS BAR (EXACT ERP MATCH) */
     .omr-kpi-bar {
@@ -34938,7 +34941,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     }
     .omr-kpi-tile {
-      padding: 10px 10px;
+      padding: 10px 8px;
       text-align: center;
       border-right: 1px solid #e2e8f0;
       display: flex;
@@ -34974,7 +34977,19 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     .table-omr th { background: #f8fafc; font-size: 0.78rem; text-transform: uppercase; color: #334155; font-weight: 800; border-bottom: 2px solid #e2e8f0; padding: 12px 10px; text-align: center; }
     .table-omr td { font-size: 0.82rem; vertical-align: middle; padding: 10px; border-bottom: 1px solid #f1f5f9; font-weight: 600; }
     .format-badge { background: #eff6ff; color: #1d4ed8; font-weight: 800; padding: 3px 8px; border-radius: 6px; border: 1px solid #bfdbfe; font-size: 11px; }
-    .subject-pill { background: #f1f5f9; color: #334155; font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 4px; margin: 2px; display: inline-block; border: 1px solid #cbd5e1; }
+
+    /* PREVIEW SHEET SHEET CONTAINER (A4 SCALED) */
+    .omr-sheet-viewport {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 650px;
+      margin: 0 auto;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
 
     @media (max-width: 992px) {
       .omr-kpi-bar { grid-template-columns: repeat(3, 1fr); }
@@ -34989,7 +35004,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         <h6 class='m-0 fw-bold text-dark'>OMR Sheet Template Designer &amp; Library</h6>
       </div>
       <div>
-        <button class='btn btn-outline-primary btn-sm px-3 fw-bold shadow-sm' onclick='window.loadOmrTemplatesLibrary(true)' type='button'>
+        <button class='btn btn-outline-primary btn-sm px-3 fw-bold shadow-sm' onclick='window.loadOmrMasterTemplates(true)' type='button'>
           <i class='fas fa-sync-alt me-1'></i> Refresh Library
         </button>
       </div>
@@ -34997,116 +35012,104 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
     <div class='card-body p-2'>
       
-      <!-- 1. PRESET TEMPLATES SELECTOR CARDS -->
-      <div class='mb-3'>
-        <label class='omr-label'><i class='fas fa-th-large text-primary me-1'></i> Quick Choose Standard Template Format:</label>
+      <!-- 1. PRESET STANDARD OMR TEMPLATES (6 CARDS WITH PREVIEW & USE) -->
+      <div class='mb-4'>
+        <label class='omr-label'><i class='fas fa-th-large text-primary me-1'></i> Standard Pre-Built OMR Templates (Ready-to-Use):</label>
         <div class='row g-2'>
-          <div class='col-6 col-md-2' onclick='window.selectPresetTemplate(25)'>
-            <div class='preset-card' id='presetCard_25'>
-              <div class='preset-title'>25 Qs</div>
-              <div class='preset-desc'>2 Columns (13+12)</div>
+          
+          <div class='col-6 col-md-2'>
+            <div class='preset-card'>
+              <div class='preset-title'>25 Questions</div>
+              <div class='preset-desc'>2 Columns (13 + 12)</div>
+              <button class='btn btn-outline-primary btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(25)' type='button'>
+                <i class='fas fa-eye me-1'></i> Preview
+              </button>
             </div>
           </div>
-          <div class='col-6 col-md-2' onclick='window.selectPresetTemplate(50)'>
-            <div class='preset-card' id='presetCard_50'>
-              <div class='preset-title'>50 Qs</div>
-              <div class='preset-desc'>2 Columns (25+25)</div>
+
+          <div class='col-6 col-md-2'>
+            <div class='preset-card'>
+              <div class='preset-title'>50 Questions</div>
+              <div class='preset-desc'>2 Columns (25 + 25)</div>
+              <button class='btn btn-outline-primary btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(50)' type='button'>
+                <i class='fas fa-eye me-1'></i> Preview
+              </button>
             </div>
           </div>
-          <div class='col-6 col-md-2' onclick='window.selectPresetTemplate(75)'>
-            <div class='preset-card' id='presetCard_75'>
-              <div class='preset-title'>75 Qs</div>
-              <div class='preset-desc'>3 Columns (25x3)</div>
+
+          <div class='col-6 col-md-2'>
+            <div class='preset-card'>
+              <div class='preset-title'>75 Questions</div>
+              <div class='preset-desc'>3 Columns (25 x 3)</div>
+              <button class='btn btn-outline-primary btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(75)' type='button'>
+                <i class='fas fa-eye me-1'></i> Preview
+              </button>
             </div>
           </div>
-          <div class='col-6 col-md-2' onclick='window.selectPresetTemplate(100)'>
-            <div class='preset-card active' id='presetCard_100'>
-              <div class='preset-title text-primary'>100 Qs</div>
-              <div class='preset-desc'>4 Columns (25x4)</div>
+
+          <div class='col-6 col-md-2'>
+            <div class='preset-card border-primary bg-primary-subtle'>
+              <div class='preset-title text-primary'>100 Questions</div>
+              <div class='preset-desc'>4 Columns (25 x 4)</div>
+              <button class='btn btn-primary btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(100)' type='button'>
+                <i class='fas fa-eye me-1'></i> Preview
+              </button>
             </div>
           </div>
-          <div class='col-6 col-md-2' onclick='window.selectPresetTemplate(120)'>
-            <div class='preset-card' id='presetCard_120'>
-              <div class='preset-title'>120 Qs</div>
-              <div class='preset-desc'>4 Columns (30x4)</div>
+
+          <div class='col-6 col-md-2'>
+            <div class='preset-card'>
+              <div class='preset-title'>120 Questions</div>
+              <div class='preset-desc'>4 Columns (30 x 4)</div>
+              <button class='btn btn-outline-primary btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(120)' type='button'>
+                <i class='fas fa-eye me-1'></i> Preview
+              </button>
             </div>
           </div>
-          <div class='col-6 col-md-2' onclick='window.selectPresetTemplate(180)'>
-            <div class='preset-card' id='presetCard_180'>
-              <div class='preset-title'>180 Qs</div>
-              <div class='preset-desc'>4 Columns (45x4)</div>
+
+          <div class='col-6 col-md-2'>
+            <div class='preset-card'>
+              <div class='preset-title'>180 Questions</div>
+              <div class='preset-desc'>4 Columns (45 x 4)</div>
+              <button class='btn btn-outline-primary btn-sm w-100 fw-bold py-1' onclick='window.openOmrPreviewQuick(180)' type='button'>
+                <i class='fas fa-eye me-1'></i> Preview
+              </button>
             </div>
           </div>
+
         </div>
       </div>
 
-      <!-- 2. TEMPLATE BUILDER FORM -->
+      <!-- 2. CREATE NEW CUSTOM OMR TEMPLATE FORM -->
       <div class='omr-filter-box mb-3'>
-        <h6 class='fw-bold text-primary mb-3'><i class='fas fa-sliders-h me-1'></i> Custom Template Configuration &amp; Subject Ranges</h6>
+        <h6 class='fw-bold text-primary mb-3'><i class='fas fa-plus-circle me-1'></i> Create New Custom OMR Template Format</h6>
         
-        <div class='row g-3 mb-3'>
-          <div class='col-md-5'>
+        <div class='row g-3 align-items-end'>
+          <div class='col-md-4'>
             <label class='omr-label'>Template Title / Label *</label>
-            <input class='form-control form-control-sm fw-bold' id='omrTplTitle' placeholder='e.g., General 100 Questions OMR Sheet' type='text'>
+            <input class='form-control form-control-sm fw-bold' id='customTplTitle' placeholder='e.g., Weekly Test 50 Questions Sheet' type='text'>
           </div>
           <div class='col-md-3'>
             <label class='omr-label'>Question Capacity *</label>
-            <select class='form-select form-select-sm fw-bold text-primary' id='omrTplCapacity' onchange='window.onCapacityDropdownChange()'>
-              <option value='25'>25 Questions</option>
-              <option value='50'>50 Questions</option>
-              <option value='75'>75 Questions</option>
-              <option value='100' selected='selected'>100 Questions</option>
-              <option value='120'>120 Questions</option>
-              <option value='180'>180 Questions</option>
+            <select class='form-select form-select-sm fw-bold text-primary' id='customTplCapacity'>
+              <option value='25'>25 Questions (2 Columns)</option>
+              <option value='50'>50 Questions (2 Columns)</option>
+              <option value='75'>75 Questions (3 Columns)</option>
+              <option value='100' selected='selected'>100 Questions (4 Columns)</option>
+              <option value='120'>120 Questions (4 Columns)</option>
+              <option value='180'>180 Questions (4 Columns)</option>
             </select>
           </div>
-          <div class='col-md-2'>
-            <label class='omr-label'>Bubble Options</label>
-            <select class='form-select form-select-sm fw-bold' id='omrTplOptions'>
+          <div class='col-md-3'>
+            <label class='omr-label'>Bubble Options Per Question</label>
+            <select class='form-select form-select-sm fw-bold' id='customTplOptions'>
               <option value='4' selected='selected'>4 Options (A, B, C, D)</option>
               <option value='5'>5 Options (A, B, C, D, E)</option>
             </select>
           </div>
           <div class='col-md-2'>
-            <label class='omr-label'>Template ID</label>
-            <input class='form-control form-control-sm text-muted bg-light' id='omrTplId' readonly='readonly' type='text'>
-          </div>
-        </div>
-
-        <!-- SUBJECT RANGE MAPPING (GENERIC SECTIONS) -->
-        <div class='pt-2 border-top'>
-          <div class='d-flex justify-content-between align-items-center mb-2'>
-            <label class='omr-label m-0'><i class='fas fa-layer-group text-primary me-1'></i> Subject / Section Partitions (Defines range labels printed on sheet)</label>
-            <button class='btn btn-outline-success btn-sm py-1 px-3 fw-bold' onclick='window.addSubjectPartitionRow()' type='button'>
-              <i class='fas fa-plus me-1'></i> Add Partition
-            </button>
-          </div>
-
-          <div class='table-responsive border rounded-3 bg-white mb-2'>
-            <table class='table table-bordered table-sm text-center align-middle mb-0'>
-              <thead class='table-light'>
-                <tr style='font-size: 11px;'>
-                  <th style='text-align: left; padding-left: 12px;'>Section / Subject Label</th>
-                  <th style='width: 130px;'>Start Question</th>
-                  <th style='width: 130px;'>End Question</th>
-                  <th style='width: 140px;'>Total Questions</th>
-                  <th style='width: 60px;'>Action</th>
-                </tr>
-              </thead>
-              <tbody id='omrSubjectPartitionsTbody'>
-                <!-- Default Partition Rows -->
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Dynamic Validation Alert -->
-          <div class='alert alert-info py-2 small mb-3 fw-bold' id='omrPartitionNotice'>
-            <i class='fas fa-info-circle me-1'></i> Partition boundaries must cover Q1 to total template questions without gap or overlap.
-          </div>
-
-          <div class='d-flex justify-content-end gap-2'>
-            <button class='btn btn-primary btn-sm px-4 fw-bold shadow-sm' id='btnSaveOmrTemplate' onclick='window.submitOmrTemplateRecord()' type='button'>
-              <i class='fas fa-save me-1'></i> Save OMR Template to Library
+            <button class='btn btn-success btn-sm w-100 fw-bold shadow-sm' id='btnSaveCustomTemplate' onclick='window.saveCustomOmrTemplate()' type='button'>
+              <i class='fas fa-save me-1'></i> Save Template
             </button>
           </div>
         </div>
@@ -35114,29 +35117,30 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       <!-- ================= 3. SUMMARY METRICS BAR ================= -->
       <div class='omr-kpi-bar' id='omrKpiSummaryBar'>
-        <div class='omr-kpi-tile omr-kpi-25'>25 Qs <span class='omr-kpi-badge' id='cntTpl25'>0</span></div>
-        <div class='omr-kpi-tile omr-kpi-50'>50 Qs <span class='omr-kpi-badge' id='cntTpl50'>0</span></div>
-        <div class='omr-kpi-tile omr-kpi-75'>75 Qs <span class='omr-kpi-badge' id='cntTpl75'>0</span></div>
-        <div class='omr-kpi-tile omr-kpi-100'>100 Qs <span class='omr-kpi-badge' id='cntTpl100'>0</span></div>
-        <div class='omr-kpi-tile omr-kpi-large'>120/180 Qs <span class='omr-kpi-badge' id='cntTplLarge'>0</span></div>
-        <div class='omr-kpi-tile omr-kpi-total'>Total Templates <span class='omr-kpi-badge' id='cntTplTotal'>0</span></div>
+        <div class='omr-kpi-tile omr-kpi-25'>25 Qs <span class='omr-kpi-badge' id='cntTpl25'>1</span></div>
+        <div class='omr-kpi-tile omr-kpi-50'>50 Qs <span class='omr-kpi-badge' id='cntTpl50'>1</span></div>
+        <div class='omr-kpi-tile omr-kpi-75'>75 Qs <span class='omr-kpi-badge' id='cntTpl75'>1</span></div>
+        <div class='omr-kpi-tile omr-kpi-100'>100 Qs <span class='omr-kpi-badge' id='cntTpl100'>1</span></div>
+        <div class='omr-kpi-tile omr-kpi-large'>120/180 Qs <span class='omr-kpi-badge' id='cntTplLarge'>2</span></div>
+        <div class='omr-kpi-tile omr-kpi-total'>Available Templates <span class='omr-kpi-badge' id='cntTplTotal'>6</span></div>
       </div>
 
-      <!-- ================= 4. SAVED TEMPLATES LIBRARY TABLE ================= -->
+      <!-- ================= 4. TEMPLATES LIBRARY TABLE ================= -->
       <div class='table-responsive border rounded-3 bg-white mb-3'>
         <table class='table table-hover table-omr align-middle text-center mb-0'>
           <thead>
             <tr>
               <th style='width: 60px;'>#</th>
-              <th style='text-align: left; padding-left: 14px;'>Template Title &amp; ID</th>
+              <th style='text-align: left; padding-left: 14px;'>Template Name &amp; ID</th>
               <th style='width: 140px;'>Capacity</th>
-              <th style='width: 100px;'>Options</th>
-              <th style='text-align: left; padding-left: 12px;'>Configured Partitions / Subjects</th>
-              <th style='width: 120px;'>Action</th>
+              <th style='width: 130px;'>Grid Columns</th>
+              <th style='width: 130px;'>Bubble Options</th>
+              <th style='width: 110px;'>Category</th>
+              <th style='width: 180px;'>Actions</th>
             </tr>
           </thead>
-          <tbody id='omrTemplatesListTbody'>
-            <tr><td class='text-center py-4 text-muted fw-bold' colspan='6'><i class='fas fa-spinner fa-spin me-2 text-primary'></i>Loading templates library...</td></tr>
+          <tbody id='omrTemplatesMasterTbody'>
+            <!-- Dynamic Templates List -->
           </tbody>
         </table>
       </div>
@@ -35144,187 +35148,166 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     </div>
   </div>
 
-  <!-- 5. SCOPED JAVASCRIPT ENGINE -->
+  <!-- ================= 5. LIVE OMR SHEET PREVIEW MODAL ================= -->
+  <div class='modal fade' id='omrPreviewModal' tabindex='-1'>
+    <div class='modal-dialog modal-dialog-centered modal-lg'>
+      <div class='modal-content'>
+        <div class='modal-header py-2.5 bg-primary text-white d-flex justify-content-between align-items-center'>
+          <h6 class='modal-title fw-bold' id='omrPreviewModalTitle'>
+            <i class='fas fa-file-alt me-2'></i>OMR Sheet Layout Preview
+          </h6>
+          <button class='btn-close btn-close-white' data-bs-dismiss='modal' type='button'></button>
+        </div>
+        <div class='modal-body p-3 text-center bg-light'>
+          
+          <div class='alert alert-info py-1.5 small mb-2 fw-bold text-start'>
+            <i class='fas fa-info-circle me-1'></i> 
+            Pure Vector Layout Preview: Notice the 4 corner alignment squares. Student details &amp; QR code will be pre-printed in Module 2 (Print Desk).
+          </div>
+
+          <!-- A4 Scaled Canvas Preview -->
+          <div class='omr-sheet-viewport'>
+            <canvas id='omrPreviewCanvas' width='600' height='848' style='width: 100%; display: block;'></canvas>
+          </div>
+
+        </div>
+        <div class='modal-footer py-2 d-flex justify-content-between'>
+          <button class='btn btn-secondary btn-sm fw-bold' data-bs-dismiss='modal' type='button'>Close Preview</button>
+          <button class='btn btn-success btn-sm fw-bold px-3 shadow-sm' id='btnDownloadSamplePdf' onclick='window.downloadSampleBlankPdf()' type='button'>
+            <i class='fas fa-download me-1'></i> Download Sample Blank PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. SCOPED JAVASCRIPT ENGINE -->
   <script type='text/javascript'>
   // <![CDATA[
   (async function() {
-    let savedTemplatesList = [];
+    let customSavedTemplates = [];
+    let currentPreviewingTemplate = null;
+
+    // Core Standard Presets (Available Out of Box)
+    const standardPresets = [
+      { id: "STD-25", name: "Standard 25 Questions Sheet", cap: 25, cols: "2 Columns (13+12)", opts: "A, B, C, D", isPreset: true },
+      { id: "STD-50", name: "Standard 50 Questions Sheet", cap: 50, cols: "2 Columns (25+25)", opts: "A, B, C, D", isPreset: true },
+      { id: "STD-75", name: "Standard 75 Questions Sheet", cap: 75, cols: "3 Columns (25x3)", opts: "A, B, C, D", isPreset: true },
+      { id: "STD-100", name: "Standard 100 Questions Sheet", cap: 100, cols: "4 Columns (25x4)", opts: "A, B, C, D", isPreset: true },
+      { id: "STD-120", name: "Standard 120 Questions Sheet", cap: 120, cols: "4 Columns (30x4)", opts: "A, B, C, D", isPreset: true },
+      { id: "STD-180", name: "Standard 180 Questions Sheet", cap: 180, cols: "4 Columns (45x4)", opts: "A, B, C, D", isPreset: true }
+    ];
 
     // ⚡ 1. INITIALIZE MODULE
     window.initOmrDesignerModule = async function() {
-      document.getElementById('omrTplId').value = "TPL-" + Date.now().toString(36).toUpperCase();
-      document.getElementById('omrTplTitle').value = "Standard 100 Questions OMR Sheet";
-
-      // Setup default 4 sections for 100 Qs
-      window.setupDefaultPartitionsForCap(100);
-      await window.loadOmrTemplatesLibrary();
+      await window.loadOmrMasterTemplates();
     };
 
-    // ⚡ 2. PRESET CARD CLICK HANDLER
-    window.selectPresetTemplate = function(cap) {
-      document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('active'));
-      const activeCard = document.getElementById(`presetCard_${cap}`);
-      if (activeCard) activeCard.classList.add('active');
+    // ⚡ 2. LOAD MASTER TEMPLATES (PRESETS + SUPABASE CUSTOM)
+    window.loadOmrMasterTemplates = async function(force) {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
 
-      document.getElementById('omrTplCapacity').value = cap;
-      document.getElementById('omrTplTitle').value = `Standard ${cap} Questions OMR Sheet`;
-      window.setupDefaultPartitionsForCap(cap);
-    };
+      try {
+        const { data, error } = await db
+          .from('OMR_Blueprints')
+          .select('*')
+          .eq('SchoolID', schoolId)
+          .eq('Class', 'Template')
+          .order('Id', { ascending: false });
 
-    window.onCapacityDropdownChange = function() {
-      const cap = parseInt(document.getElementById('omrTplCapacity').value, 10);
-      window.selectPresetTemplate(cap);
-    };
-
-    // ⚡ 3. SETUP DEFAULT PARTITIONS BY CAPACITY
-    window.setupDefaultPartitionsForCap = function(cap) {
-      const tbody = document.getElementById('omrSubjectPartitionsTbody');
-      tbody.innerHTML = "";
-
-      let partitions = [];
-      if (cap === 25) {
-        partitions = [{ name: "Section A", s: 1, e: 25 }];
-      } else if (cap === 50) {
-        partitions = [{ name: "Section A", s: 1, e: 25 }, { name: "Section B", s: 26, e: 50 }];
-      } else if (cap === 75) {
-        partitions = [{ name: "Section A", s: 1, e: 25 }, { name: "Section B", s: 26, e: 50 }, { name: "Section C", s: 51, e: 75 }];
-      } else if (cap === 100) {
-        partitions = [
-          { name: "Hindi", s: 1, e: 25 },
-          { name: "English", s: 26, e: 50 },
-          { name: "Mathematics", s: 51, e: 75 },
-          { name: "Science", s: 76, e: 100 }
-        ];
-      } else if (cap === 120) {
-        partitions = [
-          { name: "Physics", s: 1, e: 30 },
-          { name: "Chemistry", s: 31, e: 60 },
-          { name: "Mathematics", s: 61, e: 90 },
-          { name: "Biology", s: 91, e: 120 }
-        ];
-      } else if (cap === 180) {
-        partitions = [
-          { name: "Physics", s: 1, e: 45 },
-          { name: "Chemistry", s: 46, e: 90 },
-          { name: "Botany", s: 91, e: 135 },
-          { name: "Zoology", s: 136, e: 180 }
-        ];
-      }
-
-      partitions.forEach(p => {
-        const count = (p.e - p.s) + 1;
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><input type="text" class="form-control form-control-sm fw-bold omr-part-name" value="${p.name}"></td>
-          <td><input type="number" class="form-control form-control-sm text-center fw-bold omr-part-start" value="${p.s}" oninput="window.validateOmrPartitions()"></td>
-          <td><input type="number" class="form-control form-control-sm text-center fw-bold omr-part-end" value="${p.e}" oninput="window.validateOmrPartitions()"></td>
-          <td><input type="text" class="form-control form-control-sm text-center text-primary fw-bold omr-part-total bg-light" value="${count}" readonly></td>
-          <td class="text-center"><button class="btn btn-sm btn-outline-danger" onclick="window.removeOmrPartitionRow(this)" type="button"><i class="fas fa-times"></i></button></td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      window.validateOmrPartitions();
-    };
-
-    // ⚡ 4. DYNAMIC ROW CONTROLLERS
-    window.addSubjectPartitionRow = function() {
-      const tbody = document.getElementById('omrSubjectPartitionsTbody');
-      const rows = tbody.querySelectorAll('tr');
-      let nextStart = 1;
-
-      if (rows.length > 0) {
-        const lastEnd = parseInt(rows[rows.length - 1].querySelector('.omr-part-end').value, 10);
-        if (!isNaN(lastEnd)) nextStart = lastEnd + 1;
-      }
-
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td><input type="text" class="form-control form-control-sm fw-bold omr-part-name" placeholder="Subject / Section Name"></td>
-        <td><input type="number" class="form-control form-control-sm text-center fw-bold omr-part-start" value="${nextStart}" oninput="window.validateOmrPartitions()"></td>
-        <td><input type="number" class="form-control form-control-sm text-center fw-bold omr-part-end" value="${nextStart + 24}" oninput="window.validateOmrPartitions()"></td>
-        <td><input type="text" class="form-control form-control-sm text-center text-primary fw-bold omr-part-total bg-light" value="25" readonly></td>
-        <td class="text-center"><button class="btn btn-sm btn-outline-danger" onclick="window.removeOmrPartitionRow(this)" type="button"><i class="fas fa-times"></i></button></td>
-      `;
-      tbody.appendChild(tr);
-      window.validateOmrPartitions();
-    };
-
-    window.removeOmrPartitionRow = function(btn) {
-      btn.closest('tr').remove();
-      window.validateOmrPartitions();
-    };
-
-    // ⚡ 5. VALIDATE PARTITION CONTIGUITY
-    window.validateOmrPartitions = function() {
-      const cap = parseInt(document.getElementById('omrTplCapacity').value, 10);
-      const rows = document.querySelectorAll('#omrSubjectPartitionsTbody tr');
-      const notice = document.getElementById('omrPartitionNotice');
-      const saveBtn = document.getElementById('btnSaveOmrTemplate');
-
-      let expectedStart = 1;
-      let totalAllocated = 0;
-      let isValid = true;
-
-      rows.forEach(r => {
-        const s = parseInt(r.querySelector('.omr-part-start').value, 10);
-        const e = parseInt(r.querySelector('.omr-part-end').value, 10);
-        const tot = r.querySelector('.omr-part-total');
-
-        if (!isNaN(s) && !isNaN(e) && e >= s) {
-          const count = (e - s) + 1;
-          tot.value = count;
-          totalAllocated += count;
-
-          if (s !== expectedStart) isValid = false;
-          expectedStart = e + 1;
-        } else {
-          isValid = false;
+        if (!error && data) {
+          customSavedTemplates = data.map(d => ({
+            id: d.BlueprintID,
+            name: d.ExamName,
+            cap: parseInt(d.TemplateType, 10),
+            cols: (d.TemplateType <= 50 ? "2 Columns" : (d.TemplateType === 75 ? "3 Columns" : "4 Columns")),
+            opts: "A, B, C, D",
+            isPreset: false
+          }));
         }
-      });
-
-      if (isValid && totalAllocated === cap) {
-        notice.className = "alert alert-success py-2 small mb-3 fw-bold";
-        notice.innerHTML = `<i class="fas fa-check-circle me-1"></i> Valid Layout: Exact ${totalAllocated} questions partitioned sequentially across ${rows.length} sections.`;
-        saveBtn.disabled = false;
-        return true;
-      } else {
-        notice.className = "alert alert-danger py-2 small mb-3 fw-bold";
-        notice.innerHTML = `<i class="fas fa-exclamation-triangle me-1"></i> Range Mismatch: Must start at Q1, without gaps, and sum to exactly ${cap} questions (Current Total: ${totalAllocated}).`;
-        saveBtn.disabled = true;
-        return false;
+      } catch(e) {
+        console.warn("Using preset templates fallback:", e);
       }
+
+      window.renderTemplatesTable();
     };
 
-    // ⚡ 6. SUBMIT TO SUPABASE "OMR_Blueprints" AS TEMPLATE
-    window.submitOmrTemplateRecord = async function() {
-      if (!window.validateOmrPartitions()) return;
+    // ⚡ 3. RENDER TEMPLATES TABLE & METRICS
+    window.renderTemplatesTable = function() {
+      const tbody = document.getElementById('omrTemplatesMasterTbody');
+      const allTemplates = [...standardPresets, ...customSavedTemplates];
 
-      const title = document.getElementById('omrTplTitle').value.trim();
-      const cap = parseInt(document.getElementById('omrTplCapacity').value, 10);
-      const tplId = document.getElementById('omrTplId').value.trim();
-      const saveBtn = document.getElementById('btnSaveOmrTemplate');
+      // Update KPIs
+      let c25 = 0, c50 = 0, c75 = 0, c100 = 0, cLarge = 0;
+      allTemplates.forEach(t => {
+        if (t.cap === 25) c25++;
+        else if (t.cap === 50) c50++;
+        else if (t.cap === 75) c75++;
+        else if (t.cap === 100) c100++;
+        else cLarge++;
+      });
+
+      document.getElementById('cntTpl25').innerText = c25;
+      document.getElementById('cntTpl50').innerText = c50;
+      document.getElementById('cntTpl75').innerText = c75;
+      document.getElementById('cntTpl100').innerText = c100;
+      document.getElementById('cntTplLarge').innerText = cLarge;
+      document.getElementById('cntTplTotal').innerText = allTemplates.length;
+
+      let html = "";
+      allTemplates.forEach((t, idx) => {
+        const categoryBadge = t.isPreset 
+          ? `<span class="badge bg-secondary-subtle text-secondary fw-bold px-2 py-1">Standard Preset</span>`
+          : `<span class="badge bg-primary-subtle text-primary fw-bold px-2 py-1">Custom Saved</span>`;
+
+        const deleteBtn = t.isPreset 
+          ? `<button class="btn btn-sm btn-light border text-muted" disabled title="Standard preset cannot be deleted"><i class="fas fa-lock"></i></button>`
+          : `<button class="btn btn-sm btn-outline-danger" onclick="window.deleteCustomOmrTemplate('${t.id}')" title="Delete"><i class="fas fa-trash-alt"></i></button>`;
+
+        html += `
+          <tr>
+            <td>${idx + 1}</td>
+            <td class="text-start ps-3">
+              <div class="fw-bold text-dark">${t.name}</div>
+              <div class="text-muted small" style="font-size: 10px;">ID: <code>${t.id}</code></div>
+            </td>
+            <td><span class="format-badge shadow-sm">${t.cap} Questions</span></td>
+            <td><span class="small fw-semibold text-secondary">${t.cols}</span></td>
+            <td><span class="badge bg-light text-dark border">${t.opts}</span></td>
+            <td>${categoryBadge}</td>
+            <td>
+              <div class="d-flex justify-content-center gap-1.5">
+                <button class="btn btn-sm btn-primary fw-bold px-2.5 py-1" onclick="window.openOmrPreviewQuick(${t.cap}, '${t.name}')" type="button">
+                  <i class="fas fa-eye me-1"></i> Preview OMR
+                </button>
+                ${deleteBtn}
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = html;
+    };
+
+    // ⚡ 4. SAVE NEW CUSTOM TEMPLATE
+    window.saveCustomOmrTemplate = async function() {
+      const title = document.getElementById('customTplTitle').value.trim();
+      const cap = parseInt(document.getElementById('customTplCapacity').value, 10);
+      const btn = document.getElementById('btnSaveCustomTemplate');
 
       if (!title) {
         alert("Please enter a Template Title!");
         return;
       }
 
-      const subjects = [];
-      document.querySelectorAll('#omrSubjectPartitionsTbody tr').forEach(r => {
-        subjects.push({
-          name: r.querySelector('.omr-part-name').value.trim() || "Section",
-          start_q: parseInt(r.querySelector('.omr-part-start').value, 10),
-          end_q: parseInt(r.querySelector('.omr-part-end').value, 10),
-          total: parseInt(r.querySelector('.omr-part-total').value, 10)
-        });
-      });
-
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const schoolId = user.schoolId;
+      const tplId = "TPL-" + Date.now().toString(36).toUpperCase();
 
-      saveBtn.disabled = true;
-      saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Saving Template...';
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Saving...`;
 
       try {
         const { error } = await db
@@ -35335,100 +35318,26 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             ExamName: title,
             Class: "Template",
             TemplateType: cap,
-            Subjects: subjects
+            Subjects: [] // Pure template layout without hardcoded subjects
           }]);
 
         if (error) throw error;
 
-        alert(`✅ OMR Template [${title}] Saved Successfully to Library!`);
-        document.getElementById('omrTplId').value = "TPL-" + Date.now().toString(36).toUpperCase();
-        await window.loadOmrTemplatesLibrary(true);
+        alert(`✅ Custom OMR Template [${title}] saved successfully!`);
+        document.getElementById('customTplTitle').value = "";
+        await window.loadOmrMasterTemplates(true);
 
       } catch(err) {
-        console.error("Save Template Error:", err);
-        alert("Error saving template: " + err.message);
+        alert("Error saving custom template: " + err.message);
       } finally {
-        saveBtn.disabled = false;
-        saveBtn.innerHTML = '<i class="fas fa-save me-1"></i> Save OMR Template to Library';
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fas fa-save me-1"></i> Save Template`;
       }
     };
 
-    // ⚡ 7. LOAD TEMPLATES LIBRARY & UPDATE KPIS
-    window.loadOmrTemplatesLibrary = async function(force) {
-      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const schoolId = user.schoolId;
-      const tbody = document.getElementById('omrTemplatesListTbody');
-
-      try {
-        const { data, error } = await db
-          .from('OMR_Blueprints')
-          .select('*')
-          .eq('SchoolID', schoolId)
-          .order('Id', { ascending: false });
-
-        if (error) throw error;
-        savedTemplatesList = data || [];
-
-        // Count KPIs
-        let c25 = 0, c50 = 0, c75 = 0, c100 = 0, cLarge = 0;
-        savedTemplatesList.forEach(t => {
-          const cap = parseInt(t.TemplateType, 10);
-          if (cap === 25) c25++;
-          else if (cap === 50) c50++;
-          else if (cap === 75) c75++;
-          else if (cap === 100) c100++;
-          else cLarge++;
-        });
-
-        document.getElementById('cntTpl25').innerText = c25;
-        document.getElementById('cntTpl50').innerText = c50;
-        document.getElementById('cntTpl75').innerText = c75;
-        document.getElementById('cntTpl100').innerText = c100;
-        document.getElementById('cntTplLarge').innerText = cLarge;
-        document.getElementById('cntTplTotal').innerText = savedTemplatesList.length;
-
-        if (savedTemplatesList.length === 0) {
-          tbody.innerHTML = `<tr><td colspan='6' class='text-center py-4 text-muted fw-bold'>No OMR templates configured yet. Click any preset card above to save your first template!</td></tr>`;
-          return;
-        }
-
-        let html = "";
-        savedTemplatesList.forEach((t, idx) => {
-          const subs = t.Subjects || [];
-          const pills = subs.map(s => `<span class='subject-pill'>${s.name} (${s.start_q}-${s.end_q})</span>`).join('');
-
-          html += `
-            <tr>
-              <td>${idx + 1}</td>
-              <td class='text-start ps-3'>
-                <div class='fw-bold text-dark'>${t.ExamName}</div>
-                <div class='text-muted small' style='font-size: 10px;'>ID: <code>${t.BlueprintID}</code></div>
-              </td>
-              <td><span class='format-badge shadow-sm'>${t.TemplateType} Questions</span></td>
-              <td><span class='badge bg-light text-secondary border'>4 Options (A-D)</span></td>
-              <td class='text-start ps-2'>${pills}</td>
-              <td>
-                <div class='d-flex justify-content-center gap-1'>
-                  <button class='btn btn-outline-danger btn-sm py-1 px-2 fw-bold' onclick='window.deleteOmrTemplateRecord("${t.BlueprintID}")' title='Delete Template' type='button'>
-                    <i class='fas fa-trash-alt'></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          `;
-        });
-
-        tbody.innerHTML = html;
-
-      } catch(err) {
-        console.error("Load Templates Error:", err);
-        tbody.innerHTML = `<tr><td colspan='6' class='text-center py-4 text-danger fw-bold'>Failed to load library: ${err.message}</td></tr>`;
-      }
-    };
-
-    // ⚡ 8. DELETE TEMPLATE
-    window.deleteOmrTemplateRecord = async function(tplId) {
-      if (!confirm(`Are you sure you want to delete OMR Template [${tplId}]?`)) return;
+    // ⚡ 5. DELETE CUSTOM TEMPLATE
+    window.deleteCustomOmrTemplate = async function(id) {
+      if (!confirm(`Are you sure you want to delete template [${id}]?`)) return;
 
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const schoolId = user.schoolId;
@@ -35438,17 +35347,144 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           .from('OMR_Blueprints')
           .delete()
           .eq('SchoolID', schoolId)
-          .eq('BlueprintID', tplId);
+          .eq('BlueprintID', id);
 
         if (error) throw error;
-        alert("✅ Template deleted successfully!");
-        await window.loadOmrTemplatesLibrary(true);
+        alert("Template deleted successfully.");
+        await window.loadOmrMasterTemplates(true);
+
       } catch(err) {
-        alert("Error deleting template: " + err.message);
+        alert("Delete failed: " + err.message);
       }
     };
 
-    // Boot Module
+    // ⚡ 6. LIVE OMR SHEET CANVAS PREVIEW ENGINE (NO STUDENT DATA)
+    window.openOmrPreviewQuick = function(cap, title) {
+      currentPreviewingTemplate = {
+        TemplateType: cap,
+        ExamName: title || `Standard ${cap} Questions Sheet`,
+        BlueprintID: `PRESET-${cap}`
+      };
+
+      document.getElementById('omrPreviewModalTitle').innerHTML = `<i class="fas fa-file-alt me-2"></i>Preview: Standard ${cap} Questions OMR Sheet (A4 Layout)`;
+
+      // Render crisp vector preview on HTML5 Canvas
+      window.renderOmrCanvasPreview(cap);
+
+      new bootstrap.Modal(document.getElementById('omrPreviewModal')).show();
+    };
+
+    window.renderOmrCanvasPreview = function(totalQ) {
+      const cvs = document.getElementById('omrPreviewCanvas');
+      const ctx = cvs.getContext('2d');
+      const W = cvs.width;  // 600
+      const H = cvs.height; // 848 (A4 proportion)
+
+      // Background
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, W, H);
+
+      // 4 Black Corner Squares (6mm fiducial markers)
+      const sqSize = 18;
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(20, 20, sqSize, sqSize);         // TL
+      ctx.fillRect(W - 20 - sqSize, 20, sqSize, sqSize); // TR
+      ctx.fillRect(20, H - 20 - sqSize, sqSize, sqSize); // BL
+      ctx.fillRect(W - 20 - sqSize, H - 20 - sqSize, sqSize, sqSize); // BR
+
+      // Generic Blank Header Info Box (No Student Data!)
+      ctx.strokeStyle = "#0f172a";
+      ctx.lineWidth = 1.2;
+      ctx.strokeRect(48, 20, W - 96, 68);
+
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "bold 13px sans-serif";
+      ctx.fillText("SCHOOL NAME / EXAMINATION BOARD HERE", 60, 40);
+
+      ctx.font = "bold 9px sans-serif";
+      ctx.fillStyle = "#475569";
+      ctx.fillText(`OMR ANSWER SHEET &bull; CAPACITY: ${totalQ} QUESTIONS`, 60, 56);
+      ctx.fillText("STUDENT NAME: ___________________________    ROLL NO: ___________    DATE: ___________", 60, 74);
+
+      // Instruction Line
+      ctx.font = "italic 8px sans-serif";
+      ctx.fillStyle = "#64748b";
+      ctx.fillText("Instructions: Use Dark Blue or Black Ballpoint Pen only. Fill circles completely. Do not write or mark outside the grid.", 48, 102);
+
+      // Divider Line
+      ctx.strokeStyle = "#e2e8f0";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(48, 108);
+      ctx.lineTo(W - 48, 108);
+      ctx.stroke();
+
+      // Render Bubble Columns
+      const coordMap = window.OMREngine.getCoordinates(totalQ);
+      const scaleX = W / 1000;
+      const scaleY = H / 1414;
+
+      for (let q = 1; q <= totalQ; q++) {
+        const qData = coordMap.questions[q];
+        if (!qData) continue;
+
+        const lx = qData.labelPos.x * scaleX;
+        const ly = qData.labelPos.y * scaleY;
+
+        // Question Number
+        ctx.fillStyle = "#0f172a";
+        ctx.font = "bold 9px sans-serif";
+        ctx.textAlign = "left";
+        ctx.fillText(String(q).padStart(2, "0"), lx, ly + 3);
+
+        // Bubbles A, B, C, D
+        ["A", "B", "C", "D"].forEach(opt => {
+          const b = qData.bubbles[opt];
+          const bx = b.x * scaleX;
+          const by = b.y * scaleY;
+          const br = b.r * scaleX;
+
+          ctx.strokeStyle = "#64748b";
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.arc(bx, by, br, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.fillStyle = "#334155";
+          ctx.font = "8px sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(opt, bx, by + 0.5);
+        });
+      }
+    };
+
+    // ⚡ 7. DOWNLOAD BLANK SAMPLE PDF DIRECTLY FROM PREVIEW
+    window.downloadSampleBlankPdf = async function() {
+      if (!currentPreviewingTemplate) return;
+
+      const btn = document.getElementById('btnDownloadSamplePdf');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fas fa-spinner fa-spin me-1"></i> Generating PDF...`;
+
+      try {
+        const sampleStudent = [
+          { StudId: "", RollNo: "", StudentName: "_______________________________" }
+        ];
+
+        await window.OMREngine.generatePdf(currentPreviewingTemplate, sampleStudent, {
+          schoolName: "INSTITUTIONAL EXAMINATION ASSESSMENT"
+        });
+
+      } catch(err) {
+        alert("Error generating blank PDF: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fas fa-download me-1"></i> Download Sample Blank PDF`;
+      }
+    };
+
+    // Boot
     window.initOmrDesignerModule();
   })();
   // ]]>
