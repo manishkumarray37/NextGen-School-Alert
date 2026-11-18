@@ -1,12 +1,3 @@
-/**
- * ===================================================================
- * ?? ENTERPRISE OMR OPTICAL EVALUATION & RED PDF ENGINE (UNIVERSAL)
- * ===================================================================
- * Supports: ANY Custom Question Count (30, 50, 75, 100, 120, 180...)
- * Real OMR Crimson Red Color: RGB(185, 28, 28) / #b91c1c
- * 4 Corner Alignment Fiducials: Solid Pitch Black (0, 0, 0)
- */
-
 window.OMREngine = (function () {
   'use strict';
 
