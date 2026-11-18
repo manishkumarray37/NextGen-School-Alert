@@ -3568,9 +3568,7 @@
         </div>
     </section>
 
-<!-- ========================================================
-     STILL RUNNING ON REGISTERS - FULL WIDTH BLUE TECH BANNER
-     ======================================================== -->
+<!-- STILL RUNNING ON REGISTERS - FULL WIDTH BLUE TECH BANNER -->
 <section class="fullwidth-tech-cta position-relative overflow-hidden" id="contact" style="padding: 50px 0; background-color: #030712;">
     <!-- Animated Wind & Fog Background Layer -->
     <div class="tech-wind-animation-bg"></div>
@@ -4434,5 +4432,221 @@
         });
     }
 </script>
+
+<!-- FLOATING RIGHT SIDEBAR POPUP DRAWER -->
+<style>
+.sa-side-widget {
+    position: fixed;
+    right: 0;
+    top: 30%;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    font-family: inherit;
+  }
+
+  /* Patli Patti (Compact Height) */
+  .sa-side-tab {
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    color: #ffffff;
+    width: 36px;
+    padding: 12px 6px;
+    border-radius: 8px 0 0 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    box-shadow: -3px 4px 14px rgba(15, 23, 42, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-right: none;
+    transition: background 0.25s ease;
+    user-select: none;
+  }
+
+  .sa-side-tab span {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 10px; /* Text thoda compact kiya */
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .sa-side-tab:hover {
+    background: #dc3545;
+  }
+
+  /* Khulne Wala Box (2x3 Grid) */
+  .sa-side-panel {
+    width: 0;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: -6px 8px 25px rgba(0, 0, 0, 0.15);
+    border-radius: 0 0 0 12px;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  .sa-side-widget.active .sa-side-panel {
+    width: 220px;
+    border-left: 1px solid #e2e8f0;
+  }
+
+  .sa-panel-inner {
+    width: 220px;
+    padding: 12px;
+  }
+
+  .sa-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 12px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .sa-close-btn {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 0 4px;
+  }
+
+  .sa-close-btn:hover {
+    color: #dc3545;
+  }
+
+  /* 2 Column x 3 Row Grid (Image ke Red Box jaisa) */
+  .sa-social-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .sa-social-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 6px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 600;
+    color: #1e293b;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+  }
+
+  .sa-social-item i {
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+
+  .sa-social-item:hover {
+    transform: translateY(-2px);
+    color: #ffffff;
+  }
+
+  /* Brand Hover Colors */
+  .sa-wa i { color: #25D366; }
+  .sa-wa:hover { background: #25D366; border-color: #25D366; }
+
+  .sa-fb i { color: #1877F2; }
+  .sa-fb:hover { background: #1877F2; border-color: #1877F2; }
+
+  .sa-ig i { color: #E4405F; }
+  .sa-ig:hover { background: #E4405F; border-color: #E4405F; }
+
+  .sa-yt i { color: #FF0000; }
+  .sa-yt:hover { background: #FF0000; border-color: #FF0000; }
+
+  .sa-call i { color: #0ea5e9; }
+  .sa-call:hover { background: #0ea5e9; border-color: #0ea5e9; }
+
+  .sa-mail i { color: #f59e0b; }
+  .sa-mail:hover { background: #f59e0b; border-color: #f59e0b; }
+
+  .sa-social-item:hover i {
+    color: #ffffff;
+  }
+</style>
+<div class="sa-side-widget" id="saSideWidget">
+  <!-- Patli Patti (Always Visible on Scroll) -->
+  <div class="sa-side-tab" onclick="toggleSaSidebar()" title="Connect With Us">
+    <i class="fas fa-chevron-left" id="saTabArrow" style="font-size: 11px;"></i>
+    <span>Connect</span>
+  </div>
+  <!-- Expandable Popup Box -->
+  <div class="sa-side-panel">
+    <div class="sa-panel-inner">
+      <div class="sa-panel-header">
+        <span>Quick Connect</span>
+        <button class="sa-close-btn" onclick="toggleSaSidebar()" aria-label="Close">&times;</button>
+      </div>
+      <div class="sa-social-grid">
+        <!-- WhatsApp (Aapka header wala number pre-filled hai) -->
+        <a href="https://wa.me/917079090740?text=Hello%20School%20Alert%20Team,%20I%20want%20to%20know%20more." target="_blank" class="sa-social-item sa-wa">
+          <i class="fab fa-whatsapp"></i>
+          WhatsApp
+        </a>
+        <!-- Facebook -->
+        <a href="https://facebook.com/yourpage" target="_blank" class="sa-social-item sa-fb">
+          <i class="fab fa-facebook-f"></i>
+          Facebook
+        </a>
+        <!-- Instagram -->
+        <a href="https://instagram.com/yourpage" target="_blank" class="sa-social-item sa-ig">
+          <i class="fab fa-instagram"></i>
+          Instagram
+        </a>
+        <!-- YouTube -->
+        <a href="https://youtube.com/@yourchannel" target="_blank" class="sa-social-item sa-yt">
+          <i class="fab fa-youtube"></i>
+          YouTube
+        </a>
+        <!-- Direct Call -->
+        <a href="tel:+917079090740" class="sa-social-item sa-call">
+          <i class="fas fa-phone-alt"></i>
+          Call Now
+        </a>
+        <!-- Email -->
+        <a href="mailto:support@schoolalarm.online" class="sa-social-item sa-mail">
+          <i class="fas fa-envelope"></i>
+          Email Us
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function toggleSaSidebar() {
+    const widget = document.getElementById('saSideWidget');
+    const arrow = document.getElementById('saTabArrow');
+    widget.classList.toggle('active'); 
+    if (widget.classList.contains('active')) {
+      arrow.classList.replace('fa-chevron-left', 'fa-chevron-right');
+    } else {
+      arrow.classList.replace('fa-chevron-right', 'fa-chevron-left');
+    }
+  }
+  document.addEventListener('click', function(event) {
+    const widget = document.getElementById('saSideWidget');
+    if (widget.classList.contains('active') && !widget.contains(event.target)) {
+      toggleSaSidebar();
+    }
+  });
+</script>
+
 </body>
 </html>
