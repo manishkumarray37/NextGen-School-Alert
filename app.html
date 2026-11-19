@@ -35622,8 +35622,8 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             Student Name, Roll No, Class-Section &amp; unique QR Code will be pre-printed automatically on every sheet.
           </div>
           <div class='d-flex gap-2 flex-wrap'>
-            <button class='btn btn-outline-danger btn-sm px-3 fw-bold shadow-sm' id='btnPrintBlankOmr' onclick='window.downloadGenericBlankOmr()' type='button'>
-              <i class='fas fa-file-alt me-1'></i> Print Blank Sheet
+            <button class='btn btn-warning text-dark btn-sm px-3 fw-bold shadow-sm' id='btnPrintDemoFilledOmr' onclick='window.startDemoFilledOmrGeneration()' disabled='disabled' type='button'>
+              <i class='fas fa-magic me-1'></i> Print Demo Sheet (Auto-Filled)
             </button>
             <button class='btn btn-success btn-sm px-4 fw-bold shadow-sm' id='btnGenerateOmrPdf' onclick='window.startBulkOmrPdfGeneration()' disabled='disabled' type='button'>
               <i class='fas fa-file-pdf me-1'></i> Download Student OMR Pack (.PDF)
@@ -35875,24 +35875,39 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
     window.updateSelectedPrintCount = function() {
       const selected = document.querySelectorAll('.chk-student-print:checked');
+      const isDisabled = (selected.length === 0 || !selectedTemplateObj);
       document.getElementById('printKpiSelectedCount').innerText = selected.length;
-      document.getElementById('btnGenerateOmrPdf').disabled = (selected.length === 0 || !selectedTemplateObj);
+      document.getElementById('btnGenerateOmrPdf').disabled = isDisabled;
+      const demoBtn = document.getElementById('btnPrintDemoFilledOmr');
+      if (demoBtn) demoBtn.disabled = isDisabled;
     };
 
-    // ⚡ 6. DOWNLOAD GENERIC BLANK OMR SHEET (NO STUDENT DATA)
-    window.downloadGenericBlankOmr = async function() {
+    // ⚡ 6. DOWNLOAD DEMO AUTO-FILLED OMR PACK FOR ALL SELECTED STUDENTS
+    window.startDemoFilledOmrGeneration = async function() {
       if (!selectedTemplateObj) {
         alert("Please select an OMR Sheet Template first!");
         return;
       }
 
+      const selectedCheckboxes = document.querySelectorAll('.chk-student-print:checked');
+      if (selectedCheckboxes.length === 0) {
+        alert("Please load and select at least 1 student first!");
+        return;
+      }
+
+      const selectedIds = Array.from(selectedCheckboxes).map(c => c.value);
+      const targetStudents = loadedStudentsList.filter(s => {
+        const id = s.StudId || s.stud_id || s.AdmissionNo || s.admission_no;
+        return selectedIds.includes(String(id));
+      });
+
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const examTitle = document.getElementById('printExamTitleInput').value.trim() || selectedTemplateObj.name;
-      const cls = document.getElementById('printClassSelect').value || "All Classes";
-      const btn = document.getElementById('btnPrintBlankOmr');
+      const cls = document.getElementById('printClassSelect').value || "Class";
+      const btn = document.getElementById('btnPrintDemoFilledOmr');
 
       btn.disabled = true;
-      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Creating PDF...`;
+      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Generating ${targetStudents.length} Demo Sheets...`;
 
       try {
         const printPayload = {
@@ -35903,14 +35918,20 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           Subjects: selectedTemplateObj.subjects || []
         };
 
-        await window.OMREngine.generatePdf(printPayload, [], {
-          schoolName: user.schoolName || "Royal International Public School"
-        });
+        await window.OMREngine.generatePdf(
+          printPayload,
+          targetStudents,
+          { schoolName: user.schoolName || "Royal International Public School", schoolId: user.schoolId },
+          { fillDemoAnswers: true }
+        );
+
+        alert(`🎉 Demo Pack Ready! Generated ${targetStudents.length} OMR sheets with random black filled bubbles & QR codes for scanner testing.`);
+
       } catch(err) {
-        alert("PDF Error: " + err.message);
+        alert("Demo PDF Error: " + err.message);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<i class='fas fa-file-alt me-1'></i> Print Blank Sheet`;
+        btn.innerHTML = `<i class='fas fa-magic me-1'></i> Print Demo Sheet (Auto-Filled)`;
       }
     };
 

@@ -93,8 +93,8 @@ window.OMREngine = (function () {
     };
   }
 
-  // 2. VECTOR A4 OMR PDF GENERATOR (AUTHENTIC OMR CRIMSON RED: RGB 185, 28, 28)
-  async function generateStudentOmrPdf(blueprint, studentsList, schoolMeta) {
+  // 2. VECTOR A4 OMR PDF GENERATOR (SUPPORTS REAL BLANK & AUTO-FILLED DEMO MODE)
+  async function generateStudentOmrPdf(blueprint, studentsList, schoolMeta, options = {}) {
     if (!window.jspdf || !window.jspdf.jsPDF) {
       throw new Error("jsPDF library is not loaded.");
     }
@@ -103,6 +103,7 @@ window.OMREngine = (function () {
     const totalQuestions = parseInt(blueprint.TemplateType || blueprint.template_type || 100, 10);
     const coordMap = getTemplateCoordinates(totalQuestions);
     const scale = 0.21; // 1000px canvas to 210mm A4 width
+    const isDemoFilled = Boolean(options && options.fillDemoAnswers);
 
     // Temporary invisible QR container
     let qrBox = document.getElementById("omr_qr_temp_box");
@@ -117,6 +118,8 @@ window.OMREngine = (function () {
       { StudId: "", RollNo: "", StudentName: "_______________________________" }
     ];
 
+    const optsArray = ["A", "B", "C", "D"];
+
     for (let i = 0; i < students.length; i++) {
       if (i > 0) doc.addPage();
       const st = students[i];
@@ -129,7 +132,7 @@ window.OMREngine = (function () {
       doc.rect(196, 283, 6, 6, "F");   // Bottom-Right
 
       // B. HEADER BOX (AUTHENTIC OMR CRIMSON RED BORDER)
-      doc.setDrawColor(185, 28, 28); // #b91c1c Dark Red
+      doc.setDrawColor(185, 28, 28);
       doc.setLineWidth(0.45);
       doc.rect(17, 8, 143, 27);
 
@@ -142,8 +145,9 @@ window.OMREngine = (function () {
       // Assessment Info
       doc.setFont("helvetica", "normal");
       doc.setFontSize(8.5);
-      doc.setTextColor(15, 23, 42); // Clean dark text
-      doc.text(`Exam: ${blueprint.ExamName || "Periodic Test"} | Capacity: ${totalQuestions} Questions`, 20, 19);
+      doc.setTextColor(15, 23, 42);
+      const demoTag = isDemoFilled ? " [DEMO AUTO-FILLED]" : "";
+      doc.text(`Exam: ${blueprint.ExamName || "Periodic Test"}${demoTag} | Capacity: ${totalQuestions} Qs`, 20, 19);
 
       if (st.StudId) {
         doc.text(`Candidate: ${st.StudentName || "Student"} | Roll No: ${st.RollNo || "-"} | ID: ${st.StudId}`, 20, 24);
@@ -153,10 +157,10 @@ window.OMREngine = (function () {
 
       doc.setFontSize(7.5);
       doc.setTextColor(185, 28, 28);
-      doc.text(`Standard Authentic OMR Assessment Sheet &bull; Session 2026-27`, 20, 30);
+      doc.text(`Standard Authentic OMR Assessment Sheet | Class: ${blueprint.Class || "All"}`, 20, 30);
       doc.setTextColor(0, 0, 0);
 
-      // C. QR Code (Only if candidate ID is present, else blank space)
+      // C. QR Code (Pre-printed Student Metadata)
       if (st.StudId) {
         const qrData = JSON.stringify({
           sid: st.StudId,
@@ -181,35 +185,48 @@ window.OMREngine = (function () {
       doc.setTextColor(185, 28, 28);
       doc.text("Instructions: Use Dark Blue or Black Ballpoint Pen only. Darken circles completely. Do not fold or tear this sheet.", 17, 39);
 
-      // E. Render Questions & Bubbles in Authentic OMR Dark Red
-      doc.setFont("helvetica", "bold");
-      doc.setDrawColor(185, 28, 28);  // Circle border color: Dark Red
-      doc.setTextColor(185, 28, 28);  // Text color: Dark Red
-      doc.setLineWidth(0.28);
-
+      // E. Render Questions & Bubbles (With Random Dark Black Fill in Demo Mode)
       for (let q = 1; q <= totalQuestions; q++) {
         const qData = coordMap.questions[q];
         if (!qData) continue;
 
-        // Question Number
+        // Question Number in Dark Red
+        doc.setFont("helvetica", "bold");
         doc.setFontSize(7.5);
+        doc.setTextColor(185, 28, 28);
         doc.text(String(q).padStart(2, "0"), qData.labelPos.x * scale, (qData.labelPos.y + 3) * scale);
+
+        // Pick 1 random answer per question if Demo Mode is active
+        const randomChoice = isDemoFilled ? optsArray[Math.floor(Math.random() * optsArray.length)] : null;
 
         // Bubbles: A, B, C, D
         doc.setFontSize(6.5);
-        ["A", "B", "C", "D"].forEach(opt => {
+        doc.setLineWidth(0.28);
+
+        optsArray.forEach(opt => {
           const b = qData.bubbles[opt];
           const bx = b.x * scale;
           const by = b.y * scale;
           const br = b.r * scale;
 
-          doc.circle(bx, by, br, "S");
-          doc.text(opt, bx - 0.9, by + 1.0);
+          if (isDemoFilled && randomChoice === opt) {
+            // Solid Dark Black Ink Filled Circle (100% Optical Scanner Compatible)
+            doc.setDrawColor(15, 15, 15);
+            doc.setFillColor(15, 15, 15);
+            doc.circle(bx, by, br * 0.94, "FD");
+          } else {
+            // Standard Unfilled Crimson Red Circle
+            doc.setDrawColor(185, 28, 28);
+            doc.setTextColor(185, 28, 28);
+            doc.circle(bx, by, br, "S");
+            doc.text(opt, bx - 0.9, by + 1.0);
+          }
         });
       }
     }
 
-    doc.save(`OMR_${totalQuestions}Q_${Date.now()}.pdf`);
+    const prefix = isDemoFilled ? "DEMO_FILLED_OMR" : "OMR";
+    doc.save(`${prefix}_${blueprint.Class || "Class"}_${totalQuestions}Q_${Date.now()}.pdf`);
   }
 
   // 3. OPENCV COMPUTER VISION PERSPECTIVE HOMOGRAPHY & BUBBLE EVALUATOR
