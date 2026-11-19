@@ -34620,31 +34620,50 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     </div>
   </div>
 
-  <script type='text/javascript'>
+<script type='text/javascript'>
   // <![CDATA[
   (function() {
     let examsList = [];
+    let termsCache = [];
     let localConfig = null;
-    const AMP = String.fromCharCode(38);
 
     window.initExamMasterModule = async function() {
-      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData() : null;
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+
+      // 1. Load Sessions from Master Config
+      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
       const sDrop = document.getElementById('exmSession');
-      if (sDrop && localConfig) {
-        sDrop.innerHTML = (localConfig.sessions || ["2026-2027"]).map(s => `<option value="${s}">${s}</option>`).join('');
+      if (sDrop) {
+        const sessions = (localConfig && localConfig.sessions && localConfig.sessions.length > 0)
+          ? localConfig.sessions
+          : ["2026-27"];
+        sDrop.innerHTML = sessions.map(s => `<option value="${s}">${s}</option>`).join('');
       }
 
-      // Load Terms in Dropdown
+      // 2. Load Academic Terms from Supabase "Exam_Terms"
       try {
-        const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-        const res = await (await fetch(`${scriptURL}?action=getExamTerms${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&_t=${Date.now()}`)).json();
-        const tList = Array.isArray(res.data) ? res.data : [];
-        if (tList.length > 0) {
-          document.getElementById('exmTermSelect').innerHTML = tList.map(t => `<option value="${t.TermCode}">[${t.TermCode}] ${t.TermName}</option>`).join('');
-        }
-      } catch(e) {}
+        const { data: tData, error: tErr } = await db
+          .from('Exam_Terms')
+          .select('*')
+          .eq('SchoolID', schoolId)
+          .order('Id', { ascending: true });
 
-      window.fetchExamMasterList();
+        if (!tErr && tData && tData.length > 0) {
+          termsCache = tData;
+          const tDrop = document.getElementById('exmTermSelect');
+          if (tDrop) {
+            tDrop.innerHTML = termsCache.map(t => {
+              const code = t.TermCode || t.TermName;
+              return `<option value="${code}">[${code}] ${t.TermName} (${t.Session || '-'})</option>`;
+            }).join('');
+          }
+        }
+      } catch(e) {
+        console.warn("Load terms fallback:", e);
+      }
+
+      await window.fetchExamMasterList();
     };
 
     window.fetchExamMasterList = async function() {
@@ -34653,11 +34672,18 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       tbody.innerHTML = `<tr><td colspan='9' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading exams list...</td></tr>`;
 
       try {
-        const res = await (await fetch(`${scriptURL}?action=getExamMaster${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&_t=${Date.now()}`)).json();
-        examsList = Array.isArray(res.data) ? res.data : [];
+        const { data, error } = await db
+          .from('Exam_Master')
+          .select('*')
+          .eq('SchoolID', user.schoolId)
+          .order('Id', { ascending: true });
+
+        if (error) throw error;
+        examsList = data || [];
         window.renderExamMasterTable();
       } catch(e) {
-        tbody.innerHTML = `<tr><td colspan='9' class='text-center py-4 text-danger'>Failed to load exams.</td></tr>`;
+        console.error("Fetch Exam Master Error:", e);
+        tbody.innerHTML = `<tr><td colspan='9' class='text-center py-4 text-danger fw-bold'>Failed to load exams: ${e.message}</td></tr>`;
       }
     };
 
@@ -34668,25 +34694,26 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         return;
       }
 
-      let html = "";
-      examsList.forEach((e, i) => {
-        html += `
+      tbody.innerHTML = examsList.map((e, i) => {
+        const eid = e.ExamID || e.Id;
+        return `
           <tr>
             <td>${i + 1}</td>
             <td><strong>${e.Session || '-'}</strong></td>
             <td><span class='badge bg-light text-dark border'>${e.TermCode || 'T1'}</span></td>
             <td class='text-start ps-3 fw-bold text-dark'>${e.ExamName}</td>
-            <td><span class='badge bg-light text-danger border font-monospace'>${e.ExamCode}</span></td>
-            <td><strong>${e.MaxMarks}</strong></td>
-            <td class='text-success'>${e.PassMarks}</td>
-            <td>${e.Weightage}%</td>
+            <td><span class='badge bg-light text-danger border font-monospace'>${e.ExamCode || '-'}</span></td>
+            <td><strong>${e.MaxMarks || 100}</strong></td>
+            <td class='text-success fw-bold'>${e.PassMarks || 33}</td>
+            <td>${e.Weightage || 100}%</td>
             <td>
-              <button class='btn btn-outline-primary btn-sm py-0 px-2 fw-bold' onclick='window.editExamMasterModal("${e.ExamID}")'><i class='fas fa-edit'></i></button>
+              <div class='d-flex justify-content-center gap-1'>
+                <button class='btn btn-outline-primary btn-sm py-0 px-2 fw-bold' onclick='window.editExamMasterModal("${eid}")' title='Edit' type='button'><i class='fas fa-edit'></i></button>
+                <button class='btn btn-outline-danger btn-sm py-0 px-2 fw-bold' onclick='window.deleteExamMasterRecord("${eid}")' title='Delete' type='button'><i class='fas fa-trash-alt'></i></button>
+              </div>
             </td>
-          </tr>
-        `;
-      });
-      tbody.innerHTML = html;
+          </tr>`;
+      }).join('');
     };
 
     window.openNewExamMasterModal = function() {
@@ -34697,16 +34724,16 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     };
 
     window.editExamMasterModal = function(examId) {
-      const em = examsList.find(x => x.ExamID === examId);
+      const em = examsList.find(x => String(x.ExamID || x.Id) === String(examId));
       if (!em) return;
-      document.getElementById('exmEditId').value = em.ExamID;
-      document.getElementById('exmSession').value = em.Session;
-      document.getElementById('exmTermSelect').value = em.TermCode;
-      document.getElementById('exmName').value = em.ExamName;
-      document.getElementById('exmCode').value = em.ExamCode;
-      document.getElementById('exmMaxMarks').value = em.MaxMarks;
-      document.getElementById('exmPassMarks').value = em.PassMarks;
-      document.getElementById('exmWeightage').value = em.Weightage;
+      document.getElementById('exmEditId').value = em.ExamID || em.Id;
+      document.getElementById('exmSession').value = em.Session || "";
+      document.getElementById('exmTermSelect').value = em.TermCode || "";
+      document.getElementById('exmName').value = em.ExamName || "";
+      document.getElementById('exmCode').value = em.ExamCode || "";
+      document.getElementById('exmMaxMarks').value = em.MaxMarks || 100;
+      document.getElementById('exmPassMarks').value = em.PassMarks || 33;
+      document.getElementById('exmWeightage').value = em.Weightage || 100;
       document.getElementById('exmModalTitle').innerHTML = `<i class='fas fa-edit me-2'></i>Edit Exam: ${em.ExamName}`;
       new bootstrap.Modal(document.getElementById('exmModal')).show();
     };
@@ -34718,34 +34745,63 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Saving...`;
 
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const payload = {
-        action: "saveExamMaster",
-        tsid: user.targetSheetId,
-        examData: {
-          ExamID: document.getElementById('exmEditId').value,
-          Session: document.getElementById('exmSession').value,
-          TermCode: document.getElementById('exmTermSelect').value,
-          ExamName: document.getElementById('exmName').value.trim(),
-          ExamCode: document.getElementById('exmCode').value.trim().toUpperCase(),
-          MaxMarks: document.getElementById('exmMaxMarks').value,
-          PassMarks: document.getElementById('exmPassMarks').value,
-          Weightage: document.getElementById('exmWeightage').value,
-          Status: "Active"
-        }
+      const schoolId = user.schoolId;
+      const editId = document.getElementById('exmEditId').value.trim();
+
+      const record = {
+        SchoolID: schoolId,
+        Session: document.getElementById('exmSession').value,
+        TermCode: document.getElementById('exmTermSelect').value,
+        ExamName: document.getElementById('exmName').value.trim(),
+        ExamCode: document.getElementById('exmCode').value.trim().toUpperCase(),
+        MaxMarks: parseFloat(document.getElementById('exmMaxMarks').value) || 100,
+        PassMarks: parseFloat(document.getElementById('exmPassMarks').value) || 33,
+        Weightage: parseFloat(document.getElementById('exmWeightage').value) || 100,
+        Status: "Active"
       };
 
       try {
-        await fetch(scriptURL, { method: "POST", body: JSON.stringify(payload) });
-        alert("✅ Exam Assessment Saved Successfully!");
-        bootstrap.Modal.getInstance(document.getElementById('exmModal')).hide();
-        window.fetchExamMasterList();
+        if (editId) {
+          const { error } = await db
+            .from('Exam_Master')
+            .update(record)
+            .eq('SchoolID', schoolId)
+            .eq('ExamID', editId);
+          if (error) throw error;
+          alert("✅ Exam Updated Successfully!");
+        } else {
+          record.ExamID = "EXM-" + Date.now().toString(36).toUpperCase();
+          const { error } = await db.from('Exam_Master').insert([record]);
+          if (error) throw error;
+          alert("✅ Exam Assessment Saved Successfully!");
+        }
+
+        const modalInst = bootstrap.Modal.getInstance(document.getElementById('exmModal'));
+        if (modalInst) modalInst.hide();
+        await window.fetchExamMasterList();
       } catch(err) {
-        alert("Exam saved.");
-        bootstrap.Modal.getInstance(document.getElementById('exmModal')).hide();
-        window.fetchExamMasterList();
+        console.error("Save Exam Master Error:", err);
+        alert("Failed to save exam: " + err.message);
       } finally {
         btn.disabled = false;
         btn.innerHTML = `<i class='fas fa-save me-1'></i> Save Exam`;
+      }
+    };
+
+    window.deleteExamMasterRecord = async function(examId) {
+      if (!confirm("Are you sure you want to delete this Exam?")) return;
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      try {
+        const { error } = await db
+          .from('Exam_Master')
+          .delete()
+          .eq('SchoolID', user.schoolId)
+          .eq('ExamID', examId);
+        if (error) throw error;
+        alert("✅ Exam Deleted Successfully!");
+        await window.fetchExamMasterList();
+      } catch(err) {
+        alert("Delete failed: " + err.message);
       }
     };
 
