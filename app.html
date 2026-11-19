@@ -36193,282 +36193,347 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     </div>
   </div>
 
-  <!-- 4. SCOPED JAVASCRIPT ENGINE -->
+<!-- 5. SCOPED JAVASCRIPT ENGINE -->
   <script type='text/javascript'>
   // <![CDATA[
   (async function() {
-    let availableBlueprints = [];
-    let activeSelectedBlueprint = null;
-    let answerKeysDictionary = {};
+    let allTemplatesList = [];
+    let selectedTemplate = null;
+    let selectedClass = "";
+    let answerKeysMap = {};
+    let activeSubjectsList = [];
+    let savedKeysList = [];
 
-    // ⚡ 1. INITIALIZE MODULE
+    const standardPresets = [
+      { id: "STD-25", name: "Standard 25 Questions Sheet", cap: 25 },
+      { id: "STD-30", name: "Standard 30 Questions Sheet", cap: 30 },
+      { id: "STD-50", name: "Standard 50 Questions Sheet", cap: 50 },
+      { id: "STD-75", name: "Standard 75 Questions Sheet", cap: 75 },
+      { id: "STD-100", name: "Standard 100 Questions Sheet", cap: 100 },
+      { id: "STD-120", name: "Standard 120 Questions Sheet", cap: 120 },
+      { id: "STD-180", name: "Standard 180 Questions Sheet", cap: 180 }
+    ];
+
     window.initOmrAnswerKeyModule = async function() {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const schoolId = user.schoolId;
 
-      activeSelectedBlueprint = null;
-      answerKeysDictionary = {};
+      selectedTemplate = null;
+      selectedClass = "";
+      answerKeysMap = {};
+      activeSubjectsList = [];
       document.getElementById('btnSaveAnswerKeyRecord').disabled = true;
-      document.getElementById('akSubjectsGridContainer').innerHTML = `<div class='col-12 text-center py-5 text-muted fw-bold'><i class='fas fa-key fa-2x mb-2 text-secondary d-block'></i>Select an Examination Blueprint above to setup answer keys</div>`;
 
-      try {
-        const { data, error } = await db
-          .from('OMR_Blueprints')
-          .select('*')
-          .eq('SchoolID', schoolId)
-          .order('Id', { ascending: false });
-
-        if (error) throw error;
-        availableBlueprints = data || [];
-
-        const bpDrop = document.getElementById('akBpSelect');
-        if (availableBlueprints.length === 0) {
-          bpDrop.innerHTML = '<option value="">No Blueprints Found! Create in Step 1</option>';
-          return;
-        }
-
-        bpDrop.innerHTML = '<option value="">-- Select Active Blueprint --</option>' + 
-          availableBlueprints.map(b => `<option value="${b.BlueprintID}">[${b.Class}] ${b.ExamName} (${b.TemplateType} Questions)</option>`).join('');
-
-      } catch(e) {
-        console.error("Fetch Blueprints Error:", e);
+      // 1. Load Classes
+      const cfg = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
+      if (cfg && cfg.classMap) {
+        const cDrop = document.getElementById('akClassSelect');
+        cDrop.innerHTML = '<option value="">-- Select Class --</option>' +
+          Object.keys(cfg.classMap).map(c => `<option value="${c}">${c}</option>`).join('');
       }
+
+      // 2. Load Presets + Custom Saved Templates
+      let customTemplates = [];
+      try {
+        const { data } = await db.from('OMR_Blueprints').select('*').eq('SchoolID', schoolId).order('Id', { ascending: false });
+        if (data) {
+          customTemplates = data.map(d => ({
+            id: d.BlueprintID,
+            name: d.ExamName,
+            cap: parseInt(d.TemplateType, 10)
+          }));
+        }
+      } catch(e) {}
+
+      allTemplatesList = [...customTemplates, ...standardPresets];
+      const tDrop = document.getElementById('akTplSelect');
+      let optHtml = '<option value="">-- Select OMR Template --</option>';
+      if (customTemplates.length > 0) {
+        optHtml += '<optgroup label="Custom Saved Templates">';
+        customTemplates.forEach(t => optHtml += `<option value="${t.id}">[Custom] ${t.name} (${t.cap} Qs)</option>`);
+        optHtml += '</optgroup>';
+      }
+      optHtml += '<optgroup label="Standard OMR Formats">';
+      standardPresets.forEach(t => optHtml += `<option value="${t.id}">[Preset] ${t.name} (${t.cap} Qs)</option>`);
+      optHtml += '</optgroup>';
+      tDrop.innerHTML = optHtml;
+
+      await window.loadSavedAnswerKeysTable();
     };
 
-    // ⚡ 2. ON BLUEPRINT CHANGE: FETCH SAVED KEY (IF EXISTS) & RENDER GRID
-    window.onAkBlueprintChange = async function() {
-      const selectedId = document.getElementById('akBpSelect').value;
-      activeSelectedBlueprint = availableBlueprints.find(b => b.BlueprintID === selectedId) || null;
-      answerKeysDictionary = {};
+    window.onAkSelectionChange = async function() {
+      selectedClass = document.getElementById('akClassSelect').value;
+      const tplId = document.getElementById('akTplSelect').value;
+      selectedTemplate = allTemplatesList.find(t => t.id === tplId) || null;
+      answerKeysMap = {};
 
-      const gridContainer = document.getElementById('akSubjectsGridContainer');
-
-      if (!activeSelectedBlueprint) {
-        gridContainer.innerHTML = `<div class='col-12 text-center py-5 text-muted fw-bold'><i class='fas fa-key fa-2x mb-2 text-secondary d-block'></i>Select an Examination Blueprint above</div>`;
+      if (!selectedClass || !selectedTemplate) {
         document.getElementById('btnSaveAnswerKeyRecord').disabled = true;
+        document.getElementById('akSubjectsGridContainer').innerHTML = `<div class='col-12 text-center py-4 text-muted fw-bold border rounded-3 bg-light'>Select both Class &amp; OMR Template above</div>`;
         window.updateAkSummaryKpi();
         return;
       }
 
-      gridContainer.innerHTML = `<div class='col-12 text-center py-5 text-muted'><i class='fas fa-spinner fa-spin fa-2x mb-2 text-primary d-block'></i>Loading questions and checking stored answer keys...</div>`;
+      activeSubjectsList = [{ name: "All Questions", start_q: 1, end_q: selectedTemplate.cap, total: selectedTemplate.cap }];
+      const compositeId = `${selectedClass}::${selectedTemplate.id}`;
+      const existing = savedKeysList.find(k => k.BlueprintID === compositeId);
 
-      // Check if an existing Answer Key is already in Supabase
-      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const schoolId = user.schoolId;
-
-      try {
-        const { data: savedKey, error } = await db
-          .from('OMR_AnswerKeys')
-          .select('*')
-          .eq('SchoolID', schoolId)
-          .eq('BlueprintID', activeSelectedBlueprint.BlueprintID)
-          .maybeSingle();
-
-        if (!error && savedKey) {
-          document.getElementById('akRightMarks').value = savedKey.RightMarks ?? 1.0;
-          document.getElementById('akWrongMarks').value = savedKey.WrongMarks ?? 0.0;
-          document.getElementById('akBlankMarks').value = savedKey.BlankMarks ?? 0.0;
-          answerKeysDictionary = savedKey.Keys || {};
+      if (existing) {
+        document.getElementById('akRightMarks').value = existing.RightMarks ?? 1.0;
+        document.getElementById('akWrongMarks').value = existing.WrongMarks ?? 0.0;
+        document.getElementById('akBlankMarks').value = existing.BlankMarks ?? 0.0;
+        const rawKeys = existing.Keys || {};
+        if (rawKeys._meta) {
+          if (rawKeys._meta.examName) document.getElementById('akExamNameInput').value = rawKeys._meta.examName;
+          if (rawKeys._meta.subjects && rawKeys._meta.subjects.length > 0) activeSubjectsList = rawKeys._meta.subjects;
         }
+        for (let q = 1; q <= selectedTemplate.cap; q++) {
+          if (rawKeys[q] || rawKeys[String(q)]) answerKeysMap[q] = rawKeys[q] || rawKeys[String(q)];
+        }
+      }
 
-        window.renderAnswerKeySubjectColumns();
-        document.getElementById('btnSaveAnswerKeyRecord').disabled = false;
+      window.renderAkSubjectMapperRows();
+      window.renderAnswerKeyGrid();
+      document.getElementById('btnSaveAnswerKeyRecord').disabled = false;
+    };
 
-      } catch(err) {
-        console.error("Fetch Saved Key Error:", err);
-        window.renderAnswerKeySubjectColumns();
-        document.getElementById('btnSaveAnswerKeyRecord').disabled = false;
+    window.toggleAkSubjectMapper = function() {
+      const box = document.getElementById('akSubjectMapperBox');
+      box.style.display = (box.style.display === 'none') ? 'block' : 'none';
+    };
+
+    window.renderAkSubjectMapperRows = function() {
+      const tbody = document.getElementById('akSubjectRangesTbody');
+      tbody.innerHTML = activeSubjectsList.map(s => `
+        <tr>
+          <td><input type='text' class='form-control form-control-sm fw-bold ak-sub-name' value='${s.name}'></td>
+          <td><input type='number' class='form-control form-control-sm text-center ak-sub-start' value='${s.start_q}'></td>
+          <td><input type='number' class='form-control form-control-sm text-center ak-sub-end' value='${s.end_q}'></td>
+          <td><button type='button' class='btn btn-sm btn-outline-danger py-0 px-1.5' onclick='this.closest("tr").remove()'>&times;</button></td>
+        </tr>
+      `).join('');
+    };
+
+    window.addAkSubjectRow = function() {
+      const tbody = document.getElementById('akSubjectRangesTbody');
+      const rows = tbody.querySelectorAll('tr');
+      let nextStart = 1;
+      if (rows.length > 0) {
+        const lastEnd = parseInt(rows[rows.length - 1].querySelector('.ak-sub-end').value, 10);
+        if (!isNaN(lastEnd)) nextStart = lastEnd + 1;
+      }
+      const maxQ = selectedTemplate ? selectedTemplate.cap : 100;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type='text' class='form-control form-control-sm fw-bold ak-sub-name' placeholder='Subject'></td>
+        <td><input type='number' class='form-control form-control-sm text-center ak-sub-start' value='${nextStart}'></td>
+        <td><input type='number' class='form-control form-control-sm text-center ak-sub-end' value='${Math.min(maxQ, nextStart + 9)}'></td>
+        <td><button type='button' class='btn btn-sm btn-outline-danger py-0 px-1.5' onclick='this.closest("tr").remove()'>&times;</button></td>
+      `;
+      tbody.appendChild(tr);
+    };
+
+    window.applyAkSubjectRanges = function() {
+      const rows = document.querySelectorAll('#akSubjectRangesTbody tr');
+      const list = [];
+      rows.forEach(r => {
+        const name = r.querySelector('.ak-sub-name').value.trim() || "Subject";
+        const s = parseInt(r.querySelector('.ak-sub-start').value, 10);
+        const e = parseInt(r.querySelector('.ak-sub-end').value, 10);
+        if (!isNaN(s) && !isNaN(e) && e >= s) list.push({ name, start_q: s, end_q: e, total: (e - s) + 1 });
+      });
+      if (list.length > 0) {
+        activeSubjectsList = list;
+        window.renderAnswerKeyGrid();
       }
     };
 
-    // ⚡ 3. RENDER MULTI-SUBJECT COLUMNS & BUBBLE ROWS
-    window.renderAnswerKeySubjectColumns = function() {
-      const gridContainer = document.getElementById('akSubjectsGridContainer');
-      gridContainer.innerHTML = "";
+    window.renderAnswerKeyGrid = function() {
+      const container = document.getElementById('akSubjectsGridContainer');
+      container.innerHTML = "";
+      if (!selectedTemplate) return;
 
-      const subjects = activeSelectedBlueprint.Subjects || [];
+      const colClass = activeSubjectsList.length === 1 ? 'col-lg-6 col-12 mx-auto' : 'col-lg-3 col-md-6 col-12';
 
-      subjects.forEach(sub => {
+      activeSubjectsList.forEach(sub => {
         const col = document.createElement('div');
-        col.className = 'col-lg-3 col-md-6 col-12';
-
+        col.className = colClass;
         let rowsHtml = "";
         for (let q = sub.start_q; q <= sub.end_q; q++) {
-          const activeVal = answerKeysDictionary[q] || answerKeysDictionary[String(q)] || "";
-
+          if (q > selectedTemplate.cap) break;
+          const val = answerKeysMap[q] || "";
           rowsHtml += `
             <div class='d-flex align-items-center justify-content-between p-1.5 border-bottom'>
               <span class='fw-bold small text-dark' style='width: 28px;'>${String(q).padStart(2, '0')}.</span>
-              <div class='d-flex align-items-center'>
-                <button type='button' class='bubble-btn ${activeVal === "A" ? "active" : ""}' data-q='${q}' data-opt='A' onclick='window.setAnswerOption(${q}, "A")'>A</button>
-                <button type='button' class='bubble-btn ${activeVal === "B" ? "active" : ""}' data-q='${q}' data-opt='B' onclick='window.setAnswerOption(${q}, "B")'>B</button>
-                <button type='button' class='bubble-btn ${activeVal === "C" ? "active" : ""}' data-q='${q}' data-opt='C' onclick='window.setAnswerOption(${q}, "C")'>C</button>
-                <button type='button' class='bubble-btn ${activeVal === "D" ? "active" : ""}' data-q='${q}' data-opt='D' onclick='window.setAnswerOption(${q}, "D")'>D</button>
-                <button type='button' class='bubble-btn bonus ${activeVal === "*" ? "active" : ""}' data-q='${q}' data-opt='*' onclick='window.setAnswerOption(${q}, "*")' title='Bonus Marks to All'>*</button>
+              <div>
+                <button type='button' class='bubble-btn ${val === "A" ? "active" : ""}' data-q='${q}' data-opt='A' onclick='window.setAnswerOption(${q}, "A")'>A</button>
+                <button type='button' class='bubble-btn ${val === "B" ? "active" : ""}' data-q='${q}' data-opt='B' onclick='window.setAnswerOption(${q}, "B")'>B</button>
+                <button type='button' class='bubble-btn ${val === "C" ? "active" : ""}' data-q='${q}' data-opt='C' onclick='window.setAnswerOption(${q}, "C")'>C</button>
+                <button type='button' class='bubble-btn ${val === "D" ? "active" : ""}' data-q='${q}' data-opt='D' onclick='window.setAnswerOption(${q}, "D")'>D</button>
+                <button type='button' class='bubble-btn bonus ${val === "*" ? "active" : ""}' data-q='${q}' data-opt='*' onclick='window.setAnswerOption(${q}, "*")' title='Bonus'>*</button>
               </div>
-            </div>
-          `;
+            </div>`;
         }
-
         col.innerHTML = `
           <div class='key-subject-card'>
             <div class='key-subject-header'>
               <span><i class='fas fa-book me-1'></i> ${sub.name}</span>
-              <span class='badge bg-light text-primary border'>Q${sub.start_q} - Q${sub.end_q} (${sub.total} Qs)</span>
+              <span class='badge bg-light text-primary border'>Q${sub.start_q}-Q${sub.end_q}</span>
             </div>
-            <div style='max-height: 480px; overflow-y: auto;' class='p-1'>
-              ${rowsHtml}
-            </div>
-          </div>
-        `;
-
-        gridContainer.appendChild(col);
+            <div style='max-height: 440px; overflow-y: auto;' class='p-1'>${rowsHtml}</div>
+          </div>`;
+        container.appendChild(col);
       });
-
       window.updateAkSummaryKpi();
     };
 
-    // ⚡ 4. SET BUBBLE ANSWER INTERACTIVELY
     window.setAnswerOption = function(q, opt) {
-      if (answerKeysDictionary[q] === opt) {
-        delete answerKeysDictionary[q]; // Unset on second click
-      } else {
-        answerKeysDictionary[q] = opt;
-      }
+      if (answerKeysMap[q] === opt) delete answerKeysMap[q];
+      else answerKeysMap[q] = opt;
 
-      // Update button UI
       document.querySelectorAll(`.bubble-btn[data-q='${q}']`).forEach(b => {
-        const bOpt = b.getAttribute('data-opt');
-        b.classList.toggle('active', bOpt === (answerKeysDictionary[q] || ""));
+        b.classList.toggle('active', b.getAttribute('data-opt') === (answerKeysMap[q] || ""));
       });
-
       window.updateAkSummaryKpi();
     };
 
-    // ⚡ 5. EXECUTE QUICK PASTE AUTO-FILL (ABCD STRING)
     window.executeQuickKeyAutoFill = function() {
-      if (!activeSelectedBlueprint) {
-        alert("Please select a Blueprint first!");
-        return;
-      }
-
+      if (!selectedTemplate) { alert("Select Class & Template first!"); return; }
       const raw = (document.getElementById('akQuickPasteInput').value || "").trim().toUpperCase();
-      if (!raw) {
-        alert("Please paste an answer string e.g. ABCDABBA...");
-        return;
+      for (let i = 0; i < raw.length && i < selectedTemplate.cap; i++) {
+        if (["A", "B", "C", "D", "*"].includes(raw[i])) answerKeysMap[i + 1] = raw[i];
       }
-
-      const totalCap = activeSelectedBlueprint.TemplateType;
-      let countFilled = 0;
-
-      for (let i = 0; i < raw.length; i++) {
-        const q = i + 1;
-        if (q > totalCap) break;
-
-        const char = raw[i];
-        if (["A", "B", "C", "D", "*"].includes(char)) {
-          answerKeysDictionary[q] = char;
-          countFilled++;
-        }
-      }
-
-      window.renderAnswerKeySubjectColumns();
-      alert(`⚡ Successfully populated ${countFilled} questions from your pasted string!`);
+      window.renderAnswerKeyGrid();
     };
 
-    // ⚡ 6. UPDATE SUMMARY KPIS
+    window.fillRandomDemoAnswers = function() {
+      if (!selectedTemplate) { alert("Select Class & Template first!"); return; }
+      const opts = ["A", "B", "C", "D"];
+      for (let q = 1; q <= selectedTemplate.cap; q++) {
+        answerKeysMap[q] = opts[Math.floor(Math.random() * opts.length)];
+      }
+      window.renderAnswerKeyGrid();
+    };
+
     window.updateAkSummaryKpi = function() {
-      if (!activeSelectedBlueprint) {
-        document.getElementById('akKpiTotal').innerText = "0";
-        document.getElementById('akKpiConfigured').innerText = "0";
-        document.getElementById('akKpiPending').innerText = "0";
-        document.getElementById('akKpiBonus').innerText = "0";
-        document.getElementById('akKpiScheme').innerText = "+1.0 / 0.0";
-        return;
-      }
-
-      const totalQ = activeSelectedBlueprint.TemplateType;
-      let configured = 0;
-      let bonus = 0;
-
+      const totalQ = selectedTemplate ? selectedTemplate.cap : 0;
+      let conf = 0, bonus = 0;
       for (let q = 1; q <= totalQ; q++) {
-        const v = answerKeysDictionary[q] || answerKeysDictionary[String(q)];
-        if (v) {
-          configured++;
-          if (v === "*") bonus++;
-        }
+        if (answerKeysMap[q]) { conf++; if (answerKeysMap[q] === "*") bonus++; }
       }
-
-      const rMarks = document.getElementById('akRightMarks').value || "1.0";
-      const wMarks = document.getElementById('akWrongMarks').value || "0.0";
-
+      const rM = document.getElementById('akRightMarks').value || "1.0";
+      const wM = document.getElementById('akWrongMarks').value || "0.0";
       document.getElementById('akKpiTotal').innerText = totalQ;
-      document.getElementById('akKpiConfigured').innerText = configured;
-      document.getElementById('akKpiPending').innerText = totalQ - configured;
+      document.getElementById('akKpiConfigured').innerText = conf;
+      document.getElementById('akKpiPending').innerText = Math.max(0, totalQ - conf);
       document.getElementById('akKpiBonus').innerText = bonus;
-      document.getElementById('akKpiScheme').innerText = `+${rMarks} / ${wMarks}`;
+      document.getElementById('akKpiScheme').innerText = `+${rM} / ${wM}`;
     };
 
-    // ⚡ 7. SUBMIT TO SUPABASE "OMR_AnswerKeys" TABLE
     window.submitMasterAnswerKey = async function() {
-      if (!activeSelectedBlueprint) return;
-
-      const totalQ = activeSelectedBlueprint.TemplateType;
-      const configuredCount = Object.keys(answerKeysDictionary).length;
-
-      if (configuredCount < totalQ) {
-        if (!confirm(`Warning: Only ${configuredCount} of ${totalQ} questions have answers set. Do you want to save anyway?`)) {
-          return;
-        }
-      }
-
+      if (!selectedClass || !selectedTemplate) return;
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const schoolId = user.schoolId;
-      const saveBtn = document.getElementById('btnSaveAnswerKeyRecord');
+      const examName = document.getElementById('akExamNameInput').value.trim() || selectedTemplate.name;
+      const compositeId = `${selectedClass}::${selectedTemplate.id}`;
+      const btn = document.getElementById('btnSaveAnswerKeyRecord');
 
-      const payload = {
-        SchoolID: schoolId,
-        BlueprintID: activeSelectedBlueprint.BlueprintID,
-        RightMarks: parseFloat(document.getElementById('akRightMarks').value) || 1.0,
-        WrongMarks: parseFloat(document.getElementById('akWrongMarks').value) || 0.0,
-        BlankMarks: parseFloat(document.getElementById('akBlankMarks').value) || 0.0,
-        Keys: answerKeysDictionary,
-        UpdatedAt: new Date().toISOString()
+      const fullKeys = {
+        ...answerKeysMap,
+        _meta: {
+          class: selectedClass,
+          examName: examName,
+          templateId: selectedTemplate.id,
+          templateName: selectedTemplate.name,
+          templateCap: selectedTemplate.cap,
+          subjects: activeSubjectsList
+        }
       };
 
-      saveBtn.disabled = true;
-      saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Locking Key in Database...';
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Saving...';
 
       try {
-        // Upsert Answer Key (Delete existing and insert fresh record)
-        await db
-          .from('OMR_AnswerKeys')
-          .delete()
-          .eq('SchoolID', schoolId)
-          .eq('BlueprintID', activeSelectedBlueprint.BlueprintID);
-
-        const { error } = await db
-          .from('OMR_AnswerKeys')
-          .insert([payload]);
-
+        await db.from('OMR_AnswerKeys').delete().eq('SchoolID', schoolId).eq('BlueprintID', compositeId);
+        const { error } = await db.from('OMR_AnswerKeys').insert([{
+          SchoolID: schoolId,
+          BlueprintID: compositeId,
+          RightMarks: parseFloat(document.getElementById('akRightMarks').value) || 1.0,
+          WrongMarks: parseFloat(document.getElementById('akWrongMarks').value) || 0.0,
+          BlankMarks: parseFloat(document.getElementById('akBlankMarks').value) || 0.0,
+          Keys: fullKeys,
+          UpdatedAt: new Date().toISOString()
+        }]);
         if (error) throw error;
-
-        alert(`🎉 Success! Master Answer Key for [${activeSelectedBlueprint.ExamName}] has been locked in database.`);
-
+        alert(`✅ Answer Key locked for [${selectedClass} - ${examName}]!`);
+        await window.loadSavedAnswerKeysTable();
       } catch(err) {
-        console.error("Save Answer Key Error:", err);
-        alert("Failed to save answer key: " + err.message);
+        alert("Save Error: " + err.message);
       } finally {
-        saveBtn.disabled = false;
-        saveBtn.innerHTML = '<i class="fas fa-lock me-1"></i> Lock & Save Answer Key';
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-lock me-1"></i> Lock &amp; Save Class Answer Key';
       }
     };
 
-    // Boot Module
+    window.loadSavedAnswerKeysTable = async function() {
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const tbody = document.getElementById('akSavedKeysTbody');
+      try {
+        const { data, error } = await db.from('OMR_AnswerKeys').select('*').eq('SchoolID', user.schoolId).order('Id', { ascending: false });
+        if (error) throw error;
+        savedKeysList = data || [];
+        document.getElementById('akSavedCountBadge').innerText = `${savedKeysList.length} Saved`;
+
+        if (savedKeysList.length === 0) {
+          tbody.innerHTML = `<tr><td colspan='6' class='text-center py-3 text-muted'>No answer keys saved yet.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = savedKeysList.map((k, idx) => {
+          const meta = (k.Keys && k.Keys._meta) ? k.Keys._meta : {};
+          const cls = meta.class || k.BlueprintID.split('::')[0] || "-";
+          const exam = meta.examName || k.BlueprintID;
+          const cap = meta.templateCap || (Object.keys(k.Keys || {}).length - (meta.class ? 1 : 0));
+          return `
+            <tr>
+              <td>${idx + 1}</td>
+              <td><span class='badge bg-light text-primary border'>${cls}</span></td>
+              <td class='text-start ps-2'><div class='fw-bold text-dark'>${exam}</div><small class='text-muted'>ID: <code>${k.BlueprintID}</code></small></td>
+              <td><span class='badge bg-danger-subtle text-danger'>${cap} Qs</span></td>
+              <td><span class='small fw-bold'>+${k.RightMarks} / ${k.WrongMarks}</span></td>
+              <td>
+                <button class='btn btn-sm btn-outline-primary py-0.5 px-2 me-1' onclick='window.editSavedAk("${k.BlueprintID}")' type='button'><i class='fas fa-edit'></i></button>
+                <button class='btn btn-sm btn-outline-danger py-0.5 px-2' onclick='window.deleteSavedAk("${k.BlueprintID}")' type='button'><i class='fas fa-trash'></i></button>
+              </td>
+            </tr>`;
+        }).join('');
+      } catch(e) {
+        tbody.innerHTML = `<tr><td colspan='6' class='text-center py-3 text-danger'>Failed to load saved keys</td></tr>`;
+      }
+    };
+
+    window.editSavedAk = function(bpId) {
+      const parts = bpId.split('::');
+      if (parts.length === 2) {
+        document.getElementById('akClassSelect').value = parts[0];
+        document.getElementById('akTplSelect').value = parts[1];
+        window.onAkSelectionChange();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+
+    window.deleteSavedAk = async function(bpId) {
+      if (!confirm(`Delete saved Answer Key [${bpId}]?`)) return;
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      await db.from('OMR_AnswerKeys').delete().eq('SchoolID', user.schoolId).eq('BlueprintID', bpId);
+      await window.loadSavedAnswerKeysTable();
+    };
+
     window.initOmrAnswerKeyModule();
   })();
   // ]]>
   </script>
+</template>
 </template>
 
 <!-- =================================================================== -->
