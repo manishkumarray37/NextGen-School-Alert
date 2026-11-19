@@ -34995,6 +34995,30 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     </div>
   </div>
 
+<!-- MODAL: VIEW & EDIT ASSIGNED CLASSES -->
+  <div class='modal fade' id='actClassEditModal' tabindex='-1'>
+    <div class='modal-dialog modal-dialog-centered'>
+      <div class='modal-content border-0 shadow-lg' style='border-radius: 12px;'>
+        <div class='modal-header bg-info text-white py-2.5'>
+          <h6 class='modal-title fw-bold' id='actClsModalTitle'><i class='fas fa-school me-2'></i>Assigned Classes</h6>
+          <button class='btn-close btn-close-white' data-bs-dismiss='modal' type='button'></button>
+        </div>
+        <div class='modal-body p-3'>
+          <input type='hidden' id='actClsTargetId' value=''>
+          <div class='mb-2 pb-2 border-bottom d-flex justify-content-between align-items-center'>
+            <label class='cls-chk-item m-0 fw-bold text-primary'><input type='checkbox' id='chkAllModalActClasses' onchange='window.toggleAllModalActClasses(this)'> Select All Classes</label>
+            <small class='text-muted' id='actClsCountHint'></small>
+          </div>
+          <div id='actClassesChecklist' class='row g-2' style='max-height: 280px; overflow-y: auto;'></div>
+        </div>
+        <div class='modal-footer py-2'>
+          <button class='btn btn-secondary btn-sm' data-bs-dismiss='modal' type='button'>Cancel</button>
+          <button class='btn btn-info text-white btn-sm fw-bold px-4' id='btnSaveActClasses' onclick='window.saveEditedActClasses()' type='button'>Update Classes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: ASSIGN SUBJECTS TO ACTIVITY -->
   <div class='modal fade' id='actSubjectModal' tabindex='-1'>
     <div class='modal-dialog modal-dialog-centered'>
@@ -35176,6 +35200,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             <td class='text-center fw-bold'>${a.MaxMarks ?? 0}</td>
             <td><span class='badge bg-light text-dark border text-wrap text-start' style='font-size:11px;'>${a.Class || "ALL"}</span></td>
             <td class='text-center text-nowrap'>
+			<button class='btn-act-icon text-info' onclick='window.openActClassEditModal("${aid}")' title='View / Edit Assigned Classes' type='button'><i class='fas fa-school'></i></button>
               <button class='btn-act-icon text-success' onclick='window.openActSubjectModal("${aid}")' title='Assign Subjects' type='button'><i class='fas fa-book'></i></button>
               <button class='btn-act-icon text-primary' onclick='window.editActivityRecord("${aid}")' title='Edit' type='button'><i class='fas fa-edit'></i></button>
               <span class='text-muted'>|</span>
@@ -35278,6 +35303,68 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       } finally {
         btn.disabled = false;
         btn.innerText = document.getElementById('actEditId').value ? "Update" : "Submit";
+      }
+    };
+
+// View & Edit Assigned Classes Modal Logic
+    window.openActClassEditModal = function(aid) {
+      const a = activitiesList.find(x => String(x.ActivityID || x.Id) === String(aid));
+      if (!a) return;
+
+      document.getElementById('actClsTargetId').value = aid;
+      document.getElementById('actClsModalTitle').innerHTML = `<i class='fas fa-school me-2'></i>Classes: ${a.ActivityName} (${a.ExamName})`;
+
+      const assigned = String(a.Class || "ALL").split(",").map(s => s.trim());
+      const isAll = assigned.includes("ALL") || assigned.includes("All");
+
+      const box = document.getElementById('actClassesChecklist');
+      box.innerHTML = allClassesList.map(cls => {
+        const isChk = isAll || assigned.includes(cls);
+        return `<div class='col-6'><label class='cls-chk-item border rounded'><input type='checkbox' class='modal-act-cls-chk' value='${cls}' ${isChk ? "checked" : ""} onchange='window.syncModalClsMaster()'> ${cls}</label></div>`;
+      }).join('');
+
+      window.syncModalClsMaster();
+      new bootstrap.Modal(document.getElementById('actClassEditModal')).show();
+    };
+
+    window.toggleAllModalActClasses = function(m) {
+      document.querySelectorAll('.modal-act-cls-chk').forEach(c => c.checked = m.checked);
+      window.syncModalClsMaster();
+    };
+
+    window.syncModalClsMaster = function() {
+      const all = document.querySelectorAll('.modal-act-cls-chk');
+      const chked = document.querySelectorAll('.modal-act-cls-chk:checked');
+      document.getElementById('chkAllModalActClasses').checked = (all.length > 0 && chked.length === all.length);
+      document.getElementById('actClsCountHint').innerText = `${chked.length} / ${all.length} Selected`;
+    };
+
+    window.saveEditedActClasses = async function() {
+      const aid = document.getElementById('actClsTargetId').value;
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const all = document.querySelectorAll('.modal-act-cls-chk');
+      const chosen = Array.from(all).filter(c => c.checked).map(c => c.value);
+
+      if (chosen.length === 0) { alert("Please select at least 1 class!"); return; }
+      const classStr = (chosen.length === all.length) ? "ALL" : chosen.join(", ");
+
+      const btn = document.getElementById('btnSaveActClasses');
+      btn.disabled = true; btn.innerText = "Updating...";
+
+      try {
+        const { error } = await db
+          .from('Exam_Activities')
+          .update({ Class: classStr })
+          .eq('SchoolID', user.schoolId)
+          .eq('ActivityID', aid);
+        if (error) throw error;
+
+        bootstrap.Modal.getInstance(document.getElementById('actClassEditModal')).hide();
+        await window.fetchActivitiesList();
+      } catch(err) {
+        alert("Update failed: " + err.message);
+      } finally {
+        btn.disabled = false; btn.innerText = "Update Classes";
       }
     };
 
