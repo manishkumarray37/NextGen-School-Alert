@@ -34333,33 +34333,43 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     </div>
   </div>
 
-  <script type='text/javascript'>
+<script type='text/javascript'>
   // <![CDATA[
   (function() {
     let termsList = [];
     let localConfig = null;
-    const AMP = String.fromCharCode(38);
 
     window.initTermSettingModule = async function() {
-      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData() : null;
+      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
       const sDrop = document.getElementById('tmsSession');
-      if (sDrop && localConfig) {
-        sDrop.innerHTML = (localConfig.sessions || ["2026-2027"]).map(s => `<option value="${s}">${s}</option>`).join('');
+      if (sDrop) {
+        const sessions = (localConfig && localConfig.sessions && localConfig.sessions.length > 0)
+          ? localConfig.sessions
+          : ["2026-27"];
+        sDrop.innerHTML = sessions.map(s => `<option value="${s}">${s}</option>`).join('');
       }
-      window.fetchTermsList();
+      await window.fetchTermsList();
     };
 
     window.fetchTermsList = async function() {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
       const tbody = document.getElementById('tmsDataTableBody');
       tbody.innerHTML = `<tr><td colspan='7' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading academic terms...</td></tr>`;
 
       try {
-        const res = await (await fetch(`${scriptURL}?action=getExamTerms${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&_t=${Date.now()}`)).json();
-        termsList = Array.isArray(res.data) ? res.data : [];
+        const { data, error } = await db
+          .from('Exam_Terms')
+          .select('*')
+          .eq('SchoolID', schoolId)
+          .order('Id', { ascending: true });
+
+        if (error) throw error;
+        termsList = data || [];
         window.renderTermsTable();
       } catch(e) {
-        tbody.innerHTML = `<tr><td colspan='7' class='text-center py-4 text-danger'>Failed to load terms.</td></tr>`;
+        console.error("Fetch Terms Error:", e);
+        tbody.innerHTML = `<tr><td colspan='7' class='text-center py-4 text-danger fw-bold'>Failed to load terms: ${e.message}</td></tr>`;
       }
     };
 
@@ -34372,16 +34382,23 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       let html = "";
       termsList.forEach((t, i) => {
+        const statusBadge = (String(t.Status || "Active").toLowerCase() === "active")
+          ? `<span class='badge bg-success'>Active</span>`
+          : `<span class='badge bg-secondary'>Inactive</span>`;
+
         html += `
           <tr>
             <td>${i + 1}</td>
             <td><strong>${t.Session || '-'}</strong></td>
             <td class='text-start ps-3 fw-bold text-dark'>${t.TermName}</td>
             <td><span class='badge bg-light text-primary border font-monospace'>${t.TermCode}</span></td>
-            <td><strong>${t.Weightage}%</strong></td>
-            <td><span class='badge bg-success'>Active</span></td>
+            <td><strong>${t.Weightage || 0}%</strong></td>
+            <td>${statusBadge}</td>
             <td>
-              <button class='btn btn-outline-primary btn-sm py-0 px-2 fw-bold' onclick='window.editTermModal("${t.TermID}")'><i class='fas fa-edit'></i></button>
+              <div class='d-flex justify-content-center gap-1'>
+                <button class='btn btn-outline-primary btn-sm py-0 px-2 fw-bold' onclick='window.editTermModal("${t.TermID}")' title='Edit' type='button'><i class='fas fa-edit'></i></button>
+                <button class='btn btn-outline-danger btn-sm py-0 px-2 fw-bold' onclick='window.deleteTermRecord("${t.TermID}")' title='Delete' type='button'><i class='fas fa-trash-alt'></i></button>
+              </div>
             </td>
           </tr>
         `;
@@ -34415,31 +34432,64 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Saving...`;
 
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const payload = {
-        action: "saveExamTerms",
-        tsid: user.targetSheetId,
-        termData: {
-          TermID: document.getElementById('tmsEditId').value,
-          Session: document.getElementById('tmsSession').value,
-          TermName: document.getElementById('tmsName').value.trim(),
-          TermCode: document.getElementById('tmsCode').value.trim().toUpperCase(),
-          Weightage: document.getElementById('tmsWeightage').value,
-          Status: "Active"
-        }
+      const schoolId = user.schoolId;
+      const editId = document.getElementById('tmsEditId').value.trim();
+
+      const record = {
+        SchoolID: schoolId,
+        Session: document.getElementById('tmsSession').value,
+        TermName: document.getElementById('tmsName').value.trim(),
+        TermCode: document.getElementById('tmsCode').value.trim().toUpperCase(),
+        Weightage: parseFloat(document.getElementById('tmsWeightage').value) || 50,
+        Status: "Active"
       };
 
       try {
-        await fetch(scriptURL, { method: "POST", body: JSON.stringify(payload) });
-        alert("✅ Academic Term Saved Successfully in Sheet!");
-        bootstrap.Modal.getInstance(document.getElementById('tmsModal')).hide();
-        window.fetchTermsList();
+        if (editId) {
+          const { error } = await db
+            .from('Exam_Terms')
+            .update(record)
+            .eq('SchoolID', schoolId)
+            .eq('TermID', editId);
+          if (error) throw error;
+          alert("✅ Academic Term Updated Successfully!");
+        } else {
+          record.TermID = "TRM-" + Date.now().toString(36).toUpperCase();
+          const { error } = await db
+            .from('Exam_Terms')
+            .insert([record]);
+          if (error) throw error;
+          alert("✅ New Academic Term Saved Successfully!");
+        }
+
+        const modalEl = document.getElementById('tmsModal');
+        const modalInst = bootstrap.Modal.getInstance(modalEl);
+        if (modalInst) modalInst.hide();
+
+        await window.fetchTermsList();
       } catch(err) {
-        alert("Term saved.");
-        bootstrap.Modal.getInstance(document.getElementById('tmsModal')).hide();
-        window.fetchTermsList();
+        console.error("Save Term Error:", err);
+        alert("Failed to save term: " + err.message);
       } finally {
         btn.disabled = false;
         btn.innerHTML = `<i class='fas fa-save me-1'></i> Save Term`;
+      }
+    };
+
+    window.deleteTermRecord = async function(termId) {
+      if (!confirm("Are you sure you want to delete this Academic Term?")) return;
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      try {
+        const { error } = await db
+          .from('Exam_Terms')
+          .delete()
+          .eq('SchoolID', user.schoolId)
+          .eq('TermID', termId);
+        if (error) throw error;
+        alert("✅ Term Deleted Successfully!");
+        await window.fetchTermsList();
+      } catch(err) {
+        alert("Failed to delete term: " + err.message);
       }
     };
 
