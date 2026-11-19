@@ -35539,9 +35539,9 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     .omr-kpi-tile:last-child { border-right: none; }
     .omr-kpi-class { background: #eff6ff; color: #2563eb; }
     .omr-kpi-sec { background: #fffbeb; color: #d97706; }
+    .omr-kpi-format { background: #fef2f2; color: #b91c1c; }
     .omr-kpi-total-stu { background: #f0fdf4; color: #0284c7; }
-    .omr-kpi-selected { background: #fdf2f8; color: #db2777; }
-    .omr-kpi-format { background: #f0fdf4; color: #059669; }
+    .omr-kpi-selected { background: #f0fdf4; color: #059669; }
 
     .omr-kpi-badge {
       font-size: 11px;
@@ -35552,9 +35552,9 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     }
     .omr-kpi-class .omr-kpi-badge { background: #0284c7; }
     .omr-kpi-sec .omr-kpi-badge { background: #f59e0b; }
+    .omr-kpi-format .omr-kpi-badge { background: #b91c1c; }
     .omr-kpi-total-stu .omr-kpi-badge { background: #0284c7; }
-    .omr-kpi-selected .omr-kpi-badge { background: #db2777; }
-    .omr-kpi-format .omr-kpi-badge { background: #059669; }
+    .omr-kpi-selected .omr-kpi-badge { background: #059669; }
 
     /* TABLE DESIGN */
     .table-omr th { background: #f8fafc; font-size: 0.78rem; text-transform: uppercase; color: #334155; font-weight: 800; border-bottom: 2px solid #e2e8f0; padding: 12px 10px; text-align: center; }
@@ -35583,20 +35583,26 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
     <div class='card-body p-2'>
       
-      <!-- 1. FILTER CONTROLS -->
+      <!-- 1. TEMPLATE, EXAM, CLASS & SECTION CONTROLS -->
       <div class='omr-filter-box mb-3'>
         <div class='row g-3 align-items-end'>
-          <div class='col-md-4'>
-            <label class='omr-label'>Select Examination Blueprint *</label>
-            <select class='form-select form-select-sm fw-bold text-primary' id='printBpSelect' onchange='window.onPrintBlueprintChange()'>
-              <option value=''>-- Select Active Blueprint --</option>
+          <div class='col-md-3'>
+            <label class='omr-label'>Select OMR Sheet Template *</label>
+            <select class='form-select form-select-sm fw-bold text-danger' id='printTplSelect' onchange='window.onPrintTemplateChange()'>
+              <option value=''>-- Select OMR Template --</option>
             </select>
           </div>
           <div class='col-md-3'>
-            <label class='omr-label'>Assigned Class</label>
-            <input class='form-control form-control-sm fw-bold bg-light' id='printClassInput' readonly='readonly' placeholder='Select Blueprint' type='text'>
+            <label class='omr-label'>Exam Name / Title *</label>
+            <input class='form-control form-control-sm fw-bold' id='printExamTitleInput' placeholder='e.g., Unit Test 1 / Term 1' value='Periodic Assessment 2026' type='text'>
           </div>
-          <div class='col-md-3'>
+          <div class='col-md-2'>
+            <label class='omr-label'>Target Class *</label>
+            <select class='form-select form-select-sm fw-bold text-primary' id='printClassSelect' onchange='window.onPrintClassChange()'>
+              <option value=''>-- Select Class --</option>
+            </select>
+          </div>
+          <div class='col-md-2'>
             <label class='omr-label'>Section *</label>
             <select class='form-select form-select-sm fw-bold' id='printSectionSelect' onchange='window.fetchStudentsForOmrPrint()'>
               <option value=''>-- Select Section --</option>
@@ -35612,12 +35618,15 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         <!-- Print Action Toolbar -->
         <div class='d-flex justify-content-between align-items-center pt-3 mt-3 border-top flex-wrap gap-2'>
           <div class='small text-muted'>
-            <i class='fas fa-info-circle text-primary me-1'></i>
-            QR Code with candidate metadata will be auto-rendered on top-right of every sheet.
+            <i class='fas fa-qrcode text-danger me-1'></i>
+            Student Name, Roll No, Class-Section &amp; unique QR Code will be pre-printed automatically on every sheet.
           </div>
-          <div class='d-flex gap-2'>
+          <div class='d-flex gap-2 flex-wrap'>
+            <button class='btn btn-outline-danger btn-sm px-3 fw-bold shadow-sm' id='btnPrintBlankOmr' onclick='window.downloadGenericBlankOmr()' type='button'>
+              <i class='fas fa-file-alt me-1'></i> Print Blank Sheet
+            </button>
             <button class='btn btn-success btn-sm px-4 fw-bold shadow-sm' id='btnGenerateOmrPdf' onclick='window.startBulkOmrPdfGeneration()' disabled='disabled' type='button'>
-              <i class='fas fa-file-pdf me-1'></i> Download OMR Sheet Pack (.PDF)
+              <i class='fas fa-file-pdf me-1'></i> Download Student OMR Pack (.PDF)
             </button>
           </div>
         </div>
@@ -35627,7 +35636,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       <div class='omr-kpi-bar' id='omrPrintSummaryBar'>
         <div class='omr-kpi-tile omr-kpi-class'>Target Class <span class='omr-kpi-badge' id='printKpiClass'>-</span></div>
         <div class='omr-kpi-tile omr-kpi-sec'>Section <span class='omr-kpi-badge' id='printKpiSec'>-</span></div>
-        <div class='omr-kpi-tile omr-kpi-format'>Grid Capacity <span class='omr-kpi-badge' id='printKpiFormat'>-</span></div>
+        <div class='omr-kpi-tile omr-kpi-format'>Selected Template <span class='omr-kpi-badge' id='printKpiFormat'>-</span></div>
         <div class='omr-kpi-tile omr-kpi-total-stu'>Roster Count <span class='omr-kpi-badge' id='printKpiRosterCount'>0</span></div>
         <div class='omr-kpi-tile omr-kpi-selected'>Selected For Print <span class='omr-kpi-badge' id='printKpiSelectedCount'>0</span></div>
       </div>
@@ -35649,7 +35658,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             </tr>
           </thead>
           <tbody id='omrStudentsPrintTbody'>
-            <tr><td class='text-center py-4 text-muted fw-bold' colspan='7'><i class='fas fa-file-alt fa-2x mb-2 text-secondary d-block'></i>Select Examination Blueprint &amp; Section above to view student roster</td></tr>
+            <tr><td class='text-center py-4 text-muted fw-bold' colspan='7'><i class='fas fa-file-alt fa-2x mb-2 text-secondary d-block'></i>Select OMR Template, Class &amp; Section above and click <b>Load Students</b></td></tr>
           </tbody>
         </table>
       </div>
@@ -35661,30 +35670,42 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   <script type='text/javascript'>
   // <![CDATA[
   (async function() {
-    let availableBlueprints = [];
-    let activeSelectedBlueprint = null;
+    let allAvailableTemplates = [];
+    let selectedTemplateObj = null;
     let loadedStudentsList = [];
     let localClassMap = {};
 
-    // ⚡ 1. INITIALIZE MODULE
+    // Core Standard Presets (Matches Module 1 Designer)
+    const standardPresets = [
+      { id: "STD-25", name: "Standard 25 Questions Sheet", cap: 25, isPreset: true },
+      { id: "STD-30", name: "Standard 30 Questions Sheet", cap: 30, isPreset: true },
+      { id: "STD-50", name: "Standard 50 Questions Sheet", cap: 50, isPreset: true },
+      { id: "STD-75", name: "Standard 75 Questions Sheet", cap: 75, isPreset: true },
+      { id: "STD-100", name: "Standard 100 Questions Sheet", cap: 100, isPreset: true },
+      { id: "STD-120", name: "Standard 120 Questions Sheet", cap: 120, isPreset: true },
+      { id: "STD-180", name: "Standard 180 Questions Sheet", cap: 180, isPreset: true }
+    ];
+
+    // ⚡ 1. INITIALIZE MODULE (LOAD PRESETS + CUSTOM TEMPLATES + CLASSES)
     window.initOmrPrintModule = async function() {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const schoolId = user.schoolId;
 
-      // Reset state
-      activeSelectedBlueprint = null;
+      selectedTemplateObj = null;
       loadedStudentsList = [];
       document.getElementById('btnGenerateOmrPdf').disabled = true;
-      document.getElementById('printClassInput').value = "";
-      document.getElementById('printSectionSelect').innerHTML = '<option value="">-- Select Section --</option>';
 
-      // Load school class configurations
+      // A. Load School Classes from Master Config
       const cfg = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
       if (cfg && cfg.classMap) {
         localClassMap = cfg.classMap;
+        const clsDrop = document.getElementById('printClassSelect');
+        clsDrop.innerHTML = '<option value="">-- Select Class --</option>' + 
+          Object.keys(localClassMap).map(c => `<option value="${c}">${c}</option>`).join('');
       }
 
-      // Fetch saved Blueprints from Supabase
+      // B. Merge Standard Presets + Custom Saved Templates from Supabase
+      let customTemplates = [];
       try {
         const { data, error } = await db
           .from('OMR_Blueprints')
@@ -35692,73 +35713,87 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           .eq('SchoolID', schoolId)
           .order('Id', { ascending: false });
 
-        if (error) throw error;
-        availableBlueprints = data || [];
-
-        const bpDrop = document.getElementById('printBpSelect');
-        if (availableBlueprints.length === 0) {
-          bpDrop.innerHTML = '<option value="">No Blueprints Found! Create in Step 1</option>';
-          return;
+        if (!error && data) {
+          customTemplates = data.map(d => ({
+            id: d.BlueprintID,
+            name: d.ExamName,
+            cap: parseInt(d.TemplateType, 10),
+            subjects: d.Subjects || [],
+            isPreset: false
+          }));
         }
-
-        bpDrop.innerHTML = '<option value="">-- Select Active Blueprint --</option>' + 
-          availableBlueprints.map(b => `<option value="${b.BlueprintID}">[${b.Class}] ${b.ExamName} (${b.TemplateType} Questions)</option>`).join('');
-
       } catch(e) {
-        console.error("Fetch Blueprints Error:", e);
+        console.warn("Loaded presets only:", e);
       }
+
+      allAvailableTemplates = [...customTemplates, ...standardPresets];
+
+      const tplDrop = document.getElementById('printTplSelect');
+      let optHtml = '<option value="">-- Select OMR Template --</option>';
+      
+      if (customTemplates.length > 0) {
+        optHtml += '<optgroup label="Custom Saved Templates">';
+        customTemplates.forEach(t => {
+          optHtml += `<option value="${t.id}">[Custom] ${t.name} (${t.cap} Qs)</option>`;
+        });
+        optHtml += '</optgroup>';
+      }
+
+      optHtml += '<optgroup label="Standard OMR Formats">';
+      standardPresets.forEach(t => {
+        optHtml += `<option value="${t.id}">[Preset] ${t.name} (${t.cap} Qs)</option>`;
+      });
+      optHtml += '</optgroup>';
+
+      tplDrop.innerHTML = optHtml;
     };
 
-    // ⚡ 2. ON BLUEPRINT SELECTION CHANGE
-    window.onPrintBlueprintChange = function() {
-      const selectedId = document.getElementById('printBpSelect').value;
-      activeSelectedBlueprint = availableBlueprints.find(b => b.BlueprintID === selectedId) || null;
+    // ⚡ 2. ON TEMPLATE SELECTION CHANGE
+    window.onPrintTemplateChange = function() {
+      const selectedId = document.getElementById('printTplSelect').value;
+      selectedTemplateObj = allAvailableTemplates.find(t => t.id === selectedId) || null;
 
-      const clsInput = document.getElementById('printClassInput');
-      const secDrop = document.getElementById('printSectionSelect');
-      const tbody = document.getElementById('omrStudentsPrintTbody');
-      tbody.innerHTML = `<tr><td class='text-center py-4 text-muted fw-bold' colspan='7'>Click <b>Load Students</b> to preview candidate roster.</td></tr>`;
-
-      if (!activeSelectedBlueprint) {
-        clsInput.value = "";
-        secDrop.innerHTML = '<option value="">-- Select Section --</option>';
-        document.getElementById('printKpiClass').innerText = "-";
+      if (selectedTemplateObj) {
+        document.getElementById('printKpiFormat').innerText = `${selectedTemplateObj.cap} Qs`;
+      } else {
         document.getElementById('printKpiFormat').innerText = "-";
-        document.getElementById('btnGenerateOmrPdf').disabled = true;
+      }
+      window.updateSelectedPrintCount();
+    };
+
+    // ⚡ 3. ON CLASS SELECTION CHANGE
+    window.onPrintClassChange = function() {
+      const cls = document.getElementById('printClassSelect').value;
+      const secDrop = document.getElementById('printSectionSelect');
+
+      document.getElementById('printKpiClass').innerText = cls || "-";
+      document.getElementById('printKpiSec').innerText = "-";
+
+      if (!cls) {
+        secDrop.innerHTML = '<option value="">-- Select Section --</option>';
         return;
       }
 
-      const cls = activeSelectedBlueprint.Class;
-      clsInput.value = cls;
-      document.getElementById('printKpiClass').innerText = cls;
-      document.getElementById('printKpiFormat').innerText = `${activeSelectedBlueprint.TemplateType} Qs`;
-
-      // Populate sections based on class
       const rawSecs = localClassMap[cls] || "A,B,C,D";
       secDrop.innerHTML = '<option value="">-- Select Section --</option>' + 
         rawSecs.split(',').map(s => `<option value="${s.trim()}">Section ${s.trim()}</option>`).join('');
     };
 
-    // ⚡ 3. FETCH ROSTER FROM SUPABASE "Students" TABLE
+    // ⚡ 4. FETCH ROSTER FROM SUPABASE "Students" TABLE
     window.fetchStudentsForOmrPrint = async function() {
-      if (!activeSelectedBlueprint) {
-        alert("Please select an Examination Blueprint first!");
-        return;
-      }
-
-      const cls = activeSelectedBlueprint.Class;
+      const cls = document.getElementById('printClassSelect').value;
       const sec = document.getElementById('printSectionSelect').value;
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const schoolId = user.schoolId;
       const tbody = document.getElementById('omrStudentsPrintTbody');
 
-      if (!sec) {
-        alert("Please select a Section!");
+      if (!cls || !sec) {
+        alert("Please select both Class and Section first!");
         return;
       }
 
       document.getElementById('printKpiSec').innerText = sec;
-      tbody.innerHTML = `<tr><td colspan='7' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin fa-2x mb-2 text-primary d-block'></i>Fetching student roster for Class ${cls} - ${sec}...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan='7' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin fa-2x mb-2 text-primary d-block'></i>Fetching active student roster for ${cls} - ${sec}...</td></tr>`;
 
       try {
         const { data, error } = await db
@@ -35780,17 +35815,15 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           return 0;
         });
 
-        // Update KPIs
         document.getElementById('printKpiRosterCount').innerText = loadedStudentsList.length;
         document.getElementById('printKpiSelectedCount').innerText = loadedStudentsList.length;
 
         if (loadedStudentsList.length === 0) {
-          tbody.innerHTML = `<tr><td colspan='7' class='text-center py-4 text-danger fw-bold'>No active students found in Class ${cls} - Section ${sec}!</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan='7' class='text-center py-4 text-danger fw-bold'>No active students found in ${cls} - Section ${sec}!</td></tr>`;
           document.getElementById('btnGenerateOmrPdf').disabled = true;
           return;
         }
 
-        // Render Roster
         let html = "";
         loadedStudentsList.forEach((s, idx) => {
           const photo = s.StudentPhoto || s.student_photo || "";
@@ -35819,14 +35852,14 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               <td><span class='roll-badge shadow-sm'>${roll}</span></td>
               <td class='text-secondary fw-bold'>${adm}</td>
               <td class='text-start ps-2'>${father}</td>
-              <td><span class='badge bg-success-subtle text-success fw-bold px-2 py-1'><i class='fas fa-check-circle me-1'></i>Ready</span></td>
+              <td><span class='badge bg-success-subtle text-success fw-bold px-2 py-1'><i class='fas fa-qrcode me-1'></i>QR Ready</span></td>
             </tr>
           `;
         });
 
         tbody.innerHTML = html;
         document.getElementById('chkSelectAllStudents').checked = true;
-        document.getElementById('btnGenerateOmrPdf').disabled = false;
+        window.updateSelectedPrintCount();
 
       } catch(err) {
         console.error("Fetch Student Error:", err);
@@ -35834,29 +35867,67 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
     };
 
-    // ⚡ 4. CHECKBOX CONTROLLERS
+    // ⚡ 5. CHECKBOX CONTROLLERS
     window.toggleSelectAllPrintStudents = function(masterChk) {
-      const checkboxes = document.querySelectorAll('.chk-student-print');
-      checkboxes.forEach(c => c.checked = masterChk.checked);
+      document.querySelectorAll('.chk-student-print').forEach(c => c.checked = masterChk.checked);
       window.updateSelectedPrintCount();
     };
 
     window.updateSelectedPrintCount = function() {
       const selected = document.querySelectorAll('.chk-student-print:checked');
       document.getElementById('printKpiSelectedCount').innerText = selected.length;
-      document.getElementById('btnGenerateOmrPdf').disabled = (selected.length === 0);
+      document.getElementById('btnGenerateOmrPdf').disabled = (selected.length === 0 || !selectedTemplateObj);
     };
 
-    // ⚡ 5. TRIGGER BULK OMR PDF GENERATION VIA "omr-engine.js"
+    // ⚡ 6. DOWNLOAD GENERIC BLANK OMR SHEET (NO STUDENT DATA)
+    window.downloadGenericBlankOmr = async function() {
+      if (!selectedTemplateObj) {
+        alert("Please select an OMR Sheet Template first!");
+        return;
+      }
+
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const examTitle = document.getElementById('printExamTitleInput').value.trim() || selectedTemplateObj.name;
+      const cls = document.getElementById('printClassSelect').value || "All Classes";
+      const btn = document.getElementById('btnPrintBlankOmr');
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Creating PDF...`;
+
+      try {
+        const printPayload = {
+          BlueprintID: selectedTemplateObj.id,
+          ExamName: examTitle,
+          Class: cls,
+          TemplateType: selectedTemplateObj.cap,
+          Subjects: selectedTemplateObj.subjects || []
+        };
+
+        await window.OMREngine.generatePdf(printPayload, [], {
+          schoolName: user.schoolName || "Royal International Public School"
+        });
+      } catch(err) {
+        alert("PDF Error: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class='fas fa-file-alt me-1'></i> Print Blank Sheet`;
+      }
+    };
+
+    // ⚡ 7. TRIGGER BULK PRE-FILLED STUDENT OMR PACK PDF
     window.startBulkOmrPdfGeneration = async function() {
+      if (!selectedTemplateObj) {
+        alert("Please select an OMR Sheet Template first!");
+        return;
+      }
       if (!window.OMREngine || typeof window.OMREngine.generatePdf !== 'function') {
-        alert("OMR Engine is not loaded properly. Please refresh page.");
+        alert("OMR Engine is not loaded properly. Please hard refresh (Ctrl + F5).");
         return;
       }
 
       const selectedCheckboxes = document.querySelectorAll('.chk-student-print:checked');
       if (selectedCheckboxes.length === 0) {
-        alert("Please select at least 1 student to generate OMR sheets!");
+        alert("Please select at least 1 student!");
         return;
       }
 
@@ -35867,29 +35938,39 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       });
 
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const examTitle = document.getElementById('printExamTitleInput').value.trim() || selectedTemplateObj.name;
+      const cls = document.getElementById('printClassSelect').value || "Class";
       const btn = document.getElementById('btnGenerateOmrPdf');
 
       btn.disabled = true;
-      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-2'></i> Generating ${targetStudents.length} Vector Sheets...`;
+      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-2'></i> Printing ${targetStudents.length} Red OMR Sheets...`;
 
       try {
-        await window.OMREngine.generatePdf(activeSelectedBlueprint, targetStudents, {
+        const printPayload = {
+          BlueprintID: selectedTemplateObj.id,
+          ExamName: examTitle,
+          Class: cls,
+          TemplateType: selectedTemplateObj.cap,
+          Subjects: selectedTemplateObj.subjects || []
+        };
+
+        await window.OMREngine.generatePdf(printPayload, targetStudents, {
           schoolName: user.schoolName || "Royal International Public School",
           schoolId: user.schoolId
         });
 
-        alert(`🎉 Success! Master PDF containing ${targetStudents.length} customized OMR sheets has been generated.`);
+        alert(`🎉 Success! Master PDF pack containing ${targetStudents.length} pre-filled Red OMR sheets with QR codes is ready.`);
 
       } catch(err) {
         console.error("PDF Generation Failure:", err);
         alert("Failed to generate PDF: " + err.message);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<i class='fas fa-file-pdf me-1'></i> Download OMR Sheet Pack (.PDF)`;
+        btn.innerHTML = `<i class='fas fa-file-pdf me-1'></i> Download Student OMR Pack (.PDF)`;
       }
     };
 
-    // Boot
+    // Boot Module
     window.initOmrPrintModule();
   })();
   // ]]>
