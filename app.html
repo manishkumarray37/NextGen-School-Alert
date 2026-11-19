@@ -36089,7 +36089,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             <span class='small fw-bold text-dark'><i class='fas fa-layer-group text-primary me-1'></i> Multi-Subject Question Ranges (Optional - for Subject-wise Report Card)</span>
             <button class='btn btn-outline-primary btn-sm py-0 px-2 fw-bold' style='font-size:11px;' onclick='window.toggleAkSubjectMapper()' type='button'><i class='fas fa-sliders-h me-1'></i> Configure Subjects</button>
           </div>
-          <div id='akSubjectMapperBox' class='mt-2 pt-2 border-top' style='display:none;'>
+          <div id='akSubjectMapperBox' class='mt-2 pt-2 border-top'>
             <div class='table-responsive bg-white border rounded mb-2'>
               <table class='table table-bordered table-sm text-center align-middle mb-0' style='font-size:11.5px;'>
                 <thead class='table-light'><tr><th class='text-start ps-2'>Subject Name</th><th style='width:100px;'>Start Q</th><th style='width:100px;'>End Q</th><th style='width:45px;'>Del</th></tr></thead>
@@ -36210,7 +36210,25 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         return;
       }
 
-      activeSubjectsList = [{ name: "All Questions", start_q: 1, end_q: selectedTemplate.cap, total: selectedTemplate.cap }];
+      // Auto-load class subjects from School_Configs and split questions evenly
+      const rawSubStr = localSubjectMap[selectedClass] || "";
+      const configSubs = rawSubStr.split(',').map(s => s.trim()).filter(Boolean);
+      const totalCap = selectedTemplate.cap;
+
+      if (configSubs.length > 0) {
+        const perSub = Math.floor(totalCap / configSubs.length);
+        let curStart = 1;
+        activeSubjectsList = configSubs.map((subName, idx) => {
+          const isLast = (idx === configSubs.length - 1);
+          const endQ = isLast ? totalCap : Math.min(totalCap, curStart + perSub - 1);
+          const obj = { name: subName, start_q: curStart, end_q: endQ, total: (endQ - curStart) + 1 };
+          curStart = endQ + 1;
+          return obj;
+        }).filter(s => s.start_q <= totalCap);
+      } else {
+        activeSubjectsList = [{ name: "All Questions", start_q: 1, end_q: totalCap, total: totalCap }];
+      }
+
       const compositeId = `${selectedClass}::${selectedTemplate.id}`;
       const existing = savedKeysList.find(k => k.BlueprintID === compositeId);
 
@@ -36223,7 +36241,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           if (raw._meta.examName) document.getElementById('akExamNameInput').value = raw._meta.examName;
           if (raw._meta.subjects && raw._meta.subjects.length > 0) activeSubjectsList = raw._meta.subjects;
         }
-        for (let q = 1; q <= selectedTemplate.cap; q++) {
+        for (let q = 1; q <= totalCap; q++) {
           if (raw[q] || raw[String(q)]) answerKeysMap[q] = raw[q] || raw[String(q)];
         }
       }
@@ -36233,15 +36251,13 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       document.getElementById('btnSaveAnswerKeyRecord').disabled = false;
     };
 
-    window.toggleAkSubjectMapper = function() {
-      const box = document.getElementById('akSubjectMapperBox');
-      box.style.display = (box.style.display === 'none') ? 'block' : 'none';
-    };
-
     window.renderAkSubjectMapperRows = function() {
-      document.getElementById('akSubjectRangesTbody').innerHTML = activeSubjectsList.map(s => `
+      const rawSubStr = localSubjectMap[selectedClass] || "";
+      const configSubs = rawSubStr.split(',').map(s => s.trim()).filter(Boolean);
+      const dataListHtml = `<datalist id="akConfigSubjectsList">${configSubs.map(s => `<option value="${s}">`).join('')}</datalist>`;
+      document.getElementById('akSubjectRangesTbody').innerHTML = dataListHtml + activeSubjectsList.map(s => `
         <tr>
-          <td><input type='text' class='form-control form-control-sm fw-bold ak-sub-name' value='${s.name}'></td>
+          <td><input type='text' list='akConfigSubjectsList' class='form-control form-control-sm fw-bold ak-sub-name' value='${s.name}'></td>
           <td><input type='number' class='form-control form-control-sm text-center ak-sub-start' value='${s.start_q}'></td>
           <td><input type='number' class='form-control form-control-sm text-center ak-sub-end' value='${s.end_q}'></td>
           <td><button type='button' class='btn btn-sm btn-outline-danger py-0 px-1' onclick='this.closest("tr").remove()'>&times;</button></td>
