@@ -38562,12 +38562,16 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </script>
 </template>
   
-<!-- MODULE: MARKS STATUS & SUBMISSION AUDIT DASHBOARD                   -->
+<!-- =================================================================== -->
+<!-- MODULE: MARKS ENTRY STATUS (TERM -> EXAM -> ACTIVITY CASCADE)       -->
+<!-- =================================================================== -->
 <template id='tpl-MarksStatus'>
   <style>
     .mst-card { border-radius: 12px; border: 1.5px solid #e2e8f0; min-height: 520px; background: #ffffff; }
-    .mst-label { font-size: 11.5px; font-weight: 700; color: #1e293b; margin-bottom: 4px; display: block; }
-    .mst-select { height: 38px; font-size: 12.5px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
+    .mst-label { font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 5px; display: block; }
+    .mst-select { height: 38px; font-size: 13px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
+    .mst-select:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2,132,199,0.12); }
+
     .table-mst { font-size: 12.5px; width: 100%; border-collapse: collapse; vertical-align: middle; }
     .table-mst th { background: #f8fafc; font-size: 11px; text-transform: uppercase; color: #334155; font-weight: 800; border: 1px solid #cbd5e1; padding: 10px 8px; text-align: center; }
     .table-mst td { border: 1px solid #e2e8f0; padding: 8px 6px; vertical-align: middle; font-weight: 600; color: #1e293b; text-align: center; }
@@ -38582,142 +38586,191 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     <!-- CARD HEADER -->
     <div class='card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2'>
       <div class='d-flex align-items-center gap-2'>
-        <i class='fas fa-tasks text-primary fa-lg'></i>
-        <div>
-          <h6 class='m-0 fw-bold text-dark'>Marks Entry Submission &amp; Audit Dashboard</h6>
-          <small class='text-muted' style='font-size: 11px;'>Real-time audit to track completed vs pending marks entries across all subjects</small>
-        </div>
+        <i class='fas fa-edit text-primary'></i>
+        <h6 class='m-0 fw-bold text-dark'>Marks Status</h6>
       </div>
-      <button class='btn btn-outline-danger btn-sm fw-bold' onclick='window.navigateTo(&quot;FreezeMarks&quot;)' type='button'>
-        <i class='fas fa-lock me-1'></i> Go to Freeze Marks
-      </button>
+      <div class='d-flex gap-2'>
+        <button class='btn btn-outline-primary btn-sm fw-bold' onclick='window.initMarksStatusModule()' type='button'>
+          <i class='fas fa-sync-alt me-1'></i> Refresh
+        </button>
+        <button class='btn btn-outline-danger btn-sm fw-bold' onclick='window.navigateTo("FreezeMarks")' type='button'>
+          <i class='fas fa-lock me-1'></i> Go to Freeze Marks
+        </button>
+      </div>
     </div>
 
-    <div class='card-body p-2'>
-      <!-- FILTERS -->
-      <div class='bg-light p-3 rounded-3 border mb-3'>
-        <div class='row g-2 align-items-end'>
-          <div class='col-lg-3 col-md-4 col-6'>
-            <label class='mst-label'>Select Exam *</label>
-            <select class='form-select mst-select fw-bold text-primary' id='mstExamSelect'></select>
-          </div>
-          <div class='col-lg-3 col-md-4 col-6'>
-            <label class='mst-label'>Class</label>
-            <select class='form-select mst-select' id='mstClassSelect'>
-              <option value='ALL'>All Classes</option>
+    <div class='card-body p-3'>
+      <!-- 1. SEARCH FILTERS BOX (EXACT SCREENSHOT LAYOUT) -->
+      <form onsubmit='event.preventDefault(); window.fetchMarksStatusAudit();' class='p-3 rounded-3 border bg-white shadow-sm mb-4'>
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='mst-label'>Term <span class='text-danger'>*</span></label>
+            <select class='form-select mst-select' id='mstTermSelect' onchange='window.onMstTermChange()' required='required'>
+              <option value=''>Select</option>
             </select>
           </div>
-          <div class='col-lg-3 col-md-4 col-12'>
-            <button class='btn btn-primary mst-select w-100 fw-bold shadow-sm' onclick='window.fetchMarksStatusAudit()' type='button'>
-              <i class='fas fa-search me-1'></i> Check Status
-            </button>
+          <div class='col-md-4'>
+            <label class='mst-label'>Exam <span class='text-danger'>*</span></label>
+            <select class='form-select mst-select' id='mstExamSelect' onchange='window.onMstExamChange()' required='required'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+          <div class='col-md-4'>
+            <label class='mst-label'>Activity <span class='text-danger'>*</span></label>
+            <select class='form-select mst-select' id='mstActivitySelect' required='required'>
+              <option value=''>Select</option>
+            </select>
           </div>
         </div>
-      </div>
 
-      <!-- KPI METRICS -->
-      <div class='d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 px-1'>
-        <div class='d-flex gap-1.5 flex-wrap'>
-          <div class='kpi-pill'>Total Subjects: <strong class='text-primary' id='mstKpiTotal'>0</strong></div>
+        <div>
+          <button class='btn btn-primary btn-sm px-4 py-2 fw-bold shadow-sm' id='btnSubmitMst' type='submit'>
+            Submit
+          </button>
+        </div>
+      </form>
+
+      <!-- 2. KPI SUMMARY PILLS -->
+      <div class='d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3'>
+        <div class='d-flex gap-2 flex-wrap'>
+          <div class='kpi-pill'>Total Entries: <strong class='text-primary' id='mstKpiTotal'>0</strong></div>
           <div class='kpi-pill'>Completed: <strong class='text-success' id='mstKpiDone'>0</strong></div>
           <div class='kpi-pill'>Pending: <strong class='text-danger' id='mstKpiPending'>0</strong></div>
           <div class='kpi-pill'>Partial: <strong class='text-warning' id='mstKpiPartial'>0</strong></div>
         </div>
       </div>
 
-      <!-- DATA TABLE -->
+      <!-- 3. AUDIT RESULTS TABLE -->
       <div class='table-responsive border rounded-3 bg-white'>
         <table class='table-mst' id='mstDataTable'>
           <thead>
             <tr>
               <th style='width: 45px;'>#</th>
               <th style='width: 100px;'>Class</th>
-              <th style='width: 80px;'>Section</th>
+              <th style='width: 75px;'>Section</th>
+              <th style='width: 150px;'>Activity</th>
               <th style='text-align: left; padding-left: 12px;'>Subject Name</th>
-              <th style='width: 130px;'>Total Students</th>
-              <th style='width: 130px;'>Marks Entered</th>
-              <th style='width: 140px;'>Submission Status</th>
-              <th style='width: 100px;'>Action</th>
+              <th style='width: 115px;'>Total Students</th>
+              <th style='width: 115px;'>Marks Entered</th>
+              <th style='width: 130px;'>Submission Status</th>
+              <th style='width: 90px;'>Action</th>
             </tr>
           </thead>
           <tbody id='mstDataTableBody'>
-            <tr><td class='text-center py-5 text-muted fw-bold' colspan='8'><i class='fas fa-search fa-2x mb-2 text-primary d-block'></i>Please click <strong>Check Status</strong> to run audit.</td></tr>
+            <tr><td class='text-center py-5 text-muted fw-bold' colspan='9'><i class='fas fa-search fa-2x mb-2 text-primary d-block'></i>Select Term, Exam &amp; Activity and click <strong>Submit</strong>.</td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-<script type='text/javascript'>
+  <script type='text/javascript'>
   // <![CDATA[
   (function() {
     let localConfig = null;
+    let termsCache = [];
     let examsCache = [];
-    let statusAuditList = [];
+    let activitiesCache = [];
 
     window.initMarksStatusModule = async function() {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const schoolId = user.schoolId;
 
-      // 1. Load Classes & Subjects from School Config
       localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
-      const cDrop = document.getElementById('mstClassSelect');
-      if (cDrop && localConfig && localConfig.classMap) {
-        cDrop.innerHTML = '<option value="ALL">All Classes</option>' +
-          Object.keys(localConfig.classMap).map(c => `<option value="${c}">${c}</option>`).join('');
-      }
 
-      // 2. Load Exams from Supabase "Exam_Master"
-      const eDrop = document.getElementById('mstExamSelect');
       try {
-        const { data, error } = await db
-          .from('Exam_Master')
-          .select('*')
-          .eq('SchoolID', schoolId)
-          .order('SequenceNo', { ascending: true })
-          .order('Id', { ascending: true });
-
-        if (error) throw error;
-        examsCache = data || [];
-
-        if (eDrop) {
-          if (examsCache.length === 0) {
-            eDrop.innerHTML = '<option value="">No Exams Found (Create in Exam Master)</option>';
-          } else {
-            eDrop.innerHTML = examsCache.map(x => {
-              const id = x.ExamID || x.ExamName;
-              const lbl = `[${x.Session || '-'}] ${x.ExamName}${x.TermName ? ' - ' + x.TermName : ''}`;
-              return `<option value="${id}">${lbl}</option>`;
-            }).join('');
-          }
-        }
+        const [tRes, eRes, aRes] = await Promise.all([
+          db.from('Exam_Terms').select('*').eq('SchoolID', schoolId).order('Id', { ascending: true }),
+          db.from('Exam_Master').select('*').eq('SchoolID', schoolId).order('SequenceNo', { ascending: true }),
+          db.from('Exam_Activities').select('*').eq('SchoolID', schoolId).order('Id', { ascending: true })
+        ]);
+        termsCache = tRes.data || [];
+        examsCache = eRes.data || [];
+        activitiesCache = aRes.data || [];
       } catch(e) {
-        console.error("Load Exams Error:", e);
-        if (eDrop) eDrop.innerHTML = '<option value="">Failed to load exams</option>';
+        console.error("MarksStatus Init Error:", e);
       }
+
+      const tDrop = document.getElementById('mstTermSelect');
+      if (tDrop) {
+        tDrop.innerHTML = '<option value="">Select</option>' + termsCache.map(t => {
+          const val = `${t.Session || ''}::${t.TermCode || t.TermID || t.TermName}`;
+          return `<option value="${val}">${t.TermName} - ${t.Session || ''}</option>`;
+        }).join('');
+      }
+      document.getElementById('mstExamSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('mstActivitySelect').innerHTML = '<option value="">Select</option>';
+    };
+
+    // Cascade 1: Term -> Exam
+    window.onMstTermChange = function() {
+      const rawVal = document.getElementById('mstTermSelect').value;
+      const eDrop = document.getElementById('mstExamSelect');
+      const aDrop = document.getElementById('mstActivitySelect');
+      aDrop.innerHTML = '<option value="">Select</option>';
+
+      if (!rawVal) { eDrop.innerHTML = '<option value="">Select</option>'; return; }
+
+      const [selSession, selTermCode] = rawVal.split('::');
+      const matchedExams = examsCache.filter(e =>
+        String(e.Session || "").trim() === selSession &&
+        String(e.TermCode || "").trim() === selTermCode
+      );
+
+      if (matchedExams.length === 0) {
+        eDrop.innerHTML = '<option value="">No exams in this term</option>';
+        return;
+      }
+
+      eDrop.innerHTML = '<option value="">Select</option>' + matchedExams.map(e =>
+        `<option value="${e.ExamID}">${e.ExamName}</option>`
+      ).join('');
+    };
+
+    // Cascade 2: Exam -> Activity (Includes "All Activities" Option)
+    window.onMstExamChange = function() {
+      const selExamId = document.getElementById('mstExamSelect').value;
+      const aDrop = document.getElementById('mstActivitySelect');
+
+      if (!selExamId) { aDrop.innerHTML = '<option value="">Select</option>'; return; }
+
+      const matchedActs = activitiesCache.filter(a => String(a.ExamID || "").trim() === selExamId);
+      let html = '<option value="ALL">All Activities</option>';
+      matchedActs.forEach(a => {
+        const aid = a.ActivityID || a.Id;
+        html += `<option value="${aid}">${a.ActivityName} (Max: ${a.MaxMarks})</option>`;
+      });
+      aDrop.innerHTML = html;
     };
 
     window.fetchMarksStatusAudit = async function() {
       const selExamId = document.getElementById('mstExamSelect').value;
-      const selClass = document.getElementById('mstClassSelect').value;
+      const selActId = document.getElementById('mstActivitySelect').value;
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const schoolId = user.schoolId;
       const tbody = document.getElementById('mstDataTableBody');
 
-      if (!selExamId) {
-        alert("Please select an Exam first!");
+      if (!selExamId || !selActId) {
+        alert("Please select Term, Exam, and Activity!");
         return;
       }
 
-      const examObj = examsCache.find(x => String(x.ExamID || x.ExamName) === String(selExamId)) || {};
+      const examObj = examsCache.find(x => String(x.ExamID) === String(selExamId)) || {};
       const targetExamName = String(examObj.ExamName || "").trim().toLowerCase();
       const targetExamCode = String(examObj.ExamCode || "").trim().toLowerCase();
-      const targetExamId = String(examObj.ExamID || selExamId).trim().toLowerCase();
 
-      tbody.innerHTML = `<tr><td colspan='8' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Checking marks submission status...</td></tr>`;
+      // Determine target activities (ALL or single)
+      let targetActivities = activitiesCache.filter(a => String(a.ExamID || "").trim() === String(selExamId));
+      if (selActId !== "ALL") {
+        targetActivities = targetActivities.filter(a => String(a.ActivityID || a.Id) === String(selActId));
+      }
+      if (targetActivities.length === 0) {
+        targetActivities = [{ ActivityID: "DEFAULT", ActivityName: examObj.ExamName || "Main Exam", Class: "ALL", Subjects: [] }];
+      }
+
+      tbody.innerHTML = `<tr><td colspan='9' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Auditing marks submission status...</td></tr>`;
 
       try {
-        // Fetch Students, Manual Marks, and OMR Results in parallel
         const [stuRes, marksRes, omrRes] = await Promise.all([
           db.from('Students').select('StudId, AdmissionNo, Class, Section, Status').eq('SchoolID', schoolId).eq('Status', 'ACTIVE'),
           db.from('Student_Marks').select('*').eq('SchoolID', schoolId).then(r => r).catch(() => ({ data: [] })),
@@ -38729,101 +38782,114 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         const manualMarks = marksRes.data || [];
         const omrResults = omrRes.data || [];
 
-        // Group active students by Class::Section
-        const secStudentsMap = {};
+        // Group students by Class::Section
+        const secMap = {};
         allStudents.forEach(s => {
           const cls = String(s.Class || "").trim();
           const sec = String(s.Section || "A").trim();
           if (!cls) return;
-          if (selClass !== "ALL" && cls.toLowerCase() !== selClass.toLowerCase()) return;
-          const key = `${cls}::${sec}`;
-          if (!secStudentsMap[key]) secStudentsMap[key] = { cls, sec, studentIds: new Set() };
+          const k = `${cls}::${sec}`;
+          if (!secMap[k]) secMap[k] = { cls, sec, ids: new Set() };
           const sid = String(s.StudId || s.AdmissionNo || "").trim();
-          if (sid) secStudentsMap[key].studentIds.add(sid);
+          if (sid) secMap[k].ids.add(sid);
         });
 
-        // Build Entered Marks Lookup: "Class::Section::Subject" -> Set(studentId)
-        const enteredMap = {};
-        const addEntry = (cls, sec, sub, sid) => {
+        // Build lookup of entered marks: "cls::sec::act::sub" and fallback "cls::sec::sub"
+        const enteredByAct = {};
+        const enteredGeneral = {};
+        const recordMark = (cls, sec, act, sub, sid) => {
           if (!cls || !sub || !sid) return;
-          const k = `${String(cls).trim().toLowerCase()}::${String(sec || "A").trim().toLowerCase()}::${String(sub).trim().toLowerCase()}`;
-          if (!enteredMap[k]) enteredMap[k] = new Set();
-          enteredMap[k].add(String(sid).trim());
+          const c = String(cls).trim().toLowerCase();
+          const sc = String(sec || "A").trim().toLowerCase();
+          const sb = String(sub).trim().toLowerCase();
+          const id = String(sid).trim();
+
+          const gk = `${c}::${sc}::${sb}`;
+          if (!enteredGeneral[gk]) enteredGeneral[gk] = new Set();
+          enteredGeneral[gk].add(id);
+
+          if (act) {
+            const ak = `${c}::${sc}::${String(act).trim().toLowerCase()}::${sb}`;
+            if (!enteredByAct[ak]) enteredByAct[ak] = new Set();
+            enteredByAct[ak].add(id);
+          }
         };
 
-        // 1. Check Manual Student_Marks
         manualMarks.forEach(m => {
-          const mExId = String(m.ExamID || "").trim().toLowerCase();
-          const mExName = String(m.ExamName || "").trim().toLowerCase();
-          const mExCode = String(m.ExamCode || "").trim().toLowerCase();
-          const isMatch = (mExId && mExId === targetExamId) ||
-                          (mExName && mExName === targetExamName) ||
-                          (mExCode && mExCode !== "na" && mExCode === targetExamCode);
+          const isMatch = String(m.ExamID || "").toLowerCase() === String(selExamId).toLowerCase() ||
+                          String(m.ExamName || "").trim().toLowerCase() === targetExamName ||
+                          (targetExamCode && targetExamCode !== "na" && String(m.ExamCode || "").trim().toLowerCase() === targetExamCode);
           if (!isMatch) return;
-          addEntry(m.Class, m.Section, m.Subject || m.SubjectName, m.StudId || m.StudentID);
+          recordMark(m.Class, m.Section, m.ActivityName || m.ActivityID || "", m.Subject || m.SubjectName, m.StudId || m.StudentID);
         });
 
-        // 2. Check OMR_Results
         omrResults.forEach(r => {
           const rEx = String(r.ExamName || "").trim().toLowerCase();
           if (rEx !== targetExamName && !rEx.includes(targetExamName)) return;
-          const subObj = r.SubjectsScore || {};
-          Object.keys(subObj).forEach(subName => {
-            addEntry(r.Class, r.Section, subName, r.StudentID);
+          Object.keys(r.SubjectsScore || {}).forEach(subName => {
+            recordMark(r.Class, r.Section, "", subName, r.StudentID);
           });
         });
 
-        // Build Audit Rows across all filtered Classes, Sections & Config Subjects
         const classSubjectMap = (localConfig && localConfig.classSubjectMap) ? localConfig.classSubjectMap : {};
-        statusAuditList = [];
-
-        const sortedGroups = Object.values(secStudentsMap).sort((a, b) =>
+        const sortedGroups = Object.values(secMap).sort((a, b) =>
           a.cls.localeCompare(b.cls, undefined, { numeric: true }) || a.sec.localeCompare(b.sec)
         );
 
-        sortedGroups.forEach(grp => {
-          const rawSubs = classSubjectMap[grp.cls] || "General";
-          const subArr = rawSubs.split(",").map(x => x.trim()).filter(Boolean);
-          const totalStu = grp.studentIds.size;
+        const rows = [];
+        targetActivities.forEach(act => {
+          const actClsList = String(act.Class || "ALL").split(",").map(x => x.trim().toLowerCase());
+          const isAllClasses = actClsList.includes("all");
+          const actSubs = (Array.isArray(act.Subjects) && act.Subjects.length > 0) ? act.Subjects : null;
 
-          subArr.forEach(subName => {
-            const lookupKey = `${grp.cls.toLowerCase()}::${grp.sec.toLowerCase()}::${subName.toLowerCase()}`;
-            const enteredCount = enteredMap[lookupKey] ? enteredMap[lookupKey].size : 0;
+          sortedGroups.forEach(grp => {
+            if (!isAllClasses && !actClsList.includes(grp.cls.toLowerCase())) return;
 
-            let st = "PENDING";
-            if (totalStu > 0 && enteredCount >= totalStu) st = "COMPLETED";
-            else if (enteredCount > 0) st = "PARTIAL";
+            const cfgSubs = (classSubjectMap[grp.cls] || "General").split(",").map(x => x.trim()).filter(Boolean);
+            const targetSubs = actSubs ? actSubs : cfgSubs;
+            const totalStu = grp.ids.size;
 
-            statusAuditList.push({
-              Class: grp.cls,
-              Section: grp.sec,
-              SubjectName: subName,
-              TotalStudents: totalStu,
-              EnteredMarksCount: enteredCount,
-              Status: st
+            targetSubs.forEach(subName => {
+              const ak = `${grp.cls.toLowerCase()}::${grp.sec.toLowerCase()}::${String(act.ActivityName || "").toLowerCase()}::${subName.toLowerCase()}`;
+              const gk = `${grp.cls.toLowerCase()}::${grp.sec.toLowerCase()}::${subName.toLowerCase()}`;
+              const enteredCount = enteredByAct[ak] ? enteredByAct[ak].size : (enteredGeneral[gk] ? enteredGeneral[gk].size : 0);
+
+              let st = "PENDING";
+              if (totalStu > 0 && enteredCount >= totalStu) st = "COMPLETED";
+              else if (enteredCount > 0) st = "PARTIAL";
+
+              rows.push({
+                Class: grp.cls,
+                Section: grp.sec,
+                ActivityName: act.ActivityName || "Main",
+                MaxMarks: act.MaxMarks || "",
+                SubjectName: subName,
+                TotalStudents: totalStu,
+                EnteredMarksCount: enteredCount,
+                Status: st
+              });
             });
           });
         });
 
-        // Update KPIs
         let done = 0, pending = 0, partial = 0;
-        statusAuditList.forEach(item => {
-          if (item.Status === "COMPLETED") done++;
-          else if (item.Status === "PARTIAL") partial++;
+        rows.forEach(r => {
+          if (r.Status === "COMPLETED") done++;
+          else if (r.Status === "PARTIAL") partial++;
           else pending++;
         });
 
-        document.getElementById('mstKpiTotal').innerText = statusAuditList.length;
+        document.getElementById('mstKpiTotal').innerText = rows.length;
         document.getElementById('mstKpiDone').innerText = done;
         document.getElementById('mstKpiPending').innerText = pending;
         document.getElementById('mstKpiPartial').innerText = partial;
 
-        if (statusAuditList.length === 0) {
-          tbody.innerHTML = `<tr><td colspan='8' class='text-center py-5 text-muted fw-bold'>No active students or subjects found for this selection.</td></tr>`;
+        if (rows.length === 0) {
+          tbody.innerHTML = `<tr><td colspan='9' class='text-center py-5 text-muted fw-bold'>No active student records or subjects found for this selection.</td></tr>`;
           return;
         }
 
-        tbody.innerHTML = statusAuditList.map((s, idx) => {
+        tbody.innerHTML = rows.map((s, idx) => {
           let stBadge = `<span class='chip-mst-completed'><i class='fas fa-check-circle me-1'></i> Completed</span>`;
           if (s.Status === "PENDING") stBadge = `<span class='chip-mst-pending'><i class='fas fa-clock me-1'></i> Pending</span>`;
           else if (s.Status === "PARTIAL") stBadge = `<span class='chip-mst-partial'><i class='fas fa-exclamation-circle me-1'></i> Partial</span>`;
@@ -38833,6 +38899,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               <td>${idx + 1}</td>
               <td><span class='badge bg-light text-primary border'>${s.Class}</span></td>
               <td><strong>${s.Section}</strong></td>
+              <td><span class='badge bg-info-subtle text-dark border'>${s.ActivityName}${s.MaxMarks ? ' (' + s.MaxMarks + ')' : ''}</span></td>
               <td class='text-start ps-3 fw-bold text-dark'>${s.SubjectName}</td>
               <td><strong>${s.TotalStudents}</strong></td>
               <td><strong class='${s.EnteredMarksCount >= s.TotalStudents ? "text-success" : "text-danger"}'>${s.EnteredMarksCount}</strong> / ${s.TotalStudents}</td>
@@ -38847,7 +38914,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       } catch(e) {
         console.error("Marks Status Audit Error:", e);
-        tbody.innerHTML = `<tr><td colspan='8' class='text-center py-4 text-danger fw-bold'>Failed to load audit status: ${e.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan='9' class='text-center py-4 text-danger fw-bold'>Failed to load audit status: ${e.message}</td></tr>`;
       }
     };
 
