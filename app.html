@@ -38924,76 +38924,171 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </script>
 </template>
 
-<!-- MODULE: FREEZE & LOCK MARKS ENTRY (SECURITY ENGINE)                 -->
+<!-- =================================================================== -->
+<!-- MODULE: FREEZE MARKS (ACTIVITY-WISE BULB TOGGLE & CLASS POPUP)      -->
+<!-- =================================================================== -->
 <template id='tpl-FreezeMarks'>
   <style>
     .fzm-card { border-radius: 12px; border: 1.5px solid #e2e8f0; min-height: 520px; background: #ffffff; }
-    .fzm-label { font-size: 11.5px; font-weight: 700; color: #1e293b; margin-bottom: 4px; display: block; }
-    .fzm-select { height: 38px; font-size: 12.5px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
-    .fzm-btn { height: 38px; font-size: 12.5px; font-weight: 700; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; }
+    .fzm-label { font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 5px; display: block; }
+    .fzm-select { height: 38px; font-size: 13px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
+    .fzm-select:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2,132,199,0.12); }
 
-    .freeze-banner { border-radius: 10px; padding: 20px; background: #fff1f2; border: 2px solid #fecdd3; }
+    .table-fzm { font-size: 13px; width: 100%; border-collapse: collapse; vertical-align: middle; }
+    .table-fzm th { background: #f8fafc; font-size: 12px; color: #334155; font-weight: 800; border: 1px solid #e2e8f0; padding: 11px 10px; text-align: left; }
+    .table-fzm td { border: 1px solid #e2e8f0; padding: 10px; vertical-align: middle; font-weight: 600; color: #1e293b; }
+
+    /* BULB ICON STATES: LIGHT GREEN (OPEN) vs LIGHT RED (FROZEN) */
+    .btn-freeze-bulb {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+      transition: transform 0.15s ease;
+    }
+    .btn-freeze-bulb:hover { transform: scale(1.2); }
+    .bulb-unfrozen {
+      color: #4ade80;
+      filter: drop-shadow(0 0 4px rgba(74, 222, 128, 0.55));
+    }
+    .bulb-frozen {
+      color: #f87171;
+      filter: drop-shadow(0 0 5px rgba(248, 113, 113, 0.7));
+    }
+
+    .fzm-chk-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1e293b;
+      cursor: pointer;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+    }
+    .fzm-chk-label:hover { background: #eff6ff; border-color: #93c5fd; }
   </style>
 
   <div class='card fzm-card shadow-sm animate__animated animate__fadeIn mb-5'>
-    <!-- CARD HEADER -->
-    <div class='card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2'>
+    <!-- HEADER -->
+    <div class='card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between'>
       <div class='d-flex align-items-center gap-2'>
-        <i class='fas fa-lock text-danger fa-lg'></i>
-        <div>
-          <h6 class='m-0 fw-bold text-dark'>Freeze &amp; Lock Student Marks Console</h6>
-          <small class='text-muted' style='font-size: 11px;'>Lock marks entry to prevent teachers from tampering with scores before report card generation</small>
-        </div>
+        <i class='fas fa-edit text-primary'></i>
+        <h6 class='m-0 fw-bold text-dark'>Freeze Marks</h6>
       </div>
+      <button class='btn btn-outline-primary btn-sm px-3 fw-bold' onclick='window.initFreezeMarksModule()' type='button'>
+        <i class='fas fa-sync-alt me-1'></i> Refresh
+      </button>
     </div>
 
-    <div class='card-body p-2'>
-      <!-- CONTROLS -->
-      <div class='bg-light p-4 rounded-3 border mb-4' style='max-width: 750px; margin: 0 auto;'>
+    <div class='card-body p-3'>
+      <!-- 1. SEARCH FILTERS BOX (EXACT SCREENSHOT 1 LAYOUT) -->
+      <form onsubmit='event.preventDefault(); window.fetchFreezeMarksTable();' class='p-3 border rounded-3 bg-white shadow-sm mb-4'>
         <div class='row g-3 mb-3'>
-          <div class='col-md-4 col-12'>
-            <label class='fzm-label'>Select Session *</label>
-            <select class='form-select fzm-select' id='fzmSessionSelect'></select>
+          <div class='col-md-4'>
+            <label class='fzm-label'>Batch <span class='text-danger'>*</span></label>
+            <select class='form-select fzm-select' id='fzmBatchSelect' onchange='window.onFzmBatchChange()' required='required'>
+              <option value=''>Select</option>
+            </select>
           </div>
-          <div class='col-md-4 col-6'>
-            <label class='fzm-label'>Select Exam Assessment *</label>
-            <select class='form-select fzm-select fw-bold text-primary' id='fzmExamSelect'></select>
+          <div class='col-md-4'>
+            <label class='fzm-label'>Term <span class='text-danger'>*</span></label>
+            <select class='form-select fzm-select' id='fzmTermSelect' onchange='window.onFzmTermChange()' required='required'>
+              <option value=''>Select</option>
+            </select>
           </div>
-          <div class='col-md-4 col-6'>
-            <label class='fzm-label'>Select Class *</label>
-            <select class='form-select fzm-select' id='fzmClassSelect' onchange='window.onFzmClassChange()'>
-              <option value=''>-- Choose Class --</option>
+          <div class='col-md-4'>
+            <label class='fzm-label'>Exam <span class='text-danger'>*</span></label>
+            <select class='form-select fzm-select' id='fzmExamSelect' onchange='window.onFzmExamChange()' required='required'>
+              <option value='ALL'>All</option>
             </select>
           </div>
         </div>
 
-        <div class='row g-3 mb-4'>
-          <div class='col-md-6 col-12'>
-            <label class='fzm-label'>Section</label>
-            <select class='form-select fzm-select' id='fzmSectionSelect'>
-              <option value='ALL'>All Sections</option>
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='fzm-label'>Activity <span class='text-danger'>*</span></label>
+            <select class='form-select fzm-select' id='fzmActivitySelect' required='required'>
+              <option value='ALL'>All</option>
             </select>
-          </div>
-          <div class='col-md-6 col-12 d-flex align-items-end'>
-            <button class='btn btn-primary fzm-select w-100 fw-bold shadow-sm' onclick='window.checkCurrentFreezeState()' type='button'>
-              <i class='fas fa-search me-1'></i> Check Lock Status
-            </button>
           </div>
         </div>
 
-        <!-- FREEZE STATUS & ACTION BOX -->
-        <div class='freeze-banner text-center' id='fzmStatusBox' style='display: none;'>
-          <h5 class='fw-bold mb-1' id='fzmStatusText'>Status: UNFROZEN (Open for Editing)</h5>
-          <p class='small text-muted mb-3' id='fzmStatusSub'>Teachers can currently enter and update marks for this class.</p>
-          
-          <div class='d-flex justify-content-center gap-3'>
-            <button class='btn btn-danger px-4 py-2 fw-bold shadow' id='btnExecuteFreeze' onclick='window.toggleFreezeAction(&quot;FREEZE&quot;)' type='button'>
-              <i class='fas fa-lock me-1'></i> Freeze &amp; Lock Marks
-            </button>
-            <button class='btn btn-success px-4 py-2 fw-bold shadow' id='btnExecuteUnfreeze' onclick='window.toggleFreezeAction(&quot;UNFREEZE&quot;)' style='display:none;' type='button'>
-              <i class='fas fa-unlock me-1'></i> Unfreeze (Unlock) Marks
+        <div>
+          <button class='btn btn-primary btn-sm px-4 py-2 fw-bold shadow-sm' type='submit'>
+            Submit
+          </button>
+        </div>
+      </form>
+
+      <!-- 2. FREEZE STATUS TABLE -->
+      <div class='table-responsive border rounded-3 bg-white'>
+        <table class='table-fzm' id='fzmDataTable'>
+          <thead>
+            <tr>
+              <th style='width: 190px;'>Term Name</th>
+              <th style='width: 180px;'>Exam Name</th>
+              <th>Activity Name</th>
+              <th style='width: 110px; text-align: center;'>Max. Marks</th>
+              <th style='width: 90px; text-align: center;'>Freeze</th>
+              <th style='width: 220px;'>Freezed Classes</th>
+            </tr>
+          </thead>
+          <tbody id='fzmDataTableBody'>
+            <tr><td class='text-center py-5 text-muted fw-bold' colspan='6'><i class='fas fa-lightbulb text-success fa-2x mb-2 d-block'></i>Select Batch &amp; Term and click <strong>Submit</strong> to manage freeze locks.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: FREEZE CLASSES POPUP (EXACT SCREENSHOT 2 LAYOUT) -->
+  <div class='modal fade' id='fzmClassesModal' tabindex='-1'>
+    <div class='modal-dialog modal-dialog-centered modal-lg'>
+      <div class='modal-content border-0 shadow-lg' style='border-radius: 12px;'>
+        <div class='modal-header bg-white py-3 border-bottom'>
+          <h5 class='modal-title fw-bold text-dark' id='fzmModalTitle'>Freeze Classes</h5>
+          <button class='btn-close' data-bs-dismiss='modal' type='button'></button>
+        </div>
+        <div class='modal-body p-4'>
+          <input type='hidden' id='fzmModalActivityId' value=''>
+
+          <!-- Checkboxes Row -->
+          <div class='mb-2 d-flex justify-content-between align-items-center'>
+            <label class='fzm-chk-label bg-primary-subtle border-primary text-primary'>
+              <input type='checkbox' id='fzmChkAllModal' onchange='window.toggleFzmModalAll(this)'> Select All
+            </label>
+            <small class='text-muted fw-semibold' id='fzmModalSubInfo'></small>
+          </div>
+          <div id='fzmModalCheckboxes' class='d-flex flex-wrap gap-2 mb-3'></div>
+
+          <div class='mb-4'>
+            <button class='btn btn-primary btn-sm px-4 py-2 fw-bold shadow-sm' id='btnSubmitFreezeModal' onclick='window.saveModalFreezeClasses()' type='button'>
+              Submit
             </button>
           </div>
+
+          <!-- Currently Freezed Classes Mini Table -->
+          <div class='table-responsive border rounded'>
+            <table class='table table-bordered table-sm align-middle mb-0' style='font-size: 13px;'>
+              <thead class='table-light'>
+                <tr>
+                  <th class='ps-3 py-2'>Class</th>
+                  <th style='width: 110px; text-align: center;'>Action</th>
+                </tr>
+              </thead>
+              <tbody id='fzmModalFrozenTbody'>
+                <tr><td colspan='2' class='text-center py-3 text-muted'>No classes frozen yet.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class='modal-footer py-2 border-top'>
+          <button class='btn btn-danger btn-sm px-4 fw-bold' data-bs-dismiss='modal' type='button'>Close</button>
         </div>
       </div>
     </div>
@@ -39002,100 +39097,284 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   <script type='text/javascript'>
   // <![CDATA[
   (function() {
-    let localConfig = null;
-    const AMP = String.fromCharCode(38);
+    let allClassesList = [];
+    let termsCache = [];
+    let examsCache = [];
+    let activitiesCache = [];
+    let freezeMap = {}; // ActivityID -> FreezedClasses string
 
     window.initFreezeMarksModule = async function() {
-      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData() : null;
-      const sDrop = document.getElementById('fzmSessionSelect');
-      const cDrop = document.getElementById('fzmClassSelect');
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
 
-      if (localConfig) {
-        if (sDrop) sDrop.innerHTML = (localConfig.sessions || ["2026-2027"]).map(s => `<option value="${s}">${s}</option>`).join('');
-        if (cDrop && localConfig.classMap) {
-          cDrop.innerHTML = '<option value="">-- Choose Class --</option>' + Object.keys(localConfig.classMap).map(c => `<option value="${c}">${c}</option>`).join('');
-        }
+      const cfg = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
+      allClassesList = (cfg && cfg.classMap) ? Object.keys(cfg.classMap) : [];
+
+      const bDrop = document.getElementById('fzmBatchSelect');
+      if (bDrop) {
+        const sessions = (cfg && cfg.sessions && cfg.sessions.length > 0) ? cfg.sessions : ["2026-27"];
+        bDrop.innerHTML = '<option value="">Select</option>' + sessions.map(s => `<option value="${s}">${s}</option>`).join('');
       }
 
       try {
-        const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-        const res = await (await fetch(`${scriptURL}?action=getExamMaster${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&_t=${Date.now()}`)).json();
-        const list = Array.isArray(res.data) ? res.data : [];
-        const eDrop = document.getElementById('fzmExamSelect');
-        if (eDrop) eDrop.innerHTML = list.map(x => `<option value="${x.ExamCode}">[${x.ExamCode}] ${x.ExamName}</option>`).join('');
-      } catch(e) {}
+        const [tRes, eRes, aRes, fRes] = await Promise.all([
+          db.from('Exam_Terms').select('*').eq('SchoolID', schoolId).order('Id', { ascending: true }),
+          db.from('Exam_Master').select('*').eq('SchoolID', schoolId).order('SequenceNo', { ascending: true }),
+          db.from('Exam_Activities').select('*').eq('SchoolID', schoolId).order('Id', { ascending: true }),
+          db.from('Exam_Freeze_Status').select('*').eq('SchoolID', schoolId)
+        ]);
+        termsCache = tRes.data || [];
+        examsCache = eRes.data || [];
+        activitiesCache = aRes.data || [];
+        window.rebuildFreezeMap(fRes.data || []);
+      } catch(e) {
+        console.error("FreezeMarks Init Error:", e);
+      }
+
+      document.getElementById('fzmTermSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('fzmExamSelect').innerHTML = '<option value="ALL">All</option>';
+      document.getElementById('fzmActivitySelect').innerHTML = '<option value="ALL">All</option>';
     };
 
-    window.onFzmClassChange = function() {
-      const cls = document.getElementById('fzmClassSelect').value;
-      const sDrop = document.getElementById('fzmSectionSelect');
-      if (!cls || !localConfig) return;
-      const rawSecs = (localConfig.classMap && localConfig.classMap[cls]) ? localConfig.classMap[cls] : "A,B";
-      sDrop.innerHTML = '<option value="ALL">All Sections</option>' + rawSecs.split(',').map(s => `<option value="${s.trim()}">Section ${s.trim()}</option>`).join('');
+    window.rebuildFreezeMap = function(list) {
+      freezeMap = {};
+      (list || []).forEach(r => {
+        if (r.ActivityID && r.FreezedClasses && r.FreezedClasses.trim() !== "") {
+          freezeMap[String(r.ActivityID)] = r.FreezedClasses.trim();
+        }
+      });
     };
 
-    window.checkCurrentFreezeState = async function() {
-      const cls = document.getElementById('fzmClassSelect').value;
-      const sec = document.getElementById('fzmSectionSelect').value;
-      const exCode = document.getElementById('fzmExamSelect').value;
-      if (!cls) { alert("Please select Class!"); return; }
+    // Cascade 1: Batch -> Term
+    window.onFzmBatchChange = function() {
+      const selBatch = document.getElementById('fzmBatchSelect').value;
+      const tDrop = document.getElementById('fzmTermSelect');
+      document.getElementById('fzmExamSelect').innerHTML = '<option value="ALL">All</option>';
+      document.getElementById('fzmActivitySelect').innerHTML = '<option value="ALL">All</option>';
 
+      if (!selBatch) { tDrop.innerHTML = '<option value="">Select</option>'; return; }
+
+      const matched = termsCache.filter(t => String(t.Session || t.Batch || "").trim() === selBatch);
+      tDrop.innerHTML = '<option value="">Select</option>' + matched.map(t => {
+        const val = t.TermCode || t.TermID || t.TermName;
+        return `<option value="${val}">${t.TermName} - ${selBatch}</option>`;
+      }).join('');
+    };
+
+    // Cascade 2: Term -> Exam (with "All")
+    window.onFzmTermChange = function() {
+      const selBatch = document.getElementById('fzmBatchSelect').value;
+      const selTerm = document.getElementById('fzmTermSelect').value;
+      const eDrop = document.getElementById('fzmExamSelect');
+
+      if (!selBatch || !selTerm) {
+        eDrop.innerHTML = '<option value="ALL">All</option>';
+        document.getElementById('fzmActivitySelect').innerHTML = '<option value="ALL">All</option>';
+        return;
+      }
+
+      const matchedExams = examsCache.filter(e =>
+        String(e.Session || "").trim() === selBatch &&
+        String(e.TermCode || "").trim() === selTerm
+      );
+
+      eDrop.innerHTML = '<option value="ALL">All</option>' + matchedExams.map(e =>
+        `<option value="${e.ExamID}">${e.ExamName}</option>`
+      ).join('');
+
+      window.onFzmExamChange();
+    };
+
+    // Cascade 3: Exam -> Activity (with "All")
+    window.onFzmExamChange = function() {
+      const selBatch = document.getElementById('fzmBatchSelect').value;
+      const selTerm = document.getElementById('fzmTermSelect').value;
+      const selExam = document.getElementById('fzmExamSelect').value;
+      const aDrop = document.getElementById('fzmActivitySelect');
+
+      const matchedActs = activitiesCache.filter(a => {
+        if (String(a.Session || "").trim() !== selBatch) return false;
+        if (String(a.TermCode || "").trim() !== selTerm) return false;
+        if (selExam !== "ALL" && String(a.ExamID || "").trim() !== selExam) return false;
+        return true;
+      });
+
+      aDrop.innerHTML = '<option value="ALL">All</option>' + matchedActs.map(a => {
+        const aid = a.ActivityID || a.Id;
+        return `<option value="${aid}">${a.ActivityName} (${a.MaxMarks})</option>`;
+      }).join('');
+    };
+
+    window.fetchFreezeMarksTable = async function() {
+      const selBatch = document.getElementById('fzmBatchSelect').value;
+      const selTerm = document.getElementById('fzmTermSelect').value;
+      const selExam = document.getElementById('fzmExamSelect').value;
+      const selAct = document.getElementById('fzmActivitySelect').value;
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const box = document.getElementById('fzmStatusBox');
-      const txt = document.getElementById('fzmStatusText');
-      const sub = document.getElementById('fzmStatusSub');
-      const btnF = document.getElementById('btnExecuteFreeze');
-      const btnU = document.getElementById('btnExecuteUnfreeze');
+      const tbody = document.getElementById('fzmDataTableBody');
+
+      if (!selBatch || !selTerm) {
+        alert("Please select Batch and Term!");
+        return;
+      }
+
+      tbody.innerHTML = `<tr><td colspan='6' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading freeze status...</td></tr>`;
 
       try {
-        const res = await (await fetch(`${scriptURL}?action=getFreezeStatus${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&examCode=${encodeURIComponent(exCode)}&className=${encodeURIComponent(cls)}&section=${encodeURIComponent(sec)}&_t=${Date.now()}`)).json();
-        box.style.display = 'block';
+        const { data: fData } = await db.from('Exam_Freeze_Status').select('*').eq('SchoolID', user.schoolId);
+        window.rebuildFreezeMap(fData || []);
 
-        if (res && res.isFrozen) {
-          txt.innerText = "Status: FROZEN (Locked)";
-          txt.className = "fw-bold text-danger mb-1";
-          sub.innerText = "Marks entry is LOCKED. Teachers cannot edit marks.";
-          btnF.style.display = "none";
-          btnU.style.display = "inline-block";
+        const filtered = activitiesCache.filter(a => {
+          if (String(a.Session || "").trim() !== selBatch) return false;
+          if (String(a.TermCode || "").trim() !== selTerm) return false;
+          if (selExam !== "ALL" && String(a.ExamID || "").trim() !== selExam) return false;
+          if (selAct !== "ALL" && String(a.ActivityID || a.Id) !== selAct) return false;
+          return true;
+        });
+
+        if (filtered.length === 0) {
+          tbody.innerHTML = `<tr><td colspan='6' class='text-center py-4 text-muted fw-bold'>No activities configured for this selection.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = filtered.map(a => {
+          const aid = String(a.ActivityID || a.Id);
+          const freezedStr = freezeMap[aid] || "";
+          const isFrozen = freezedStr.length > 0;
+          const bulbClass = isFrozen ? "bulb-frozen" : "bulb-unfrozen";
+          const bulbTitle = isFrozen ? "Frozen (Click to Edit / Unfreeze)" : "Open / Unfrozen (Click to Freeze Classes)";
+          const termDisplay = a.TermName ? `${a.TermName} - ${a.Session}` : `${a.TermCode} - ${a.Session}`;
+
+          return `
+            <tr>
+              <td>${termDisplay}</td>
+              <td class='fw-bold text-dark'>${a.ExamName || "-"}</td>
+              <td class='fw-bold text-primary'>${a.ActivityName || "-"}</td>
+              <td class='text-center fw-bold'>${a.MaxMarks ?? 0}</td>
+              <td class='text-center'>
+                <button class='btn-freeze-bulb ${bulbClass}' onclick='window.openFreezeClassesModal("${aid}")' title='${bulbTitle}' type='button'>
+                  <i class='fas fa-lightbulb'></i>
+                </button>
+              </td>
+              <td class='fw-bold ${isFrozen ? "text-danger" : "text-muted"}'>${freezedStr}</td>
+            </tr>`;
+        }).join('');
+
+      } catch(e) {
+        tbody.innerHTML = `<tr><td colspan='6' class='text-center py-4 text-danger fw-bold'>Error: ${e.message}</td></tr>`;
+      }
+    };
+
+    // Open Freeze Classes Modal on Bulb Click
+    window.openFreezeClassesModal = function(aid) {
+      const a = activitiesCache.find(x => String(x.ActivityID || x.Id) === String(aid));
+      if (!a) return;
+
+      document.getElementById('fzmModalActivityId').value = aid;
+      document.getElementById('fzmModalSubInfo').innerText = `${a.ExamName} - ${a.ActivityName} (Max: ${a.MaxMarks})`;
+
+      const assignedRaw = String(a.Class || "ALL").split(",").map(s => s.trim()).filter(Boolean);
+      const isAll = assignedRaw.includes("ALL") || assignedRaw.includes("All");
+      const targetClasses = isAll ? allClassesList : assignedRaw;
+
+      const currentFrozenStr = freezeMap[String(aid)] || "";
+      const frozenArr = currentFrozenStr ? currentFrozenStr.split(",").map(s => s.trim()) : [];
+
+      const chkBox = document.getElementById('fzmModalCheckboxes');
+      chkBox.innerHTML = targetClasses.map(cls => {
+        const isChk = frozenArr.includes(cls);
+        return `<label class='fzm-chk-label'><input type='checkbox' class='fzm-modal-cls-chk' value='${cls}' ${isChk ? "checked" : ""} onchange='window.syncFzmModalAll()'> ${cls}</label>`;
+      }).join('');
+
+      window.syncFzmModalAll();
+      window.renderFzmModalMiniTable(aid, currentFrozenStr);
+      new bootstrap.Modal(document.getElementById('fzmClassesModal')).show();
+    };
+
+    window.toggleFzmModalAll = function(m) {
+      document.querySelectorAll('.fzm-modal-cls-chk').forEach(c => c.checked = m.checked);
+    };
+
+    window.syncFzmModalAll = function() {
+      const all = document.querySelectorAll('.fzm-modal-cls-chk');
+      const chked = document.querySelectorAll('.fzm-modal-cls-chk:checked');
+      document.getElementById('fzmChkAllModal').checked = (all.length > 0 && chked.length === all.length);
+    };
+
+    window.renderFzmModalMiniTable = function(aid, frozenStr) {
+      const tbody = document.getElementById('fzmModalFrozenTbody');
+      if (!frozenStr) {
+        tbody.innerHTML = `<tr><td colspan='2' class='text-center py-3 text-muted small'>No classes currently frozen for this activity.</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = `
+        <tr>
+          <td class='ps-3 fw-bold text-dark'>${frozenStr}</td>
+          <td class='text-center'>
+            <button class='btn btn-sm btn-outline-danger py-0.5 px-2' onclick='window.unfreezeAllModalClasses("${aid}")' title='Unfreeze / Remove Lock' type='button'>
+              <i class='fas fa-trash-alt'></i>
+            </button>
+          </td>
+        </tr>`;
+    };
+
+    window.saveModalFreezeClasses = async function() {
+      const aid = document.getElementById('fzmModalActivityId').value;
+      const a = activitiesCache.find(x => String(x.ActivityID || x.Id) === String(aid));
+      if (!a) return;
+
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const chosen = Array.from(document.querySelectorAll('.fzm-modal-cls-chk:checked')).map(c => c.value);
+      const frozenStr = chosen.join(", ");
+      const btn = document.getElementById('btnSubmitFreezeModal');
+
+      btn.disabled = true; btn.innerText = "Saving...";
+
+      try {
+        await db.from('Exam_Freeze_Status').delete().eq('SchoolID', user.schoolId).eq('ActivityID', aid);
+
+        if (chosen.length > 0) {
+          const { error } = await db.from('Exam_Freeze_Status').insert([{
+            SchoolID: user.schoolId,
+            FreezeID: "FZM-" + Date.now().toString(36).toUpperCase(),
+            Session: a.Session || "",
+            TermCode: a.TermCode || "",
+            ExamID: a.ExamID || "",
+            ActivityID: aid,
+            FreezedClasses: frozenStr,
+            IsFrozen: true,
+            FrozenBy: user.name || "Admin",
+            UpdatedAt: new Date().toISOString()
+          }]);
+          if (error) throw error;
+          freezeMap[aid] = frozenStr;
         } else {
-          txt.innerText = "Status: OPEN / UNFROZEN";
-          txt.className = "fw-bold text-success mb-1";
-          sub.innerText = "Teachers can currently enter and edit marks.";
-          btnF.style.display = "inline-block";
-          btnU.style.display = "none";
+          delete freezeMap[aid];
         }
-      } catch(e) {
-        alert("Failed to check status.");
+
+        window.renderFzmModalMiniTable(aid, frozenStr);
+        await window.fetchFreezeMarksTable();
+        alert(chosen.length > 0 ? `✅ Marks Frozen for: ${frozenStr}` : "✅ All classes unfrozen!");
+      } catch(err) {
+        alert("Failed to update freeze status: " + err.message);
+      } finally {
+        btn.disabled = false; btn.innerText = "Submit";
       }
     };
 
-    window.toggleFreezeAction = async function(actionType) {
-      const cls = document.getElementById('fzmClassSelect').value;
-      const sec = document.getElementById('fzmSectionSelect').value;
-      const exCode = document.getElementById('fzmExamSelect').value;
-      const sess = document.getElementById('fzmSessionSelect').value;
-
-      if (!confirm(`Are you sure you want to ${actionType} marks for Class ${cls} (${sec})?`)) return;
-
+    window.unfreezeAllModalClasses = async function(aid) {
+      if (!confirm("Are you sure you want to unfreeze (unlock) all classes for this activity?")) return;
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const payload = {
-        action: "manageFreezeMarks",
-        tsid: user.targetSheetId,
-        session: sess,
-        examCode: exCode,
-        className: cls,
-        section: sec,
-        actionType: actionType,
-        frozenBy: user.name || "Admin"
-      };
-
       try {
-        await fetch(scriptURL, { method: "POST", body: JSON.stringify(payload) });
-        alert(`✅ Action completed: Marks are now ${actionType === "FREEZE" ? "LOCKED" : "UNLOCKED"}!`);
-        window.checkCurrentFreezeState();
-      } catch(e) {
-        alert("Status updated.");
-        window.checkCurrentFreezeState();
+        const { error } = await db.from('Exam_Freeze_Status').delete().eq('SchoolID', user.schoolId).eq('ActivityID', aid);
+        if (error) throw error;
+        delete freezeMap[aid];
+        document.querySelectorAll('.fzm-modal-cls-chk').forEach(c => c.checked = false);
+        window.syncFzmModalAll();
+        window.renderFzmModalMiniTable(aid, "");
+        await window.fetchFreezeMarksTable();
+      } catch(err) {
+        alert("Unfreeze failed: " + err.message);
       }
     };
 
