@@ -36396,190 +36396,116 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 </template>
 
 <!-- =================================================================== -->
-<!-- OMR MODULE 4: OPTICAL CAMERA SCANNER, EXCEPTION DESK & ERP SYNC     -->
+<!-- OMR MODULE 4: IMAGE + MULTI-PAGE PDF OPTICAL SCANNER & ERP SYNC     -->
 <!-- =================================================================== -->
 <template id='tpl-OmrScanner'>
   <style>
     .omr-card { border-radius: 14px; border: none; }
-    .omr-filter-box { background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    .omr-filter-box { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
     .omr-label { font-size: 0.78rem; font-weight: 700; color: #334155; margin-bottom: 4px; display: block; }
-
-    /* SUMMARY METRICS BAR (EXACT ERP MATCH) */
-    .omr-kpi-bar {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      border: 1.5px solid #e2e8f0;
-      border-radius: 10px;
-      overflow: hidden;
-      background: #ffffff;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-    }
-    .omr-kpi-tile {
-      padding: 10px 14px;
-      text-align: center;
-      border-right: 1px solid #e2e8f0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      font-size: 13px;
-      font-weight: 700;
-    }
+    .omr-kpi-bar { display: grid; grid-template-columns: repeat(5, 1fr); border: 1.5px solid #e2e8f0; border-radius: 10px; overflow: hidden; background: #fff; margin-bottom: 14px; }
+    .omr-kpi-tile { padding: 9px 10px; text-align: center; border-right: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12.5px; font-weight: 700; }
     .omr-kpi-tile:last-child { border-right: none; }
-    .omr-kpi-scanned { background: #eff6ff; color: #2563eb; }
-    .omr-kpi-verified { background: #f0fdf4; color: #059669; }
-    .omr-kpi-flagged { background: #fef2f2; color: #dc2626; }
-    .omr-kpi-highest { background: #fffbeb; color: #d97706; }
-    .omr-kpi-average { background: #fdf2f8; color: #db2777; }
-
-    .omr-kpi-badge {
-      font-size: 11px;
-      font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 6px;
-      color: #ffffff;
-    }
-    .omr-kpi-scanned .omr-kpi-badge { background: #0284c7; }
-    .omr-kpi-verified .omr-kpi-badge { background: #059669; }
-    .omr-kpi-flagged .omr-kpi-badge { background: #ef4444; }
-    .omr-kpi-highest .omr-kpi-badge { background: #f59e0b; }
-    .omr-kpi-average .omr-kpi-badge { background: #db2777; }
-
-    /* DROPZONE UPLOADER */
-    .omr-dropzone {
-      border: 2px dashed #38bdf8;
-      background: #f8fafc;
-      border-radius: 12px;
-      padding: 28px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .omr-dropzone:hover {
-      background: #f0f9ff;
-      border-color: #0284c7;
-    }
-
-    /* TABLE DESIGN */
-    .table-omr th { background: #f8fafc; font-size: 0.78rem; text-transform: uppercase; color: #334155; font-weight: 800; border-bottom: 2px solid #e2e8f0; padding: 12px 10px; text-align: center; }
-    .table-omr td { font-size: 0.82rem; vertical-align: middle; padding: 10px; border-bottom: 1px solid #f1f5f9; font-weight: 600; }
-    
-    .subject-score-tag {
-      font-size: 11px;
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      padding: 2px 6px;
-      border-radius: 4px;
-      display: inline-block;
-      margin: 1.5px;
-    }
-    .subject-score-tag b { color: #0284c7; }
-
-    @media (max-width: 992px) {
-      .omr-kpi-bar { grid-template-columns: repeat(2, 1fr); }
-    }
+    .omr-kpi-badge { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 6px; color: #fff; }
+    .omr-dropzone { border: 2px dashed #0284c7; background: #f8fafc; border-radius: 12px; padding: 26px; text-align: center; cursor: pointer; transition: 0.2s; }
+    .omr-dropzone:hover, .omr-dropzone.dragover { background: #eff6ff; border-color: #0369a1; }
+    .table-omr th { background: #f8fafc; font-size: 0.76rem; text-transform: uppercase; color: #334155; font-weight: 800; border-bottom: 2px solid #e2e8f0; padding: 10px; text-align: center; }
+    .table-omr td { font-size: 0.82rem; vertical-align: middle; padding: 9px; border-bottom: 1px solid #f1f5f9; font-weight: 600; }
+    .subject-score-tag { font-size: 10.5px; background: #f1f5f9; border: 1px solid #cbd5e1; padding: 2px 6px; border-radius: 4px; display: inline-block; margin: 1.5px; }
+    @media (max-width: 992px) { .omr-kpi-bar { grid-template-columns: repeat(2, 1fr); } }
   </style>
 
   <div class='card omr-card shadow-sm animate__animated animate__fadeIn mb-5'>
-    <!-- CARD HEADER -->
     <div class='card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center'>
       <div class='d-flex align-items-center gap-2'>
         <i class='fas fa-camera text-primary'></i>
-        <h6 class='m-0 fw-bold text-dark'>Optical Mark Scanner &amp; Evaluation Desk</h6>
+        <h6 class='m-0 fw-bold text-dark'>Optical Mark Scanner (Images &amp; Multi-Page PDFs)</h6>
       </div>
       <div class='d-flex gap-2'>
-        <button class='btn btn-outline-primary btn-sm px-3 fw-bold shadow-sm' onclick='window.initOmrScannerModule()' type='button'>
-          <i class='fas fa-sync-alt me-1'></i> Refresh Desk
-        </button>
+        <button class='btn btn-outline-danger btn-sm px-3 fw-bold' onclick='window.clearScannedQueue()' type='button'><i class='fas fa-eraser me-1'></i> Clear</button>
+        <button class='btn btn-outline-primary btn-sm px-3 fw-bold' onclick='window.initOmrScannerModule()' type='button'><i class='fas fa-sync-alt me-1'></i> Refresh</button>
       </div>
     </div>
 
     <div class='card-body p-2'>
-      
-      <!-- 1. BLUEPRINT SELECTOR & SCAN DROPZONE -->
+      <!-- 1. CLASS & SAVED ANSWER KEY SELECTOR -->
       <div class='omr-filter-box mb-3'>
         <div class='row g-3 mb-3'>
+          <div class='col-md-3'>
+            <label class='omr-label'>Filter By Class *</label>
+            <select class='form-select form-select-sm fw-bold text-primary' id='scanClassFilter' onchange='window.filterScanKeysByClass()'>
+              <option value='ALL'>All Classes</option>
+            </select>
+          </div>
           <div class='col-md-6'>
-            <label class='omr-label'>Select Examination Blueprint *</label>
-            <select class='form-select form-select-sm fw-bold text-primary' id='scanBpSelect' onchange='window.onScanBlueprintChange()'>
-              <option value=''>-- Select Active Blueprint --</option>
+            <label class='omr-label'>Select Saved Class Answer Key *</label>
+            <select class='form-select form-select-sm fw-bold text-danger' id='scanKeySelect' onchange='window.onScanKeySelected()'>
+              <option value=''>-- Select Locked Answer Key --</option>
             </select>
           </div>
           <div class='col-md-3'>
-            <label class='omr-label'>Assigned Class</label>
-            <input class='form-control form-control-sm fw-bold bg-light' id='scanClassInput' readonly='readonly' placeholder='Select Blueprint' type='text'>
-          </div>
-          <div class='col-md-3'>
-            <label class='omr-label'>Linked Answer Key Status</label>
-            <div id='scanKeyStatusBadge' class='badge bg-secondary p-2 w-100' style='font-size: 11px;'>
-              <i class='fas fa-lock me-1'></i> Waiting Blueprint
-            </div>
+            <label class='omr-label'>Key &amp; Scheme Status</label>
+            <div id='scanKeyStatusBadge' class='badge bg-secondary p-2 w-100' style='font-size:11px;'><i class='fas fa-lock me-1'></i> Select Answer Key</div>
           </div>
         </div>
 
-        <!-- Multi-Image Dropzone -->
+        <!-- Single & Bulk Upload Zone (Images + Multi-Page PDFs) -->
         <div class='omr-dropzone mb-3' id='omrUploadDropzone' onclick='document.getElementById("omrBatchFileInput").click()'>
-          <i class='fas fa-cloud-upload-alt fa-3x text-primary mb-2'></i>
-          <h6 class='fw-bold text-dark m-0'>Click or Drag &amp; Drop Student OMR Sheet Images</h6>
-          <p class='small text-muted mb-0'>Supports multiple JPG, PNG photos clicked via Mobile Phone Camera or Flatbed / ADF Scanner.</p>
-          <input type='file' id='omrBatchFileInput' multiple='multiple' accept='image/*' style='display: none;' onchange='window.handleBatchOmrUpload(event)'>
+          <i class='fas fa-file-upload fa-3x text-primary mb-2'></i>
+          <h6 class='fw-bold text-dark m-0'>Click or Drag &amp; Drop OMR Images or Multi-Page PDFs</h6>
+          <p class='small text-muted mb-0'>Supports Single &amp; Bulk Upload: <b>JPG, PNG, WEBP</b> photos OR <b>Multi-Page .PDF</b> packs (e.g. Demo / ADF Scanner PDFs).</p>
+          <input type='file' id='omrBatchFileInput' multiple='multiple' accept='image/*,.pdf,application/pdf' style='display:none;' onchange='window.handleBatchOmrUpload(event)'>
         </div>
 
-        <!-- Scanning Progress Bar -->
-        <div id='omrScanProgressContainer' class='progress mb-3' style='height: 12px; display: none;'>
-          <div id='omrScanProgressBar' class='progress-bar progress-bar-striped progress-bar-animated bg-success' style='width: 0%;'></div>
+        <!-- Progress Bar -->
+        <div id='omrScanProgressContainer' class='mb-3' style='display:none;'>
+          <div class='small fw-bold text-primary mb-1' id='omrScanProgressLabel'>Processing sheets...</div>
+          <div class='progress' style='height:10px;'>
+            <div id='omrScanProgressBar' class='progress-bar progress-bar-striped progress-bar-animated bg-success' style='width:0%;'></div>
+          </div>
         </div>
 
-        <!-- Toolbar Buttons -->
+        <!-- Export & Sync Toolbar -->
         <div class='d-flex justify-content-between align-items-center pt-2 border-top flex-wrap gap-2'>
-          <div class='small text-muted'>
-            <i class='fas fa-microchip text-primary me-1'></i>
-            100% Client-Side Computer Vision Pipeline (OpenCV.js &bull; jsQR &bull; Homography Warp).
-          </div>
+          <div class='small text-muted'><i class='fas fa-microchip text-primary me-1'></i> Red-Ink Drop-Out Optical Vision &bull; Auto Multi-Page PDF Splitter</div>
           <div class='d-flex gap-2'>
-            <button class='btn btn-success btn-sm px-3 fw-bold shadow-sm' id='btnExportOmrExcel' onclick='window.exportOmrResultsExcel()' disabled='disabled' type='button'>
-              <i class='fas fa-file-excel me-1'></i> Download Excel (.xlsx)
-            </button>
-            <button class='btn btn-primary btn-sm px-4 fw-bold shadow-sm' id='btnSyncOmrToErp' onclick='window.pushOmrResultsToErpLedger()' disabled='disabled' type='button'>
-              <i class='fas fa-cloud-upload-alt me-1'></i> Push Marks to ERP Report Cards
-            </button>
+            <button class='btn btn-success btn-sm px-3 fw-bold shadow-sm' id='btnExportOmrExcel' onclick='window.exportOmrResultsExcel()' disabled='disabled' type='button'><i class='fas fa-file-excel me-1'></i> Download Excel (.xlsx)</button>
+            <button class='btn btn-primary btn-sm px-4 fw-bold shadow-sm' id='btnSyncOmrToErp' onclick='window.pushOmrResultsToErpLedger()' disabled='disabled' type='button'><i class='fas fa-cloud-upload-alt me-1'></i> Push Marks to ERP Report Cards</button>
           </div>
         </div>
       </div>
 
-      <!-- ================= 2. SUMMARY METRICS BAR ================= -->
-      <div class='omr-kpi-bar' id='omrScanSummaryBar'>
-        <div class='omr-kpi-tile omr-kpi-scanned'>Sheets Scanned <span class='omr-kpi-badge' id='scanKpiTotal'>0</span></div>
-        <div class='omr-kpi-tile omr-kpi-verified'>Verified Clean <span class='omr-kpi-badge' id='scanKpiVerified'>0</span></div>
-        <div class='omr-kpi-tile omr-kpi-flagged'>Flagged Multi/Blank <span class='omr-kpi-badge' id='scanKpiFlagged'>0</span></div>
-        <div class='omr-kpi-tile omr-kpi-highest'>Highest Score <span class='omr-kpi-badge' id='scanKpiHighest'>0</span></div>
-        <div class='omr-kpi-tile omr-kpi-average'>Class Average <span class='omr-kpi-badge' id='scanKpiAverage'>0%</span></div>
+      <!-- 2. SUMMARY KPI BAR -->
+      <div class='omr-kpi-bar'>
+        <div class='omr-kpi-tile' style='background:#eff6ff;color:#2563eb;'>Scanned <span class='omr-kpi-badge' style='background:#0284c7;' id='scanKpiTotal'>0</span></div>
+        <div class='omr-kpi-tile' style='background:#f0fdf4;color:#059669;'>Verified <span class='omr-kpi-badge' style='background:#059669;' id='scanKpiVerified'>0</span></div>
+        <div class='omr-kpi-tile' style='background:#fef2f2;color:#dc2626;'>Flagged <span class='omr-kpi-badge' style='background:#ef4444;' id='scanKpiFlagged'>0</span></div>
+        <div class='omr-kpi-tile' style='background:#fffbeb;color:#d97706;'>Highest <span class='omr-kpi-badge' style='background:#f59e0b;' id='scanKpiHighest'>0</span></div>
+        <div class='omr-kpi-tile' style='background:#fdf2f8;color:#db2777;'>Average <span class='omr-kpi-badge' style='background:#db2777;' id='scanKpiAverage'>0</span></div>
       </div>
 
-      <!-- ================= 3. SCANNED EVALUATION RESULTS TABLE ================= -->
+      <!-- 3. EVALUATION TABLE -->
       <div class='table-responsive border rounded-3 bg-white mb-3'>
         <table class='table table-hover table-omr align-middle text-center mb-0'>
           <thead>
             <tr>
-              <th style='width: 50px;'>#</th>
-              <th style='width: 80px;'>Roll No</th>
-              <th style='text-align: left; padding-left: 12px;'>Candidate Name &amp; ID</th>
-              <th style='text-align: left; padding-left: 10px;'>Subject-wise Scores (Right / Wrong)</th>
-              <th style='width: 75px;' class='text-success'>Right</th>
-              <th style='width: 75px;' class='text-danger'>Wrong</th>
-              <th style='width: 75px;' class='text-secondary'>Blank</th>
-              <th style='width: 100px;' class='text-primary'>Total Score</th>
-              <th style='width: 140px;'>Status</th>
-              <th style='width: 100px;'>Action</th>
+              <th style='width:45px;'>#</th>
+              <th style='width:75px;'>Roll No</th>
+              <th class='text-start ps-2'>Candidate Name &amp; ID</th>
+              <th class='text-start ps-2'>Subject Breakdown (R / W)</th>
+              <th class='text-success' style='width:65px;'>Right</th>
+              <th class='text-danger' style='width:65px;'>Wrong</th>
+              <th class='text-secondary' style='width:65px;'>Blank</th>
+              <th class='text-primary' style='width:85px;'>Score</th>
+              <th style='width:120px;'>Status</th>
+              <th style='width:80px;'>Fix</th>
             </tr>
           </thead>
           <tbody id='omrEvaluationResultsTbody'>
-            <tr><td colspan='10' class='text-center py-4 text-muted fw-bold'><i class='fas fa-camera fa-2x mb-2 text-secondary d-block'></i>Select Examination Blueprint and upload scanned OMR images above</td></tr>
+            <tr><td colspan='10' class='text-center py-4 text-muted fw-bold'><i class='fas fa-camera fa-2x mb-2 text-secondary d-block'></i>Select Class Answer Key and upload Images or PDFs above</td></tr>
           </tbody>
         </table>
       </div>
-
     </div>
   </div>
 
@@ -36588,15 +36514,12 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     <div class='modal-dialog modal-dialog-centered'>
       <div class='modal-content'>
         <div class='modal-header py-2 bg-primary text-white'>
-          <h6 class='modal-title fw-bold'><i class='fas fa-edit me-2'></i>Candidate Response Override</h6>
+          <h6 class='modal-title fw-bold'><i class='fas fa-edit me-2'></i>Manual Bubble Override</h6>
           <button class='btn-close btn-close-white' data-bs-dismiss='modal' type='button'></button>
         </div>
         <div class='modal-body p-3 text-center'>
-          <div class='alert alert-warning py-1.5 small mb-3 fw-bold' id='overrideQuestionNotice'>
-            Question Review
-          </div>
-          <p class='small text-muted mb-2'>Choose verified option mark to override computer vision result:</p>
-          <div class='d-flex justify-content-center gap-2 mb-3'>
+          <div class='alert alert-warning py-1.5 small mb-3 fw-bold' id='overrideQuestionNotice'>Review</div>
+          <div class='d-flex justify-content-center gap-2 mb-2'>
             <button type='button' class='btn btn-outline-dark fw-bold px-3' onclick='window.applyManualQuestionOverride("A")'>A</button>
             <button type='button' class='btn btn-outline-dark fw-bold px-3' onclick='window.applyManualQuestionOverride("B")'>B</button>
             <button type='button' class='btn btn-outline-dark fw-bold px-3' onclick='window.applyManualQuestionOverride("C")'>C</button>
@@ -36604,192 +36527,196 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             <button type='button' class='btn btn-outline-secondary fw-bold px-3' onclick='window.applyManualQuestionOverride("BLANK")'>BLANK</button>
           </div>
         </div>
-        <div class='modal-footer py-2'>
-          <button class='btn btn-secondary btn-sm' data-bs-dismiss='modal' type='button'>Cancel</button>
-        </div>
       </div>
     </div>
   </div>
 
-  <!-- 5. SCOPED JAVASCRIPT ENGINE -->
   <script type='text/javascript'>
   // <![CDATA[
   (async function() {
-    let availableBlueprints = [];
-    let activeSelectedBlueprint = null;
-    let activeLinkedAnswerKey = null;
-    let studentsRosterCache = [];
-    let scannedEvaluationResults = [];
-    let currentOverrideCandidateIdx = null;
-    let currentOverrideQuestionNo = null;
+    let allSavedKeys = [];
+    let activeBlueprint = null;
+    let activeAnswerKey = null;
+    let rosterCache = [];
+    let scannedResults = [];
+    let overrideIdx = null;
+    let overrideQ = null;
 
-    // ⚡ 1. INITIALIZE MODULE
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    // Drag & Drop Visual Support
+    const dz = document.getElementById('omrUploadDropzone');
+    if (dz) {
+      dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+      dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+      dz.addEventListener('drop', e => {
+        e.preventDefault(); dz.classList.remove('dragover');
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          window.handleBatchOmrUpload({ target: { files: e.dataTransfer.files } });
+        }
+      });
+    }
+
     window.initOmrScannerModule = async function() {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const schoolId = user.schoolId;
-
-      activeSelectedBlueprint = null;
-      activeLinkedAnswerKey = null;
-      scannedEvaluationResults = [];
+      activeBlueprint = null; activeAnswerKey = null; scannedResults = [];
       document.getElementById('btnExportOmrExcel').disabled = true;
       document.getElementById('btnSyncOmrToErp').disabled = true;
-      document.getElementById('scanClassInput').value = "";
-      document.getElementById('scanKeyStatusBadge').className = "badge bg-secondary p-2 w-100";
-      document.getElementById('scanKeyStatusBadge').innerHTML = '<i class="fas fa-lock me-1"></i> Waiting Blueprint';
-      document.getElementById('omrEvaluationResultsTbody').innerHTML = `<tr><td colspan='10' class='text-center py-4 text-muted fw-bold'><i class='fas fa-camera fa-2x mb-2 text-secondary d-block'></i>Select Examination Blueprint and upload scanned OMR images above</td></tr>`;
 
+      // Load Classes
+      const cfg = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
+      const cDrop = document.getElementById('scanClassFilter');
+      if (cfg && cfg.classMap && cDrop) {
+        cDrop.innerHTML = '<option value="ALL">All Classes</option>' +
+          Object.keys(cfg.classMap).map(c => `<option value="${c}">${c}</option>`).join('');
+      }
+
+      // Load All Saved Answer Keys from Module 3
       try {
-        const { data, error } = await db
-          .from('OMR_Blueprints')
-          .select('*')
-          .eq('SchoolID', schoolId)
-          .order('Id', { ascending: false });
-
+        const { data, error } = await db.from('OMR_AnswerKeys').select('*').eq('SchoolID', user.schoolId).order('Id', { ascending: false });
         if (error) throw error;
-        availableBlueprints = data || [];
-
-        const bpDrop = document.getElementById('scanBpSelect');
-        if (availableBlueprints.length === 0) {
-          bpDrop.innerHTML = '<option value="">No Blueprints Found! Create in Step 1</option>';
-          return;
-        }
-
-        bpDrop.innerHTML = '<option value="">-- Select Active Blueprint --</option>' + 
-          availableBlueprints.map(b => `<option value="${b.BlueprintID}">[${b.Class}] ${b.ExamName} (${b.TemplateType} Questions)</option>`).join('');
-
-        window.updateScannerKpis();
-
-      } catch(e) {
-        console.error("Fetch Blueprints Error:", e);
-      }
+        allSavedKeys = data || [];
+        window.filterScanKeysByClass();
+      } catch(e) { console.error("Load keys error:", e); }
+      window.updateScannerKpis();
     };
 
-    // ⚡ 2. ON BLUEPRINT SELECTION: VERIFY LINKED ANSWER KEY & ROSTER
-    window.onScanBlueprintChange = async function() {
-      const selectedId = document.getElementById('scanBpSelect').value;
-      activeSelectedBlueprint = availableBlueprints.find(b => b.BlueprintID === selectedId) || null;
-      activeLinkedAnswerKey = null;
-      scannedEvaluationResults = [];
+    window.filterScanKeysByClass = function() {
+      const selCls = document.getElementById('scanClassFilter').value;
+      const kDrop = document.getElementById('scanKeySelect');
+      const filtered = allSavedKeys.filter(k => {
+        if (selCls === 'ALL') return true;
+        const m = (k.Keys && k.Keys._meta) ? k.Keys._meta : {};
+        const cls = m.class || k.BlueprintID.split('::')[0] || "";
+        return cls.toUpperCase() === selCls.toUpperCase();
+      });
 
+      if (filtered.length === 0) {
+        kDrop.innerHTML = '<option value="">No Answer Keys Found! Create in Module 3</option>';
+        return;
+      }
+      kDrop.innerHTML = '<option value="">-- Select Locked Answer Key --</option>' + filtered.map(k => {
+        const m = (k.Keys && k.Keys._meta) ? k.Keys._meta : {};
+        const cls = m.class || k.BlueprintID.split('::')[0] || "Class";
+        const exam = m.examName || k.BlueprintID;
+        const cap = m.templateCap || Math.max(0, Object.keys(k.Keys || {}).length - (m.class ? 1 : 0));
+        return `<option value="${k.BlueprintID}">[${cls}] ${exam} (${cap} Qs) | +${k.RightMarks}/${k.WrongMarks}</option>`;
+      }).join('');
+    };
+
+    window.onScanKeySelected = async function() {
+      const bpId = document.getElementById('scanKeySelect').value;
       const badge = document.getElementById('scanKeyStatusBadge');
-      const clsInput = document.getElementById('scanClassInput');
-      const tbody = document.getElementById('omrEvaluationResultsTbody');
-      tbody.innerHTML = `<tr><td colspan='10' class='text-center py-4 text-muted fw-bold'>Upload OMR images to view evaluation results</td></tr>`;
+      activeAnswerKey = allSavedKeys.find(k => k.BlueprintID === bpId) || null;
+      activeBlueprint = null;
 
-      if (!activeSelectedBlueprint) {
-        clsInput.value = "";
+      if (!activeAnswerKey) {
         badge.className = "badge bg-secondary p-2 w-100";
-        badge.innerHTML = '<i class="fas fa-lock me-1"></i> Waiting Blueprint';
-        window.updateScannerKpis();
+        badge.innerHTML = '<i class="fas fa-lock me-1"></i> Select Answer Key';
         return;
       }
 
-      clsInput.value = activeSelectedBlueprint.Class;
-      badge.className = "badge bg-warning text-dark p-2 w-100";
-      badge.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Checking Answer Key...';
+      const m = (activeAnswerKey.Keys && activeAnswerKey.Keys._meta) ? activeAnswerKey.Keys._meta : {};
+      const cls = m.class || activeAnswerKey.BlueprintID.split('::')[0] || "";
+      const cap = m.templateCap || Math.max(0, Object.keys(activeAnswerKey.Keys || {}).length - (m.class ? 1 : 0));
 
+      activeBlueprint = {
+        BlueprintID: activeAnswerKey.BlueprintID,
+        ExamName: m.examName || activeAnswerKey.BlueprintID,
+        Class: cls,
+        TemplateType: cap,
+        Subjects: m.subjects || []
+      };
+
+      badge.className = "badge bg-success p-2 w-100";
+      badge.innerHTML = `<i class="fas fa-check-circle me-1"></i> Ready (${cap} Qs | +${activeAnswerKey.RightMarks}/${activeAnswerKey.WrongMarks})`;
+
+      // Cache Student Roster for instant name lookup
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const schoolId = user.schoolId;
-
-      try {
-        // Fetch Linked Master Answer Key
-        const { data: keyRecord, error: keyErr } = await db
-          .from('OMR_AnswerKeys')
-          .select('*')
-          .eq('SchoolID', schoolId)
-          .eq('BlueprintID', activeSelectedBlueprint.BlueprintID)
-          .maybeSingle();
-
-        if (keyErr || !keyRecord) {
-          badge.className = "badge bg-danger p-2 w-100";
-          badge.innerHTML = '<i class="fas fa-exclamation-circle me-1"></i> Missing Answer Key (Step 3)';
-          alert("Notice: No Answer Key found for this blueprint! Please lock Answer Key in Step 3 first.");
-          return;
-        }
-
-        activeLinkedAnswerKey = keyRecord;
-        badge.className = "badge bg-success p-2 w-100";
-        badge.innerHTML = `<i class="fas fa-check-circle me-1"></i> Key Locked (+${keyRecord.RightMarks || 1} / ${keyRecord.WrongMarks || 0})`;
-
-        // Cache Students for lookup
-        const { data: stuData } = await db
-          .from('Students')
-          .select('StudId, RollNo, AdmissionNo, StudentName, LastName, Class, Section')
-          .eq('SchoolID', schoolId)
-          .eq('Class', activeSelectedBlueprint.Class)
-          .eq('Status', 'ACTIVE');
-
-        studentsRosterCache = stuData || [];
-
-      } catch(err) {
-        console.error("Answer Key Link Error:", err);
-      }
+      const { data } = await db.from('Students').select('StudId, RollNo, AdmissionNo, StudentName, LastName, Class, Section').eq('SchoolID', user.schoolId).eq('Status', 'ACTIVE');
+      rosterCache = data || [];
     };
 
-    // ⚡ 3. BATCH IMAGE UPLOAD & OPENCV VISION PROCESSING
+    window.clearScannedQueue = function() {
+      scannedResults = [];
+      window.renderEvaluationTable();
+      window.updateScannerKpis();
+    };
+
+    // ⚡ HANDLE BOTH IMAGES & MULTI-PAGE PDFS (SINGLE OR BULK)
     window.handleBatchOmrUpload = async function(event) {
-      if (!activeSelectedBlueprint || !activeLinkedAnswerKey) {
-        alert("Please select a valid Examination Blueprint with locked Answer Key first!");
+      if (!activeBlueprint || !activeAnswerKey) {
+        alert("Please select a Class Answer Key from the dropdown first!");
         return;
       }
+      const files = Array.from(event.target.files || []);
+      if (files.length === 0) return;
 
-      if (!window.OMREngine || typeof window.OMREngine.evaluateImage !== 'function') {
-        alert("OMR Engine is not ready. Please refresh the page.");
-        return;
-      }
-
-      const files = event.target.files;
-      if (!files || files.length === 0) return;
-
-      const progressContainer = document.getElementById('omrScanProgressContainer');
-      const progressBar = document.getElementById('omrScanProgressBar');
-      progressContainer.style.display = 'flex';
+      const progBox = document.getElementById('omrScanProgressContainer');
+      const progBar = document.getElementById('omrScanProgressBar');
+      const progLbl = document.getElementById('omrScanProgressLabel');
+      progBox.style.display = 'block';
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
-        const pct = Math.round(((i + 1) / files.length) * 100);
-        progressBar.style.width = `${pct}%`;
+        const isPdf = (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'));
 
-        await window.processSingleOmrFile(file);
+        if (isPdf) {
+          progLbl.innerText = `Reading Multi-Page PDF: ${file.name}...`;
+          await window.processPdfOmrFile(file, progBar, progLbl);
+        } else {
+          progLbl.innerText = `Scanning Image (${i + 1}/${files.length}): ${file.name}`;
+          progBar.style.width = `${Math.round(((i + 1) / files.length) * 100)}%`;
+          await window.processImageOmrFile(file);
+        }
       }
 
       setTimeout(() => {
-        progressContainer.style.display = 'none';
-        document.getElementById('omrBatchFileInput').value = ""; // Reset file input
+        progBox.style.display = 'none';
+        document.getElementById('omrBatchFileInput').value = "";
         window.updateScannerKpis();
-      }, 300);
+      }, 350);
     };
 
-    window.processSingleOmrFile = function(file) {
-      return new Promise((resolve) => {
+    // Convert Every Page of PDF into High-Res Canvas -> Feed to OpenCV Engine
+    window.processPdfOmrFile = async function(file, progBar, progLbl) {
+      if (!window.pdfjsLib) {
+        alert("PDF.js library missing! Please add pdf.min.js in <head> of app.html.");
+        return;
+      }
+      try {
+        const buf = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+        const totalPages = pdf.numPages;
+
+        for (let p = 1; p <= totalPages; p++) {
+          progLbl.innerText = `Scanning PDF Page ${p} of ${totalPages} (${file.name})...`;
+          progBar.style.width = `${Math.round((p / totalPages) * 100)}%`;
+
+          const page = await pdf.getPage(p);
+          const viewport = page.getViewport({ scale: 2.0 }); // High-res crisp render
+          const cvs = document.createElement('canvas');
+          cvs.width = viewport.width;
+          cvs.height = viewport.height;
+
+          await page.render({ canvasContext: cvs.getContext('2d'), viewport: viewport }).promise;
+          await window.evaluateRenderedCanvas(cvs, `Page ${p}`);
+        }
+      } catch(err) {
+        console.error("PDF Scan Error:", err);
+        alert(`Error reading PDF (${file.name}): ${err.message}`);
+      }
+    };
+
+    window.processImageOmrFile = function(file) {
+      return new Promise(resolve => {
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = e => {
           const img = new Image();
-          img.onload = async function() {
-            try {
-              const evalPayload = await window.OMREngine.evaluateImage(img, activeSelectedBlueprint, activeLinkedAnswerKey);
-              
-              // Enrich with student roster names
-              const matchedStudent = studentsRosterCache.find(s => 
-                (s.StudId === evalPayload.studentId) || (s.AdmissionNo === evalPayload.studentId) || (s.RollNo === evalPayload.rollNo)
-              );
-
-              if (matchedStudent) {
-                evalPayload.studentName = `${matchedStudent.StudentName || ""} ${matchedStudent.LastName || ""}`.trim();
-                evalPayload.rollNo = matchedStudent.RollNo || evalPayload.rollNo;
-                evalPayload.class = matchedStudent.Class || evalPayload.class;
-                evalPayload.section = matchedStudent.Section || "A";
-              } else {
-                evalPayload.studentName = `Student (${evalPayload.studentId})`;
-                evalPayload.section = "A";
-              }
-
-              scannedEvaluationResults.push(evalPayload);
-              window.renderEvaluationTable();
-
-            } catch(cvErr) {
-              console.error("Computer Vision Parse Failure:", cvErr);
-            }
+          img.onload = async () => {
+            await window.evaluateRenderedCanvas(img, file.name);
             resolve();
           };
           img.src = e.target.result;
@@ -36798,184 +36725,122 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       });
     };
 
-    // ⚡ 4. RENDER EVALUATION TABLE
+    window.evaluateRenderedCanvas = async function(sourceEl, label) {
+      try {
+        const res = await window.OMREngine.evaluateImage(sourceEl, activeBlueprint, activeAnswerKey);
+        const stu = rosterCache.find(s => (s.StudId === res.studentId) || (s.AdmissionNo === res.studentId));
+        if (stu) {
+          res.studentName = `${stu.StudentName || ""} ${stu.LastName || ""}`.trim();
+          res.rollNo = stu.RollNo || res.rollNo;
+          res.class = stu.Class || res.class;
+          res.section = stu.Section || "A";
+        } else {
+          res.studentName = `Candidate (${res.studentId !== 'UNKNOWN' ? res.studentId : label})`;
+          res.section = "A";
+        }
+        scannedResults.push(res);
+        window.renderEvaluationTable();
+      } catch(err) {
+        console.error("Evaluate Error:", err);
+      }
+    };
+
     window.renderEvaluationTable = function() {
       const tbody = document.getElementById('omrEvaluationResultsTbody');
-      tbody.innerHTML = "";
-
-      if (scannedEvaluationResults.length === 0) {
-        tbody.innerHTML = `<tr><td colspan='10' class='text-center py-4 text-muted fw-bold'>No evaluation results yet.</td></tr>`;
+      if (scannedResults.length === 0) {
+        tbody.innerHTML = `<tr><td colspan='10' class='text-center py-4 text-muted fw-bold'>No scanned records yet.</td></tr>`;
+        document.getElementById('btnExportOmrExcel').disabled = true;
+        document.getElementById('btnSyncOmrToErp').disabled = true;
         return;
       }
 
-      scannedEvaluationResults.forEach((res, idx) => {
-        const subjectsHtml = Object.keys(res.subjectsScore).map(subName => {
-          const sc = res.subjectsScore[subName];
-          return `<span class='subject-score-tag'>${subName}: <b>R${sc.R}</b> / <span class='text-danger'>W${sc.W}</span></span>`;
-        }).join('');
-
-        const statusBadge = res.hasFlags
-          ? `<span class='badge bg-warning-subtle text-warning-emphasis fw-bold px-2 py-1'><i class='fas fa-exclamation-triangle me-1'></i>Flagged (Multi)</span>`
-          : `<span class='badge bg-success-subtle text-success fw-bold px-2 py-1'><i class='fas fa-check-circle me-1'></i>Verified Clean</span>`;
-
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+      tbody.innerHTML = scannedResults.map((r, idx) => {
+        const subHtml = Object.keys(r.subjectsScore).map(s => `<span class='subject-score-tag'>${s}: <b class='text-success'>R${r.subjectsScore[s].R}</b> / <b class='text-danger'>W${r.subjectsScore[s].W}</b></span>`).join('');
+        const badge = r.hasFlags
+          ? `<span class='badge bg-warning-subtle text-warning-emphasis px-2 py-1'><i class='fas fa-exclamation-triangle me-1'></i>Flagged</span>`
+          : `<span class='badge bg-success-subtle text-success px-2 py-1'><i class='fas fa-check-circle me-1'></i>Verified</span>`;
+        return `<tr>
           <td>${idx + 1}</td>
-          <td><span class='badge bg-light text-primary border fw-bold'>${res.rollNo}</span></td>
-          <td class='text-start ps-3'>
-            <div class='fw-bold text-dark'>${res.studentName}</div>
-            <div class='text-muted' style='font-size: 10px;'>ID: <code>${res.studentId}</code></div>
-          </td>
-          <td class='text-start ps-2'>${subjectsHtml}</td>
-          <td class='text-success fw-bold text-center'>${res.totalRight}</td>
-          <td class='text-danger fw-bold text-center'>${res.totalWrong}</td>
-          <td class='text-secondary fw-bold text-center'>${res.totalBlank}</td>
-          <td class='text-primary fw-bold text-center' style='font-size: 13.5px;'>${res.totalMarks}</td>
-          <td>${statusBadge}</td>
-          <td>
-            <button class='btn btn-outline-secondary btn-sm py-1 px-2 fw-bold' onclick='window.openOmrOverrideModal(${idx})' title='Review Answers' type='button'>
-              <i class='fas fa-pencil-alt'></i>
-            </button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
+          <td><span class='badge bg-light text-primary border fw-bold'>${r.rollNo}</span></td>
+          <td class='text-start ps-2'><div class='fw-bold text-dark'>${r.studentName}</div><div class='text-muted' style='font-size:10px;'>ID: <code>${r.studentId}</code></div></td>
+          <td class='text-start ps-2'>${subHtml}</td>
+          <td class='text-success fw-bold'>${r.totalRight}</td>
+          <td class='text-danger fw-bold'>${r.totalWrong}</td>
+          <td class='text-secondary fw-bold'>${r.totalBlank}</td>
+          <td class='text-primary fw-bold' style='font-size:13.5px;'>${r.totalMarks}</td>
+          <td>${badge}</td>
+          <td><button class='btn btn-outline-secondary btn-sm py-0.5 px-2' onclick='window.openOmrOverrideModal(${idx})' type='button'><i class='fas fa-pencil-alt'></i></button></td>
+        </tr>`;
+      }).join('');
 
       document.getElementById('btnExportOmrExcel').disabled = false;
       document.getElementById('btnSyncOmrToErp').disabled = false;
     };
 
-    // ⚡ 5. UPDATE SCANNER SUMMARY KPIS
     window.updateScannerKpis = function() {
-      const count = scannedEvaluationResults.length;
-      document.getElementById('scanKpiTotal').innerText = count;
-
-      if (count === 0) {
+      const n = scannedResults.length;
+      document.getElementById('scanKpiTotal').innerText = n;
+      if (n === 0) {
         document.getElementById('scanKpiVerified').innerText = "0";
         document.getElementById('scanKpiFlagged').innerText = "0";
         document.getElementById('scanKpiHighest').innerText = "0";
-        document.getElementById('scanKpiAverage').innerText = "0%";
+        document.getElementById('scanKpiAverage').innerText = "0";
         return;
       }
-
-      let verified = 0, flagged = 0, maxScore = 0, totalSum = 0;
-      scannedEvaluationResults.forEach(r => {
-        if (r.hasFlags) flagged++;
-        else verified++;
-
-        if (r.totalMarks > maxScore) maxScore = r.totalMarks;
-        totalSum += r.totalMarks;
-      });
-
-      const avg = (totalSum / count).toFixed(1);
-      document.getElementById('scanKpiVerified').innerText = verified;
-      document.getElementById('scanKpiFlagged').innerText = flagged;
-      document.getElementById('scanKpiHighest').innerText = maxScore;
-      document.getElementById('scanKpiAverage').innerText = avg;
+      let ver = 0, flg = 0, max = -999, sum = 0;
+      scannedResults.forEach(r => { if (r.hasFlags) flg++; else ver++; if (r.totalMarks > max) max = r.totalMarks; sum += r.totalMarks; });
+      document.getElementById('scanKpiVerified').innerText = ver;
+      document.getElementById('scanKpiFlagged').innerText = flg;
+      document.getElementById('scanKpiHighest').innerText = max;
+      document.getElementById('scanKpiAverage').innerText = (sum / n).toFixed(1);
     };
 
-    // ⚡ 6. MANUAL EXCEPTION OVERRIDE
     window.openOmrOverrideModal = function(idx) {
-      currentOverrideCandidateIdx = idx;
-      const res = scannedEvaluationResults[idx];
-      
-      // Find first question with MULTI or default to Q1
-      const multiQ = Object.keys(res.rawAnswers).find(q => res.rawAnswers[q] === "MULTI") || "1";
-      currentOverrideQuestionNo = parseInt(multiQ, 10);
-
-      document.getElementById('overrideQuestionNotice').innerText = `Candidate: ${res.studentName} | Question #${currentOverrideQuestionNo} (Captured: ${res.rawAnswers[currentOverrideQuestionNo]})`;
+      overrideIdx = idx;
+      const r = scannedResults[idx];
+      const q = Object.keys(r.rawAnswers).find(k => r.rawAnswers[k] === "MULTI") || "1";
+      overrideQ = parseInt(q, 10);
+      document.getElementById('overrideQuestionNotice').innerText = `${r.studentName} | Question #${overrideQ} (Read: ${r.rawAnswers[overrideQ]})`;
       new bootstrap.Modal(document.getElementById('omrOverrideModal')).show();
     };
 
     window.applyManualQuestionOverride = function(opt) {
-      if (currentOverrideCandidateIdx === null) return;
-      const res = scannedEvaluationResults[currentOverrideCandidateIdx];
-
-      res.rawAnswers[currentOverrideQuestionNo] = opt;
-      res.hasFlags = Object.keys(res.rawAnswers).some(q => res.rawAnswers[q] === "MULTI");
-
-      // Recalculate using OMR Engine
-      const recalculated = window.OMREngine.recalculate(
-        { sid: res.studentId, r: res.rollNo },
-        res.rawAnswers,
-        {},
-        activeSelectedBlueprint,
-        activeLinkedAnswerKey
-      );
-
-      // Merge updated counts
-      res.subjectsScore = recalculated.subjectsScore;
-      res.totalRight = recalculated.totalRight;
-      res.totalWrong = recalculated.totalWrong;
-      res.totalBlank = recalculated.totalBlank;
-      res.totalMarks = recalculated.totalMarks;
-
+      if (overrideIdx === null) return;
+      const r = scannedResults[overrideIdx];
+      r.rawAnswers[overrideQ] = opt;
+      r.hasFlags = Object.keys(r.rawAnswers).some(k => r.rawAnswers[k] === "MULTI");
+      const rec = window.OMREngine.recalculate({ sid: r.studentId, r: r.rollNo }, r.rawAnswers, {}, activeBlueprint, activeAnswerKey);
+      r.subjectsScore = rec.subjectsScore; r.totalRight = rec.totalRight; r.totalWrong = rec.totalWrong; r.totalBlank = rec.totalBlank; r.totalMarks = rec.totalMarks;
       bootstrap.Modal.getInstance(document.getElementById('omrOverrideModal')).hide();
-      window.renderEvaluationTable();
-      window.updateScannerKpis();
+      window.renderEvaluationTable(); window.updateScannerKpis();
     };
 
-    // ⚡ 7. DUAL EXPORT 1: DOWNLOAD FORMATTED EXCEL (.XLSX)
     window.exportOmrResultsExcel = function() {
-      if (scannedEvaluationResults.length === 0) {
-        alert("No scanned records to export!");
-        return;
-      }
-      try {
-        window.OMREngine.exportExcel(scannedEvaluationResults, activeSelectedBlueprint);
-      } catch(e) {
-        alert("Excel export error: " + e.message);
-      }
+      if (scannedResults.length > 0) window.OMREngine.exportExcel(scannedResults, activeBlueprint);
     };
 
-    // ⚡ 8. DUAL EXPORT 2: PUSH DIRECTLY TO SUPABASE "OMR_Results" TABLE
     window.pushOmrResultsToErpLedger = async function() {
-      if (scannedEvaluationResults.length === 0) return;
-
+      if (scannedResults.length === 0) return;
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const schoolId = user.schoolId;
-      const syncBtn = document.getElementById('btnSyncOmrToErp');
+      const btn = document.getElementById('btnSyncOmrToErp');
+      btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Syncing...';
 
-      syncBtn.disabled = true;
-      syncBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Syncing to Report Cards...';
-
-      const payloadBatch = scannedEvaluationResults.map(r => ({
-        SchoolID: schoolId,
-        BlueprintID: r.blueprintId,
-        ExamName: r.examName,
-        StudentID: r.studentId,
-        RollNo: r.rollNo,
-        StudentName: r.studentName,
-        Class: r.class,
-        Section: r.section,
-        SubjectsScore: r.subjectsScore,
-        TotalRight: r.totalRight,
-        TotalWrong: r.totalWrong,
-        TotalBlank: r.totalBlank,
-        TotalMarks: r.totalMarks,
-        Status: r.hasFlags ? 'FLAGGED' : 'VERIFIED',
-        CreatedAt: new Date().toISOString()
+      const batch = scannedResults.map(r => ({
+        SchoolID: user.schoolId, BlueprintID: r.blueprintId, ExamName: r.examName,
+        StudentID: r.studentId, RollNo: r.rollNo, StudentName: r.studentName,
+        Class: r.class, Section: r.section, SubjectsScore: r.subjectsScore,
+        TotalRight: r.totalRight, TotalWrong: r.totalWrong, TotalBlank: r.totalBlank,
+        TotalMarks: r.totalMarks, Status: r.hasFlags ? 'FLAGGED' : 'VERIFIED', CreatedAt: new Date().toISOString()
       }));
 
       try {
-        const { error } = await db
-          .from('OMR_Results')
-          .insert(payloadBatch);
-
+        const { error } = await db.from('OMR_Results').insert(batch);
         if (error) throw error;
-
-        alert(`🎉 Success! Synchronized ${payloadBatch.length} student results into the Examination Ledger. Report Cards are now ready to print!`);
-
-      } catch(err) {
-        console.error("Sync Error:", err);
-        alert("Failed to sync marks: " + err.message);
-      } finally {
-        syncBtn.disabled = false;
-        syncBtn.innerHTML = '<i class="fas fa-cloud-upload-alt me-1"></i> Push Marks to ERP Report Cards';
-      }
+        alert(`🎉 Success! Pushed ${batch.length} student results directly into ERP OMR Ledger!`);
+      } catch(err) { alert("Sync failed: " + err.message); }
+      finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-cloud-upload-alt me-1'></i> Push Marks to ERP Report Cards'; }
     };
 
-    // Boot Module
     window.initOmrScannerModule();
   })();
   // ]]>
