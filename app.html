@@ -34872,101 +34872,148 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </script>
 </template>
   
-<!-- MODULE: CO-SCHOLASTIC ACTIVITIES & DISCIPLINE GRADING SETTINGS      -->
+<!-- =================================================================== -->
+<!-- MODULE: ACTIVITY / MARKS SETTINGS (BATCH->TERM->EXAM + MULTI-CLASS) -->
+<!-- =================================================================== -->
 <template id='tpl-ActivitySettings'>
   <style>
-    .act-card { border-radius: 12px; border: 1.5px solid #e2e8f0; min-height: 520px; background: #ffffff; }
-    .act-label { font-size: 12px; font-weight: 700; color: #1e293b; margin-bottom: 4px; display: block; }
-    .act-input { height: 38px; font-size: 12.5px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
-    .table-act { font-size: 12.5px; width: 100%; border-collapse: collapse; }
-    .table-act th { background: #f8fafc; font-size: 11px; text-transform: uppercase; color: #334155; font-weight: 800; border: 1px solid #cbd5e1; padding: 10px 8px; text-align: center; }
-    .table-act td { border: 1px solid #e2e8f0; padding: 8px 6px; vertical-align: middle; font-weight: 600; color: #1e293b; text-align: center; }
+    .act-card { border-radius: 12px; border: 1.5px solid #e2e8f0; background: #ffffff; }
+    .act-label { font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 5px; display: block; }
+    .act-input { height: 38px; font-size: 13px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
+    .act-input:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2,132,199,0.12); }
+
+    .table-act { font-size: 12.8px; width: 100%; border-collapse: collapse; vertical-align: middle; }
+    .table-act th { background: #f8fafc; font-size: 12px; color: #334155; font-weight: 800; border: 1px solid #e2e8f0; padding: 11px 10px; text-align: left; }
+    .table-act td { border: 1px solid #e2e8f0; padding: 9px 10px; vertical-align: middle; font-weight: 600; color: #1e293b; }
+    .btn-act-icon { background: transparent; border: none; padding: 3px 6px; font-size: 14px; cursor: pointer; transition: 0.15s; }
+    .btn-act-icon:hover { transform: scale(1.15); }
+    .cls-chk-item { display: flex; align-items: center; gap: 8px; padding: 5px 8px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: 600; }
+    .cls-chk-item:hover { background: #f1f5f9; }
   </style>
 
   <div class='card act-card shadow-sm animate__animated animate__fadeIn mb-5'>
-    <!-- CARD HEADER -->
-    <div class='card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2'>
+    <!-- HEADER -->
+    <div class='card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between'>
       <div class='d-flex align-items-center gap-2'>
-        <i class='fas fa-medal text-warning fa-lg'></i>
-        <div>
-          <h6 class='m-0 fw-bold text-dark'>Co-Scholastic &amp; Activity Settings</h6>
-          <small class='text-muted' style='font-size: 11px;'>Configure Discipline, Art Education, Health &amp; Physical Activity Grading</small>
-        </div>
+        <i class='fas fa-edit text-primary'></i>
+        <h6 class='m-0 fw-bold text-dark'>Marks / Activity Settings</h6>
       </div>
-      <button class='btn btn-warning btn-sm fw-bold text-dark shadow-sm px-3' onclick='window.openNewActivityModal()' type='button'>
-        <i class='fas fa-plus-circle me-1'></i> Add New Activity
+      <button class='btn btn-outline-primary btn-sm px-3 fw-bold' onclick='window.initActivitySettingsModule()' type='button'>
+        <i class='fas fa-sync-alt me-1'></i> Refresh
       </button>
     </div>
 
-    <div class='card-body p-2'>
-      <!-- ACTIVITIES TABLE -->
+    <div class='card-body p-3'>
+      <!-- 1. INLINE FORM -->
+      <form id='formActivitySettings' onsubmit='window.submitActivitySettingsForm(event)' class='p-3 border rounded-3 bg-white mb-4 shadow-sm'>
+        <input id='actEditId' type='hidden' value=''>
+
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='act-label'>Batch <span class='text-danger'>*</span></label>
+            <select class='form-select act-input' id='actBatch' onchange='window.onActBatchChange()' required='required'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+          <div class='col-md-4'>
+            <label class='act-label'>Term <span class='text-danger'>*</span></label>
+            <select class='form-select act-input' id='actTerm' onchange='window.onActTermChange()' required='required'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+          <div class='col-md-4'>
+            <label class='act-label'>Exam <span class='text-danger'>*</span></label>
+            <select class='form-select act-input' id='actExam' required='required'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+        </div>
+
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='act-label'>Activity Name <span class='text-danger'>*</span></label>
+            <input class='form-control act-input' id='actName' placeholder='Activity Name' required='required' type='text'>
+          </div>
+          <div class='col-md-4'>
+            <label class='act-label'>Maximum Marks <span class='text-danger'>*</span></label>
+            <input class='form-control act-input' id='actMaxMarks' min='1' step='0.5' placeholder='Max Mark' required='required' type='number'>
+          </div>
+          <div class='col-md-4'>
+            <label class='act-label'>Class Name</label>
+            <div class='dropdown w-100'>
+              <button class='btn btn-primary w-100 text-start d-flex justify-content-between align-items-center act-input border-0 fw-bold' id='actClassDropBtn' data-bs-toggle='dropdown' data-bs-auto-close='outside' type='button'>
+                <span id='actClassBtnText' class='text-truncate'>All</span>
+                <i class='fas fa-chevron-down small'></i>
+              </button>
+              <div class='dropdown-menu w-100 p-2 shadow-lg border' id='actClassDropdownMenu' style='max-height: 240px; overflow-y: auto;'>
+                <div class='text-muted small p-2'>Loading classes...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class='d-flex align-items-center gap-2'>
+          <button class='btn btn-primary btn-sm px-4 py-2 fw-bold shadow-sm' id='btnSaveAct' type='submit'>
+            Submit
+          </button>
+          <button class='btn btn-outline-secondary btn-sm px-3 py-2 fw-bold' id='btnCancelActEdit' onclick='window.resetActivityForm()' style='display: none;' type='button'>
+            Cancel Edit
+          </button>
+        </div>
+      </form>
+
+      <!-- 2. VIEW MARKS SETTINGS HEADER + SEARCH -->
+      <div class='d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2'>
+        <div class='d-flex align-items-center gap-2'>
+          <i class='fas fa-table text-secondary'></i>
+          <h6 class='m-0 fw-bold text-dark' style='font-size: 14px;'>View Marks Settings</h6>
+        </div>
+        <div style='width: 240px;'>
+          <input class='form-control form-control-sm' id='actSearchInput' oninput='window.renderActivitiesTable()' placeholder='Search' type='text'>
+        </div>
+      </div>
+
+      <!-- 3. VIEW MARKS SETTINGS TABLE -->
       <div class='table-responsive border rounded-3 bg-white'>
         <table class='table-act' id='actDataTable'>
           <thead>
             <tr>
-              <th style='width: 45px;'>#</th>
-              <th style='width: 110px;'>Class Scope</th>
-              <th style='text-align: left; padding-left: 12px;'>Activity Name</th>
-              <th style='width: 160px;'>Category</th>
-              <th style='width: 100px;'>Max Grade</th>
-              <th style='width: 90px;'>Order</th>
+              <th style='width: 110px;'>Batch Name</th>
+              <th style='width: 165px;'>Term Name</th>
+              <th style='width: 145px;'>Exam Name</th>
+              <th>Activity Name</th>
+              <th style='width: 95px; text-align: center;'>Max Marks</th>
+              <th style='width: 140px;'>Classes</th>
+              <th style='width: 120px; text-align: center;'>Action</th>
             </tr>
           </thead>
           <tbody id='actDataTableBody'>
-            <tr><td class='text-center py-5 text-muted fw-bold' colspan='6'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading activities...</td></tr>
+            <tr><td class='text-center py-4 text-muted fw-bold' colspan='7'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading marks settings...</td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: ADD ACTIVITY -->
-  <div class='modal fade' id='actModal' tabindex='-1'>
+  <!-- MODAL: ASSIGN SUBJECTS TO ACTIVITY -->
+  <div class='modal fade' id='actSubjectModal' tabindex='-1'>
     <div class='modal-dialog modal-dialog-centered'>
-      <div class='modal-content border-0 shadow-lg' style='border-radius: 14px;'>
-        <div class='modal-header bg-warning text-dark py-2.5'>
-          <h6 class='modal-title fw-bold'><i class='fas fa-medal me-2'></i>Configure Co-Scholastic Activity</h6>
-          <button class='btn-close' data-bs-dismiss='modal' type='button'></button>
+      <div class='modal-content border-0 shadow-lg' style='border-radius: 12px;'>
+        <div class='modal-header bg-success text-white py-2.5'>
+          <h6 class='modal-title fw-bold' id='actSubModalTitle'><i class='fas fa-book me-2'></i>Assign Subjects to Activity</h6>
+          <button class='btn-close btn-close-white' data-bs-dismiss='modal' type='button'></button>
         </div>
-        <div class='modal-body p-4'>
-          <form id='formActivity' onsubmit='window.submitActivityForm(event)'>
-            <div class='mb-3'>
-              <label class='act-label'>Applicable Class *</label>
-              <select class='form-select act-input' id='actClassSelect'>
-                <option value='ALL'>ALL Classes (Universal)</option>
-              </select>
-            </div>
-
-            <div class='mb-3'>
-              <label class='act-label'>Activity Name *</label>
-              <input class='form-control act-input' id='actName' placeholder='e.g., Work Education / Discipline / Art' required='required' type='text'></i>
-            </div>
-
-            <div class='row g-2 mb-3'>
-              <div class='col-6'>
-                <label class='act-label'>Category</label>
-                <select class='form-select act-input' id='actCategory'>
-                  <option value='Co-Scholastic'>Co-Scholastic</option>
-                  <option value='Discipline'>Discipline</option>
-                  <option value='Health &amp; Sports'>Health &amp; Sports</option>
-                </select>
-              </div>
-              <div class='col-6'>
-                <label class='act-label'>Max Grade Scale</label>
-                <select class='form-select act-input' id='actMaxGrade'>
-                  <option value='A-E'>A, B, C, D, E</option>
-                  <option value='A-C'>A, B, C (3-Point)</option>
-                </select>
-              </div>
-            </div>
-
-            <div class='d-flex justify-content-end gap-2 pt-2 border-top'>
-              <button class='btn btn-secondary btn-sm' data-bs-dismiss='modal' type='button'>Cancel</button>
-              <button class='btn btn-warning btn-sm fw-bold text-dark px-4 shadow' id='btnSaveAct' type='submit'>
-                <i class='fas fa-save me-1'></i> Save Activity
-              </button>
-            </div>
-          </form>
+        <div class='modal-body p-3'>
+          <input type='hidden' id='actSubTargetId' value=''>
+          <div class='mb-2 pb-2 border-bottom d-flex justify-content-between align-items-center'>
+            <label class='cls-chk-item m-0 fw-bold text-primary'><input type='checkbox' id='chkAllActSubjects' onchange='window.toggleAllActSubjects(this)'> Select All Subjects</label>
+            <small class='text-muted' id='actSubClassHint'></small>
+          </div>
+          <div id='actSubjectsChecklist' class='row g-2' style='max-height: 280px; overflow-y: auto;'></div>
+        </div>
+        <div class='modal-footer py-2'>
+          <button class='btn btn-secondary btn-sm' data-bs-dismiss='modal' type='button'>Cancel</button>
+          <button class='btn btn-success btn-sm fw-bold px-4' id='btnSaveActSubjects' onclick='window.saveAssignedActSubjects()' type='button'>Save Subjects</button>
         </div>
       </div>
     </div>
@@ -34975,95 +35022,319 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   <script type='text/javascript'>
   // <![CDATA[
   (function() {
+    let allTermsCache = [];
+    let allExamsCache = [];
     let activitiesList = [];
-    let localConfig = null;
-    const AMP = String.fromCharCode(38);
+    let allClassesList = [];
+    let classSubjectMap = {};
 
     window.initActivitySettingsModule = async function() {
-      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData() : null;
-      const cDrop = document.getElementById('actClassSelect');
-      if (cDrop && localConfig && localConfig.classMap) {
-        cDrop.innerHTML = '<option value="ALL">ALL Classes (Universal)</option>' + Object.keys(localConfig.classMap).map(c => `<option value="${c}">${c}</option>`).join('');
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+
+      // 1. Load Config (Sessions, Classes, Subjects)
+      const cfg = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
+      const bDrop = document.getElementById('actBatch');
+      if (bDrop) {
+        const sessions = (cfg && cfg.sessions && cfg.sessions.length > 0) ? cfg.sessions : ["2026-27"];
+        bDrop.innerHTML = '<option value="">Select</option>' + sessions.map(s => `<option value="${s}">${s}</option>`).join('');
       }
-      window.fetchActivitiesList();
+
+      allClassesList = (cfg && cfg.classMap) ? Object.keys(cfg.classMap) : [];
+      classSubjectMap = (cfg && cfg.classSubjectMap) ? cfg.classSubjectMap : {};
+      window.renderClassMultiCheckboxes();
+
+      // 2. Fetch Terms & Exams from Supabase
+      try {
+        const [tRes, eRes] = await Promise.all([
+          db.from('Exam_Terms').select('*').eq('SchoolID', schoolId).order('Id', { ascending: true }),
+          db.from('Exam_Master').select('*').eq('SchoolID', schoolId).order('SequenceNo', { ascending: true })
+        ]);
+        allTermsCache = tRes.data || [];
+        allExamsCache = eRes.data || [];
+      } catch(e) { allTermsCache = []; allExamsCache = []; }
+
+      document.getElementById('actTerm').innerHTML = '<option value="">Select</option>';
+      document.getElementById('actExam').innerHTML = '<option value="">Select</option>';
+      await window.fetchActivitiesList();
+    };
+
+    // Multi-Select Class Checkbox Dropdown Renderer
+    window.renderClassMultiCheckboxes = function() {
+      const menu = document.getElementById('actClassDropdownMenu');
+      if (!menu) return;
+      let html = `<label class='cls-chk-item border-bottom mb-1 fw-bold'><input type='checkbox' id='actChkSelectAllClasses' checked onchange='window.toggleActSelectAllClasses(this)'> Select all</label>`;
+      allClassesList.forEach(c => {
+        html += `<label class='cls-chk-item'><input type='checkbox' class='act-cls-chk' value='${c}' checked onchange='window.updateActClassBtnLabel()'> ${c}</label>`;
+      });
+      menu.innerHTML = html;
+      window.updateActClassBtnLabel();
+    };
+
+    window.toggleActSelectAllClasses = function(master) {
+      document.querySelectorAll('.act-cls-chk').forEach(cb => cb.checked = master.checked);
+      window.updateActClassBtnLabel();
+    };
+
+    window.updateActClassBtnLabel = function() {
+      const all = document.querySelectorAll('.act-cls-chk');
+      const checked = Array.from(all).filter(cb => cb.checked).map(cb => cb.value);
+      const master = document.getElementById('actChkSelectAllClasses');
+      if (master) master.checked = (all.length > 0 && checked.length === all.length);
+
+      const lbl = document.getElementById('actClassBtnText');
+      if (checked.length === 0) lbl.innerText = "None Selected";
+      else if (checked.length === all.length) lbl.innerText = "All";
+      else lbl.innerText = checked.join(", ");
+    };
+
+    // Cascade 1: Batch -> Term
+    window.onActBatchChange = function() {
+      const selBatch = document.getElementById('actBatch').value;
+      const tDrop = document.getElementById('actTerm');
+      document.getElementById('actExam').innerHTML = '<option value="">Select</option>';
+
+      if (!selBatch) { tDrop.innerHTML = '<option value="">Select</option>'; return; }
+
+      const matchedTerms = allTermsCache.filter(t => String(t.Session || t.Batch || "").trim() === selBatch);
+      tDrop.innerHTML = '<option value="">Select</option>' + matchedTerms.map(t => {
+        const val = t.TermCode || t.TermID || t.TermName;
+        return `<option value="${val}" data-name="${t.TermName}">${t.TermName} - ${selBatch}</option>`;
+      }).join('');
+    };
+
+    // Cascade 2: Batch + Term -> Exam
+    window.onActTermChange = function() {
+      const selBatch = document.getElementById('actBatch').value;
+      const selTerm = document.getElementById('actTerm').value;
+      const eDrop = document.getElementById('actExam');
+
+      if (!selBatch || !selTerm) { eDrop.innerHTML = '<option value="">Select</option>'; return; }
+
+      const matchedExams = allExamsCache.filter(e =>
+        String(e.Session || "").trim() === selBatch &&
+        String(e.TermCode || "").trim() === selTerm
+      );
+
+      if (matchedExams.length === 0) {
+        eDrop.innerHTML = '<option value="">No exams in this term</option>';
+        return;
+      }
+
+      eDrop.innerHTML = '<option value="">Select</option>' + matchedExams.map(e =>
+        `<option value="${e.ExamID}" data-name="${e.ExamName}">${e.ExamName}</option>`
+      ).join('');
     };
 
     window.fetchActivitiesList = async function() {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const tbody = document.getElementById('actDataTableBody');
-      tbody.innerHTML = `<tr><td colspan='6' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading activities...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan='7' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading marks settings...</td></tr>`;
 
       try {
-        const res = await (await fetch(`${scriptURL}?action=getExamActivities${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&_t=${Date.now()}`)).json();
-        activitiesList = Array.isArray(res.data) ? res.data : [];
+        const { data, error } = await db
+          .from('Exam_Activities')
+          .select('*')
+          .eq('SchoolID', user.schoolId)
+          .order('Id', { ascending: false });
+
+        if (error) throw error;
+        activitiesList = data || [];
         window.renderActivitiesTable();
       } catch(e) {
-        tbody.innerHTML = `<tr><td colspan='6' class='text-center py-4 text-danger'>Failed to load activities.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan='7' class='text-center py-4 text-danger fw-bold'>Failed to load: ${e.message}</td></tr>`;
       }
     };
 
     window.renderActivitiesTable = function() {
       const tbody = document.getElementById('actDataTableBody');
-      if (activitiesList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan='6' class='text-center py-5 text-muted fw-bold'>No activities configured. Click "Add New Activity" above!</td></tr>`;
+      const kw = (document.getElementById('actSearchInput')?.value || "").trim().toLowerCase();
+
+      const filtered = activitiesList.filter(a => {
+        if (!kw) return true;
+        const hay = `${a.Session || ""} ${a.TermName || a.TermCode || ""} ${a.ExamName || ""} ${a.ActivityName || ""} ${a.Class || ""}`.toLowerCase();
+        return hay.includes(kw);
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan='7' class='text-center py-4 text-muted fw-bold'>No marks settings added yet.</td></tr>`;
         return;
       }
 
-      let html = "";
-      activitiesList.forEach((a, i) => {
-        html += `
+      tbody.innerHTML = filtered.map(a => {
+        const aid = a.ActivityID || a.Id;
+        const batch = a.Session || "-";
+        const termDisplay = a.TermName ? `${a.TermName} - ${batch}` : `${a.TermCode || "-"} - ${batch}`;
+        const subCount = Array.isArray(a.Subjects) ? a.Subjects.length : 0;
+        const subBadge = subCount > 0 ? `<div class='text-success' style='font-size:10px;'>${subCount} Subjects Mapped</div>` : "";
+        return `
           <tr>
-            <td>${i + 1}</td>
-            <td><span class='badge bg-light text-primary border'>${a.Class || 'ALL'}</span></td>
-            <td class='text-start ps-3 fw-bold text-dark'>${a.ActivityName}</td>
-            <td><span class='badge bg-light text-dark border'>${a.ActivityCategory}</span></td>
-            <td><strong class='text-success'>${a.MaxGrade || 'A-E'}</strong></td>
-            <td>${a.DisplayOrder || (i + 1)}</td>
-          </tr>
-        `;
+            <td>${batch}</td>
+            <td>${termDisplay}</td>
+            <td class='fw-bold text-dark'>${a.ExamName || "-"}</td>
+            <td><div class='fw-bold text-primary'>${a.ActivityName || "-"}</div>${subBadge}</td>
+            <td class='text-center fw-bold'>${a.MaxMarks ?? 0}</td>
+            <td><span class='badge bg-light text-dark border text-wrap text-start' style='font-size:11px;'>${a.Class || "ALL"}</span></td>
+            <td class='text-center text-nowrap'>
+              <button class='btn-act-icon text-success' onclick='window.openActSubjectModal("${aid}")' title='Assign Subjects' type='button'><i class='fas fa-book'></i></button>
+              <button class='btn-act-icon text-primary' onclick='window.editActivityRecord("${aid}")' title='Edit' type='button'><i class='fas fa-edit'></i></button>
+              <span class='text-muted'>|</span>
+              <button class='btn-act-icon text-danger' onclick='window.deleteActivityRecord("${aid}")' title='Delete' type='button'><i class='fas fa-trash-alt'></i></button>
+            </td>
+          </tr>`;
+      }).join('');
+    };
+
+    window.editActivityRecord = function(aid) {
+      const a = activitiesList.find(x => String(x.ActivityID || x.Id) === String(aid));
+      if (!a) return;
+
+      document.getElementById('actEditId').value = a.ActivityID || a.Id;
+      document.getElementById('actBatch').value = a.Session || "";
+      window.onActBatchChange();
+      document.getElementById('actTerm').value = a.TermCode || "";
+      window.onActTermChange();
+      document.getElementById('actExam').value = a.ExamID || "";
+      document.getElementById('actName').value = a.ActivityName || "";
+      document.getElementById('actMaxMarks').value = a.MaxMarks ?? "";
+
+      const assignedCls = String(a.Class || "ALL").split(",").map(s => s.trim());
+      const isAll = assignedCls.includes("ALL") || assignedCls.includes("All");
+      document.querySelectorAll('.act-cls-chk').forEach(cb => {
+        cb.checked = isAll || assignedCls.includes(cb.value);
       });
-      tbody.innerHTML = html;
+      window.updateActClassBtnLabel();
+
+      document.getElementById('btnSaveAct').innerText = "Update";
+      document.getElementById('btnCancelActEdit').style.display = "inline-block";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    window.openNewActivityModal = function() {
-      document.getElementById('formActivity').reset();
-      new bootstrap.Modal(document.getElementById('actModal')).show();
+    window.resetActivityForm = function() {
+      document.getElementById('formActivitySettings').reset();
+      document.getElementById('actEditId').value = "";
+      document.getElementById('actTerm').innerHTML = '<option value="">Select</option>';
+      document.getElementById('actExam').innerHTML = '<option value="">Select</option>';
+      document.querySelectorAll('.act-cls-chk').forEach(cb => cb.checked = true);
+      window.updateActClassBtnLabel();
+      document.getElementById('btnSaveAct').innerText = "Submit";
+      document.getElementById('btnCancelActEdit').style.display = "none";
     };
 
-    window.submitActivityForm = async function(e) {
+    window.submitActivitySettingsForm = async function(e) {
       e.preventDefault();
       const btn = document.getElementById('btnSaveAct');
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const editId = document.getElementById('actEditId').value.trim();
+
+      const batchVal = document.getElementById('actBatch').value;
+      const tDrop = document.getElementById('actTerm');
+      const termCode = tDrop.value;
+      const termName = tDrop.options[tDrop.selectedIndex]?.getAttribute('data-name') || termCode;
+      const eDrop = document.getElementById('actExam');
+      const examId = eDrop.value;
+      const examName = eDrop.options[eDrop.selectedIndex]?.getAttribute('data-name') || examId;
+
+      const actName = document.getElementById('actName').value.trim();
+      const maxMarks = parseFloat(document.getElementById('actMaxMarks').value);
+
+      const allChks = document.querySelectorAll('.act-cls-chk');
+      const selectedCls = Array.from(allChks).filter(c => c.checked).map(c => c.value);
+      if (selectedCls.length === 0) { alert("Please select at least one Class!"); return; }
+      const classStr = (selectedCls.length === allChks.length) ? "ALL" : selectedCls.join(", ");
+
+      const record = {
+        SchoolID: user.schoolId,
+        Session: batchVal,
+        TermCode: termCode,
+        TermName: termName,
+        ExamID: examId,
+        ExamName: examName,
+        ActivityName: actName,
+        MaxMarks: maxMarks,
+        Class: classStr,
+        Status: "Active"
+      };
+
       btn.disabled = true;
       btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Saving...`;
 
-      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const payload = {
-        action: "saveActivitySettings",
-        tsid: user.targetSheetId,
-        className: document.getElementById('actClassSelect').value,
-        activitiesList: [
-          ...activitiesList.map(x => ({ ActivityName: x.ActivityName, ActivityCategory: x.ActivityCategory, MaxGrade: x.MaxGrade })),
-          {
-            ActivityName: document.getElementById('actName').value.trim(),
-            ActivityCategory: document.getElementById('actCategory').value,
-            MaxGrade: document.getElementById('actMaxGrade').value
-          }
-        ]
-      };
-
       try {
-        await fetch(scriptURL, { method: "POST", body: JSON.stringify(payload) });
-        alert("✅ Co-Scholastic Activity Saved Successfully!");
-        bootstrap.Modal.getInstance(document.getElementById('actModal')).hide();
-        window.fetchActivitiesList();
+        if (editId) {
+          const { error } = await db.from('Exam_Activities').update(record).eq('SchoolID', user.schoolId).eq('ActivityID', editId);
+          if (error) throw error;
+          alert("✅ Activity Setting Updated!");
+        } else {
+          record.ActivityID = "ACT-" + Date.now().toString(36).toUpperCase();
+          record.Subjects = [];
+          const { error } = await db.from('Exam_Activities').insert([record]);
+          if (error) throw error;
+          alert("✅ Activity Setting Added!");
+        }
+        window.resetActivityForm();
+        await window.fetchActivitiesList();
       } catch(err) {
-        alert("Activity saved.");
-        bootstrap.Modal.getInstance(document.getElementById('actModal')).hide();
-        window.fetchActivitiesList();
+        alert("Save error: " + err.message);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<i class='fas fa-save me-1'></i> Save Activity`;
+        btn.innerText = document.getElementById('actEditId').value ? "Update" : "Submit";
       }
+    };
+
+    // Assign Subjects Modal Logic (Pulls subjects from School_Configs)
+    window.openActSubjectModal = function(aid) {
+      const a = activitiesList.find(x => String(x.ActivityID || x.Id) === String(aid));
+      if (!a) return;
+      document.getElementById('actSubTargetId').value = aid;
+      document.getElementById('actSubModalTitle').innerHTML = `<i class='fas fa-book me-2'></i>Subjects: ${a.ActivityName} (${a.MaxMarks}M)`;
+      document.getElementById('actSubClassHint').innerText = `Classes: ${a.Class || 'ALL'}`;
+
+      const targetClasses = (a.Class === "ALL" || !a.Class) ? allClassesList : a.Class.split(",").map(s => s.trim());
+      const uniqueSubs = new Set();
+      targetClasses.forEach(cls => {
+        (classSubjectMap[cls] || "").split(",").map(s => s.trim()).filter(Boolean).forEach(s => uniqueSubs.add(s));
+      });
+      const subArr = Array.from(uniqueSubs);
+      const savedSubs = Array.isArray(a.Subjects) ? a.Subjects : [];
+
+      const box = document.getElementById('actSubjectsChecklist');
+      if (subArr.length === 0) {
+        box.innerHTML = `<div class='col-12 text-center py-3 text-muted small'>No subjects configured in Config Setting for these classes.</div>`;
+      } else {
+        box.innerHTML = subArr.map(s => {
+          const isChk = savedSubs.length === 0 || savedSubs.includes(s);
+          return `<div class='col-6'><label class='cls-chk-item border rounded'><input type='checkbox' class='act-sub-chk' value='${s}' ${isChk ? "checked" : ""}> ${s}</label></div>`;
+        }).join('');
+      }
+      document.getElementById('chkAllActSubjects').checked = true;
+      new bootstrap.Modal(document.getElementById('actSubjectModal')).show();
+    };
+
+    window.toggleAllActSubjects = function(m) {
+      document.querySelectorAll('.act-sub-chk').forEach(c => c.checked = m.checked);
+    };
+
+    window.saveAssignedActSubjects = async function() {
+      const aid = document.getElementById('actSubTargetId').value;
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const chosen = Array.from(document.querySelectorAll('.act-sub-chk:checked')).map(c => c.value);
+      const btn = document.getElementById('btnSaveActSubjects');
+      btn.disabled = true; btn.innerText = "Saving...";
+      try {
+        const { error } = await db.from('Exam_Activities').update({ Subjects: chosen }).eq('SchoolID', user.schoolId).eq('ActivityID', aid);
+        if (error) throw error;
+        bootstrap.Modal.getInstance(document.getElementById('actSubjectModal')).hide();
+        await window.fetchActivitiesList();
+      } catch(err) { alert("Error: " + err.message); }
+      finally { btn.disabled = false; btn.innerText = "Save Subjects"; }
+    };
+
+    window.deleteActivityRecord = async function(aid) {
+      if (!confirm("Delete this Activity Setting?")) return;
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const { error } = await db.from('Exam_Activities').delete().eq('SchoolID', user.schoolId).eq('ActivityID', aid);
+      if (error) alert("Delete error: " + error.message);
+      else await window.fetchActivitiesList();
     };
 
     window.initActivitySettingsModule();
