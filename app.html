@@ -34505,290 +34505,352 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </script>
 </template>
   
-<!-- MODULE: EXAM MASTER DEFINITION (UT-1, HALF YEARLY, ANNUAL, MAX MRK)-->
+<!-- =================================================================== -->
+<!-- MODULE: EXAM MASTER (BATCH -> TERM CASCADE + SEQUENCE + SEARCH)     -->
+<!-- =================================================================== -->
 <template id='tpl-ExamMaster'>
   <style>
-    .exm-card { border-radius: 12px; border: 1.5px solid #e2e8f0; min-height: 520px; background: #ffffff; }
-    .exm-label { font-size: 12px; font-weight: 700; color: #1e293b; margin-bottom: 4px; display: block; }
-    .exm-input { height: 38px; font-size: 12.5px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
-    .table-exm { font-size: 12.5px; width: 100%; border-collapse: collapse; }
-    .table-exm th { background: #f8fafc; font-size: 11px; text-transform: uppercase; color: #334155; font-weight: 800; border: 1px solid #cbd5e1; padding: 10px 8px; text-align: center; }
-    .table-exm td { border: 1px solid #e2e8f0; padding: 8px 6px; vertical-align: middle; font-weight: 600; color: #1e293b; text-align: center; }
+    .exm-card { border-radius: 12px; border: 1.5px solid #e2e8f0; background: #ffffff; }
+    .exm-label { font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 5px; display: block; }
+    .exm-input { height: 38px; font-size: 13px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
+    .exm-input:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2,132,199,0.12); }
+
+    .table-exm { font-size: 13px; width: 100%; border-collapse: collapse; vertical-align: middle; }
+    .table-exm th { background: #f8fafc; font-size: 12px; color: #334155; font-weight: 800; border: 1px solid #e2e8f0; padding: 11px 10px; text-align: left; }
+    .table-exm td { border: 1px solid #e2e8f0; padding: 10px; vertical-align: middle; font-weight: 600; color: #1e293b; }
+    .btn-exm-icon { background: transparent; border: none; padding: 4px 6px; font-size: 14px; cursor: pointer; transition: 0.15s; }
+    .btn-exm-icon:hover { transform: scale(1.15); }
   </style>
 
   <div class='card exm-card shadow-sm animate__animated animate__fadeIn mb-5'>
-    <!-- CARD HEADER -->
-    <div class='card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2'>
+    <!-- HEADER -->
+    <div class='card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between'>
       <div class='d-flex align-items-center gap-2'>
-        <i class='fas fa-file-signature text-danger fa-lg'></i>
-        <div>
-          <h6 class='m-0 fw-bold text-dark'>Exam Master Setup &amp; Max Marks</h6>
-          <small class='text-muted' style='font-size: 11px;'>Create Assessments (Unit Test, Half Yearly, Annual), Weightage &amp; Pass Marks</small>
-        </div>
+        <i class='fas fa-edit text-primary'></i>
+        <h6 class='m-0 fw-bold text-dark'>Exam Master</h6>
       </div>
-      <button class='btn btn-danger btn-sm fw-bold shadow-sm px-3' onclick='window.openNewExamMasterModal()' type='button'>
-        <i class='fas fa-plus-circle me-1'></i> Create New Exam
+      <button class='btn btn-outline-primary btn-sm px-3 fw-bold' onclick='window.initExamMasterModule()' type='button'>
+        <i class='fas fa-sync-alt me-1'></i> Refresh
       </button>
     </div>
 
-    <div class='card-body p-2'>
-      <!-- EXAMS TABLE -->
+    <div class='card-body p-3'>
+      <!-- 1. INLINE EXAM MASTER FORM -->
+      <form id='formExamMaster' onsubmit='window.submitExamMasterForm(event)' class='p-3 border rounded-3 bg-white mb-4 shadow-sm'>
+        <input id='exmEditId' type='hidden' value=''>
+
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='exm-label'>Batch <span class='text-danger'>*</span></label>
+            <select class='form-select exm-input' id='exmBatch' onchange='window.onExmBatchChange()' required='required'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+          <div class='col-md-4'>
+            <label class='exm-label'>Term <span class='text-danger'>*</span></label>
+            <select class='form-select exm-input' id='exmTerm' required='required'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+          <div class='col-md-4'>
+            <label class='exm-label'>Exam Name <span class='text-danger'>*</span></label>
+            <input class='form-control exm-input' id='exmName' placeholder='Exam Name' required='required' type='text'>
+          </div>
+        </div>
+
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='exm-label'>Start Date</label>
+            <input class='form-control exm-input' id='exmStartDate' type='date'>
+          </div>
+          <div class='col-md-4'>
+            <label class='exm-label'>End Date</label>
+            <input class='form-control exm-input' id='exmEndDate' type='date'>
+          </div>
+          <div class='col-md-4'>
+            <label class='exm-label'>Exam Short Name</label>
+            <input class='form-control exm-input' id='exmShortName' placeholder='Exam Short Name' type='text'>
+          </div>
+        </div>
+
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='exm-label'>Sequence No <span class='text-danger'>*</span></label>
+            <input class='form-control exm-input' id='exmSeqNo' min='1' placeholder='Sequence No' required='required' type='number'>
+          </div>
+        </div>
+
+        <div class='d-flex align-items-center gap-2'>
+          <button class='btn btn-primary btn-sm px-4 py-2 fw-bold shadow-sm' id='btnSaveExm' type='submit'>
+            Submit
+          </button>
+          <button class='btn btn-outline-secondary btn-sm px-3 py-2 fw-bold' id='btnCancelExmEdit' onclick='window.resetExamMasterForm()' style='display: none;' type='button'>
+            Cancel Edit
+          </button>
+        </div>
+      </form>
+
+      <!-- 2. VIEW EXAM MASTER HEADER + LIVE SEARCH -->
+      <div class='d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2'>
+        <div class='d-flex align-items-center gap-2'>
+          <i class='fas fa-table text-secondary'></i>
+          <h6 class='m-0 fw-bold text-dark' style='font-size: 14px;'>View Exam Master</h6>
+        </div>
+        <div style='width: 240px;'>
+          <input class='form-control form-control-sm' id='exmSearchInput' oninput='window.renderExamMasterTable()' placeholder='Search' type='text'>
+        </div>
+      </div>
+
+      <!-- 3. VIEW EXAM MASTER TABLE -->
       <div class='table-responsive border rounded-3 bg-white'>
         <table class='table-exm' id='exmDataTable'>
           <thead>
             <tr>
-              <th style='width: 45px;'>#</th>
-              <th style='width: 110px;'>Session</th>
-              <th style='width: 90px;'>Term</th>
-              <th style='text-align: left; padding-left: 12px;'>Exam Name</th>
-              <th style='width: 100px;'>Exam Code</th>
-              <th style='width: 90px;'>Max Marks</th>
-              <th style='width: 90px;'>Pass Marks</th>
-              <th style='width: 90px;'>Weightage</th>
-              <th style='width: 85px;'>Action</th>
+              <th style='width: 120px;'>Batch Name</th>
+              <th style='width: 180px;'>Term Name</th>
+              <th>Exam Name</th>
+              <th style='width: 120px;'>Start Date</th>
+              <th style='width: 120px;'>End Date</th>
+              <th style='width: 130px;'>Exam ShortName</th>
+              <th style='width: 105px; text-align: center;'>Sequence No</th>
+              <th style='width: 95px; text-align: center;'>Action</th>
             </tr>
           </thead>
           <tbody id='exmDataTableBody'>
-            <tr><td class='text-center py-5 text-muted fw-bold' colspan='9'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading exams list...</td></tr>
+            <tr><td class='text-center py-4 text-muted fw-bold' colspan='8'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading exams...</td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: ADD / EDIT EXAM -->
-  <div class='modal fade' id='exmModal' tabindex='-1'>
-    <div class='modal-dialog modal-dialog-centered modal-lg'>
-      <div class='modal-content border-0 shadow-lg' style='border-radius: 14px;'>
-        <div class='modal-header bg-danger text-white py-2.5'>
-          <h6 class='modal-title fw-bold' id='exmModalTitle'><i class='fas fa-file-signature me-2'></i>Configure Exam Assessment</h6>
-          <button class='btn-close btn-close-white' data-bs-dismiss='modal' type='button'></button>
-        </div>
-        <div class='modal-body p-4'>
-          <form id='formExamMaster' onsubmit='window.submitExamMasterForm(event)'>
-            <input id='exmEditId' type='hidden' value=''></i>
-
-            <div class='row g-2 mb-3'>
-              <div class='col-md-6 col-12'>
-                <label class='exm-label'>Academic Session *</label>
-                <select class='form-select exm-input' id='exmSession' required='required'></select>
-              </div>
-              <div class='col-md-6 col-12'>
-                <label class='exm-label'>Select Term *</label>
-                <select class='form-select exm-input fw-bold text-primary' id='exmTermSelect' required='required'>
-                  <option value='T1'>Term 1 (T1)</option>
-                  <option value='T2'>Term 2 (T2)</option>
-                </select>
-              </div>
-            </div>
-
-            <div class='row g-2 mb-3'>
-              <div class='col-md-8 col-12'>
-                <label class='exm-label'>Exam Name *</label>
-                <input class='form-control exm-input' id='exmName' placeholder='e.g., Half Yearly Examination' required='required' type='text'></i>
-              </div>
-              <div class='col-md-4 col-12'>
-                <label class='exm-label'>Exam Code (Short) *</label>
-                <input class='form-control exm-input font-monospace' id='exmCode' placeholder='HY' required='required' style='text-transform: uppercase;' type='text'></i>
-              </div>
-            </div>
-
-            <div class='row g-3 mb-3'>
-              <div class='col-md-4 col-6'>
-                <label class='exm-label'>Max Total Marks *</label>
-                <input class='form-control exm-input' id='exmMaxMarks' min='10' required='required' type='number' value='100'></i>
-              </div>
-              <div class='col-md-4 col-6'>
-                <label class='exm-label'>Passing Marks *</label>
-                <input class='form-control exm-input' id='exmPassMarks' min='5' required='required' type='number' value='33'></i>
-              </div>
-              <div class='col-md-4 col-12'>
-                <label class='exm-label'>Weightage (%)</label>
-                <input class='form-control exm-input' id='exmWeightage' max='100' min='1' type='number' value='100'></i>
-              </div>
-            </div>
-
-            <div class='d-flex justify-content-end gap-2 pt-2 border-top'>
-              <button class='btn btn-secondary btn-sm' data-bs-dismiss='modal' type='button'>Cancel</button>
-              <button class='btn btn-danger btn-sm fw-bold px-4 shadow' id='btnSaveExm' type='submit'>
-                <i class='fas fa-save me-1'></i> Save Exam
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-<script type='text/javascript'>
+  <script type='text/javascript'>
   // <![CDATA[
   (function() {
+    let allTermsCache = [];
     let examsList = [];
-    let termsCache = [];
-    let localConfig = null;
+
+    function formatDisplayDate(val) {
+      if (!val) return "-";
+      const s = String(val).split("T")[0];
+      const p = s.split("-");
+      if (p.length === 3 && p[0].length === 4) return `${p[2]}/${p[1]}/${p[0]}`;
+      return s;
+    }
+
+    function toInputDate(val) {
+      if (!val) return "";
+      const s = String(val).split("T")[0];
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+      const p = s.split("/");
+      if (p.length === 3 && p[2].length === 4) return `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
+      return "";
+    }
 
     window.initExamMasterModule = async function() {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const schoolId = user.schoolId;
 
-      // 1. Load Sessions from Master Config
-      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
-      const sDrop = document.getElementById('exmSession');
-      if (sDrop) {
-        const sessions = (localConfig && localConfig.sessions && localConfig.sessions.length > 0)
-          ? localConfig.sessions
-          : ["2026-27"];
-        sDrop.innerHTML = sessions.map(s => `<option value="${s}">${s}</option>`).join('');
+      // 1. Load Batches from School Config
+      const cfg = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
+      const bDrop = document.getElementById('exmBatch');
+      if (bDrop) {
+        const sessions = (cfg && cfg.sessions && cfg.sessions.length > 0) ? cfg.sessions : ["2026-27"];
+        bDrop.innerHTML = '<option value="">Select</option>' + sessions.map(s => `<option value="${s}">${s}</option>`).join('');
       }
 
-      // 2. Load Academic Terms from Supabase "Exam_Terms"
+      // 2. Pre-fetch All Academic Terms for Dynamic Batch Filtering
       try {
-        const { data: tData, error: tErr } = await db
+        const { data: tData } = await db
           .from('Exam_Terms')
           .select('*')
           .eq('SchoolID', schoolId)
           .order('Id', { ascending: true });
+        allTermsCache = tData || [];
+      } catch(e) { allTermsCache = []; }
 
-        if (!tErr && tData && tData.length > 0) {
-          termsCache = tData;
-          const tDrop = document.getElementById('exmTermSelect');
-          if (tDrop) {
-            tDrop.innerHTML = termsCache.map(t => {
-              const code = t.TermCode || t.TermName;
-              return `<option value="${code}">[${code}] ${t.TermName} (${t.Session || '-'})</option>`;
-            }).join('');
-          }
-        }
-      } catch(e) {
-        console.warn("Load terms fallback:", e);
+      document.getElementById('exmTerm').innerHTML = '<option value="">Select</option>';
+      await window.fetchExamMasterList();
+    };
+
+    // Dynamic Cascade: Populate only Terms created under Selected Batch
+    window.onExmBatchChange = function() {
+      const selBatch = document.getElementById('exmBatch').value;
+      const tDrop = document.getElementById('exmTerm');
+
+      if (!selBatch) {
+        tDrop.innerHTML = '<option value="">Select</option>';
+        return;
       }
 
-      await window.fetchExamMasterList();
+      const matchedTerms = allTermsCache.filter(t => String(t.Session || t.Batch || "").trim() === selBatch);
+      if (matchedTerms.length === 0) {
+        tDrop.innerHTML = '<option value="">No terms in this batch</option>';
+        return;
+      }
+
+      tDrop.innerHTML = '<option value="">Select</option>' + matchedTerms.map(t => {
+        const val = t.TermCode || t.TermID || t.TermName;
+        return `<option value="${val}" data-name="${t.TermName}">${t.TermName} - ${selBatch}</option>`;
+      }).join('');
     };
 
     window.fetchExamMasterList = async function() {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const tbody = document.getElementById('exmDataTableBody');
-      tbody.innerHTML = `<tr><td colspan='9' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading exams list...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan='8' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading exams...</td></tr>`;
 
       try {
         const { data, error } = await db
           .from('Exam_Master')
           .select('*')
           .eq('SchoolID', user.schoolId)
+          .order('SequenceNo', { ascending: true })
           .order('Id', { ascending: true });
 
         if (error) throw error;
         examsList = data || [];
         window.renderExamMasterTable();
       } catch(e) {
-        console.error("Fetch Exam Master Error:", e);
-        tbody.innerHTML = `<tr><td colspan='9' class='text-center py-4 text-danger fw-bold'>Failed to load exams: ${e.message}</td></tr>`;
+        console.error("Fetch Exams Error:", e);
+        tbody.innerHTML = `<tr><td colspan='8' class='text-center py-4 text-danger fw-bold'>Failed to load exams: ${e.message}</td></tr>`;
       }
     };
 
     window.renderExamMasterTable = function() {
       const tbody = document.getElementById('exmDataTableBody');
-      if (examsList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan='9' class='text-center py-5 text-muted fw-bold'>No exams created yet. Click "Create New Exam" above!</td></tr>`;
+      const kw = (document.getElementById('exmSearchInput')?.value || "").trim().toLowerCase();
+
+      const filtered = examsList.filter(e => {
+        if (!kw) return true;
+        const hay = `${e.Session || ""} ${e.TermName || e.TermCode || ""} ${e.ExamName || ""} ${e.ExamCode || ""}`.toLowerCase();
+        return hay.includes(kw);
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan='8' class='text-center py-4 text-muted fw-bold'>No exams found.</td></tr>`;
         return;
       }
 
-      tbody.innerHTML = examsList.map((e, i) => {
+      tbody.innerHTML = filtered.map(e => {
         const eid = e.ExamID || e.Id;
+        const batch = e.Session || "-";
+        const termDisplay = e.TermName ? `${e.TermName} - ${batch}` : `${e.TermCode || "-"} - ${batch}`;
         return `
           <tr>
-            <td>${i + 1}</td>
-            <td><strong>${e.Session || '-'}</strong></td>
-            <td><span class='badge bg-light text-dark border'>${e.TermCode || 'T1'}</span></td>
-            <td class='text-start ps-3 fw-bold text-dark'>${e.ExamName}</td>
-            <td><span class='badge bg-light text-danger border font-monospace'>${e.ExamCode || '-'}</span></td>
-            <td><strong>${e.MaxMarks || 100}</strong></td>
-            <td class='text-success fw-bold'>${e.PassMarks || 33}</td>
-            <td>${e.Weightage || 100}%</td>
-            <td>
-              <div class='d-flex justify-content-center gap-1'>
-                <button class='btn btn-outline-primary btn-sm py-0 px-2 fw-bold' onclick='window.editExamMasterModal("${eid}")' title='Edit' type='button'><i class='fas fa-edit'></i></button>
-                <button class='btn btn-outline-danger btn-sm py-0 px-2 fw-bold' onclick='window.deleteExamMasterRecord("${eid}")' title='Delete' type='button'><i class='fas fa-trash-alt'></i></button>
-              </div>
+            <td>${batch}</td>
+            <td>${termDisplay}</td>
+            <td class='fw-bold text-dark'>${e.ExamName || "-"}</td>
+            <td>${formatDisplayDate(e.StartDate)}</td>
+            <td>${formatDisplayDate(e.EndDate)}</td>
+            <td>${e.ExamCode || "NA"}</td>
+            <td class='text-center fw-bold'>${e.SequenceNo ?? 1}</td>
+            <td class='text-center'>
+              <button class='btn-exm-icon text-primary' onclick='window.editExamMasterRecord("${eid}")' title='Edit' type='button'><i class='fas fa-edit'></i></button>
+              <span class='text-muted'>|</span>
+              <button class='btn-exm-icon text-danger' onclick='window.deleteExamMasterRecord("${eid}")' title='Delete' type='button'><i class='fas fa-trash-alt'></i></button>
             </td>
           </tr>`;
       }).join('');
     };
 
-    window.openNewExamMasterModal = function() {
-      document.getElementById('formExamMaster').reset();
-      document.getElementById('exmEditId').value = "";
-      document.getElementById('exmModalTitle').innerHTML = `<i class='fas fa-file-signature me-2'></i>Create New Exam`;
-      new bootstrap.Modal(document.getElementById('exmModal')).show();
+    window.editExamMasterRecord = function(eid) {
+      const em = examsList.find(x => String(x.ExamID || x.Id) === String(eid));
+      if (!em) return;
+
+      document.getElementById('exmEditId').value = em.ExamID || em.Id;
+      document.getElementById('exmBatch').value = em.Session || "";
+      window.onExmBatchChange();
+
+      document.getElementById('exmTerm').value = em.TermCode || "";
+      document.getElementById('exmName').value = em.ExamName || "";
+      document.getElementById('exmStartDate').value = toInputDate(em.StartDate);
+      document.getElementById('exmEndDate').value = toInputDate(em.EndDate);
+      document.getElementById('exmShortName').value = (em.ExamCode && em.ExamCode !== "NA") ? em.ExamCode : "";
+      document.getElementById('exmSeqNo').value = em.SequenceNo ?? 1;
+
+      document.getElementById('btnSaveExm').innerText = "Update";
+      document.getElementById('btnCancelExmEdit').style.display = "inline-block";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    window.editExamMasterModal = function(examId) {
-      const em = examsList.find(x => String(x.ExamID || x.Id) === String(examId));
-      if (!em) return;
-      document.getElementById('exmEditId').value = em.ExamID || em.Id;
-      document.getElementById('exmSession').value = em.Session || "";
-      document.getElementById('exmTermSelect').value = em.TermCode || "";
-      document.getElementById('exmName').value = em.ExamName || "";
-      document.getElementById('exmCode').value = em.ExamCode || "";
-      document.getElementById('exmMaxMarks').value = em.MaxMarks || 100;
-      document.getElementById('exmPassMarks').value = em.PassMarks || 33;
-      document.getElementById('exmWeightage').value = em.Weightage || 100;
-      document.getElementById('exmModalTitle').innerHTML = `<i class='fas fa-edit me-2'></i>Edit Exam: ${em.ExamName}`;
-      new bootstrap.Modal(document.getElementById('exmModal')).show();
+    window.resetExamMasterForm = function() {
+      document.getElementById('formExamMaster').reset();
+      document.getElementById('exmEditId').value = "";
+      document.getElementById('exmTerm').innerHTML = '<option value="">Select</option>';
+      document.getElementById('btnSaveExm').innerText = "Submit";
+      document.getElementById('btnCancelExmEdit').style.display = "none";
     };
 
     window.submitExamMasterForm = async function(e) {
       e.preventDefault();
       const btn = document.getElementById('btnSaveExm');
-      btn.disabled = true;
-      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Saving...`;
-
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const schoolId = user.schoolId;
       const editId = document.getElementById('exmEditId').value.trim();
 
+      const batchVal = document.getElementById('exmBatch').value.trim();
+      const termDrop = document.getElementById('exmTerm');
+      const termCode = termDrop.value.trim();
+      const selOpt = termDrop.options[termDrop.selectedIndex];
+      const termName = (selOpt && selOpt.getAttribute('data-name')) ? selOpt.getAttribute('data-name') : termCode;
+
+      const examName = document.getElementById('exmName').value.trim();
+      const startDate = document.getElementById('exmStartDate').value || null;
+      const endDate = document.getElementById('exmEndDate').value || null;
+      const shortName = document.getElementById('exmShortName').value.trim() || "NA";
+      const seqNo = parseInt(document.getElementById('exmSeqNo').value, 10) || 1;
+
+      if (!batchVal || !termCode || !examName) {
+        alert("Please select Batch, Term, and enter Exam Name!");
+        return;
+      }
+
       const record = {
-        SchoolID: schoolId,
-        Session: document.getElementById('exmSession').value,
-        TermCode: document.getElementById('exmTermSelect').value,
-        ExamName: document.getElementById('exmName').value.trim(),
-        ExamCode: document.getElementById('exmCode').value.trim().toUpperCase(),
-        MaxMarks: parseFloat(document.getElementById('exmMaxMarks').value) || 100,
-        PassMarks: parseFloat(document.getElementById('exmPassMarks').value) || 33,
-        Weightage: parseFloat(document.getElementById('exmWeightage').value) || 100,
+        SchoolID: user.schoolId,
+        Session: batchVal,
+        TermCode: termCode,
+        TermName: termName,
+        ExamName: examName,
+        ExamCode: shortName,
+        StartDate: startDate,
+        EndDate: endDate,
+        SequenceNo: seqNo,
+        MaxMarks: 100,
+        PassMarks: 33,
+        Weightage: 100,
         Status: "Active"
       };
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Saving...`;
 
       try {
         if (editId) {
           const { error } = await db
             .from('Exam_Master')
             .update(record)
-            .eq('SchoolID', schoolId)
+            .eq('SchoolID', user.schoolId)
             .eq('ExamID', editId);
           if (error) throw error;
-          alert("✅ Exam Updated Successfully!");
+          alert("✅ Exam Master Updated Successfully!");
         } else {
           record.ExamID = "EXM-" + Date.now().toString(36).toUpperCase();
           const { error } = await db.from('Exam_Master').insert([record]);
           if (error) throw error;
-          alert("✅ Exam Assessment Saved Successfully!");
+          alert("✅ Exam Added Successfully!");
         }
-
-        const modalInst = bootstrap.Modal.getInstance(document.getElementById('exmModal'));
-        if (modalInst) modalInst.hide();
+        window.resetExamMasterForm();
         await window.fetchExamMasterList();
       } catch(err) {
-        console.error("Save Exam Master Error:", err);
+        console.error("Save Exam Error:", err);
         alert("Failed to save exam: " + err.message);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<i class='fas fa-save me-1'></i> Save Exam`;
+        btn.innerText = document.getElementById('exmEditId').value ? "Update" : "Submit";
       }
     };
 
-    window.deleteExamMasterRecord = async function(examId) {
+    window.deleteExamMasterRecord = async function(eid) {
       if (!confirm("Are you sure you want to delete this Exam?")) return;
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       try {
@@ -34796,9 +34858,8 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           .from('Exam_Master')
           .delete()
           .eq('SchoolID', user.schoolId)
-          .eq('ExamID', examId);
+          .eq('ExamID', eid);
         if (error) throw error;
-        alert("✅ Exam Deleted Successfully!");
         await window.fetchExamMasterList();
       } catch(err) {
         alert("Delete failed: " + err.message);
