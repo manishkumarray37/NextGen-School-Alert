@@ -34236,132 +34236,141 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </script>
 </template>
 
-<!-- MODULE: ACADEMIC TERM SETTING (TERM 1, TERM 2, SEMESTER)            -->
+<!-- =================================================================== -->
+<!-- MODULE: ACADEMIC TERM SETTING (CLEAN INLINE FORM & VIEW TERM)       -->
+<!-- =================================================================== -->
 <template id='tpl-TermSetting'>
   <style>
-    .tms-card { border-radius: 12px; border: 1.5px solid #e2e8f0; min-height: 520px; background: #ffffff; }
-    .tms-label { font-size: 12px; font-weight: 700; color: #1e293b; margin-bottom: 4px; display: block; }
-    .tms-input { height: 38px; font-size: 12.5px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
-    .tms-btn { height: 38px; font-size: 12.5px; font-weight: 700; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; }
+    .tms-card { border-radius: 12px; border: 1.5px solid #e2e8f0; background: #ffffff; }
+    .tms-label { font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 5px; display: block; }
+    .tms-input { height: 38px; font-size: 13px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
+    .tms-input:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2,132,199,0.12); }
 
-    .table-tms { font-size: 12.5px; width: 100%; border-collapse: collapse; vertical-align: middle; }
-    .table-tms th { background: #f8fafc; font-size: 11px; text-transform: uppercase; color: #334155; font-weight: 800; border: 1px solid #cbd5e1; padding: 10px 8px; text-align: center; }
-    .table-tms td { border: 1px solid #e2e8f0; padding: 8px 6px; vertical-align: middle; font-weight: 600; color: #1e293b; text-align: center; }
+    .table-tms { font-size: 13px; width: 100%; border-collapse: collapse; vertical-align: middle; }
+    .table-tms th { background: #f8fafc; font-size: 12px; color: #334155; font-weight: 800; border: 1px solid #e2e8f0; padding: 11px 12px; text-align: left; }
+    .table-tms td { border: 1px solid #e2e8f0; padding: 10px 12px; vertical-align: middle; font-weight: 600; color: #1e293b; }
+    .btn-tms-icon { background: transparent; border: none; padding: 4px 7px; font-size: 14px; cursor: pointer; transition: 0.15s; }
+    .btn-tms-icon:hover { transform: scale(1.15); }
   </style>
 
   <div class='card tms-card shadow-sm animate__animated animate__fadeIn mb-5'>
-    <!-- CARD HEADER -->
-    <div class='card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2'>
+    <!-- HEADER -->
+    <div class='card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between'>
       <div class='d-flex align-items-center gap-2'>
-        <i class='fas fa-calendar-alt text-success fa-lg'></i>
-        <div>
-          <h6 class='m-0 fw-bold text-dark'>Academic Terms &amp; Semesters Setup</h6>
-          <small class='text-muted' style='font-size: 11px;'>Configure Term 1, Term 2, Semesters and Final Weightage (%)</small>
-        </div>
+        <i class='fas fa-edit text-primary'></i>
+        <h6 class='m-0 fw-bold text-dark'>Term Setting</h6>
       </div>
-      <button class='btn btn-success btn-sm fw-bold shadow-sm px-3' onclick='window.openNewTermModal()' type='button'>
-        <i class='fas fa-plus-circle me-1'></i> Create New Term
+      <button class='btn btn-outline-primary btn-sm px-3 fw-bold' onclick='window.fetchTermsList()' type='button'>
+        <i class='fas fa-sync-alt me-1'></i> Refresh
       </button>
     </div>
 
-    <div class='card-body p-2'>
-      <!-- TERMS TABLE -->
+    <div class='card-body p-3'>
+      <!-- 1. INLINE ADD / EDIT TERM FORM -->
+      <form id='formTermSetting' onsubmit='window.submitTermSettingForm(event)' class='p-3 border rounded-3 bg-white mb-4 shadow-sm'>
+        <input id='tmsEditId' type='hidden' value=''>
+
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='tms-label'>Batch <span class='text-danger'>*</span></label>
+            <select class='form-select tms-input' id='tmsSession' required='required'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+          <div class='col-md-4'>
+            <label class='tms-label'>Term Name <span class='text-danger'>*</span></label>
+            <input class='form-control tms-input' id='tmsName' placeholder='Term Name' required='required' type='text'>
+          </div>
+          <div class='col-md-4'>
+            <label class='tms-label'>Start Date</label>
+            <input class='form-control tms-input' id='tmsStartDate' type='date'>
+          </div>
+        </div>
+
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='tms-label'>End Date</label>
+            <input class='form-control tms-input' id='tmsEndDate' type='date'>
+          </div>
+        </div>
+
+        <div class='d-flex align-items-center gap-2'>
+          <button class='btn btn-primary btn-sm px-4 py-2 fw-bold shadow-sm' id='btnSaveTms' type='submit'>
+            Submit
+          </button>
+          <button class='btn btn-outline-secondary btn-sm px-3 py-2 fw-bold' id='btnCancelTmsEdit' onclick='window.resetTermForm()' style='display: none;' type='button'>
+            Cancel Edit
+          </button>
+        </div>
+      </form>
+
+      <!-- 2. VIEW TERM TABLE -->
+      <div class='d-flex align-items-center gap-2 mb-2'>
+        <i class='fas fa-table text-secondary'></i>
+        <h6 class='m-0 fw-bold text-dark' style='font-size: 14px;'>View Term</h6>
+      </div>
+
       <div class='table-responsive border rounded-3 bg-white'>
         <table class='table-tms' id='tmsDataTable'>
           <thead>
             <tr>
-              <th style='width: 45px;'>#</th>
-              <th style='width: 130px;'>Session</th>
-              <th style='text-align: left; padding-left: 12px;'>Term Name</th>
-              <th style='width: 110px;'>Term Code</th>
-              <th style='width: 120px;'>Weightage (%)</th>
-              <th style='width: 100px;'>Status</th>
-              <th style='width: 90px;'>Action</th>
+              <th>Term Name</th>
+              <th style='width: 180px;'>Batch</th>
+              <th style='width: 160px;'>Start Date</th>
+              <th style='width: 160px;'>End Date</th>
+              <th style='width: 110px; text-align: center;'>Action</th>
             </tr>
           </thead>
           <tbody id='tmsDataTableBody'>
-            <tr><td class='text-center py-5 text-muted fw-bold' colspan='7'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading academic terms...</td></tr>
+            <tr><td class='text-center py-4 text-muted fw-bold' colspan='5'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading terms...</td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <!-- MODAL: ADD / EDIT TERM -->
-  <div class='modal fade' id='tmsModal' tabindex='-1'>
-    <div class='modal-dialog modal-dialog-centered'>
-      <div class='modal-content border-0 shadow-lg' style='border-radius: 14px;'>
-        <div class='modal-header bg-success text-white py-2.5'>
-          <h6 class='modal-title fw-bold' id='tmsModalTitle'><i class='fas fa-calendar-plus me-2'></i>Add Academic Term</h6>
-          <button class='btn-close btn-close-white' data-bs-dismiss='modal' type='button'></button>
-        </div>
-        <div class='modal-body p-4'>
-          <form id='formTermSetting' onsubmit='window.submitTermSettingForm(event)'>
-            <input id='tmsEditId' type='hidden' value=''></i>
-
-            <div class='mb-3'>
-              <label class='tms-label'>Academic Session *</label>
-              <select class='form-select tms-input' id='tmsSession' required='required'></select>
-            </div>
-
-            <div class='row g-2 mb-3'>
-              <div class='col-8'>
-                <label class='tms-label'>Term Name *</label>
-                <input class='form-control tms-input' id='tmsName' placeholder='e.g., Term 1 / Half Yearly Term' required='required' type='text'></i>
-              </div>
-              <div class='col-4'>
-                <label class='tms-label'>Code *</label>
-                <input class='form-control tms-input font-monospace' id='tmsCode' placeholder='T1' required='required' style='text-transform: uppercase;' type='text'></i>
-              </div>
-            </div>
-
-            <div class='mb-3'>
-              <label class='tms-label'>Weightage in Final Result (%) *</label>
-              <input class='form-control tms-input' id='tmsWeightage' max='100' min='1' required='required' type='number' value='50'></i>
-              <small class='text-muted' style='font-size: 10.5px;'>e.g., Term 1 = 50%, Term 2 = 50% (Total = 100%)</small>
-            </div>
-
-            <div class='d-flex justify-content-end gap-2 pt-2 border-top'>
-              <button class='btn btn-secondary btn-sm' data-bs-dismiss='modal' type='button'>Cancel</button>
-              <button class='btn btn-success btn-sm fw-bold px-4 shadow' id='btnSaveTms' type='submit'>
-                <i class='fas fa-save me-1'></i> Save Term
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-<script type='text/javascript'>
+  <script type='text/javascript'>
   // <![CDATA[
   (function() {
     let termsList = [];
-    let localConfig = null;
+
+    function formatDisplayDate(val) {
+      if (!val) return "-";
+      const s = String(val).split("T")[0];
+      const p = s.split("-");
+      if (p.length === 3 && p[0].length === 4) return `${p[2]}/${p[1]}/${p[0]}`;
+      return s;
+    }
+
+    function toInputDate(val) {
+      if (!val) return "";
+      const s = String(val).split("T")[0];
+      if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+      const p = s.split("/");
+      if (p.length === 3 && p[2].length === 4) return `${p[2]}-${p[1].padStart(2,'0')}-${p[0].padStart(2,'0')}`;
+      return "";
+    }
 
     window.initTermSettingModule = async function() {
-      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
+      const cfg = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
       const sDrop = document.getElementById('tmsSession');
       if (sDrop) {
-        const sessions = (localConfig && localConfig.sessions && localConfig.sessions.length > 0)
-          ? localConfig.sessions
-          : ["2026-27"];
-        sDrop.innerHTML = sessions.map(s => `<option value="${s}">${s}</option>`).join('');
+        const sessions = (cfg && cfg.sessions && cfg.sessions.length > 0) ? cfg.sessions : ["2026-27"];
+        sDrop.innerHTML = '<option value="">Select</option>' + sessions.map(s => `<option value="${s}">${s}</option>`).join('');
       }
       await window.fetchTermsList();
     };
 
     window.fetchTermsList = async function() {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const schoolId = user.schoolId;
       const tbody = document.getElementById('tmsDataTableBody');
-      tbody.innerHTML = `<tr><td colspan='7' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading academic terms...</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan='5' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading terms...</td></tr>`;
 
       try {
         const { data, error } = await db
           .from('Exam_Terms')
           .select('*')
-          .eq('SchoolID', schoolId)
+          .eq('SchoolID', user.schoolId)
           .order('Id', { ascending: true });
 
         if (error) throw error;
@@ -34369,127 +34378,124 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         window.renderTermsTable();
       } catch(e) {
         console.error("Fetch Terms Error:", e);
-        tbody.innerHTML = `<tr><td colspan='7' class='text-center py-4 text-danger fw-bold'>Failed to load terms: ${e.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan='5' class='text-center py-4 text-danger fw-bold'>Failed to load terms: ${e.message}</td></tr>`;
       }
     };
 
     window.renderTermsTable = function() {
       const tbody = document.getElementById('tmsDataTableBody');
       if (termsList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan='7' class='text-center py-5 text-muted fw-bold'>No terms created yet. Click "Create New Term" above!</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan='5' class='text-center py-4 text-muted fw-bold'>No terms added yet.</td></tr>`;
         return;
       }
 
-      let html = "";
-      termsList.forEach((t, i) => {
-        const statusBadge = (String(t.Status || "Active").toLowerCase() === "active")
-          ? `<span class='badge bg-success'>Active</span>`
-          : `<span class='badge bg-secondary'>Inactive</span>`;
-
-        html += `
+      tbody.innerHTML = termsList.map(t => {
+        const tid = t.TermID || t.Id;
+        const batch = t.Session || t.Batch || "-";
+        return `
           <tr>
-            <td>${i + 1}</td>
-            <td><strong>${t.Session || '-'}</strong></td>
-            <td class='text-start ps-3 fw-bold text-dark'>${t.TermName}</td>
-            <td><span class='badge bg-light text-primary border font-monospace'>${t.TermCode}</span></td>
-            <td><strong>${t.Weightage || 0}%</strong></td>
-            <td>${statusBadge}</td>
-            <td>
-              <div class='d-flex justify-content-center gap-1'>
-                <button class='btn btn-outline-primary btn-sm py-0 px-2 fw-bold' onclick='window.editTermModal("${t.TermID}")' title='Edit' type='button'><i class='fas fa-edit'></i></button>
-                <button class='btn btn-outline-danger btn-sm py-0 px-2 fw-bold' onclick='window.deleteTermRecord("${t.TermID}")' title='Delete' type='button'><i class='fas fa-trash-alt'></i></button>
-              </div>
+            <td class='fw-bold text-dark'>${t.TermName || "-"}</td>
+            <td>${batch}</td>
+            <td>${formatDisplayDate(t.StartDate)}</td>
+            <td>${formatDisplayDate(t.EndDate)}</td>
+            <td class='text-center'>
+              <button class='btn-tms-icon text-primary' onclick='window.editTermRecord("${tid}")' title='Edit' type='button'><i class='fas fa-edit'></i></button>
+              <span class='text-muted'>|</span>
+              <button class='btn-tms-icon text-danger' onclick='window.deleteTermRecord("${tid}")' title='Delete' type='button'><i class='fas fa-trash-alt'></i></button>
             </td>
-          </tr>
-        `;
-      });
-      tbody.innerHTML = html;
+          </tr>`;
+      }).join('');
     };
 
-    window.openNewTermModal = function() {
+    window.editTermRecord = function(tid) {
+      const t = termsList.find(x => String(x.TermID || x.Id) === String(tid));
+      if (!t) return;
+      document.getElementById('tmsEditId').value = t.TermID || t.Id;
+      document.getElementById('tmsSession').value = t.Session || t.Batch || "";
+      document.getElementById('tmsName').value = t.TermName || "";
+      document.getElementById('tmsStartDate').value = toInputDate(t.StartDate);
+      document.getElementById('tmsEndDate').value = toInputDate(t.EndDate);
+      document.getElementById('btnSaveTms').innerText = "Update";
+      document.getElementById('btnCancelTmsEdit').style.display = "inline-block";
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.resetTermForm = function() {
       document.getElementById('formTermSetting').reset();
       document.getElementById('tmsEditId').value = "";
-      document.getElementById('tmsModalTitle').innerHTML = `<i class='fas fa-calendar-plus me-2'></i>Add Academic Term`;
-      new bootstrap.Modal(document.getElementById('tmsModal')).show();
-    };
-
-    window.editTermModal = function(termId) {
-      const t = termsList.find(x => x.TermID === termId);
-      if (!t) return;
-      document.getElementById('tmsEditId').value = t.TermID;
-      document.getElementById('tmsSession').value = t.Session;
-      document.getElementById('tmsName').value = t.TermName;
-      document.getElementById('tmsCode').value = t.TermCode;
-      document.getElementById('tmsWeightage').value = t.Weightage;
-      document.getElementById('tmsModalTitle').innerHTML = `<i class='fas fa-edit me-2'></i>Edit Academic Term`;
-      new bootstrap.Modal(document.getElementById('tmsModal')).show();
+      document.getElementById('btnSaveTms').innerText = "Submit";
+      document.getElementById('btnCancelTmsEdit').style.display = "none";
     };
 
     window.submitTermSettingForm = async function(e) {
       e.preventDefault();
       const btn = document.getElementById('btnSaveTms');
-      btn.disabled = true;
-      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Saving...`;
-
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const schoolId = user.schoolId;
       const editId = document.getElementById('tmsEditId').value.trim();
 
+      const batchVal = document.getElementById('tmsSession').value.trim();
+      const termName = document.getElementById('tmsName').value.trim();
+      const startDate = document.getElementById('tmsStartDate').value || null;
+      const endDate = document.getElementById('tmsEndDate').value || null;
+
+      if (!batchVal || !termName) {
+        alert("Please select Batch and enter Term Name!");
+        return;
+      }
+
+      const autoCode = termName.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().substring(0, 10) || "TERM";
       const record = {
-        SchoolID: schoolId,
-        Session: document.getElementById('tmsSession').value,
-        TermName: document.getElementById('tmsName').value.trim(),
-        TermCode: document.getElementById('tmsCode').value.trim().toUpperCase(),
-        Weightage: parseFloat(document.getElementById('tmsWeightage').value) || 50,
+        SchoolID: user.schoolId,
+        Session: batchVal,
+        TermName: termName,
+        TermCode: autoCode,
+        StartDate: startDate,
+        EndDate: endDate,
         Status: "Active"
       };
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Saving...`;
 
       try {
         if (editId) {
           const { error } = await db
             .from('Exam_Terms')
             .update(record)
-            .eq('SchoolID', schoolId)
+            .eq('SchoolID', user.schoolId)
             .eq('TermID', editId);
           if (error) throw error;
-          alert("✅ Academic Term Updated Successfully!");
+          alert("✅ Term Updated Successfully!");
         } else {
           record.TermID = "TRM-" + Date.now().toString(36).toUpperCase();
-          const { error } = await db
-            .from('Exam_Terms')
-            .insert([record]);
+          const { error } = await db.from('Exam_Terms').insert([record]);
           if (error) throw error;
-          alert("✅ New Academic Term Saved Successfully!");
+          alert("✅ Term Added Successfully!");
         }
-
-        const modalEl = document.getElementById('tmsModal');
-        const modalInst = bootstrap.Modal.getInstance(modalEl);
-        if (modalInst) modalInst.hide();
-
+        window.resetTermForm();
         await window.fetchTermsList();
       } catch(err) {
         console.error("Save Term Error:", err);
         alert("Failed to save term: " + err.message);
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<i class='fas fa-save me-1'></i> Save Term`;
+        btn.innerText = document.getElementById('tmsEditId').value ? "Update" : "Submit";
       }
     };
 
-    window.deleteTermRecord = async function(termId) {
-      if (!confirm("Are you sure you want to delete this Academic Term?")) return;
+    window.deleteTermRecord = async function(tid) {
+      if (!confirm("Are you sure you want to delete this Term?")) return;
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       try {
         const { error } = await db
           .from('Exam_Terms')
           .delete()
           .eq('SchoolID', user.schoolId)
-          .eq('TermID', termId);
+          .eq('TermID', tid);
         if (error) throw error;
-        alert("✅ Term Deleted Successfully!");
         await window.fetchTermsList();
       } catch(err) {
-        alert("Failed to delete term: " + err.message);
+        alert("Delete error: " + err.message);
       }
     };
 
