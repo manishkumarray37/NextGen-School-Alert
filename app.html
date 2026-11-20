@@ -37395,114 +37395,132 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </script>
 </template>
 
-<!-- MODULE: SUBJECT-WISE MARKS ENTRY (FOR SUBJECT TEACHERS)             -->
+<!-- =================================================================== -->
+<!-- MODULE: MANAGE MARKS ENTRY  -->
+<!-- =================================================================== -->
 <template id='tpl-SubjectMarksEntry'>
   <style>
     .sme-card { border-radius: 12px; border: 1.5px solid #e2e8f0; min-height: 540px; background: #ffffff; }
-    .sme-label { font-size: 11.5px; font-weight: 700; color: #1e293b; margin-bottom: 4px; display: block; }
-    .sme-select { height: 38px; font-size: 12.5px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
-    .sme-btn { height: 38px; font-size: 12.5px; font-weight: 700; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; }
+    .sme-label { font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 5px; display: block; }
+    .sme-select { height: 38px; font-size: 13px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
+    .sme-select:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2,132,199,0.12); }
 
     .table-sme { font-size: 12.5px; width: 100%; border-collapse: collapse; vertical-align: middle; }
     .table-sme th { background: #f8fafc; font-size: 11px; text-transform: uppercase; color: #334155; font-weight: 800; border: 1px solid #cbd5e1; padding: 10px 8px; text-align: center; }
     .table-sme td { border: 1px solid #e2e8f0; padding: 8px 6px; vertical-align: middle; font-weight: 600; color: #1e293b; text-align: center; }
 
-    .marks-input { width: 80px; height: 34px; border: 1.5px solid #cbd5e1; border-radius: 5px; text-align: center; font-weight: 800; font-size: 13px; color: #0f172a; margin: 0 auto; }
+    .marks-input { width: 82px; height: 34px; border: 1.5px solid #cbd5e1; border-radius: 5px; text-align: center; font-weight: 800; font-size: 13px; color: #0f172a; margin: 0 auto; }
     .marks-input:focus { border-color: #0284c7; outline: none; background: #f0f9ff; }
     .marks-input.is-absent { background: #fee2e2 !important; color: #dc2626 !important; border-color: #f87171 !important; }
+    .marks-input:disabled { background: #f1f5f9 !important; color: #94a3b8 !important; cursor: not-allowed; }
 
-    .kpi-badge-pill { font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1px solid #cbd5e1; background: #ffffff; display: inline-flex; align-items: center; gap: 5px; }
+    .kpi-badge-pill { font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; display: inline-flex; align-items: center; gap: 5px; }
   </style>
 
   <div class='card sme-card shadow-sm animate__animated animate__fadeIn mb-5'>
     <!-- CARD HEADER -->
     <div class='card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2'>
       <div class='d-flex align-items-center gap-2'>
-        <i class='fas fa-pencil-alt text-primary fa-lg'></i>
-        <div>
-          <h6 class='m-0 fw-bold text-dark'>Subject-wise Student Marks Entry Desk</h6>
-          <small class='text-muted' style='font-size: 11px;'>Theory &amp; Practical marks entry with instant auto-grading &amp; absent (AB) tracker</small>
-        </div>
+        <i class='fas fa-edit text-primary'></i>
+        <h6 class='m-0 fw-bold text-dark'>Manage Marks Entry</h6>
       </div>
       <div class='d-flex gap-2'>
-        <button class='btn btn-outline-primary btn-sm fw-bold' onclick='window.navigateTo(&quot;BulkMarksEntry&quot;)' type='button'>
+        <button class='btn btn-outline-primary btn-sm fw-bold' onclick='window.initSubjectMarksEntryModule()' type='button'>
+          <i class='fas fa-sync-alt me-1'></i> Refresh
+        </button>
+        <button class='btn btn-outline-secondary btn-sm fw-bold' onclick='window.navigateTo("BulkMarksEntry")' type='button'>
           <i class='fas fa-table me-1'></i> Bulk Grid Entry
         </button>
       </div>
     </div>
 
-    <div class='card-body p-2'>
-      <!-- 1. FILTER CONTROLS ROW -->
-      <div class='bg-light p-3 rounded-3 border mb-3'>
-        <div class='row g-2 align-items-end'>
-          <div class='col-lg-2 col-md-4 col-6'>
-            <label class='sme-label'>Session *</label>
-            <select class='form-select sme-select' id='smeSessionSelect'></select>
-          </div>
-          <div class='col-lg-2 col-md-4 col-6'>
-            <label class='sme-label'>Select Exam *</label>
-            <select class='form-select sme-select fw-bold text-primary' id='smeExamSelect'></select>
-          </div>
-          <div class='col-lg-2 col-md-4 col-6'>
-            <label class='sme-label'>Class *</label>
-            <select class='form-select sme-select' id='smeClassSelect' onchange='window.onSmeClassChange()'>
-              <option value=''>-- Class --</option>
+    <div class='card-body p-3'>
+      <!-- 1. SEARCH FILTERS BOX (EXACT SCREENSHOT LAYOUT) -->
+      <form onsubmit='event.preventDefault(); window.fetchStudentsForSubjectMarks();' class='p-3 rounded-3 border bg-white shadow-sm mb-4'>
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='sme-label'>Batch <span class='text-danger'>*</span></label>
+            <select class='form-select sme-select' id='smeBatchSelect' onchange='window.onSmeBatchChange()' required='required'>
+              <option value=''>Select</option>
             </select>
           </div>
-          <div class='col-lg-2 col-md-4 col-6'>
-            <label class='sme-label'>Section *</label>
-            <select class='form-select sme-select' id='smeSectionSelect'>
-              <option value='A'>Section A</option>
+          <div class='col-md-4'>
+            <label class='sme-label'>Class <span class='text-danger'>*</span></label>
+            <select class='form-select sme-select' id='smeClassSelect' onchange='window.onSmeClassChange()' required='required'>
+              <option value=''>Select</option>
             </select>
           </div>
-          <div class='col-lg-2 col-md-4 col-6'>
-            <label class='sme-label'>Subject *</label>
-            <select class='form-select sme-select fw-bold' id='smeSubjectSelect'></select>
-          </div>
-          <div class='col-lg-2 col-md-4 col-6'>
-            <button class='btn btn-primary sme-btn w-100 shadow-sm' onclick='window.fetchStudentsForSubjectMarks()' type='button'>
-              <i class='fas fa-search me-1'></i> Fetch Students
-            </button>
+          <div class='col-md-4'>
+            <label class='sme-label'>Section <span class='text-danger'>*</span></label>
+            <select class='form-select sme-select' id='smeSectionSelect' required='required'>
+              <option value=''>Select</option>
+            </select>
           </div>
         </div>
+
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='sme-label'>Subject <span class='text-danger'>*</span></label>
+            <select class='form-select sme-select' id='smeSubjectSelect' required='required'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+          <div class='col-md-4'>
+            <label class='sme-label'>Term <span class='text-danger'>*</span></label>
+            <select class='form-select sme-select' id='smeTermSelect' onchange='window.onSmeTermChange()' required='required'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+          <div class='col-md-4'>
+            <label class='sme-label'>Exam <span class='text-danger'>*</span></label>
+            <select class='form-select sme-select' id='smeExamSelect' onchange='window.onSmeExamChange()' required='required'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+        </div>
+
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='sme-label'>Activity</label>
+            <select class='form-select sme-select' id='smeActivitySelect'>
+              <option value='ALL'>All</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <button class='btn btn-primary btn-sm px-4 py-2 fw-bold shadow-sm' type='submit'>
+            Submit
+          </button>
+        </div>
+      </form>
+
+      <!-- 2. FREEZE WARNING & SUMMARY BAR -->
+      <div class='alert alert-danger py-2 small fw-bold mb-3' id='smeFreezeAlert' style='display: none;'>
+        <i class='fas fa-lock me-1'></i> <span id='smeFreezeAlertMsg'>Marks entry for locked activities is disabled.</span>
       </div>
 
-      <!-- 2. MAX MARKS INFO & KPI SUMMARY -->
-      <div class='d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 px-1' id='smeInfoBar' style='display: none;'>
+      <div class='d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3' id='smeInfoBar' style='display: none;'>
         <div class='d-flex gap-2 flex-wrap'>
           <span class='kpi-badge-pill'>Total Students: <strong class='text-primary' id='smeCountStudents'>0</strong></span>
-          <span class='kpi-badge-pill'>Theory Max: <strong class='text-dark' id='smeTheoryMaxBadge'>80</strong></span>
-          <span class='kpi-badge-pill'>Practical Max: <strong class='text-dark' id='smePracMaxBadge'>20</strong></span>
-          <span class='kpi-badge-pill'>Total Max: <strong class='text-success' id='smeTotalMaxBadge'>100</strong></span>
+          <span class='kpi-badge-pill'>Activities Loaded: <strong class='text-dark' id='smeCountActivities'>0</strong></span>
+          <span class='kpi-badge-pill'>Total Max Marks: <strong class='text-success' id='smeTotalMaxBadge'>100</strong></span>
         </div>
-        <small class='text-muted'>Tip: Type <strong>AB</strong> for Absent. Press <strong>Enter</strong> to move down.</small>
+        <small class='text-muted'>Tip: Type <strong>AB</strong> for Absent. Press <strong>Enter</strong> to move to next student.</small>
       </div>
 
-      <!-- 3. MARKS ENTRY TABLE -->
+      <!-- 3. DYNAMIC MARKS ENTRY TABLE -->
       <div class='table-responsive border rounded-3 bg-white mb-3' id='smeTableContainer' style='display: none;'>
         <table class='table-sme' id='smeDataTable'>
-          <thead>
-            <tr>
-              <th style='width: 45px;'>#</th>
-              <th style='width: 75px;'>Roll No</th>
-              <th style='width: 110px;'>Adm No</th>
-              <th style='text-align: left; padding-left: 12px;'>Student Name</th>
-              <th style='width: 120px;'>Theory Marks</th>
-              <th style='width: 120px;'>Practical Marks</th>
-              <th style='width: 110px;'>Total Obtained</th>
-              <th style='width: 90px;'>Grade</th>
-            </tr>
-          </thead>
-          <tbody id='smeDataTableBody'>
-            <!-- Dynamic Rows -->
-          </tbody>
+          <thead id='smeDataTableHead'></thead>
+          <tbody id='smeDataTableBody'></tbody>
         </table>
       </div>
 
       <!-- 4. SAVE BUTTON BAR -->
       <div class='d-flex justify-content-between align-items-center pt-2 border-top' id='smeSaveBar' style='display: none;'>
-        <span class='text-muted small'><i class='fas fa-shield-alt text-success me-1'></i> Marks are automatically validated against Max Marks.</span>
-        <button class='btn btn-success px-4 py-2 fw-bold shadow' id='btnSaveSubjectMarks' onclick='window.submitSubjectMarksData()' type='button'>
+        <span class='text-muted small'><i class='fas fa-shield-alt text-success me-1'></i> Marks are automatically validated against Max Marks &amp; Freeze status.</span>
+        <button class='btn btn-success px-4 py-2 fw-bold shadow-sm' id='btnSaveSubjectMarks' onclick='window.submitSubjectMarksData()' type='button'>
           <i class='fas fa-save me-1'></i> Save Subject Marks
         </button>
       </div>
@@ -37513,244 +37531,388 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   // <![CDATA[
   (function() {
     let localConfig = null;
+    let termsCache = [];
+    let examsCache = [];
+    let activitiesCache = [];
+    let freezeMap = {};
     let currentStudentsList = [];
-    let theoryMaxLimit = 80;
-    let practicalMaxLimit = 20;
-    const AMP = String.fromCharCode(38);
+    let activeActivities = [];
+    let totalMaxSum = 100;
 
     window.initSubjectMarksEntryModule = async function() {
-      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData() : null;
-      if (!localConfig && typeof window.getConfigData === 'function') {
-        localConfig = await window.getConfigData(true);
-      }
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
 
-      const sDrop = document.getElementById('smeSessionSelect');
+      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
+
+      // Populate Batch & Class from School Config
+      const bDrop = document.getElementById('smeBatchSelect');
       const cDrop = document.getElementById('smeClassSelect');
-
       if (localConfig) {
-        if (sDrop) sDrop.innerHTML = (localConfig.sessions || ["2026-2027"]).map(s => `<option value="${s}">${s}</option>`).join('');
+        if (bDrop) {
+          const sessions = (localConfig.sessions && localConfig.sessions.length > 0) ? localConfig.sessions : ["2026-27"];
+          bDrop.innerHTML = '<option value="">Select</option>' + sessions.map(s => `<option value="${s}">${s}</option>`).join('');
+        }
         if (cDrop && localConfig.classMap) {
-          cDrop.innerHTML = '<option value="">-- Class --</option>' + Object.keys(localConfig.classMap).map(c => `<option value="${c}">${c}</option>`).join('');
+          cDrop.innerHTML = '<option value="">Select</option>' + Object.keys(localConfig.classMap).map(c => `<option value="${c}">${c}</option>`).join('');
         }
       }
 
-      // Load Exams Dropdown
+      // Load Terms, Exams, Activities & Freeze Status from Supabase
       try {
-        const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-        const res = await (await fetch(`${scriptURL}?action=getExamMaster${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&_t=${Date.now()}`)).json();
-        const list = Array.isArray(res.data) ? res.data : [];
-        const eDrop = document.getElementById('smeExamSelect');
-        if (eDrop) {
-          eDrop.innerHTML = list.length > 0 
-            ? list.map(x => `<option value="${x.ExamCode}" data-max="${x.MaxMarks}">[${x.ExamCode}] ${x.ExamName}</option>`).join('')
-            : `<option value="UT1">Unit Test 1 (UT1)</option><option value="HY">Half Yearly (HY)</option><option value="ANNUAL">Annual Exam (ANNUAL)</option>`;
-        }
-      } catch(e) {}
+        const [tRes, eRes, aRes, fRes] = await Promise.all([
+          db.from('Exam_Terms').select('*').eq('SchoolID', schoolId).order('Id', { ascending: true }),
+          db.from('Exam_Master').select('*').eq('SchoolID', schoolId).order('SequenceNo', { ascending: true }),
+          db.from('Exam_Activities').select('*').eq('SchoolID', schoolId).order('Id', { ascending: true }),
+          db.from('Exam_Freeze_Status').select('*').eq('SchoolID', schoolId)
+        ]);
+        termsCache = tRes.data || [];
+        examsCache = eRes.data || [];
+        activitiesCache = aRes.data || [];
+        freezeMap = {};
+        (fRes.data || []).forEach(f => {
+          if (f.ActivityID && f.FreezedClasses) {
+            freezeMap[String(f.ActivityID)] = f.FreezedClasses.split(',').map(x => x.trim().toLowerCase());
+          }
+        });
+      } catch(e) {
+        console.error("SME Init Error:", e);
+      }
+
+      document.getElementById('smeSectionSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('smeSubjectSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('smeTermSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('smeExamSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('smeActivitySelect').innerHTML = '<option value="ALL">All</option>';
     };
 
+    // Batch -> Term Cascade
+    window.onSmeBatchChange = function() {
+      const selBatch = document.getElementById('smeBatchSelect').value;
+      const tDrop = document.getElementById('smeTermSelect');
+      document.getElementById('smeExamSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('smeActivitySelect').innerHTML = '<option value="ALL">All</option>';
+
+      if (!selBatch) { tDrop.innerHTML = '<option value="">Select</option>'; return; }
+
+      const matched = termsCache.filter(t => String(t.Session || t.Batch || "").trim() === selBatch);
+      tDrop.innerHTML = '<option value="">Select</option>' + matched.map(t => {
+        const val = t.TermCode || t.TermID || t.TermName;
+        return `<option value="${val}">${t.TermName} - ${selBatch}</option>`;
+      }).join('');
+    };
+
+    // Class -> Section & Subject + Re-filter Activity
     window.onSmeClassChange = function() {
       const cls = document.getElementById('smeClassSelect').value;
       const sDrop = document.getElementById('smeSectionSelect');
       const subDrop = document.getElementById('smeSubjectSelect');
 
       if (!cls || !localConfig) {
-        if (sDrop) sDrop.innerHTML = '<option value="A">Section A</option>';
-        if (subDrop) subDrop.innerHTML = '';
+        sDrop.innerHTML = '<option value="">Select</option>';
+        subDrop.innerHTML = '<option value="">Select</option>';
+        window.onSmeExamChange();
         return;
       }
 
-      // Populate Sections
       const rawSecs = (localConfig.classMap && localConfig.classMap[cls]) ? localConfig.classMap[cls] : "A,B";
-      const secArray = rawSecs.split(',').map(s => s.trim()).filter(Boolean);
-      if (sDrop) sDrop.innerHTML = secArray.map(s => `<option value="${s}">Section ${s}</option>`).join('');
+      sDrop.innerHTML = '<option value="">Select</option>' + rawSecs.split(',').map(s => `<option value="${s.trim()}">${s.trim()}</option>`).join('');
 
-      // Populate Subjects for this class
-      const rawSubs = (localConfig.classSubjectMap && localConfig.classSubjectMap[cls]) 
-        ? localConfig.classSubjectMap[cls].split(',').map(s => s.trim()).filter(Boolean) 
-        : ["ENGLISH", "HINDI", "MATHEMATICS", "SCIENCE", "SOCIAL SCIENCE", "COMPUTER"];
-      
-      if (subDrop) subDrop.innerHTML = rawSubs.map(s => `<option value="${s}">${s}</option>`).join('');
+      const rawSubs = (localConfig.classSubjectMap && localConfig.classSubjectMap[cls]) ? localConfig.classSubjectMap[cls] : "";
+      const subArr = rawSubs ? rawSubs.split(',').map(s => s.trim()).filter(Boolean) : ["ENGLISH", "HINDI", "MATHEMATICS", "SCIENCE", "SOCIAL SCIENCE"];
+      subDrop.innerHTML = '<option value="">Select</option>' + subArr.map(s => `<option value="${s}">${s}</option>`).join('');
+
+      window.onSmeExamChange();
     };
 
-    // ⚡ FETCH CANDIDATES & PRE-EXISTING MARKS
+    // Term -> Exam Cascade
+    window.onSmeTermChange = function() {
+      const selBatch = document.getElementById('smeBatchSelect').value;
+      const selTerm = document.getElementById('smeTermSelect').value;
+      const eDrop = document.getElementById('smeExamSelect');
+      document.getElementById('smeActivitySelect').innerHTML = '<option value="ALL">All</option>';
+
+      if (!selBatch || !selTerm) { eDrop.innerHTML = '<option value="">Select</option>'; return; }
+
+      const matchedExams = examsCache.filter(e =>
+        String(e.Session || "").trim() === selBatch &&
+        String(e.TermCode || "").trim() === selTerm
+      );
+
+      eDrop.innerHTML = '<option value="">Select</option>' + matchedExams.map(e =>
+        `<option value="${e.ExamID}">${e.ExamName}</option>`
+      ).join('');
+    };
+
+    // Exam (+ optional Class) -> Activity Cascade
+    window.onSmeExamChange = function() {
+      const selBatch = document.getElementById('smeBatchSelect').value;
+      const selTerm = document.getElementById('smeTermSelect').value;
+      const selExam = document.getElementById('smeExamSelect').value;
+      const selCls = document.getElementById('smeClassSelect').value;
+      const aDrop = document.getElementById('smeActivitySelect');
+
+      if (!selExam) { aDrop.innerHTML = '<option value="ALL">All</option>'; return; }
+
+      const matched = activitiesCache.filter(a => {
+        if (selBatch && String(a.Session || "").trim() !== selBatch) return false;
+        if (selTerm && String(a.TermCode || "").trim() !== selTerm) return false;
+        if (String(a.ExamID || "").trim() !== selExam) return false;
+        if (selCls) {
+          const clsArr = String(a.Class || "ALL").split(",").map(x => x.trim().toLowerCase());
+          if (!clsArr.includes("all") && !clsArr.includes(selCls.toLowerCase())) return false;
+        }
+        return true;
+      });
+
+      aDrop.innerHTML = '<option value="ALL">All</option>' + matched.map(a => {
+        const aid = a.ActivityID || a.Id;
+        return `<option value="${aid}">${a.ActivityName} (Max: ${a.MaxMarks})</option>`;
+      }).join('');
+    };
+
+    // ⚡ FETCH STUDENTS, ACTIVITIES, FREEZE STATUS, EXISTING MARKS & OMR
     window.fetchStudentsForSubjectMarks = async function() {
+      const batch = document.getElementById('smeBatchSelect').value;
       const cls = document.getElementById('smeClassSelect').value;
       const sec = document.getElementById('smeSectionSelect').value;
-      const exCode = document.getElementById('smeExamSelect').value;
       const sub = document.getElementById('smeSubjectSelect').value;
+      const term = document.getElementById('smeTermSelect').value;
+      const examId = document.getElementById('smeExamSelect').value;
+      const actId = document.getElementById('smeActivitySelect').value;
 
-      if (!cls || !sub || !exCode) {
-        alert("Please select Class, Exam and Subject!");
+      if (!batch || !cls || !sec || !sub || !term || !examId) {
+        alert("Please select Batch, Class, Section, Subject, Term, and Exam!");
         return;
       }
 
-      const tbody = document.getElementById('smeDataTableBody');
-      tbody.innerHTML = `<tr><td colspan='8' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading students &amp; existing marks...</td></tr>`;
-      
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+      const examObj = examsCache.find(e => String(e.ExamID) === String(examId)) || {};
+
+      // Determine active activities
+      let matchedActs = activitiesCache.filter(a => {
+        if (String(a.Session || "").trim() !== batch) return false;
+        if (String(a.TermCode || "").trim() !== term) return false;
+        if (String(a.ExamID || "").trim() !== examId) return false;
+        const clsArr = String(a.Class || "ALL").split(",").map(x => x.trim().toLowerCase());
+        if (!clsArr.includes("all") && !clsArr.includes(cls.toLowerCase())) return false;
+        if (Array.isArray(a.Subjects) && a.Subjects.length > 0) {
+          if (!a.Subjects.some(s => s.toLowerCase() === sub.toLowerCase())) return false;
+        }
+        return true;
+      });
+
+      if (actId !== "ALL") {
+        matchedActs = matchedActs.filter(a => String(a.ActivityID || a.Id) === actId);
+      }
+
+      if (matchedActs.length === 0) {
+        matchedActs = [{
+          ActivityID: "MAIN",
+          ActivityName: "Marks",
+          MaxMarks: examObj.MaxMarks || 100
+        }];
+      }
+
+      // Refresh Freeze Map fresh from DB
+      try {
+        const { data: fData } = await db.from('Exam_Freeze_Status').select('*').eq('SchoolID', schoolId);
+        freezeMap = {};
+        (fData || []).forEach(f => {
+          if (f.ActivityID && f.FreezedClasses) {
+            freezeMap[String(f.ActivityID)] = f.FreezedClasses.split(',').map(x => x.trim().toLowerCase());
+          }
+        });
+      } catch(e) {}
+
+      activeActivities = matchedActs.map(a => {
+        const aid = String(a.ActivityID || a.Id);
+        const frozenList = freezeMap[aid] || [];
+        const isFrozen = frozenList.includes(cls.toLowerCase()) || frozenList.includes("all");
+        return {
+          id: aid,
+          name: a.ActivityName || "Marks",
+          max: parseFloat(a.MaxMarks) || 100,
+          isFrozen: isFrozen
+        };
+      });
+
+      totalMaxSum = activeActivities.reduce((sum, a) => sum + a.max, 0);
+
+      // Show Freeze Banner if any activity is locked
+      const frozenNames = activeActivities.filter(a => a.isFrozen).map(a => a.name);
+      const allFrozen = activeActivities.every(a => a.isFrozen);
+      const freezeBanner = document.getElementById('smeFreezeAlert');
+      if (frozenNames.length > 0) {
+        freezeBanner.style.display = 'block';
+        document.getElementById('smeFreezeAlertMsg').innerText = `LOCKED: Marks for [${frozenNames.join(', ')}] in ${cls} are FROZEN by Admin and cannot be edited.`;
+      } else {
+        freezeBanner.style.display = 'none';
+      }
+      document.getElementById('btnSaveSubjectMarks').disabled = allFrozen;
+
       document.getElementById('smeInfoBar').style.display = 'flex';
       document.getElementById('smeTableContainer').style.display = 'block';
       document.getElementById('smeSaveBar').style.display = 'flex';
+      document.getElementById('smeCountActivities').innerText = activeActivities.length;
+      document.getElementById('smeTotalMaxBadge').innerText = totalMaxSum;
 
-      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const thead = document.getElementById('smeDataTableHead');
+      const tbody = document.getElementById('smeDataTableBody');
+
+      thead.innerHTML = `<tr>
+        <th style='width:45px;'>#</th>
+        <th style='width:75px;'>Roll No</th>
+        <th style='width:110px;'>Adm No</th>
+        <th style='text-align:left;padding-left:12px;'>Student Name</th>
+        ${activeActivities.map((a, ai) => `<th style='width:130px;'>${a.name} <br/><span class='text-primary'>(Max: ${a.max}) ${a.isFrozen ? '<i class="fas fa-lock text-danger"></i>' : ''}</span></th>`).join('')}
+        <th style='width:105px;'>Total Obtained</th>
+        <th style='width:80px;'>Grade</th>
+      </tr>`;
+
+      const colSpan = 6 + activeActivities.length;
+      tbody.innerHTML = `<tr><td colspan='${colSpan}' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading students &amp; marks...</td></tr>`;
 
       try {
-        // 1. Check Freeze Status
-        const frzRes = await (await fetch(`${scriptURL}?action=getFreezeStatus${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&examCode=${encodeURIComponent(exCode)}&className=${encodeURIComponent(cls)}&section=${encodeURIComponent(sec)}&_t=${Date.now()}`)).json();
-        if (frzRes && frzRes.isFrozen) {
-          alert("⛔ NOTICE: Marks for this Class & Exam are FROZEN (Locked) by Admin! You cannot edit them.");
-          document.getElementById('btnSaveSubjectMarks').disabled = true;
-        } else {
-          document.getElementById('btnSaveSubjectMarks').disabled = false;
-        }
+        const [stuRes, marksRes, omrRes] = await Promise.all([
+          db.from('Students').select('*').eq('SchoolID', schoolId).eq('Class', cls).eq('Section', sec).eq('Status', 'ACTIVE'),
+          db.from('Student_Marks').select('*').eq('SchoolID', schoolId).eq('Session', batch).eq('ExamID', examId).eq('Class', cls).eq('Section', sec).eq('Subject', sub),
+          db.from('OMR_Results').select('*').eq('SchoolID', schoolId).eq('Class', cls).eq('Section', sec)
+        ]);
 
-        // 2. Fetch Assigned Subjects breakdown for Max limits
-        const subRes = await (await fetch(`${scriptURL}?action=getAssignedSubjects${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&className=${encodeURIComponent(cls)}&section=${encodeURIComponent(sec)}&_t=${Date.now()}`)).json();
-        const subData = Array.isArray(subRes.data) ? subRes.data : [];
-        const matchedSub = subData.find(x => String(x.SubjectName).toUpperCase() === sub.toUpperCase()) || {};
-
-        theoryMaxLimit = parseFloat(matchedSub.TheoryMax) || 80;
-        practicalMaxLimit = parseFloat(matchedSub.PracticalMax) || 20;
-
-        document.getElementById('smeTheoryMaxBadge').innerText = theoryMaxLimit;
-        document.getElementById('smePracMaxBadge').innerText = practicalMaxLimit;
-        document.getElementById('smeTotalMaxBadge').innerText = theoryMaxLimit + practicalMaxLimit;
-
-        // 3. Fetch Existing Marks Ledger
-        const mrkRes = await (await fetch(`${scriptURL}?action=getStudentMarksLedger${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&examCode=${encodeURIComponent(exCode)}&className=${encodeURIComponent(cls)}&section=${encodeURIComponent(sec)}&subject=${encodeURIComponent(sub)}&_t=${Date.now()}`)).json();
-        const existingMarks = Array.isArray(mrkRes.data) ? mrkRes.data : [];
-        const existingMap = {};
-        existingMarks.forEach(m => {
-          const adm = String(m.AdmissionNo || m.StudentID || "").trim().toUpperCase();
-          if (adm) existingMap[adm] = m;
-        });
-
-        // 4. Fetch Students List
-        let studentsList = [];
-        if (typeof fastGetStudents === 'function') {
-          studentsList = await fastGetStudents();
-        } else {
-          const stuRes = await (await fetch(`${scriptURL}?action=getStudents${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&sheet=Students&_t=${Date.now()}`)).json();
-          studentsList = Array.isArray(stuRes) ? stuRes : (stuRes.data || []);
-        }
-
-        currentStudentsList = studentsList.filter(s => {
-          const sClass = String(s.Class || "").trim().toUpperCase();
-          const sSec = String(s.Section || s.Sec || "A").trim().toUpperCase();
-          return (sClass === cls.toUpperCase() && (sec === "ALL" || sSec === sec.toUpperCase()));
-        });
-
-        currentStudentsList.sort((a, b) => (parseInt(a.RollNo) || 0) - (parseInt(b.RollNo) || 0));
+        if (stuRes.error) throw stuRes.error;
+        currentStudentsList = stuRes.data || [];
+        currentStudentsList.sort((a, b) => (parseInt(a.RollNo, 10) || 0) - (parseInt(b.RollNo, 10) || 0));
         document.getElementById('smeCountStudents').innerText = currentStudentsList.length;
 
         if (currentStudentsList.length === 0) {
-          tbody.innerHTML = `<tr><td colspan='8' class='text-center py-5 text-muted fw-bold'>No students found in Class ${cls} (${sec}).</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan='${colSpan}' class='text-center py-4 text-muted fw-bold'>No active students in ${cls} - Section ${sec}.</td></tr>`;
           return;
         }
 
-        let html = "";
-        currentStudentsList.forEach((s, idx) => {
-          const fullName = `${s.StudentName || s.FirstName || ""} ${s.LastName || ""}`.trim();
-          const admNo = String(s.AdmissionNo || s.StudId || "");
-          const exist = existingMap[admNo.toUpperCase()] || {};
-
-          const thVal = (exist.TheoryMarks !== undefined) ? exist.TheoryMarks : "";
-          const prVal = (exist.PracticalMarks !== undefined) ? exist.PracticalMarks : "";
-          const totVal = (exist.TotalMarks !== undefined) ? exist.TotalMarks : "";
-          const grVal = exist.Grade || "-";
-
-          html += `
-            <tr id="smeRow_${idx}">
-              <td>${idx + 1}</td>
-              <td><strong class='text-primary fs-6'>${s.RollNo || '-'}</strong></td>
-              <td class='text-secondary fw-bold'>${admNo}</td>
-              <td class='text-start ps-3 fw-bold text-dark'>${fullName}</td>
-              <td>
-                <input type="text" class="marks-input ${thVal === 'AB' ? 'is-absent' : ''}" id="thMarks_${idx}" 
-                       value="${thVal}" placeholder="0" 
-                       oninput="window.calcStudentMarksLive(${idx}, 'THEORY')"
-                       onkeydown="if(event.key==='Enter') window.focusNextMarksInput(${idx}, 'thMarks');"></i>
-              </td>
-              <td>
-                <input type="text" class="marks-input ${prVal === 'AB' ? 'is-absent' : ''}" id="prMarks_${idx}" 
-                       value="${prVal}" placeholder="0" 
-                       oninput="window.calcStudentMarksLive(${idx}, 'PRAC')"
-                       onkeydown="if(event.key==='Enter') window.focusNextMarksInput(${idx}, 'prMarks');"></i>
-              </td>
-              <td>
-                <strong class="text-dark fs-6" id="totMarks_${idx}">${totVal || '-'}</strong>
-              </td>
-              <td>
-                <span class="badge bg-light text-primary border" id="gradeBadge_${idx}">${grVal}</span>
-              </td>
-            </tr>
-          `;
+        // Map existing saved marks: "studId::activityId" -> MarksObtained
+        const savedMarksMap = {};
+        (marksRes.data || []).forEach(m => {
+          const sid = String(m.StudId || m.AdmissionNo || "").trim().toUpperCase();
+          const aid = String(m.ActivityID || "MAIN").trim();
+          if (sid) savedMarksMap[`${sid}::${aid}`] = m.MarksObtained;
         });
 
-        tbody.innerHTML = html;
+        // Map OMR Results fallback for this exam & subject
+        const omrFallbackMap = {};
+        const targetExamName = String(examObj.ExamName || "").trim().toLowerCase();
+        (omrRes.data || []).forEach(r => {
+          if (String(r.ExamName || "").trim().toLowerCase().includes(targetExamName)) {
+            const sid = String(r.StudentID || "").trim().toUpperCase();
+            const subObj = r.SubjectsScore || {};
+            const matchedKey = Object.keys(subObj).find(k => k.toLowerCase() === sub.toLowerCase()) || Object.keys(subObj)[0];
+            if (sid && matchedKey) omrFallbackMap[sid] = subObj[matchedKey];
+          }
+        });
+
+        tbody.innerHTML = currentStudentsList.map((s, idx) => {
+          const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.trim();
+          const studId = String(s.StudId || s.AdmissionNo || "").trim();
+          const admNo = String(s.AdmissionNo || studId).trim();
+          const omrSc = omrFallbackMap[studId.toUpperCase()] || omrFallbackMap[admNo.toUpperCase()];
+
+          const actCells = activeActivities.map((a, aIdx) => {
+            let val = savedMarksMap[`${studId.toUpperCase()}::${a.id}`];
+            if (val === undefined) val = savedMarksMap[`${admNo.toUpperCase()}::${a.id}`];
+
+            // Smart OMR Pre-fill if not yet manually saved
+            if (val === undefined && omrSc) {
+              const upName = a.name.toUpperCase();
+              if (upName.includes("RIGHT")) val = omrSc.R;
+              else if (upName.includes("WRONG")) val = omrSc.W;
+              else if (activeActivities.length === 1) val = omrSc.R;
+            }
+
+            const dispVal = (val !== undefined && val !== null) ? val : "";
+            const isAb = String(dispVal).toUpperCase() === "AB";
+
+            return `<td>
+              <input type='text' class='marks-input ${isAb ? "is-absent" : ""}' id='smeInp_${idx}_${aIdx}'
+                     value='${dispVal}' placeholder='0' ${a.isFrozen ? "disabled='disabled'" : ""}
+                     oninput='window.calcStudentMarksLive(${idx}, ${aIdx})'
+                     onkeydown='if(event.key==="Enter"){ event.preventDefault(); window.focusNextSmeInput(${idx}, ${aIdx}); }'>
+            </td>`;
+          }).join('');
+
+          return `
+            <tr id='smeRow_${idx}'>
+              <td>${idx + 1}</td>
+              <td><strong class='text-primary'>${s.RollNo || "-"}</strong></td>
+              <td class='text-secondary fw-bold'>${admNo}</td>
+              <td class='text-start ps-3 fw-bold text-dark'>${fullName}</td>
+              ${actCells}
+              <td><strong class='text-dark fs-6' id='totMarks_${idx}'>-</strong></td>
+              <td><span class='badge bg-light text-primary border' id='gradeBadge_${idx}'>-</span></td>
+            </tr>`;
+        }).join('');
+
+        // Compute initial totals & grades
+        currentStudentsList.forEach((_, idx) => window.calcStudentMarksLive(idx, -1));
 
       } catch(err) {
-        tbody.innerHTML = `<tr><td colspan='8' class='text-center py-4 text-danger fw-bold'><i class='fas fa-exclamation-triangle me-1'></i> Error loading marks. Please try again.</td></tr>`;
+        console.error("SME Load Error:", err);
+        tbody.innerHTML = `<tr><td colspan='${colSpan}' class='text-center py-4 text-danger fw-bold'>Error: ${err.message}</td></tr>`;
       }
     };
 
-    // ⚡ LIVE AUTO-CALCULATION & ABSENT (AB) VALIDATOR
-    window.calcStudentMarksLive = function(idx, mode) {
-      const thInput = document.getElementById(`thMarks_${idx}`);
-      const prInput = document.getElementById(`prMarks_${idx}`);
-      const totEl = document.getElementById(`totMarks_${idx}`);
-      const grEl = document.getElementById(`gradeBadge_${idx}`);
+    window.calcStudentMarksLive = function(rowIdx, actIdx) {
+      if (actIdx >= 0) {
+        const inp = document.getElementById(`smeInp_${rowIdx}_${actIdx}`);
+        const maxLim = activeActivities[actIdx].max;
+        let v = inp.value.trim().toUpperCase();
 
-      let thVal = thInput.value.trim().toUpperCase();
-      let prVal = prInput.value.trim().toUpperCase();
-
-      // Handle 'AB' / Absent
-      if (thVal === "AB" || thVal === "A") {
-        thInput.value = "AB";
-        thInput.classList.add('is-absent');
-      } else {
-        thInput.classList.remove('is-absent');
-        let num = parseFloat(thVal);
-        if (!isNaN(num) && num > theoryMaxLimit) {
-          alert(`⚠️ Maximum Theory Marks is ${theoryMaxLimit}! Cannot enter ${num}.`);
-          thInput.value = "";
-          thVal = "";
+        if (v === "AB" || v === "A") {
+          inp.value = "AB";
+          inp.classList.add('is-absent');
+        } else {
+          inp.classList.remove('is-absent');
+          const num = parseFloat(v);
+          if (!isNaN(num) && num > maxLim) {
+            alert(`⚠️ Maximum Marks for ${activeActivities[actIdx].name} is ${maxLim}!`);
+            inp.value = "";
+          }
         }
       }
 
-      if (prVal === "AB" || prVal === "A") {
-        prInput.value = "AB";
-        prInput.classList.add('is-absent');
-      } else {
-        prInput.classList.remove('is-absent');
-        let numP = parseFloat(prVal);
-        if (!isNaN(numP) && numP > practicalMaxLimit) {
-          alert(`⚠️ Maximum Practical Marks is ${practicalMaxLimit}! Cannot enter ${numP}.`);
-          prInput.value = "";
-          prVal = "";
-        }
-      }
+      const totEl = document.getElementById(`totMarks_${rowIdx}`);
+      const grEl = document.getElementById(`gradeBadge_${rowIdx}`);
 
-      // Calculate Total
-      let total = 0;
-      let totalMax = theoryMaxLimit + practicalMaxLimit;
+      let sum = 0;
+      let anyEntered = false;
+      let allAbsent = true;
 
-      if (thInput.value === "AB" && prInput.value === "AB") {
-        totEl.innerText = "AB";
-        totEl.className = "text-danger fw-bold fs-6";
-        grEl.innerText = "AB";
-        grEl.className = "badge bg-danger";
+      activeActivities.forEach((a, aIdx) => {
+        const el = document.getElementById(`smeInp_${rowIdx}_${aIdx}`);
+        if (!el) return;
+        const val = el.value.trim().toUpperCase();
+        if (val !== "") anyEntered = true;
+        if (val !== "AB") allAbsent = false;
+        const n = parseFloat(val);
+        if (!isNaN(n)) sum += n;
+      });
+
+      if (!anyEntered) {
+        totEl.innerText = "-"; totEl.className = "text-dark fw-bold fs-6";
+        grEl.innerText = "-"; grEl.className = "badge bg-light text-primary border";
         return;
       }
 
-      const numT = (thInput.value === "AB" || isNaN(parseFloat(thInput.value))) ? 0 : parseFloat(thInput.value);
-      const numP = (prInput.value === "AB" || isNaN(parseFloat(prInput.value))) ? 0 : parseFloat(prInput.value);
-      total = numT + numP;
+      if (allAbsent) {
+        totEl.innerText = "AB"; totEl.className = "text-danger fw-bold fs-6";
+        grEl.innerText = "AB"; grEl.className = "badge bg-danger";
+        return;
+      }
 
-      totEl.innerText = total;
-      totEl.className = "text-dark fw-bold fs-6";
+      sum = parseFloat(sum.toFixed(2));
+      totEl.innerText = sum; totEl.className = "text-dark fw-bold fs-6";
 
-      // Calculate Grade
-      const pct = (total / totalMax) * 100;
+      const pct = totalMaxSum > 0 ? (sum / totalMaxSum) * 100 : 0;
       let grade = "E";
       if (pct >= 91) grade = "A1";
       else if (pct >= 81) grade = "A2";
@@ -37764,75 +37926,96 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       grEl.className = (grade === "E") ? "badge bg-danger" : "badge bg-success";
     };
 
-    window.focusNextMarksInput = function(currentIdx, prefix) {
-      const nextInput = document.getElementById(`${prefix}_${currentIdx + 1}`);
-      if (nextInput) {
-        nextInput.focus();
-        nextInput.select();
-      }
+    window.focusNextSmeInput = function(rowIdx, actIdx) {
+      const next = document.getElementById(`smeInp_${rowIdx + 1}_${actIdx}`);
+      if (next && !next.disabled) { next.focus(); next.select(); }
     };
 
-    // 💾 SAVE SUBJECT MARKS TO GOOGLE SHEET
+    // 💾 SAVE TO SUPABASE "Student_Marks"
     window.submitSubjectMarksData = async function() {
+      const unlockedActivities = activeActivities.filter(a => !a.isFrozen);
+      if (unlockedActivities.length === 0) {
+        alert("⛔ All loaded activities are frozen!");
+        return;
+      }
+
       const btn = document.getElementById('btnSaveSubjectMarks');
       btn.disabled = true;
       btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Saving Marks...`;
 
-      const sess = document.getElementById('smeSessionSelect').value;
-      const exCode = document.getElementById('smeExamSelect').value;
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const batch = document.getElementById('smeBatchSelect').value;
       const cls = document.getElementById('smeClassSelect').value;
       const sec = document.getElementById('smeSectionSelect').value;
       const sub = document.getElementById('smeSubjectSelect').value;
-      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const term = document.getElementById('smeTermSelect').value;
+      const eDrop = document.getElementById('smeExamSelect');
+      const examId = eDrop.value;
+      const examName = eDrop.options[eDrop.selectedIndex]?.text || examId;
 
-      const marksPayload = currentStudentsList.map((s, idx) => {
-        const thVal = document.getElementById(`thMarks_${idx}`).value.trim().toUpperCase();
-        const prVal = document.getElementById(`prMarks_${idx}`).value.trim().toUpperCase();
-        const totVal = document.getElementById(`totMarks_${idx}`).innerText;
+      const recordsToInsert = [];
+      const unlockedIds = unlockedActivities.map(a => a.id);
+
+      currentStudentsList.forEach((s, idx) => {
+        const studId = String(s.StudId || s.AdmissionNo || "").trim();
+        const admNo = String(s.AdmissionNo || studId).trim();
+        const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.trim();
+        const totText = document.getElementById(`totMarks_${idx}`).innerText;
+        const totVal = (totText === "AB" || totText === "-") ? 0 : parseFloat(totText) || 0;
         const grVal = document.getElementById(`gradeBadge_${idx}`).innerText;
 
-        return {
-          Session: sess,
-          TermCode: "T1",
-          ExamCode: exCode,
-          Class: cls,
-          Section: s.Section || s.Sec || sec,
-          RollNo: s.RollNo || "",
-          AdmissionNo: s.AdmissionNo || s.StudId || "",
-          StudentName: `${s.StudentName || s.FirstName || ""} ${s.LastName || ""}`.trim(),
-          SubjectName: sub,
-          TheoryMarks: thVal || 0,
-          PracticalMarks: prVal || 0,
-          TotalMarks: totVal || 0,
-          MaxMarks: theoryMaxLimit + practicalMaxLimit,
-          Grade: grVal
-        };
+        activeActivities.forEach((a, aIdx) => {
+          if (a.isFrozen) return;
+          const rawVal = document.getElementById(`smeInp_${idx}_${aIdx}`).value.trim().toUpperCase();
+          if (rawVal === "") return;
+
+          recordsToInsert.push({
+            MarkID: `MRK-${Date.now().toString(36).toUpperCase()}-${idx}-${aIdx}`,
+            SchoolID: user.schoolId,
+            Session: batch,
+            TermCode: term,
+            ExamID: examId,
+            ExamName: examName,
+            ActivityID: a.id,
+            ActivityName: a.name,
+            Class: cls,
+            Section: sec,
+            StudId: studId,
+            AdmissionNo: admNo,
+            RollNo: String(s.RollNo || ""),
+            StudentName: fullName,
+            Subject: sub,
+            MarksObtained: rawVal,
+            MaxMarks: a.max,
+            TotalMarks: totVal,
+            Grade: grVal,
+            EnteredBy: user.name || "Teacher",
+            UpdatedAt: new Date().toISOString()
+          });
+        });
       });
 
-      const payload = {
-        action: "saveStudentMarksMaster",
-        tsid: user.targetSheetId,
-        session: sess,
-        examCode: exCode,
-        className: cls,
-        section: sec,
-        enteredBy: user.name || "Teacher",
-        marksList: marksPayload
-      };
-
       try {
-        const res = await (await fetch(scriptURL, {
-          method: "POST",
-          body: JSON.stringify(payload)
-        })).json();
+        // Delete existing unlocked entries for this selection before clean insert
+        await db.from('Student_Marks')
+          .delete()
+          .eq('SchoolID', user.schoolId)
+          .eq('Session', batch)
+          .eq('ExamID', examId)
+          .eq('Class', cls)
+          .eq('Section', sec)
+          .eq('Subject', sub)
+          .in('ActivityID', unlockedIds);
 
-        if (res.status === "locked") {
-          alert(res.message);
-        } else {
-          alert(`🎉 Success: Marks saved successfully for ${marksPayload.length} students in [${sub}]!`);
+        if (recordsToInsert.length > 0) {
+          const { error } = await db.from('Student_Marks').insert(recordsToInsert);
+          if (error) throw error;
         }
+
+        alert(`🎉 Success: Marks saved cleanly for [${sub}]!`);
       } catch(err) {
-        alert("Marks saved successfully.");
+        console.error("Save Subject Marks Error:", err);
+        alert("Failed to save marks: " + err.message);
       } finally {
         btn.disabled = false;
         btn.innerHTML = `<i class='fas fa-save me-1'></i> Save Subject Marks`;
