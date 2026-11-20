@@ -37814,10 +37814,10 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       tbody.innerHTML = `<tr><td colspan='${colSpan}' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Loading students &amp; marks...</td></tr>`;
 
       try {
-        // Fetch Students, Subject Marks (filter Exam in JS for maximum compatibility), and OMR fallback
+        // Fetch Students, Marks (match Subject/SubjectName & Exam in JS), and OMR fallback
         const [stuRes, marksRes, omrRes] = await Promise.all([
           db.from('Students').select('*').eq('SchoolID', schoolId).eq('Class', cls).eq('Section', sec).eq('Status', 'ACTIVE'),
-          db.from('Student_Marks').select('*').eq('SchoolID', schoolId).eq('Session', batch).eq('Class', cls).eq('Section', sec).eq('Subject', sub),
+          db.from('Student_Marks').select('*').eq('SchoolID', schoolId).eq('Session', batch).eq('Class', cls).eq('Section', sec),
           db.from('OMR_Results').select('*').eq('SchoolID', schoolId).eq('Class', cls).eq('Section', sec)
         ]);
 
@@ -37833,8 +37833,10 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           return;
         }
 
-        // Filter marks matching this Exam (by ExamID, ExamCode, or ExamName)
+        // Filter marks matching this Subject (Subject or SubjectName) and Exam (ExamID, ExamCode, or ExamName)
         const examMarks = (marksRes.data || []).filter(m => {
+          const mSub = String(m.Subject || m.SubjectName || "").trim().toLowerCase();
+          if (mSub !== sub.toLowerCase()) return false;
           const mEid = String(m.ExamID || "").trim();
           const mEcode = String(m.ExamCode || "").trim();
           const mEname = String(m.ExamName || "").trim().toLowerCase();
@@ -38117,7 +38119,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           const existingRow = existingRecordsByCell[`${idx}_${aIdx}`];
 
           if (rawVal === "") {
-            // If previously saved and now cleared by teacher, remove that row
             if (existingRow) recordsToDelete.push(existingRow);
             return;
           }
@@ -38138,6 +38139,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             RollNo: String(s.RollNo || ""),
             StudentName: fullName,
             Subject: sub,
+            SubjectName: sub,
             MarksObtained: rawVal,
             MaxMarks: a.max,
             TotalMarks: totVal,
@@ -38178,7 +38180,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             } else if (existingRow.MarkID) {
               q = q.eq('MarkID', existingRow.MarkID);
             } else {
-              q = q.eq('SchoolID', user.schoolId).eq('Session', batch).eq('ExamID', existingRow.ExamID).eq('StudId', existingRow.StudId).eq('Subject', sub).eq('ActivityID', existingRow.ActivityID);
+              q = q.eq('SchoolID', user.schoolId).eq('Session', batch).eq('ExamID', existingRow.ExamID).eq('StudId', existingRow.StudId).eq('ActivityID', existingRow.ActivityID);
             }
             return q;
           });
@@ -38194,7 +38196,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             if (existingRow.Id !== undefined && existingRow.Id !== null) return q.eq('Id', existingRow.Id);
             if (existingRow.id !== undefined && existingRow.id !== null) return q.eq('id', existingRow.id);
             if (existingRow.MarkID) return q.eq('MarkID', existingRow.MarkID);
-            return q.eq('SchoolID', user.schoolId).eq('Session', batch).eq('ExamID', existingRow.ExamID).eq('StudId', existingRow.StudId).eq('Subject', sub).eq('ActivityID', existingRow.ActivityID);
+            return q.eq('SchoolID', user.schoolId).eq('Session', batch).eq('ExamID', existingRow.ExamID).eq('StudId', existingRow.StudId).eq('ActivityID', existingRow.ActivityID);
           });
           await Promise.all(delPromises);
         }
