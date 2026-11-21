@@ -37396,7 +37396,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 </template>
 
 <!-- =================================================================== -->
-<!-- MODULE: MANAGE MARKS ENTRY (UPDATE-IN-PLACE + OMR MODE + ZERO GUARD)-->
+<!-- MODULE: MANAGE MARKS ENTRY (CLEAN UI + SINGLE UPSERT + OMR BLANK)   -->
 <!-- =================================================================== -->
 <template id='tpl-SubjectMarksEntry'>
   <style>
@@ -37523,7 +37523,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       <!-- 4. SAVE BUTTON BAR (STRICTLY HIDDEN WHEN 0 STUDENTS) -->
       <div class='d-flex justify-content-between align-items-center pt-2 border-top d-none' id='smeSaveBar'>
-        <span class='text-muted small'><i class='fas fa-shield-alt text-success me-1'></i> Existing marks update in-place cleanly without duplicates.</span>
+        <span class='text-muted small'><i class='fas fa-shield-alt text-success me-1'></i> Marks are validated against Max Marks &amp; Freeze status.</span>
         <button class='btn btn-success px-4 py-2 fw-bold shadow-sm' id='btnSaveSubjectMarks' onclick='window.submitSubjectMarksData()' type='button'>
           <i class='fas fa-save me-1'></i> Save Subject Marks
         </button>
@@ -37541,7 +37541,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     let freezeMap = {};
     let currentStudentsList = [];
     let activeActivities = [];
-    let existingDbRowMap = {}; // "studId::actId" -> { id, marks }
+    let existingDbRowMap = {}; // "admNo::actId" -> { id, markId, marks }
     let isOmrRightWrongMode = false;
     let totalMaxSum = 100;
 
@@ -37595,6 +37595,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         if (el) el.classList.add('d-none');
       });
       currentStudentsList = [];
+      existingDbRowMap = {};
     };
 
     window.onSmeBatchChange = function() {
@@ -37692,11 +37693,10 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       const examObj = examsCache.find(e => String(e.ExamID) === String(examId)) || {};
       const targetExamCode = String(examObj.ExamCode && examObj.ExamCode !== "NA" ? examObj.ExamCode : examId);
 
-      // Refresh Students & Freeze Status
       try {
         const [stuRes, marksRes, omrRes, fRes] = await Promise.all([
           db.from('Students').select('*').eq('SchoolID', schoolId).eq('Class', cls).eq('Section', sec).eq('Status', 'ACTIVE'),
-          db.from('Student_Marks').select('*').eq('SchoolID', schoolId).eq('Class', cls).eq('Section', sec),
+          db.from('Student_Marks').select('*').eq('SchoolID', schoolId).eq('Session', batch).eq('Class', cls).eq('Section', sec),
           db.from('OMR_Results').select('*').eq('SchoolID', schoolId).eq('Class', cls).eq('Section', sec),
           db.from('Exam_Freeze_Status').select('*').eq('SchoolID', schoolId)
         ]);
@@ -37741,21 +37741,29 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           const aid = String(a.ActivityID || a.Id);
           const frozenList = freezeMap[aid] || [];
           const isFrozen = frozenList.includes(cls.toLowerCase()) || frozenList.includes("all");
-          return { id: aid, name: a.ActivityName || "Marks", max: parseFloat(a.MaxMarks) || 100, isFrozen };
+          const upName = String(a.ActivityName || "Marks").toUpperCase();
+          const actType = upName.includes("RIGHT") ? "OMR_RIGHT" : (upName.includes("WRONG") ? "OMR_WRONG" : "SCORE");
+          return {
+            id: aid,
+            name: a.ActivityName || "Marks",
+            max: parseFloat(a.MaxMarks) || 100,
+            isFrozen,
+            type: actType
+          };
         });
 
         // Detect OMR Right/Wrong Mode automatically
-        const hasRight = activeActivities.some(a => a.name.toUpperCase().includes("RIGHT"));
-        const hasWrong = activeActivities.some(a => a.name.toUpperCase().includes("WRONG"));
+        const hasRight = activeActivities.some(a => a.type === "OMR_RIGHT");
+        const hasWrong = activeActivities.some(a => a.type === "OMR_WRONG");
         isOmrRightWrongMode = (hasRight && hasWrong);
 
         if (isOmrRightWrongMode) {
-          const rightAct = activeActivities.find(a => a.name.toUpperCase().includes("RIGHT"));
+          const rightAct = activeActivities.find(a => a.type === "OMR_RIGHT");
           totalMaxSum = rightAct ? rightAct.max : activeActivities[0].max;
           document.getElementById('smeModeBadge').innerText = "OMR (Right / Wrong / Blank)";
         } else {
           totalMaxSum = activeActivities.reduce((sum, a) => sum + a.max, 0);
-          document.getElementById('smeModeBadge').innerText = "Standard (Sum)";
+          document.getElementById('smeModeBadge').innerText = "Standard (Activity Marks)";
         }
 
         // Show Freeze Alert if any
@@ -37783,21 +37791,27 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           const mExId = String(m.ExamID || "").trim().toLowerCase();
           const mExCode = String(m.ExamCode || "").trim().toLowerCase();
           const mExName = String(m.ExamName || "").trim().toLowerCase();
-          const mSess = String(m.Session || "").trim();
-
-          if (mSess && mSess !== batch) return;
-          const isExMatch = (mExId === examId.toLowerCase()) ||
-                            (mExCode === targetExamCode.toLowerCase()) ||
-                            (mExName === targetExName);
+          const isExMatch = (mExId === String(examId).toLowerCase()) ||
+                            (mExCode && mExCode === targetExamCode.toLowerCase()) ||
+                            (mExName && mExName === targetExName);
           if (!isExMatch) return;
 
-          const sid = String(m.StudId || m.StudentID || m.AdmissionNo || "").trim().toUpperCase();
-          const aid = String(m.ActivityID || "MAIN").trim();
-          const val = (m.MarksObtained !== undefined && m.MarksObtained !== null) ? m.MarksObtained : m.TheoryMarks;
-          if (sid) existingDbRowMap[`${sid}::${aid}`] = { id: m.Id, marks: val };
+          const sKeys = [
+            String(m.AdmissionNo || "").trim().toUpperCase(),
+            String(m.StudId || "").trim().toUpperCase()
+          ].filter(Boolean);
+          const aKeys = [
+            String(m.ActivityID || "MAIN").trim().toUpperCase(),
+            String(m.ActivityName || "").trim().toUpperCase()
+          ].filter(Boolean);
+
+          const rowInfo = { id: m.Id, markId: m.MarkID, marks: m.MarksObtained };
+          sKeys.forEach(sk => aKeys.forEach(ak => {
+            existingDbRowMap[`${sk}::${ak}`] = rowInfo;
+          }));
         });
 
-        // Build OMR Fallback Map
+        // Build OMR Fallback Map (in case raw OMR_Results exists before sync)
         const omrFallbackMap = {};
         (omrRes.data || []).forEach(r => {
           if (String(r.ExamName || "").trim().toLowerCase().includes(targetExName)) {
@@ -37808,17 +37822,15 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           }
         });
 
-        // Render Table Header
+        // Render Table Header (NO Total Obtained / NO Grade on Marks Entry)
         const thead = document.getElementById('smeDataTableHead');
         thead.innerHTML = `<tr>
           <th style='width:45px;'>#</th>
           <th style='width:75px;'>Roll No</th>
-          <th style='width:110px;'>Adm No</th>
+          <th style='width:120px;'>Adm No</th>
           <th style='text-align:left;padding-left:12px;'>Student Name</th>
-          ${activeActivities.map(a => `<th style='width:125px;'>${a.name}<br/><span class='text-primary'>(Max: ${a.max}) ${a.isFrozen ? '<i class="fas fa-lock text-danger"></i>' : ''}</span></th>`).join('')}
-          ${isOmrRightWrongMode ? `<th style='width:85px;' class='text-secondary'>Blank (Auto)</th>` : ''}
-          <th style='width:110px;'>${isOmrRightWrongMode ? 'Net Score' : 'Total Obtained'}</th>
-          <th style='width:80px;'>Grade</th>
+          ${activeActivities.map(a => `<th style='width:135px;'>${a.name}<br/><span class='text-primary'>(Max: ${a.max}) ${a.isFrozen ? '<i class="fas fa-lock text-danger"></i>' : ''}</span></th>`).join('')}
+          ${isOmrRightWrongMode ? `<th style='width:95px;' class='text-secondary'>Blank (Auto)</th>` : ''}
         </tr>`;
 
         // Render Rows
@@ -37830,13 +37842,17 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           const omrSc = omrFallbackMap[studId.toUpperCase()] || omrFallbackMap[admNo.toUpperCase()];
 
           const actCells = activeActivities.map((a, aIdx) => {
-            const existingObj = existingDbRowMap[`${studId.toUpperCase()}::${a.id}`] || existingDbRowMap[`${admNo.toUpperCase()}::${a.id}`];
+            const existingObj =
+              existingDbRowMap[`${admNo.toUpperCase()}::${a.id.toUpperCase()}`] ||
+              existingDbRowMap[`${studId.toUpperCase()}::${a.id.toUpperCase()}`] ||
+              existingDbRowMap[`${admNo.toUpperCase()}::${a.name.toUpperCase()}`] ||
+              existingDbRowMap[`${studId.toUpperCase()}::${a.name.toUpperCase()}`];
+
             let val = existingObj ? existingObj.marks : undefined;
 
             if (val === undefined && omrSc) {
-              const upName = a.name.toUpperCase();
-              if (upName.includes("RIGHT")) val = omrSc.R;
-              else if (upName.includes("WRONG")) val = omrSc.W;
+              if (a.type === "OMR_RIGHT") val = omrSc.R;
+              else if (a.type === "OMR_WRONG") val = omrSc.W;
               else if (activeActivities.length === 1) val = omrSc.R;
             }
 
@@ -37858,9 +37874,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               <td class='text-secondary fw-bold'>${admNo}</td>
               <td class='text-start ps-3 fw-bold text-dark'>${fullName}</td>
               ${actCells}
-              ${isOmrRightWrongMode ? `<td><span class='badge bg-light text-secondary border fw-bold' id='blankMarks_${idx}'>-</span></td>` : ''}
-              <td><strong class='text-dark fs-6' id='totMarks_${idx}'>-</strong></td>
-              <td><span class='badge bg-light text-primary border' id='gradeBadge_${idx}'>-</span></td>
+              ${isOmrRightWrongMode ? `<td><span class='badge bg-light text-secondary border fw-bold px-2 py-1' id='blankMarks_${idx}'>-</span></td>` : ''}
             </tr>`;
         }).join('');
 
@@ -37872,6 +37886,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
     };
 
+    // Live Validation & Auto-Blank Calculation (OMR Mode)
     window.calcStudentMarksLive = function(rowIdx, actIdx) {
       if (actIdx >= 0) {
         const inp = document.getElementById(`smeInp_${rowIdx}_${actIdx}`);
@@ -37884,23 +37899,22 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         } else {
           inp.classList.remove('is-absent');
           const num = parseFloat(v);
-          if (!isNaN(num) && num > maxLim) {
+          if (!isNaN(num) && num < 0) {
+            alert(`⚠️ Marks cannot be negative!`);
+            inp.value = "";
+          } else if (!isNaN(num) && num > maxLim) {
             alert(`⚠️ Maximum Marks for ${activeActivities[actIdx].name} is ${maxLim}!`);
             inp.value = "";
           }
         }
       }
 
-      const totEl = document.getElementById(`totMarks_${rowIdx}`);
-      const grEl = document.getElementById(`gradeBadge_${rowIdx}`);
-      const blankEl = document.getElementById(`blankMarks_${rowIdx}`);
-
-      let anyEntered = false;
-      let allAbsent = true;
-      let netScore = 0;
-
       if (isOmrRightWrongMode) {
+        const blankEl = document.getElementById(`blankMarks_${rowIdx}`);
+        let anyEntered = false;
+        let allAbsent = true;
         let rVal = 0, wVal = 0;
+
         activeActivities.forEach((a, aIdx) => {
           const el = document.getElementById(`smeInp_${rowIdx}_${aIdx}`);
           if (!el) return;
@@ -37908,8 +37922,8 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           if (val !== "") anyEntered = true;
           if (val !== "AB") allAbsent = false;
           const n = parseFloat(val) || 0;
-          if (a.name.toUpperCase().includes("RIGHT")) rVal = n;
-          else if (a.name.toUpperCase().includes("WRONG")) wVal = n;
+          if (a.type === "OMR_RIGHT") rVal = n;
+          else if (a.type === "OMR_WRONG") wVal = n;
         });
 
         // Validate Right + Wrong <= totalMaxSum
@@ -37920,47 +37934,12 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           return;
         }
 
-        if (blankEl) blankEl.innerText = anyEntered && !allAbsent ? Math.max(0, totalMaxSum - (rVal + wVal)) : "-";
-        netScore = rVal; // Right answers represent base positive score
-      } else {
-        activeActivities.forEach((a, aIdx) => {
-          const el = document.getElementById(`smeInp_${rowIdx}_${aIdx}`);
-          if (!el) return;
-          const val = el.value.trim().toUpperCase();
-          if (val !== "") anyEntered = true;
-          if (val !== "AB") allAbsent = false;
-          const n = parseFloat(val);
-          if (!isNaN(n)) netScore += n;
-        });
+        if (blankEl) {
+          if (!anyEntered) blankEl.innerText = "-";
+          else if (allAbsent) blankEl.innerText = "AB";
+          else blankEl.innerText = parseFloat(Math.max(0, totalMaxSum - (rVal + wVal)).toFixed(2));
+        }
       }
-
-      if (!anyEntered) {
-        totEl.innerText = "-"; totEl.className = "text-dark fw-bold fs-6";
-        grEl.innerText = "-"; grEl.className = "badge bg-light text-primary border";
-        return;
-      }
-
-      if (allAbsent) {
-        totEl.innerText = "AB"; totEl.className = "text-danger fw-bold fs-6";
-        grEl.innerText = "AB"; grEl.className = "badge bg-danger";
-        return;
-      }
-
-      netScore = parseFloat(netScore.toFixed(2));
-      totEl.innerText = netScore; totEl.className = "text-dark fw-bold fs-6";
-
-      const pct = totalMaxSum > 0 ? (netScore / totalMaxSum) * 100 : 0;
-      let grade = "E";
-      if (pct >= 91) grade = "A1";
-      else if (pct >= 81) grade = "A2";
-      else if (pct >= 71) grade = "B1";
-      else if (pct >= 61) grade = "B2";
-      else if (pct >= 51) grade = "C1";
-      else if (pct >= 41) grade = "C2";
-      else if (pct >= 33) grade = "D";
-
-      grEl.innerText = grade;
-      grEl.className = (grade === "E") ? "badge bg-danger" : "badge bg-success";
     };
 
     window.focusNextSmeInput = function(rowIdx, actIdx) {
@@ -37968,19 +37947,18 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       if (next && !next.disabled) { next.focus(); next.select(); }
     };
 
-    // 💾 UPDATE EXISTING ROWS IN-PLACE & INSERT ONLY NEW ROWS (NO DUPLICATES!)
+    // 💾 SINGLE-CLICK UPSERT TO "Student_Marks" (+ DELETE CLEARED CELLS)
     window.submitSubjectMarksData = async function() {
-      if (currentStudentsList.length === 0) return;
+      if (currentStudentsList.length === 0) {
+        alert("⚠️ No active students found to save marks!");
+        return;
+      }
 
       const unlockedActivities = activeActivities.filter(a => !a.isFrozen);
       if (unlockedActivities.length === 0) {
         alert("⛔ All loaded activities are frozen!");
         return;
       }
-
-      const btn = document.getElementById('btnSaveSubjectMarks');
-      btn.disabled = true;
-      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Saving Marks...`;
 
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const batch = document.getElementById('smeBatchSelect').value;
@@ -37993,74 +37971,81 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       const examObj = examsCache.find(e => String(e.ExamID) === String(examId)) || {};
       const examName = examObj.ExamName || examId;
       const examCode = (examObj.ExamCode && examObj.ExamCode !== "NA") ? examObj.ExamCode : examId;
+      const nowIso = new Date().toISOString();
 
-      const updatePromises = [];
-      const recordsToInsert = [];
+      const recordsToUpsert = [];
+      const idsToDelete = [];
 
       currentStudentsList.forEach((s, idx) => {
         const studId = String(s.StudId || s.AdmissionNo || "").trim();
         const admNo = String(s.AdmissionNo || studId).trim();
         const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.trim();
-        const totText = document.getElementById(`totMarks_${idx}`).innerText;
-        const totVal = (totText === "AB" || totText === "-") ? 0 : parseFloat(totText) || 0;
-        const grVal = document.getElementById(`gradeBadge_${idx}`).innerText;
 
         activeActivities.forEach((a, aIdx) => {
           if (a.isFrozen) return;
           const rawVal = document.getElementById(`smeInp_${idx}_${aIdx}`).value.trim().toUpperCase();
-          if (rawVal === "") return;
+          const existing =
+            existingDbRowMap[`${admNo.toUpperCase()}::${a.id.toUpperCase()}`] ||
+            existingDbRowMap[`${studId.toUpperCase()}::${a.id.toUpperCase()}`];
 
-          const existing = existingDbRowMap[`${studId.toUpperCase()}::${a.id}`] || existingDbRowMap[`${admNo.toUpperCase()}::${a.id}`];
+          if (rawVal === "") {
+            if (existing && existing.id) idsToDelete.push(existing.id);
+            return;
+          }
 
-          const rowPayload = {
+          recordsToUpsert.push({
+            MarkID: (existing && existing.markId) ? existing.markId : `MRK-${Date.now().toString(36).toUpperCase()}-${idx}-${aIdx}`,
             SchoolID: user.schoolId,
             Session: batch,
             TermCode: term,
             ExamID: examId,
             ExamCode: examCode,
             ExamName: examName,
+            Subject: sub,
+            SubjectName: sub,
             ActivityID: a.id,
             ActivityName: a.name,
+            ActivityType: a.type,
+            MaxMarks: a.max,
             Class: cls,
             Section: sec,
             StudId: studId,
-            StudentID: studId,
             AdmissionNo: admNo,
             RollNo: String(s.RollNo || ""),
             StudentName: fullName,
-            Subject: sub,
-            SubjectName: sub,
             MarksObtained: rawVal,
-            MaxMarks: a.max,
-            TotalMarks: totVal,
-            Grade: grVal,
+            IsAbsent: (rawVal === "AB"),
+            Source: "MANUAL",
             EnteredBy: user.name || "Teacher",
-            UpdatedAt: new Date().toISOString()
-          };
-
-          if (existing && existing.id) {
-            // Update existing row directly by primary Id
-            updatePromises.push(db.from('Student_Marks').update(rowPayload).eq('Id', existing.id));
-          } else {
-            rowPayload.MarkID = `MRK-${Date.now().toString(36).toUpperCase()}-${idx}-${aIdx}`;
-            recordsToInsert.push(rowPayload);
-          }
+            UpdatedAt: nowIso
+          });
         });
       });
 
+      if (recordsToUpsert.length === 0 && idsToDelete.length === 0) {
+        alert("⚠️ Please enter marks for at least one student before saving.");
+        return;
+      }
+
+      const btn = document.getElementById('btnSaveSubjectMarks');
+      btn.disabled = true;
+      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Saving Marks...`;
+
       try {
-        if (updatePromises.length > 0) {
-          const updResults = await Promise.all(updatePromises);
-          const firstErr = updResults.find(r => r.error);
-          if (firstErr) throw firstErr.error;
-        }
-        if (recordsToInsert.length > 0) {
-          const { error } = await db.from('Student_Marks').insert(recordsToInsert);
-          if (error) throw error;
+        if (idsToDelete.length > 0) {
+          const { error: delErr } = await db.from('Student_Marks').delete().in('Id', idsToDelete);
+          if (delErr) throw delErr;
         }
 
-        alert(`🎉 Success: ${updatePromises.length} updated & ${recordsToInsert.length} saved cleanly for [${sub}]!`);
-        await window.fetchStudentsForSubjectMarks(); // Reload fresh IDs so subsequent edits update in-place
+        if (recordsToUpsert.length > 0) {
+          const { error: upErr } = await db.from('Student_Marks').upsert(recordsToUpsert, {
+            onConflict: 'SchoolID,Session,ExamID,Subject,ActivityID,AdmissionNo'
+          });
+          if (upErr) throw upErr;
+        }
+
+        alert(`🎉 Success: ${recordsToUpsert.length} marks saved/updated cleanly for [${sub}]!`);
+        await window.fetchStudentsForSubjectMarks();
       } catch(err) {
         console.error("Save Subject Marks Error:", err);
         alert("Failed to save marks: " + err.message);
