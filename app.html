@@ -38061,21 +38061,26 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </script>
 </template>
   
-<!-- MODULE: FULL CLASS BULK MARKS ENTRY GRID (OPERATOR ALL-IN-ONE)      -->
+<!-- =================================================================== -->
+<!-- MODULE: FULL CLASS BULK MARKS ENTRY GRID (SUPABASE + MULTI-ACTIVITY)-->
+<!-- =================================================================== -->
 <template id='tpl-BulkMarksEntry'>
   <style>
     .bme-card { border-radius: 12px; border: 1.5px solid #e2e8f0; min-height: 540px; background: #ffffff; }
-    .bme-label { font-size: 11.5px; font-weight: 700; color: #1e293b; margin-bottom: 4px; display: block; }
+    .bme-label { font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 4px; display: block; }
     .bme-select { height: 38px; font-size: 12.5px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
-    .bme-btn { height: 38px; font-size: 12.5px; font-weight: 700; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; white-space: nowrap; }
+    .bme-select:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2,132,199,0.12); }
 
     .table-bme { font-size: 12px; width: 100%; border-collapse: collapse; vertical-align: middle; }
-    .table-bme th { background: #f8fafc; font-size: 10.5px; text-transform: uppercase; color: #334155; font-weight: 800; border: 1px solid #cbd5e1; padding: 8px 4px; text-align: center; }
-    .table-bme td { border: 1px solid #e2e8f0; padding: 6px 4px; vertical-align: middle; text-align: center; font-weight: 600; }
+    .table-bme th { background: #f8fafc; font-size: 10.5px; text-transform: uppercase; color: #334155; font-weight: 800; border: 1px solid #cbd5e1; padding: 8px 5px; text-align: center; white-space: nowrap; }
+    .table-bme td { border: 1px solid #e2e8f0; padding: 6px 4px; vertical-align: middle; text-align: center; font-weight: 600; color: #1e293b; }
 
-    .grid-marks-input { width: 55px; height: 32px; border: 1.5px solid #cbd5e1; border-radius: 4px; text-align: center; font-weight: 800; font-size: 12px; color: #0f172a; }
+    .grid-marks-input { width: 62px; height: 32px; border: 1.5px solid #cbd5e1; border-radius: 4px; text-align: center; font-weight: 800; font-size: 12.5px; color: #0f172a; }
     .grid-marks-input:focus { border-color: #0284c7; background: #f0f9ff; outline: none; }
-    .grid-remarks-input { width: 100%; min-width: 110px; height: 32px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 11px; padding: 2px 6px; }
+    .grid-marks-input.is-absent { background: #fee2e2 !important; color: #dc2626 !important; border-color: #f87171 !important; }
+    .grid-marks-input:disabled { background: #f1f5f9 !important; color: #94a3b8 !important; cursor: not-allowed; }
+
+    .bme-pill { font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; display: inline-flex; align-items: center; gap: 5px; }
   </style>
 
   <div class='card bme-card shadow-sm animate__animated animate__fadeIn mb-5'>
@@ -38084,57 +38089,100 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       <div class='d-flex align-items-center gap-2'>
         <i class='fas fa-table text-primary fa-lg'></i>
         <div>
-          <h6 class='m-0 fw-bold text-dark'>Full Class Bulk Marks Grid Entry Desk</h6>
-          <small class='text-muted' style='font-size: 11px;'>Enter all subjects, attendance days &amp; teacher remarks on a single screen</small>
+          <h6 class='m-0 fw-bold text-dark'>Full Class Bulk Marks Grid Entry</h6>
+          <small class='text-muted' style='font-size: 11px;'>Enter marks for all subjects of a Class &amp; Section on one screen</small>
         </div>
       </div>
-      <button class='btn btn-outline-primary btn-sm fw-bold' onclick='window.navigateTo(&quot;SubjectMarksEntry&quot;)' type='button'>
-        <i class='fas fa-pencil-alt me-1'></i> Single Subject Entry
-      </button>
+      <div class='d-flex gap-2'>
+        <button class='btn btn-outline-secondary btn-sm fw-bold' onclick='window.initBulkMarksEntryModule()' type='button'>
+          <i class='fas fa-sync-alt me-1'></i> Refresh
+        </button>
+        <button class='btn btn-outline-primary btn-sm fw-bold' onclick='window.navigateTo(&quot;SubjectMarksEntry&quot;)' type='button'>
+          <i class='fas fa-pencil-alt me-1'></i> Single Subject Entry
+        </button>
+      </div>
     </div>
 
-    <div class='card-body p-2'>
+    <div class='card-body p-3'>
       <!-- 1. FILTERS -->
-      <div class='bg-light p-3 rounded-3 border mb-3'>
-        <div class='row g-2 align-items-end'>
-          <div class='col-lg-3 col-md-3 col-6'>
-            <label class='bme-label'>Session *</label>
-            <select class='form-select bme-select' id='bmeSessionSelect'></select>
-          </div>
-          <div class='col-lg-3 col-md-3 col-6'>
-            <label class='bme-label'>Exam Assessment *</label>
-            <select class='form-select bme-select fw-bold text-primary' id='bmeExamSelect'></select>
-          </div>
-          <div class='col-lg-2 col-md-3 col-6'>
-            <label class='bme-label'>Class *</label>
-            <select class='form-select bme-select' id='bmeClassSelect' onchange='window.onBmeClassChange()'>
-              <option value=''>-- Class --</option>
+      <form onsubmit='event.preventDefault(); window.fetchFullClassGrid();' class='bg-light p-3 rounded-3 border mb-3'>
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='bme-label'>Batch <span class='text-danger'>*</span></label>
+            <select class='form-select bme-select' id='bmeBatchSelect' onchange='window.onBmeBatchChange()' required='required'>
+              <option value=''>Select</option>
             </select>
           </div>
-          <div class='col-lg-2 col-md-3 col-6'>
-            <label class='bme-label'>Section *</label>
-            <select class='form-select bme-select' id='bmeSectionSelect'>
-              <option value='A'>Section A</option>
+          <div class='col-md-4'>
+            <label class='bme-label'>Class <span class='text-danger'>*</span></label>
+            <select class='form-select bme-select' id='bmeClassSelect' onchange='window.onBmeClassChange()' required='required'>
+              <option value=''>Select</option>
             </select>
           </div>
-          <div class='col-lg-2 col-md-12 col-12'>
-            <button class='btn btn-primary bme-btn w-100 shadow-sm' onclick='window.fetchFullClassGrid()' type='button'>
+          <div class='col-md-4'>
+            <label class='bme-label'>Section <span class='text-danger'>*</span></label>
+            <select class='form-select bme-select' id='bmeSectionSelect' required='required'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+        </div>
+
+        <div class='row g-3 align-items-end'>
+          <div class='col-md-3'>
+            <label class='bme-label'>Term <span class='text-danger'>*</span></label>
+            <select class='form-select bme-select' id='bmeTermSelect' onchange='window.onBmeTermChange()' required='required'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+          <div class='col-md-3'>
+            <label class='bme-label'>Exam <span class='text-danger'>*</span></label>
+            <select class='form-select bme-select fw-bold text-primary' id='bmeExamSelect' onchange='window.onBmeExamChange()' required='required'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+          <div class='col-md-3'>
+            <label class='bme-label'>Activity</label>
+            <select class='form-select bme-select' id='bmeActivitySelect'>
+              <option value='ALL'>All Activities</option>
+            </select>
+          </div>
+          <div class='col-md-3'>
+            <button class='btn btn-primary w-100 fw-bold shadow-sm' style='height: 38px;' type='submit'>
               <i class='fas fa-search me-1'></i> Load Class Grid
             </button>
           </div>
         </div>
+      </form>
+
+      <!-- 2. ALERTS & SUMMARY BAR -->
+      <div class='alert alert-danger py-2 small fw-bold mb-3 d-none' id='bmeFreezeAlert'>
+        <i class='fas fa-lock me-1'></i> <span id='bmeFreezeAlertMsg'>Some activities are locked by Admin.</span>
       </div>
 
-      <!-- 2. GRID TABLE -->
-      <div class='table-responsive border rounded-3 bg-white mb-3' id='bmeTableWrapper' style='display: none;'>
+      <div class='alert alert-warning py-2 small fw-bold mb-3 d-none' id='bmeEmptyAlert'>
+        <i class='fas fa-user-slash me-1'></i> <span id='bmeEmptyAlertMsg'>No active students found in this Class &amp; Section.</span>
+      </div>
+
+      <div class='d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 d-none' id='bmeInfoBar'>
+        <div class='d-flex gap-2 flex-wrap'>
+          <span class='bme-pill'>Total Students: <strong class='text-primary' id='bmeCountStudents'>0</strong></span>
+          <span class='bme-pill'>Subjects: <strong class='text-dark' id='bmeCountSubjects'>0</strong></span>
+          <span class='bme-pill'>Activities: <strong class='text-info' id='bmeCountActivities'>0</strong></span>
+        </div>
+        <small class='text-muted'>Tip: Type <strong>AB</strong> for Absent. Press <strong>Enter</strong> to move down.</small>
+      </div>
+
+      <!-- 3. GRID TABLE -->
+      <div class='table-responsive border rounded-3 bg-white mb-3 d-none' id='bmeTableWrapper'>
         <table class='table-bme' id='bmeGridTable'>
           <thead id='bmeGridHead'></thead>
           <tbody id='bmeGridBody'></tbody>
         </table>
       </div>
 
-      <!-- 3. SAVE BUTTON -->
-      <div class='d-flex justify-content-end pt-2 border-top' id='bmeSaveBar' style='display: none;'>
+      <!-- 4. SAVE BUTTON (STRICTLY HIDDEN WHEN 0 STUDENTS) -->
+      <div class='d-flex justify-content-between align-items-center pt-2 border-top d-none' id='bmeSaveBar'>
+        <span class='text-muted small'><i class='fas fa-shield-alt text-success me-1'></i> Validated against Max Marks &amp; Freeze status.</span>
         <button class='btn btn-success px-4 py-2 fw-bold shadow' id='btnSaveBulkGrid' onclick='window.submitBulkGridData()' type='button'>
           <i class='fas fa-save me-1'></i> Save Full Class Marks Grid
         </button>
@@ -38146,186 +38194,532 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   // <![CDATA[
   (function() {
     let localConfig = null;
+    let termsCache = [];
+    let examsCache = [];
+    let activitiesCache = [];
+    let freezeMap = {};
     let gridStudents = [];
     let gridSubjects = [];
-    const AMP = String.fromCharCode(38);
+    let gridActivities = [];
+    let existingDbRowMap = {}; // "admNo::subject::actId" -> { id, markId, marks }
+    let isOmrRightWrongMode = false;
 
     window.initBulkMarksEntryModule = async function() {
-      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData() : null;
-      const sDrop = document.getElementById('bmeSessionSelect');
-      const cDrop = document.getElementById('bmeClassSelect');
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
 
+      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
+
+      const bDrop = document.getElementById('bmeBatchSelect');
+      const cDrop = document.getElementById('bmeClassSelect');
       if (localConfig) {
-        if (sDrop) sDrop.innerHTML = (localConfig.sessions || ["2026-2027"]).map(s => `<option value="${s}">${s}</option>`).join('');
+        if (bDrop) {
+          const sessions = (localConfig.sessions && localConfig.sessions.length > 0) ? localConfig.sessions : ["2026-27"];
+          bDrop.innerHTML = '<option value="">Select</option>' + sessions.map(s => `<option value="${s}">${s}</option>`).join('');
+        }
         if (cDrop && localConfig.classMap) {
-          cDrop.innerHTML = '<option value="">-- Class --</option>' + Object.keys(localConfig.classMap).map(c => `<option value="${c}">${c}</option>`).join('');
+          cDrop.innerHTML = '<option value="">Select</option>' + Object.keys(localConfig.classMap).map(c => `<option value="${c}">${c}</option>`).join('');
         }
       }
 
       try {
-        const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-        const res = await (await fetch(`${scriptURL}?action=getExamMaster${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&_t=${Date.now()}`)).json();
-        const list = Array.isArray(res.data) ? res.data : [];
-        const eDrop = document.getElementById('bmeExamSelect');
-        if (eDrop) {
-          eDrop.innerHTML = list.map(x => `<option value="${x.ExamCode}">[${x.ExamCode}] ${x.ExamName}</option>`).join('');
-        }
-      } catch(e) {}
+        const [tRes, eRes, aRes, fRes] = await Promise.all([
+          db.from('Exam_Terms').select('*').eq('SchoolID', schoolId).order('Id', { ascending: true }),
+          db.from('Exam_Master').select('*').eq('SchoolID', schoolId).order('SequenceNo', { ascending: true }),
+          db.from('Exam_Activities').select('*').eq('SchoolID', schoolId).order('Id', { ascending: true }),
+          db.from('Exam_Freeze_Status').select('*').eq('SchoolID', schoolId)
+        ]);
+        termsCache = tRes.data || [];
+        examsCache = eRes.data || [];
+        activitiesCache = aRes.data || [];
+        freezeMap = {};
+        (fRes.data || []).forEach(f => {
+          if (f.ActivityID && f.FreezedClasses) {
+            freezeMap[String(f.ActivityID)] = f.FreezedClasses.split(',').map(x => x.trim().toLowerCase());
+          }
+        });
+      } catch(e) {
+        console.error("BME Init Error:", e);
+      }
+
+      document.getElementById('bmeSectionSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('bmeTermSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('bmeExamSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('bmeActivitySelect').innerHTML = '<option value="ALL">All Activities</option>';
+      window.hideBmeWorkspace();
+    };
+
+    window.hideBmeWorkspace = function() {
+      ['bmeFreezeAlert', 'bmeEmptyAlert', 'bmeInfoBar', 'bmeTableWrapper', 'bmeSaveBar'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('d-none');
+      });
+      gridStudents = [];
+      existingDbRowMap = {};
+    };
+
+    window.onBmeBatchChange = function() {
+      const selBatch = document.getElementById('bmeBatchSelect').value;
+      const tDrop = document.getElementById('bmeTermSelect');
+      document.getElementById('bmeExamSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('bmeActivitySelect').innerHTML = '<option value="ALL">All Activities</option>';
+      if (!selBatch) { tDrop.innerHTML = '<option value="">Select</option>'; return; }
+
+      const matched = termsCache.filter(t => String(t.Session || t.Batch || "").trim() === selBatch);
+      tDrop.innerHTML = '<option value="">Select</option>' + matched.map(t => {
+        const val = t.TermCode || t.TermID || t.TermName;
+        return `<option value="${val}">${t.TermName} - ${selBatch}</option>`;
+      }).join('');
     };
 
     window.onBmeClassChange = function() {
       const cls = document.getElementById('bmeClassSelect').value;
       const sDrop = document.getElementById('bmeSectionSelect');
-      if (!cls || !localConfig) return;
+      if (!cls || !localConfig) {
+        sDrop.innerHTML = '<option value="">Select</option>';
+        window.onBmeExamChange();
+        return;
+      }
       const rawSecs = (localConfig.classMap && localConfig.classMap[cls]) ? localConfig.classMap[cls] : "A,B";
-      sDrop.innerHTML = rawSecs.split(',').map(s => `<option value="${s.trim()}">Section ${s.trim()}</option>`).join('');
+      sDrop.innerHTML = '<option value="">Select</option>' + rawSecs.split(',').map(s => `<option value="${s.trim()}">${s.trim()}</option>`).join('');
+      window.onBmeExamChange();
     };
 
+    window.onBmeTermChange = function() {
+      const selBatch = document.getElementById('bmeBatchSelect').value;
+      const selTerm = document.getElementById('bmeTermSelect').value;
+      const eDrop = document.getElementById('bmeExamSelect');
+      document.getElementById('bmeActivitySelect').innerHTML = '<option value="ALL">All Activities</option>';
+      if (!selBatch || !selTerm) { eDrop.innerHTML = '<option value="">Select</option>'; return; }
+
+      const matchedExams = examsCache.filter(e =>
+        String(e.Session || "").trim() === selBatch &&
+        String(e.TermCode || "").trim() === selTerm
+      );
+      eDrop.innerHTML = '<option value="">Select</option>' + matchedExams.map(e => `<option value="${e.ExamID}">${e.ExamName}</option>`).join('');
+    };
+
+    window.onBmeExamChange = function() {
+      const selBatch = document.getElementById('bmeBatchSelect').value;
+      const selTerm = document.getElementById('bmeTermSelect').value;
+      const selExam = document.getElementById('bmeExamSelect').value;
+      const selCls = document.getElementById('bmeClassSelect').value;
+      const aDrop = document.getElementById('bmeActivitySelect');
+      if (!selExam) { aDrop.innerHTML = '<option value="ALL">All Activities</option>'; return; }
+
+      const matched = activitiesCache.filter(a => {
+        if (selBatch && String(a.Session || "").trim() !== selBatch) return false;
+        if (selTerm && String(a.TermCode || "").trim() !== selTerm) return false;
+        if (String(a.ExamID || "").trim() !== selExam) return false;
+        if (selCls) {
+          const clsArr = String(a.Class || "ALL").split(",").map(x => x.trim().toLowerCase());
+          if (!clsArr.includes("all") && !clsArr.includes(selCls.toLowerCase())) return false;
+        }
+        return true;
+      });
+
+      aDrop.innerHTML = '<option value="ALL">All Activities</option>' + matched.map(a => {
+        const aid = a.ActivityID || a.Id;
+        return `<option value="${aid}">${a.ActivityName} (Max: ${a.MaxMarks})</option>`;
+      }).join('');
+    };
+
+    function activityAppliesToSubject(actObj, subName) {
+      if (!actObj.subjects || actObj.subjects.length === 0) return true;
+      return actObj.subjects.some(s => String(s).trim().toLowerCase() === String(subName).trim().toLowerCase());
+    }
+
+    // ⚡ FETCH FULL CLASS GRID (ALL SUBJECTS x SELECTED/ALL ACTIVITIES)
     window.fetchFullClassGrid = async function() {
+      const batch = document.getElementById('bmeBatchSelect').value;
       const cls = document.getElementById('bmeClassSelect').value;
       const sec = document.getElementById('bmeSectionSelect').value;
-      const exCode = document.getElementById('bmeExamSelect').value;
-      if (!cls) { alert("Please select Class!"); return; }
+      const term = document.getElementById('bmeTermSelect').value;
+      const examId = document.getElementById('bmeExamSelect').value;
+      const actId = document.getElementById('bmeActivitySelect').value;
 
-      const thead = document.getElementById('bmeGridHead');
-      const tbody = document.getElementById('bmeGridBody');
-      tbody.innerHTML = `<tr><td colspan='15' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Generating full class grid...</td></tr>`;
+      if (!batch || !cls || !sec || !term || !examId) {
+        alert("Please select Batch, Class, Section, Term, and Exam!");
+        return;
+      }
 
-      document.getElementById('bmeTableWrapper').style.display = 'block';
-      document.getElementById('bmeSaveBar').style.display = 'flex';
+      window.hideBmeWorkspace();
 
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+      const examObj = examsCache.find(e => String(e.ExamID) === String(examId)) || {};
+      const targetExamCode = String(examObj.ExamCode && examObj.ExamCode !== "NA" ? examObj.ExamCode : examId);
+      const targetExName = String(examObj.ExamName || "").trim().toLowerCase();
 
       try {
-        // 1. Subjects for this class
-        let rawSubs = (localConfig && localConfig.classSubjectMap && localConfig.classSubjectMap[cls]) 
-          ? localConfig.classSubjectMap[cls].split(',').map(s => s.trim()).filter(Boolean) 
-          : ["ENGLISH", "HINDI", "MATHEMATICS", "SCIENCE", "SST"];
-        gridSubjects = rawSubs;
+        const [stuRes, marksRes, omrRes, fRes] = await Promise.all([
+          db.from('Students').select('*').eq('SchoolID', schoolId).eq('Class', cls).eq('Section', sec).eq('Status', 'ACTIVE'),
+          db.from('Student_Marks').select('*').eq('SchoolID', schoolId).eq('Session', batch).eq('Class', cls).eq('Section', sec),
+          db.from('OMR_Results').select('*').eq('SchoolID', schoolId).eq('Class', cls).eq('Section', sec),
+          db.from('Exam_Freeze_Status').select('*').eq('SchoolID', schoolId)
+        ]);
 
-        // 2. Build Header
-        let thRow = `<tr><th style='width:40px;'>#</th><th style='width:60px;'>Roll</th><th style='text-align:left; padding-left:8px; min-width:140px;'>Student Name</th>`;
-        gridSubjects.forEach(sub => {
-          thRow += `<th style='min-width:65px;'>${sub}</th>`;
-        });
-        thRow += `<th style='width:70px;'>Att. Days</th><th style='min-width:120px;'>Teacher Remarks</th></tr>`;
-        thead.innerHTML = thRow;
+        if (stuRes.error) throw stuRes.error;
+        gridStudents = stuRes.data || [];
+        gridStudents.sort((a, b) => (parseInt(a.RollNo, 10) || 0) - (parseInt(b.RollNo, 10) || 0));
 
-        // 3. Fetch Existing Marks
-        const mrkRes = await (await fetch(`${scriptURL}?action=getStudentMarksLedger${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&examCode=${encodeURIComponent(exCode)}&className=${encodeURIComponent(cls)}&section=${encodeURIComponent(sec)}&_t=${Date.now()}`)).json();
-        const existingData = Array.isArray(mrkRes.data) ? mrkRes.data : [];
-        const existMap = {};
-        existingData.forEach(m => {
-          const k = String(m.AdmissionNo || m.StudentID).toUpperCase() + "_" + String(m.SubjectName).toUpperCase();
-          existMap[k] = m;
-        });
-
-        // 4. Fetch Students
-        let studentsList = [];
-        if (typeof fastGetStudents === 'function') studentsList = await fastGetStudents();
-        else {
-          const sRes = await (await fetch(`${scriptURL}?action=getStudents${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&sheet=Students&_t=${Date.now()}`)).json();
-          studentsList = Array.isArray(sRes) ? sRes : [];
+        // 0 STUDENTS GUARD
+        if (gridStudents.length === 0) {
+          document.getElementById('bmeEmptyAlert').classList.remove('d-none');
+          document.getElementById('bmeEmptyAlertMsg').innerText = `No active students found in ${cls} - Section ${sec}. Save is disabled.`;
+          return;
         }
 
-        gridStudents = studentsList.filter(s => String(s.Class).toUpperCase() === cls.toUpperCase() && (sec === "ALL" || String(s.Section || s.Sec || "A").toUpperCase() === sec.toUpperCase()));
-        gridStudents.sort((a, b) => (parseInt(a.RollNo) || 0) - (parseInt(b.RollNo) || 0));
+        // Class Subjects (unique)
+        const rawSubs = (localConfig && localConfig.classSubjectMap && localConfig.classSubjectMap[cls])
+          ? localConfig.classSubjectMap[cls].split(',').map(s => s.trim()).filter(Boolean)
+          : ["ENGLISH", "HINDI", "MATHEMATICS", "SCIENCE", "SOCIAL SCIENCE"];
+        gridSubjects = [...new Set(rawSubs)];
 
-        let trHtml = "";
-        gridStudents.forEach((s, sIdx) => {
-          const fullName = `${s.StudentName || s.FirstName || ""} ${s.LastName || ""}`.trim();
-          const adm = String(s.AdmissionNo || s.StudId || "");
-
-          let subInputs = "";
-          let commonAttDays = "";
-          let commonRemarks = "";
-
-          gridSubjects.forEach((sub, subIdx) => {
-            const mObj = existMap[adm.toUpperCase() + "_" + sub.toUpperCase()] || {};
-            const val = mObj.TotalMarks !== undefined ? mObj.TotalMarks : "";
-            if (mObj.AttendanceDays) commonAttDays = mObj.AttendanceDays;
-            if (mObj.TeacherRemarks) commonRemarks = mObj.TeacherRemarks;
-
-            subInputs += `<td><input type="text" class="grid-marks-input" id="gMrk_${sIdx}_${subIdx}" value="${val}" placeholder="0"></i></td>`;
-          });
-
-          trHtml += `
-            <tr>
-              <td>${sIdx + 1}</td>
-              <td><strong class='text-primary'>${s.RollNo || '-'}</strong></td>
-              <td class='text-start ps-2 fw-bold text-dark text-truncate' style='max-width:140px;'>${fullName}</td>
-              ${subInputs}
-              <td><input type="text" class="form-control form-control-sm text-center" id="gAtt_${sIdx}" value="${commonAttDays}" placeholder="e.g. 195/210"></i></td>
-              <td><input type="text" class="grid-remarks-input" id="gRem_${sIdx}" value="${commonRemarks}" placeholder="e.g. Promoted to VI"></i></td>
-            </tr>
-          `;
+        // Build Freeze Map
+        freezeMap = {};
+        (fRes.data || []).forEach(f => {
+          if (f.ActivityID && f.FreezedClasses) {
+            freezeMap[String(f.ActivityID)] = f.FreezedClasses.split(',').map(x => x.trim().toLowerCase());
+          }
         });
 
-        tbody.innerHTML = trHtml || `<tr><td colspan='15' class='text-center py-4 text-muted'>No students found.</td></tr>`;
+        // Resolve Activities
+        let matchedActs = activitiesCache.filter(a => {
+          if (String(a.Session || "").trim() !== batch) return false;
+          if (String(a.TermCode || "").trim() !== term) return false;
+          if (String(a.ExamID || "").trim() !== examId) return false;
+          const clsArr = String(a.Class || "ALL").split(",").map(x => x.trim().toLowerCase());
+          if (!clsArr.includes("all") && !clsArr.includes(cls.toLowerCase())) return false;
+          return true;
+        });
+
+        if (actId !== "ALL") matchedActs = matchedActs.filter(a => String(a.ActivityID || a.Id) === actId);
+        if (matchedActs.length === 0) matchedActs = [{ ActivityID: "MAIN", ActivityName: "Marks", MaxMarks: examObj.MaxMarks || 100, Subjects: [] }];
+
+        gridActivities = matchedActs.map(a => {
+          const aid = String(a.ActivityID || a.Id);
+          const frozenList = freezeMap[aid] || [];
+          const isFrozen = frozenList.includes(cls.toLowerCase()) || frozenList.includes("all");
+          const upName = String(a.ActivityName || "Marks").toUpperCase();
+          const actType = upName.includes("RIGHT") ? "OMR_RIGHT" : (upName.includes("WRONG") ? "OMR_WRONG" : "SCORE");
+          return {
+            id: aid,
+            name: a.ActivityName || "Marks",
+            max: parseFloat(a.MaxMarks) || 100,
+            isFrozen,
+            type: actType,
+            subjects: Array.isArray(a.Subjects) ? a.Subjects : []
+          };
+        });
+
+        isOmrRightWrongMode = gridActivities.some(a => a.type === "OMR_RIGHT") && gridActivities.some(a => a.type === "OMR_WRONG");
+
+        // Freeze Alert
+        const frozenNames = gridActivities.filter(a => a.isFrozen).map(a => a.name);
+        const allFrozen = gridActivities.every(a => a.isFrozen);
+        if (frozenNames.length > 0) {
+          document.getElementById('bmeFreezeAlert').classList.remove('d-none');
+          document.getElementById('bmeFreezeAlertMsg').innerText = `LOCKED: Marks for [${frozenNames.join(', ')}] in ${cls} are FROZEN by Admin.`;
+        }
+
+        document.getElementById('bmeInfoBar').classList.remove('d-none');
+        document.getElementById('bmeTableWrapper').classList.remove('d-none');
+        document.getElementById('bmeSaveBar').classList.remove('d-none');
+        document.getElementById('btnSaveBulkGrid').disabled = allFrozen;
+        document.getElementById('bmeCountStudents').innerText = gridStudents.length;
+        document.getElementById('bmeCountSubjects').innerText = gridSubjects.length;
+        document.getElementById('bmeCountActivities').innerText = gridActivities.length;
+
+        // Build Existing Marks Lookup
+        existingDbRowMap = {};
+        (marksRes.data || []).forEach(m => {
+          const mExId = String(m.ExamID || "").trim().toLowerCase();
+          const mExCode = String(m.ExamCode || "").trim().toLowerCase();
+          const mExName = String(m.ExamName || "").trim().toLowerCase();
+          const isExMatch = (mExId === String(examId).toLowerCase()) ||
+                            (mExCode && mExCode === targetExamCode.toLowerCase()) ||
+                            (mExName && mExName === targetExName);
+          if (!isExMatch) return;
+
+          const subKey = String(m.Subject || m.SubjectName || "").trim().toUpperCase();
+          if (!subKey) return;
+
+          const sKeys = [
+            String(m.AdmissionNo || "").trim().toUpperCase(),
+            String(m.StudId || "").trim().toUpperCase()
+          ].filter(Boolean);
+          const aKeys = [
+            String(m.ActivityID || "MAIN").trim().toUpperCase(),
+            String(m.ActivityName || "").trim().toUpperCase()
+          ].filter(Boolean);
+
+          const rowInfo = { id: m.Id, markId: m.MarkID, marks: m.MarksObtained };
+          sKeys.forEach(sk => aKeys.forEach(ak => {
+            existingDbRowMap[`${sk}::${subKey}::${ak}`] = rowInfo;
+          }));
+        });
+
+        // Build OMR Fallback Map (Student -> SubjectsScore)
+        const omrFallbackMap = {};
+        (omrRes.data || []).forEach(r => {
+          if (String(r.ExamName || "").trim().toLowerCase().includes(targetExName)) {
+            const sid = String(r.StudentID || "").trim().toUpperCase();
+            if (sid) omrFallbackMap[sid] = r.SubjectsScore || {};
+          }
+        });
+
+        // Build Header (1-row if 1 activity, 2-row grouped if multiple activities)
+        const thead = document.getElementById('bmeGridHead');
+        if (gridActivities.length === 1) {
+          const a = gridActivities[0];
+          thead.innerHTML = `<tr>
+            <th style='width:38px;'>#</th>
+            <th style='width:55px;'>Roll</th>
+            <th style='width:105px;'>Adm No</th>
+            <th style='text-align:left; padding-left:10px; min-width:150px;'>Student Name</th>
+            ${gridSubjects.map(sub => {
+              const applies = activityAppliesToSubject(a, sub);
+              return `<th>${sub}<br/><span class='text-primary'>${applies ? `${a.name} (${a.max})` : 'N/A'}</span> ${a.isFrozen ? '<i class="fas fa-lock text-danger"></i>' : ''}</th>`;
+            }).join('')}
+          </tr>`;
+        } else {
+          let row1 = `<tr>
+            <th rowspan='2' style='width:38px;'>#</th>
+            <th rowspan='2' style='width:55px;'>Roll</th>
+            <th rowspan='2' style='width:105px;'>Adm No</th>
+            <th rowspan='2' style='text-align:left; padding-left:10px; min-width:150px;'>Student Name</th>
+            ${gridSubjects.map(sub => `<th colspan='${gridActivities.length}' class='bg-primary bg-opacity-10 text-primary'>${sub}</th>`).join('')}
+          </tr>`;
+          let row2 = `<tr>`;
+          gridSubjects.forEach(() => {
+            gridActivities.forEach(a => {
+              row2 += `<th>${a.name}<br/><span class='text-primary'>(${a.max}) ${a.isFrozen ? '<i class="fas fa-lock text-danger"></i>' : ''}</span></th>`;
+            });
+          });
+          row2 += `</tr>`;
+          thead.innerHTML = row1 + row2;
+        }
+
+        // Build Body Rows
+        const tbody = document.getElementById('bmeGridBody');
+        tbody.innerHTML = gridStudents.map((s, sIdx) => {
+          const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.trim();
+          const studId = String(s.StudId || s.AdmissionNo || "").trim();
+          const admNo = String(s.AdmissionNo || studId).trim();
+          const omrSubMap = omrFallbackMap[studId.toUpperCase()] || omrFallbackMap[admNo.toUpperCase()] || null;
+
+          let cellsHtml = "";
+          gridSubjects.forEach((sub, subIdx) => {
+            const subUpper = sub.toUpperCase();
+            let omrSc = null;
+            if (omrSubMap) {
+              const matchedKey = Object.keys(omrSubMap).find(k => k.trim().toUpperCase() === subUpper);
+              if (matchedKey) omrSc = omrSubMap[matchedKey];
+            }
+
+            gridActivities.forEach((a, aIdx) => {
+              if (!activityAppliesToSubject(a, sub)) {
+                cellsHtml += `<td class='text-muted bg-light'>—</td>`;
+                return;
+              }
+
+              const existingObj =
+                existingDbRowMap[`${admNo.toUpperCase()}::${subUpper}::${a.id.toUpperCase()}`] ||
+                existingDbRowMap[`${studId.toUpperCase()}::${subUpper}::${a.id.toUpperCase()}`] ||
+                existingDbRowMap[`${admNo.toUpperCase()}::${subUpper}::${a.name.toUpperCase()}`] ||
+                existingDbRowMap[`${studId.toUpperCase()}::${subUpper}::${a.name.toUpperCase()}`];
+
+              let val = existingObj ? existingObj.marks : undefined;
+              if (val === undefined && omrSc) {
+                if (a.type === "OMR_RIGHT") val = omrSc.R;
+                else if (a.type === "OMR_WRONG") val = omrSc.W;
+                else if (gridActivities.length === 1) val = omrSc.R;
+              }
+
+              const dispVal = (val !== undefined && val !== null) ? val : "";
+              const isAb = String(dispVal).toUpperCase() === "AB";
+
+              cellsHtml += `<td>
+                <input type='text' class='grid-marks-input ${isAb ? "is-absent" : ""}'
+                       id='bmeInp_${sIdx}_${subIdx}_${aIdx}'
+                       value='${dispVal}' placeholder='0' ${a.isFrozen ? "disabled='disabled'" : ""}
+                       oninput='window.onBmeCellInput(${sIdx}, ${subIdx}, ${aIdx})'
+                       onkeydown='if(event.key==="Enter"){ event.preventDefault(); window.focusNextBmeInput(${sIdx}, ${subIdx}, ${aIdx}); }'>
+              </td>`;
+            });
+          });
+
+          return `<tr>
+            <td>${sIdx + 1}</td>
+            <td><strong class='text-primary'>${s.RollNo || "-"}</strong></td>
+            <td class='text-secondary fw-bold'>${admNo}</td>
+            <td class='text-start ps-2 fw-bold text-dark text-truncate' style='max-width:170px;'>${fullName}</td>
+            ${cellsHtml}
+          </tr>`;
+        }).join('');
 
       } catch(err) {
-        tbody.innerHTML = `<tr><td colspan='15' class='text-center py-4 text-danger'>Failed to load class grid.</td></tr>`;
+        console.error("BME Load Error:", err);
+        alert("Failed to load class grid: " + err.message);
       }
     };
 
-    window.submitBulkGridData = async function() {
-      const btn = document.getElementById('btnSaveBulkGrid');
-      btn.disabled = true;
-      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Saving Grid...`;
+    window.onBmeCellInput = function(sIdx, subIdx, aIdx) {
+      const inp = document.getElementById(`bmeInp_${sIdx}_${subIdx}_${aIdx}`);
+      if (!inp) return;
+      const act = gridActivities[aIdx];
+      let v = inp.value.trim().toUpperCase();
 
-      const sess = document.getElementById('bmeSessionSelect').value;
-      const exCode = document.getElementById('bmeExamSelect').value;
+      if (v === "AB" || v === "A") {
+        inp.value = "AB";
+        inp.classList.add('is-absent');
+        return;
+      }
+
+      inp.classList.remove('is-absent');
+      const num = parseFloat(v);
+      if (!isNaN(num) && num < 0) {
+        alert("⚠️ Marks cannot be negative!");
+        inp.value = "";
+        return;
+      }
+      if (!isNaN(num) && num > act.max) {
+        alert(`⚠️ Maximum Marks for ${gridSubjects[subIdx]} (${act.name}) is ${act.max}!`);
+        inp.value = "";
+        return;
+      }
+
+      // OMR Right + Wrong <= RightMax Validation
+      if (isOmrRightWrongMode) {
+        let rVal = 0, wVal = 0, rightMax = act.max;
+        gridActivities.forEach((a, idx2) => {
+          const el = document.getElementById(`bmeInp_${sIdx}_${subIdx}_${idx2}`);
+          if (!el) return;
+          const valNum = parseFloat(el.value.trim()) || 0;
+          if (a.type === "OMR_RIGHT") { rVal = valNum; rightMax = a.max; }
+          else if (a.type === "OMR_WRONG") { wVal = valNum; }
+        });
+        if ((rVal + wVal) > rightMax) {
+          alert(`⚠️ ${gridSubjects[subIdx]}: Right (${rVal}) + Wrong (${wVal}) cannot exceed Full Marks (${rightMax})!`);
+          inp.value = "";
+        }
+      }
+    };
+
+    window.focusNextBmeInput = function(sIdx, subIdx, aIdx) {
+      const next = document.getElementById(`bmeInp_${sIdx + 1}_${subIdx}_${aIdx}`);
+      if (next && !next.disabled) { next.focus(); next.select(); }
+    };
+
+    // 💾 SINGLE-CLICK UPSERT FULL CLASS GRID TO SUPABASE "Student_Marks"
+    window.submitBulkGridData = async function() {
+      if (gridStudents.length === 0) {
+        alert("⚠️ No active students found to save!");
+        return;
+      }
+
+      const unlocked = gridActivities.filter(a => !a.isFrozen);
+      if (unlocked.length === 0) {
+        alert("⛔ All loaded activities are frozen!");
+        return;
+      }
+
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const batch = document.getElementById('bmeBatchSelect').value;
       const cls = document.getElementById('bmeClassSelect').value;
       const sec = document.getElementById('bmeSectionSelect').value;
-      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const term = document.getElementById('bmeTermSelect').value;
+      const examId = document.getElementById('bmeExamSelect').value;
 
-      const marksPayload = [];
+      const examObj = examsCache.find(e => String(e.ExamID) === String(examId)) || {};
+      const examName = examObj.ExamName || examId;
+      const examCode = (examObj.ExamCode && examObj.ExamCode !== "NA") ? examObj.ExamCode : examId;
+      const nowIso = new Date().toISOString();
+
+      const recordsToUpsert = [];
+      const idsToDelete = [];
 
       gridStudents.forEach((s, sIdx) => {
-        const adm = String(s.AdmissionNo || s.StudId || "");
-        const fullName = `${s.StudentName || s.FirstName || ""} ${s.LastName || ""}`.trim();
-        const attDays = document.getElementById(`gAtt_${sIdx}`).value.trim();
-        const remarks = document.getElementById(`gRem_${sIdx}`).value.trim();
+        const studId = String(s.StudId || s.AdmissionNo || "").trim();
+        const admNo = String(s.AdmissionNo || studId).trim();
+        const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.trim();
 
         gridSubjects.forEach((sub, subIdx) => {
-          const val = document.getElementById(`gMrk_${sIdx}_${subIdx}`).value.trim().toUpperCase();
-          marksPayload.push({
-            Session: sess,
-            TermCode: "T1",
-            ExamCode: exCode,
-            Class: cls,
-            Section: s.Section || s.Sec || sec,
-            RollNo: s.RollNo || "",
-            AdmissionNo: adm,
-            StudentName: fullName,
-            SubjectName: sub,
-            TheoryMarks: val || 0,
-            PracticalMarks: 0,
-            TotalMarks: val || 0,
-            MaxMarks: 100,
-            AttendanceDays: attDays,
-            TeacherRemarks: remarks
+          const subUpper = sub.toUpperCase();
+
+          gridActivities.forEach((a, aIdx) => {
+            if (a.isFrozen || !activityAppliesToSubject(a, sub)) return;
+            const inp = document.getElementById(`bmeInp_${sIdx}_${subIdx}_${aIdx}`);
+            if (!inp) return;
+
+            const rawVal = inp.value.trim().toUpperCase();
+            const existing =
+              existingDbRowMap[`${admNo.toUpperCase()}::${subUpper}::${a.id.toUpperCase()}`] ||
+              existingDbRowMap[`${studId.toUpperCase()}::${subUpper}::${a.id.toUpperCase()}`];
+
+            if (rawVal === "") {
+              if (existing && existing.id) idsToDelete.push(existing.id);
+              return;
+            }
+
+            recordsToUpsert.push({
+              MarkID: (existing && existing.markId) ? existing.markId : `MRK-${Date.now().toString(36).toUpperCase()}-${sIdx}-${subIdx}-${aIdx}`,
+              SchoolID: user.schoolId,
+              Session: batch,
+              TermCode: term,
+              ExamID: examId,
+              ExamCode: examCode,
+              ExamName: examName,
+              Subject: sub,
+              SubjectName: sub,
+              ActivityID: a.id,
+              ActivityName: a.name,
+              ActivityType: a.type,
+              MaxMarks: a.max,
+              Class: cls,
+              Section: sec,
+              StudId: studId,
+              AdmissionNo: admNo,
+              RollNo: String(s.RollNo || ""),
+              StudentName: fullName,
+              MarksObtained: rawVal,
+              IsAbsent: (rawVal === "AB"),
+              Source: "BULK",
+              EnteredBy: user.name || "Operator",
+              UpdatedAt: nowIso
+            });
           });
         });
       });
 
-      const payload = {
-        action: "saveStudentMarksMaster",
-        tsid: user.targetSheetId,
-        session: sess,
-        examCode: exCode,
-        className: cls,
-        section: sec,
-        enteredBy: user.name || "Operator",
-        marksList: marksPayload
-      };
+      if (recordsToUpsert.length === 0 && idsToDelete.length === 0) {
+        alert("⚠️ Please enter marks for at least one student before saving.");
+        return;
+      }
+
+      const btn = document.getElementById('btnSaveBulkGrid');
+      btn.disabled = true;
+      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Saving Grid...`;
 
       try {
-        const res = await (await fetch(scriptURL, { method: "POST", body: JSON.stringify(payload) })).json();
-        if (res.status === "locked") alert(res.message);
-        else alert(`🎉 Full Class Marks Grid saved successfully (${marksPayload.length} entries)!`);
-      } catch(e) {
-        alert("Grid saved successfully.");
+        if (idsToDelete.length > 0) {
+          const { error: delErr } = await db.from('Student_Marks').delete().in('Id', idsToDelete);
+          if (delErr) throw delErr;
+        }
+
+        if (recordsToUpsert.length > 0) {
+          const { error: upErr } = await db.from('Student_Marks').upsert(recordsToUpsert, {
+            onConflict: 'SchoolID,Session,ExamID,Subject,ActivityID,AdmissionNo'
+          });
+          if (upErr) throw upErr;
+        }
+
+        alert(`🎉 Success: ${recordsToUpsert.length} grid marks saved/updated cleanly!`);
+        await window.fetchFullClassGrid();
+      } catch(err) {
+        console.error("Save Bulk Grid Error:", err);
+        alert("Failed to save bulk grid: " + err.message);
       } finally {
         btn.disabled = false;
         btn.innerHTML = `<i class='fas fa-save me-1'></i> Save Full Class Marks Grid`;
