@@ -40234,88 +40234,132 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </script>
 </template>
   
-<!-- MODULE: VIEW & AUDIT STUDENT MARKS LEDGER                           -->
+<!-- =================================================================== -->
+<!-- MODULE: VIEW & AUDIT STUDENT MARKS (PIVOT + EXCEL + PRINT + ALL SEC)-->
+<!-- =================================================================== -->
 <template id='tpl-ViewMarks'>
   <style>
     .vmk-card { border-radius: 12px; border: 1.5px solid #e2e8f0; min-height: 540px; background: #ffffff; }
-    .vmk-label { font-size: 11.5px; font-weight: 700; color: #1e293b; margin-bottom: 4px; display: block; }
+    .vmk-label { font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 5px; display: block; }
     .vmk-select { height: 38px; font-size: 12.5px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
-    .table-vmk { font-size: 12.5px; width: 100%; border-collapse: collapse; }
-    .table-vmk th { background: #f8fafc; font-size: 11px; text-transform: uppercase; color: #334155; font-weight: 800; border: 1px solid #cbd5e1; padding: 10px 8px; text-align: center; }
+    .vmk-select:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2,132,199,0.12); }
+
+    .table-vmk { font-size: 12px; width: 100%; border-collapse: collapse; vertical-align: middle; }
+    .table-vmk th { background: #f8fafc; font-size: 11px; text-transform: uppercase; color: #334155; font-weight: 800; border: 1px solid #cbd5e1; padding: 9px 7px; text-align: center; white-space: nowrap; }
     .table-vmk td { border: 1px solid #e2e8f0; padding: 8px 6px; vertical-align: middle; font-weight: 600; color: #1e293b; text-align: center; }
+    .table-vmk tbody tr:hover { background: #f8fafc; }
+
+    .vmk-btn-excel { background: #10b981; border: none; color: #ffffff; font-weight: 700; font-size: 12.5px; padding: 7px 14px; border-radius: 6px; }
+    .vmk-btn-excel:hover { background: #059669; color: #ffffff; }
+    .vmk-btn-print { background: #f59e0b; border: none; color: #ffffff; font-weight: 700; font-size: 12.5px; padding: 7px 14px; border-radius: 6px; }
+    .vmk-btn-print:hover { background: #d97706; color: #ffffff; }
+
+    .vmk-pill { font-size: 11.5px; font-weight: 700; padding: 5px 11px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; display: inline-flex; align-items: center; gap: 5px; }
   </style>
 
   <div class='card vmk-card shadow-sm animate__animated animate__fadeIn mb-5'>
     <!-- CARD HEADER -->
     <div class='card-header bg-white py-3 border-bottom d-flex align-items-center justify-content-between flex-wrap gap-2'>
       <div class='d-flex align-items-center gap-2'>
-        <i class='fas fa-search text-primary fa-lg'></i>
-        <div>
-          <h6 class='m-0 fw-bold text-dark'>View &amp; Audit Student Marks Ledger</h6>
-          <small class='text-muted' style='font-size: 11px;'>Inspect entered marks by Exam, Class, Section &amp; Subject with Excel Export</small>
-        </div>
+        <i class='fas fa-edit text-primary'></i>
+        <h6 class='m-0 fw-bold text-dark'>View Marks Entry</h6>
       </div>
       <div class='d-flex gap-2'>
-        <button class='btn btn-success btn-sm fw-bold shadow-sm px-3' onclick='window.exportViewMarksExcel()' type='button'>
-          <i class='fas fa-file-excel me-1'></i> Export Excel
+        <button class='btn btn-outline-secondary btn-sm fw-bold' onclick='window.initViewMarksModule()' type='button'>
+          <i class='fas fa-sync-alt me-1'></i> Refresh
         </button>
       </div>
     </div>
 
-    <div class='card-body p-2'>
-      <!-- FILTERS -->
-      <div class='bg-light p-3 rounded-3 border mb-3'>
-        <div class='row g-2 align-items-end'>
-          <div class='col-lg-3 col-md-3 col-6'>
-            <label class='vmk-label'>Select Exam *</label>
-            <select class='form-select vmk-select fw-bold text-primary' id='vmkExamSelect'></select>
-          </div>
-          <div class='col-lg-2 col-md-3 col-6'>
-            <label class='vmk-label'>Class *</label>
-            <select class='form-select vmk-select' id='vmkClassSelect' onchange='window.onVmkClassChange()'>
-              <option value='ALL'>All Classes</option>
+    <div class='card-body p-3'>
+      <!-- 1. FILTER FORM (EXACT SCREENSHOT LAYOUT) -->
+      <form onsubmit='event.preventDefault(); window.fetchViewMarksData();' class='p-3 rounded-3 border bg-white shadow-sm mb-4'>
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='vmk-label'>Class <span class='text-danger'>*</span></label>
+            <select class='form-select vmk-select' id='vmkClassSelect' onchange='window.onVmkClassChange()' required='required'>
+              <option value=''>Select</option>
             </select>
           </div>
-          <div class='col-lg-2 col-md-3 col-6'>
-            <label class='vmk-label'>Section</label>
-            <select class='form-select vmk-select' id='vmkSectionSelect'>
+          <div class='col-md-4'>
+            <label class='vmk-label'>Section <span class='text-danger'>*</span></label>
+            <select class='form-select vmk-select' id='vmkSectionSelect' required='required'>
               <option value='ALL'>All Sections</option>
             </select>
           </div>
-          <div class='col-lg-3 col-md-3 col-6'>
-            <label class='vmk-label'>Subject</label>
-            <select class='form-select vmk-select' id='vmkSubjectSelect'>
-              <option value='ALL'>All Subjects</option>
+          <div class='col-md-4'>
+            <label class='vmk-label'>Batch <span class='text-danger'>*</span></label>
+            <select class='form-select vmk-select' id='vmkBatchSelect' onchange='window.onVmkBatchChange()' required='required'>
+              <option value=''>Select</option>
             </select>
           </div>
-          <div class='col-lg-2 col-md-12 col-12'>
-            <button class='btn btn-primary vmk-select w-100 fw-bold shadow-sm' onclick='window.fetchViewMarksData()' type='button'>
-              <i class='fas fa-search me-1'></i> Search Marks
-            </button>
+        </div>
+
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='vmk-label'>Term <span class='text-danger'>*</span></label>
+            <select class='form-select vmk-select' id='vmkTermSelect' onchange='window.onVmkTermChange()' required='required'>
+              <option value=''>Select</option>
+            </select>
           </div>
+          <div class='col-md-4'>
+            <label class='vmk-label'>Exam <span class='text-danger'>*</span></label>
+            <select class='form-select vmk-select fw-bold text-primary' id='vmkExamSelect' onchange='window.onVmkExamChange()' required='required'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+          <div class='col-md-4'>
+            <label class='vmk-label'>Activity <span class='text-danger'>*</span></label>
+            <select class='form-select vmk-select' id='vmkActivitySelect' required='required'>
+              <option value='ALL'>All Activities</option>
+            </select>
+          </div>
+        </div>
+
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='vmk-label'>Subject <span class='text-danger'>*</span></label>
+            <select class='form-select vmk-select' id='vmkSubjectSelect' required='required'>
+              <option value='ALL'>All</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <button class='btn btn-primary btn-sm px-4 py-2 fw-bold shadow-sm' type='submit'>
+            Submit
+          </button>
+        </div>
+      </form>
+
+      <!-- EMPTY / WARNING ALERT -->
+      <div class='alert alert-warning py-2 small fw-bold mb-3 d-none' id='vmkEmptyAlert'>
+        <i class='fas fa-info-circle me-1'></i> <span id='vmkEmptyAlertMsg'>No records found.</span>
+      </div>
+
+      <!-- 2. TABLE HEADER BAR (TITLE + QUICK SEARCH + EXPORT EXCEL + PRINT) -->
+      <div class='d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 d-none' id='vmkActionBar'>
+        <div class='d-flex align-items-center gap-2 flex-wrap'>
+          <h6 class='m-0 fw-bold text-secondary'><i class='fas fa-table me-1'></i> View Marks Entry</h6>
+          <span class='vmk-pill'>Students: <strong class='text-primary' id='vmkCountStudents'>0</strong></span>
+          <span class='vmk-pill d-none' id='vmkModePill'>Mode: <strong class='text-info' id='vmkModeText'>Standard</strong></span>
+        </div>
+        <div class='d-flex align-items-center gap-2 flex-wrap'>
+          <input class='form-control form-control-sm' id='vmkSearchInput' oninput='window.filterVmkTableRows()' placeholder='Search Name / Adm No / Roll...' style='width: 210px; height: 34px;' type='text'/>
+          <button class='vmk-btn-excel shadow-sm' id='btnVmkExport' onclick='window.exportViewMarksExcel()' type='button'>
+            <i class='fas fa-file-excel me-1'></i> Export as Excel
+          </button>
+          <button class='vmk-btn-print shadow-sm' id='btnVmkPrint' onclick='window.printViewMarksSheet()' type='button'>
+            <i class='fas fa-print me-1'></i> Print
+          </button>
         </div>
       </div>
 
-      <!-- MARKS TABLE -->
-      <div class='table-responsive border rounded-3 bg-white'>
+      <!-- 3. DYNAMIC PIVOT MARKS TABLE -->
+      <div class='table-responsive border rounded-3 bg-white d-none' id='vmkTableContainer'>
         <table class='table-vmk' id='vmkDataTable'>
-          <thead>
-            <tr>
-              <th style='width: 45px;'>#</th>
-              <th style='width: 100px;'>Exam</th>
-              <th style='width: 90px;'>Class-Sec</th>
-              <th style='width: 65px;'>Roll</th>
-              <th style='text-align: left; padding-left: 10px;'>Student Name</th>
-              <th style='width: 130px;'>Subject</th>
-              <th style='width: 80px;'>Theory</th>
-              <th style='width: 80px;'>Prac</th>
-              <th style='width: 90px;'>Total</th>
-              <th style='width: 75px;'>Grade</th>
-            </tr>
-          </thead>
-          <tbody id='vmkDataTableBody'>
-            <tr><td class='text-center py-5 text-muted fw-bold' colspan='10'><i class='fas fa-search fa-2x mb-2 text-primary d-block'></i>Select filters and click <strong>Search Marks</strong>.</td></tr>
-          </tbody>
+          <thead id='vmkTableHead'></thead>
+          <tbody id='vmkTableBody'></tbody>
         </table>
       </div>
     </div>
@@ -40325,96 +40369,575 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   // <![CDATA[
   (function() {
     let localConfig = null;
-    let viewMarksList = [];
-    const AMP = String.fromCharCode(38);
+    let termsCache = [];
+    let examsCache = [];
+    let activitiesCache = [];
+    let exportRowsCache = [];
+    let currentViewMeta = {};
+
+    function getMapValueCaseInsensitive(mapObj, key) {
+      if (!mapObj || !key) return null;
+      if (mapObj[key] !== undefined) return mapObj[key];
+      const target = String(key).trim().toLowerCase();
+      const matchedKey = Object.keys(mapObj).find(k => String(k).trim().toLowerCase() === target);
+      return matchedKey ? mapObj[matchedKey] : null;
+    }
+
+    function getClassSubjectsFromDb(cls) {
+      let subList = [];
+      if (localConfig && localConfig.classSubjectMap) {
+        const raw = getMapValueCaseInsensitive(localConfig.classSubjectMap, cls);
+        if (Array.isArray(raw)) subList = raw.map(s => String(s).trim()).filter(Boolean);
+        else if (typeof raw === "string" && raw.trim() !== "") subList = raw.split(',').map(s => s.trim()).filter(Boolean);
+      }
+      if (subList.length === 0 && activitiesCache.length > 0) {
+        const actSubs = new Set();
+        activitiesCache.forEach(a => {
+          const clsArr = String(a.Class || "ALL").split(",").map(x => x.trim().toLowerCase());
+          if ((clsArr.includes("all") || clsArr.includes(cls.toLowerCase())) && Array.isArray(a.Subjects)) {
+            a.Subjects.forEach(s => { if (String(s).trim()) actSubs.add(String(s).trim()); });
+          }
+        });
+        subList = Array.from(actSubs);
+      }
+      return [...new Set(subList)];
+    }
+
+    function activityAppliesToSubject(actObj, subName) {
+      if (!actObj.subjects || actObj.subjects.length === 0) return true;
+      return actObj.subjects.some(s => String(s).trim().toLowerCase() === String(subName).trim().toLowerCase());
+    }
+
+    window.hideVmkWorkspace = function() {
+      ['vmkEmptyAlert', 'vmkActionBar', 'vmkTableContainer'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('d-none');
+      });
+      exportRowsCache = [];
+    };
 
     window.initViewMarksModule = async function() {
-      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData() : null;
-      const cDrop = document.getElementById('vmkClassSelect');
-      if (cDrop && localConfig && localConfig.classMap) {
-        cDrop.innerHTML = '<option value="ALL">All Classes</option>' + Object.keys(localConfig.classMap).map(c => `<option value="${c}">${c}</option>`).join('');
-      }
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+
+      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
 
       try {
-        const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-        const res = await (await fetch(`${scriptURL}?action=getExamMaster${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&_t=${Date.now()}`)).json();
-        const list = Array.isArray(res.data) ? res.data : [];
-        const eDrop = document.getElementById('vmkExamSelect');
-        if (eDrop) eDrop.innerHTML = list.map(x => `<option value="${x.ExamCode}">[${x.ExamCode}] ${x.ExamName}</option>`).join('');
-      } catch(e) {}
+        const [tRes, eRes, aRes] = await Promise.all([
+          db.from('Exam_Terms').select('*').eq('SchoolID', schoolId).order('Id', { ascending: true }),
+          db.from('Exam_Master').select('*').eq('SchoolID', schoolId).order('SequenceNo', { ascending: true }),
+          db.from('Exam_Activities').select('*').eq('SchoolID', schoolId).order('Id', { ascending: true })
+        ]);
+        termsCache = tRes.data || [];
+        examsCache = eRes.data || [];
+        activitiesCache = aRes.data || [];
+      } catch(e) {
+        console.error("VMK Init Error:", e);
+      }
+
+      const cDrop = document.getElementById('vmkClassSelect');
+      const bDrop = document.getElementById('vmkBatchSelect');
+
+      const clsKeys = (localConfig && localConfig.classMap) ? Object.keys(localConfig.classMap) : [];
+      if (cDrop) {
+        cDrop.innerHTML = clsKeys.length > 0
+          ? '<option value="">Select</option>' + clsKeys.map(c => `<option value="${c}">${c}</option>`).join('')
+          : '<option value="">No Classes Configured</option>';
+      }
+
+      const sessions = (localConfig && Array.isArray(localConfig.sessions) && localConfig.sessions.length > 0)
+        ? localConfig.sessions
+        : [...new Set(termsCache.map(t => String(t.Session || t.Batch || "").trim()).filter(Boolean))];
+
+      if (bDrop) {
+        bDrop.innerHTML = sessions.length > 0
+          ? '<option value="">Select</option>' + sessions.map(s => `<option value="${s}">${s}</option>`).join('')
+          : '<option value="">No Sessions Configured</option>';
+      }
+
+      document.getElementById('vmkSectionSelect').innerHTML = '<option value="ALL">All Sections</option>';
+      document.getElementById('vmkTermSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('vmkExamSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('vmkActivitySelect').innerHTML = '<option value="ALL">All Activities</option>';
+      document.getElementById('vmkSubjectSelect').innerHTML = '<option value="ALL">All</option>';
+      const srch = document.getElementById('vmkSearchInput');
+      if (srch) srch.value = "";
+      window.hideVmkWorkspace();
     };
 
     window.onVmkClassChange = function() {
       const cls = document.getElementById('vmkClassSelect').value;
       const sDrop = document.getElementById('vmkSectionSelect');
       const subDrop = document.getElementById('vmkSubjectSelect');
+      window.hideVmkWorkspace();
 
-      if (!cls || cls === 'ALL' || !localConfig) {
-        if (sDrop) sDrop.innerHTML = '<option value="ALL">All Sections</option>';
-        if (subDrop) subDrop.innerHTML = '<option value="ALL">All Subjects</option>';
+      if (!cls) {
+        sDrop.innerHTML = '<option value="ALL">All Sections</option>';
+        subDrop.innerHTML = '<option value="ALL">All</option>';
+        window.onVmkExamChange();
         return;
       }
 
-      const rawSecs = (localConfig.classMap && localConfig.classMap[cls]) ? localConfig.classMap[cls] : "A,B";
-      if (sDrop) sDrop.innerHTML = '<option value="ALL">All Sections</option>' + rawSecs.split(',').map(s => `<option value="${s.trim()}">Section ${s.trim()}</option>`).join('');
+      const rawSecs = (localConfig && localConfig.classMap) ? getMapValueCaseInsensitive(localConfig.classMap, cls) : "";
+      const secArr = Array.isArray(rawSecs)
+        ? rawSecs.map(s => String(s).trim()).filter(Boolean)
+        : (typeof rawSecs === "string" ? rawSecs.split(',').map(s => s.trim()).filter(Boolean) : []);
 
-      const rawSubs = (localConfig.classSubjectMap && localConfig.classSubjectMap[cls]) 
-        ? localConfig.classSubjectMap[cls].split(',').map(s => s.trim()).filter(Boolean) 
-        : ["ENGLISH", "HINDI", "MATHEMATICS", "SCIENCE", "SST"];
-      if (subDrop) subDrop.innerHTML = '<option value="ALL">All Subjects</option>' + rawSubs.map(s => `<option value="${s}">${s}</option>`).join('');
+      sDrop.innerHTML = '<option value="ALL">All Sections</option>' + secArr.map(s => `<option value="${s}">${s}</option>`).join('');
+
+      const subArr = getClassSubjectsFromDb(cls);
+      subDrop.innerHTML = subArr.length > 0
+        ? '<option value="ALL">All</option>' + subArr.map(s => `<option value="${s}">${s}</option>`).join('')
+        : '<option value="">No Subjects Mapped</option>';
+
+      window.onVmkExamChange();
     };
 
+    window.onVmkBatchChange = function() {
+      const selBatch = document.getElementById('vmkBatchSelect').value;
+      const tDrop = document.getElementById('vmkTermSelect');
+      document.getElementById('vmkExamSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('vmkActivitySelect').innerHTML = '<option value="ALL">All Activities</option>';
+      window.hideVmkWorkspace();
+      if (!selBatch) { tDrop.innerHTML = '<option value="">Select</option>'; return; }
+
+      const matched = termsCache.filter(t => String(t.Session || t.Batch || "").trim() === selBatch);
+      tDrop.innerHTML = '<option value="">Select</option>' + matched.map(t => {
+        const val = t.TermCode || t.TermID || t.TermName;
+        return `<option value="${val}">${t.TermName} - ${selBatch}</option>`;
+      }).join('');
+    };
+
+    window.onVmkTermChange = function() {
+      const selBatch = document.getElementById('vmkBatchSelect').value;
+      const selTerm = document.getElementById('vmkTermSelect').value;
+      const eDrop = document.getElementById('vmkExamSelect');
+      document.getElementById('vmkActivitySelect').innerHTML = '<option value="ALL">All Activities</option>';
+      window.hideVmkWorkspace();
+      if (!selBatch || !selTerm) { eDrop.innerHTML = '<option value="">Select</option>'; return; }
+
+      const matchedExams = examsCache.filter(e =>
+        String(e.Session || "").trim() === selBatch &&
+        String(e.TermCode || "").trim() === selTerm
+      );
+      eDrop.innerHTML = '<option value="">Select</option>' + matchedExams.map(e => `<option value="${e.ExamID}">${e.ExamName}</option>`).join('');
+    };
+
+    window.onVmkExamChange = function() {
+      const selBatch = document.getElementById('vmkBatchSelect').value;
+      const selTerm = document.getElementById('vmkTermSelect').value;
+      const selExam = document.getElementById('vmkExamSelect').value;
+      const selCls = document.getElementById('vmkClassSelect').value;
+      const aDrop = document.getElementById('vmkActivitySelect');
+      window.hideVmkWorkspace();
+      if (!selExam) { aDrop.innerHTML = '<option value="ALL">All Activities</option>'; return; }
+
+      const matched = activitiesCache.filter(a => {
+        if (selBatch && String(a.Session || "").trim() !== selBatch) return false;
+        if (selTerm && String(a.TermCode || "").trim() !== selTerm) return false;
+        if (String(a.ExamID || "").trim() !== selExam) return false;
+        if (selCls) {
+          const clsArr = String(a.Class || "ALL").split(",").map(x => x.trim().toLowerCase());
+          if (!clsArr.includes("all") && !clsArr.includes(selCls.toLowerCase())) return false;
+        }
+        return true;
+      });
+
+      aDrop.innerHTML = '<option value="ALL">All Activities</option>' + matched.map(a => {
+        const aid = a.ActivityID || a.Id;
+        return `<option value="${aid}">${a.ActivityName} (Max: ${a.MaxMarks})</option>`;
+      }).join('');
+    };
+
+    // ⚡ FETCH & RENDER PIVOT MARKS LEDGER
     window.fetchViewMarksData = async function() {
-      const exCode = document.getElementById('vmkExamSelect').value;
       const cls = document.getElementById('vmkClassSelect').value;
       const sec = document.getElementById('vmkSectionSelect').value;
-      const sub = document.getElementById('vmkSubjectSelect').value;
+      const batch = document.getElementById('vmkBatchSelect').value;
+      const term = document.getElementById('vmkTermSelect').value;
+      const examId = document.getElementById('vmkExamSelect').value;
+      const actSel = document.getElementById('vmkActivitySelect').value;
+      const subSel = document.getElementById('vmkSubjectSelect').value;
 
+      if (!cls || !sec || !batch || !term || !examId) {
+        alert("Please select Class, Section, Batch, Term, and Exam!");
+        return;
+      }
+
+      window.hideVmkWorkspace();
+
+      const allClassSubs = getClassSubjectsFromDb(cls);
+      if (allClassSubs.length === 0) {
+        document.getElementById('vmkEmptyAlert').classList.remove('d-none');
+        document.getElementById('vmkEmptyAlertMsg').innerText = `No subjects mapped for ${cls} in database.`;
+        return;
+      }
+
+      const targetSubjects = (subSel && subSel !== "ALL") ? [subSel] : allClassSubs;
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-      const tbody = document.getElementById('vmkDataTableBody');
-      tbody.innerHTML = `<tr><td colspan='10' class='text-center py-4 text-muted fw-bold'><i class='fas fa-spinner fa-spin text-primary me-2'></i>Fetching marks ledger...</td></tr>`;
+      const schoolId = user.schoolId;
+      const examObj = examsCache.find(e => String(e.ExamID) === String(examId)) || {};
+      const examName = examObj.ExamName || examId;
+      const targetExamCode = String(examObj.ExamCode && examObj.ExamCode !== "NA" ? examObj.ExamCode : examId);
+      const actDrop = document.getElementById('vmkActivitySelect');
+      const actLabel = actDrop.options[actDrop.selectedIndex]?.text || "All Activities";
+
+      // Resolve Activities
+      let matchedActs = activitiesCache.filter(a => {
+        if (String(a.Session || "").trim() !== batch) return false;
+        if (String(a.TermCode || "").trim() !== term) return false;
+        if (String(a.ExamID || "").trim() !== examId) return false;
+        const clsArr = String(a.Class || "ALL").split(",").map(x => x.trim().toLowerCase());
+        if (!clsArr.includes("all") && !clsArr.includes(cls.toLowerCase())) return false;
+        return true;
+      });
+
+      if (actSel !== "ALL") matchedActs = matchedActs.filter(a => String(a.ActivityID || a.Id) === actSel);
+      if (matchedActs.length === 0) {
+        matchedActs = [{ ActivityID: "MAIN", ActivityName: "Marks", MaxMarks: examObj.MaxMarks || 100, Subjects: [] }];
+      }
+
+      const targetActivities = matchedActs.map(a => {
+        const aid = String(a.ActivityID || a.Id);
+        const upName = String(a.ActivityName || "Marks").toUpperCase();
+        const actType = upName.includes("RIGHT") ? "OMR_RIGHT" : (upName.includes("WRONG") ? "OMR_WRONG" : "SCORE");
+        return {
+          id: aid,
+          name: a.ActivityName || "Marks",
+          max: parseFloat(a.MaxMarks) || 100,
+          type: actType,
+          subjects: Array.isArray(a.Subjects) ? a.Subjects : []
+        };
+      });
+
+      const isOmrAllMode = (actSel === "ALL") &&
+        targetActivities.some(a => a.type === "OMR_RIGHT") &&
+        targetActivities.some(a => a.type === "OMR_WRONG");
+
+      currentViewMeta = {
+        schoolName: user.schoolName || (localConfig && localConfig.schoolName) || "School Marks Sheet",
+        batch, term, examName, cls, sec, actLabel, subSel
+      };
 
       try {
-        const fetchUrl = `${scriptURL}?action=getStudentMarksLedger${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&examCode=${encodeURIComponent(exCode)}&className=${encodeURIComponent(cls)}&section=${encodeURIComponent(sec)}&subject=${encodeURIComponent(sub)}&_t=${Date.now()}`;
-        const res = await (await fetch(fetchUrl)).json();
-        viewMarksList = Array.isArray(res.data) ? res.data : [];
+        let stuQuery = db.from('Students').select('*')
+          .eq('SchoolID', schoolId)
+          .eq('Class', cls)
+          .eq('Status', 'ACTIVE');
+        if (sec !== "ALL") stuQuery = stuQuery.eq('Section', sec);
 
-        if (viewMarksList.length === 0) {
-          tbody.innerHTML = `<tr><td colspan='10' class='text-center py-5 text-muted fw-bold'>No marks entries found for selected filter.</td></tr>`;
+        // Section-transfer-safe: fetch all Class marks for this Session & match strictly by StudId!
+        const mrkQuery = db.from('Student_Marks').select('*')
+          .eq('SchoolID', schoolId)
+          .eq('Session', batch)
+          .eq('Class', cls);
+
+        const [stuRes, mrkRes] = await Promise.all([stuQuery, mrkQuery]);
+        if (stuRes.error) throw stuRes.error;
+        if (mrkRes.error) throw mrkRes.error;
+
+        const students = (stuRes.data || []).sort((a, b) => {
+          const sCmp = String(a.Section || "").localeCompare(String(b.Section || ""));
+          if (sCmp !== 0) return sCmp;
+          return (parseInt(a.RollNo, 10) || 0) - (parseInt(b.RollNo, 10) || 0);
+        });
+
+        if (students.length === 0) {
+          document.getElementById('vmkEmptyAlert').classList.remove('d-none');
+          document.getElementById('vmkEmptyAlertMsg').innerText = `No active students found in ${cls}${sec === "ALL" ? " (All Sections)" : " - Section " + sec}.`;
           return;
         }
 
-        let html = "";
-        viewMarksList.forEach((m, idx) => {
-          html += `
-            <tr>
-              <td>${idx + 1}</td>
-              <td><span class='badge bg-light text-primary border font-monospace'>${m.ExamCode}</span></td>
-              <td>${m.Class} (${m.Section})</td>
-              <td><strong class='text-dark'>${m.RollNo || '-'}</strong></td>
-              <td class='text-start ps-2 fw-bold text-dark'>${m.StudentName}</td>
-              <td><span class='badge bg-light text-dark border'>${m.SubjectName}</span></td>
-              <td>${m.TheoryMarks}</td>
-              <td>${m.PracticalMarks}</td>
-              <td><strong class='fs-6 text-dark'>${m.TotalMarks}</strong> / ${m.MaxMarks}</td>
-              <td><span class='badge ${m.Grade === "E" ? "bg-danger" : "bg-success"}'>${m.Grade || "-"}</span></td>
-            </tr>
-          `;
+        // Index Marks strictly by StudId (fallback AdmissionNo) :: Subject :: ActivityID/ActivityName
+        const marksMap = {};
+        const targetExNameLow = String(examName).trim().toLowerCase();
+        (mrkRes.data || []).forEach(m => {
+          const mExId = String(m.ExamID || "").trim().toLowerCase();
+          const mExCode = String(m.ExamCode || "").trim().toLowerCase();
+          const mExName = String(m.ExamName || "").trim().toLowerCase();
+          const isExMatch = (mExId === String(examId).toLowerCase()) ||
+                            (mExCode && mExCode === targetExamCode.toLowerCase()) ||
+                            (mExName && mExName === targetExNameLow);
+          if (!isExMatch) return;
+
+          const subK = String(m.Subject || m.SubjectName || "").trim().toUpperCase();
+          if (!subK) return;
+
+          const sKeys = [
+            String(m.StudId || "").trim().toUpperCase(),
+            String(m.AdmissionNo || "").trim().toUpperCase()
+          ].filter(Boolean);
+          const aKeys = [
+            String(m.ActivityID || "MAIN").trim().toUpperCase(),
+            String(m.ActivityName || "").trim().toUpperCase()
+          ].filter(Boolean);
+
+          const entry = {
+            marks: m.MarksObtained,
+            isAbsent: !!m.IsAbsent || String(m.MarksObtained || "").trim().toUpperCase() === "AB"
+          };
+          sKeys.forEach(sk => aKeys.forEach(ak => {
+            marksMap[`${sk}::${subK}::${ak}`] = entry;
+          }));
         });
 
-        tbody.innerHTML = html;
+        // Build Dynamic Table Header
+        const thead = document.getElementById('vmkTableHead');
+        const singleActMode = (targetActivities.length === 1);
+        const totalColTitle = isOmrAllMode ? "Total (Right)" : "Total";
+
+        if (singleActMode) {
+          thead.innerHTML = `<tr>
+            <th style='width:42px;'>S.No</th>
+            <th style='width:72px;'>Class</th>
+            <th style='width:50px;'>Sec</th>
+            <th style='width:60px;'>Roll No.</th>
+            <th style='text-align:left; min-width:155px;'>Students Name</th>
+            <th style='text-align:left; min-width:145px;'>Father Name</th>
+            <th style='width:110px;'>Admission No</th>
+            ${targetSubjects.map(sub => `<th>${sub}</th>`).join('')}
+            <th style='width:80px;' class='bg-primary bg-opacity-10 text-primary'>${totalColTitle}</th>
+          </tr>`;
+        } else {
+          const perSubSpan = targetActivities.length + (isOmrAllMode ? 1 : 0);
+          let r1 = `<tr>
+            <th rowspan='2' style='width:42px;'>S.No</th>
+            <th rowspan='2' style='width:72px;'>Class</th>
+            <th rowspan='2' style='width:50px;'>Sec</th>
+            <th rowspan='2' style='width:60px;'>Roll No.</th>
+            <th rowspan='2' style='text-align:left; min-width:155px;'>Students Name</th>
+            <th rowspan='2' style='text-align:left; min-width:145px;'>Father Name</th>
+            <th rowspan='2' style='width:110px;'>Admission No</th>
+            ${targetSubjects.map(sub => `<th colspan='${perSubSpan}' class='bg-primary bg-opacity-10 text-primary'>${sub}</th>`).join('')}
+            <th rowspan='2' style='width:85px;' class='bg-success bg-opacity-10 text-success'>${totalColTitle}</th>
+          </tr>`;
+          let r2 = `<tr>`;
+          targetSubjects.forEach(() => {
+            targetActivities.forEach(a => {
+              r2 += `<th>${a.name} (${a.max})</th>`;
+            });
+            if (isOmrAllMode) r2 += `<th class='text-secondary'>Blank</th>`;
+          });
+          r2 += `</tr>`;
+          thead.innerHTML = r1 + r2;
+        }
+
+        // Build Body & Excel Export Rows
+        exportRowsCache = [];
+        const tbody = document.getElementById('vmkTableBody');
+
+        tbody.innerHTML = students.map((s, idx) => {
+          const studId = String(s.StudId || s.AdmissionNo || "").trim();
+          const admNo = String(s.AdmissionNo || "").trim();
+          const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.replace(/\s+/g, " ").trim();
+          const fatherName = String(s.FatherName || "-").trim();
+          const stuSec = String(s.Section || "").trim();
+          const stuRoll = s.RollNo || (idx + 1);
+
+          // Excel row strictly includes: S.No, StudId, Class, Section, RollNo, AdmissionNo, StudentName, FatherName, [Marks...], Total
+          const exRow = {
+            "S.No": idx + 1,
+            "StudId": studId,
+            "Class": cls,
+            "Section": stuSec,
+            "RollNo": stuRoll,
+            "AdmissionNo": admNo,
+            "StudentName": fullName,
+            "FatherName": fatherName
+          };
+
+          let rowGrandTotal = 0;
+          let anyScoreFound = false;
+          let marksCellsHtml = "";
+
+          targetSubjects.forEach(sub => {
+            const subUp = sub.toUpperCase();
+            let subR = 0, subW = 0, subRightMax = 0, subAnyOmrVal = false, subAnyAb = false;
+
+            targetActivities.forEach(a => {
+              const colKey = singleActMode ? sub : `${sub} (${a.name})`;
+
+              if (!activityAppliesToSubject(a, sub)) {
+                marksCellsHtml += `<td class='text-muted'>—</td>`;
+                exRow[colKey] = "-";
+                return;
+              }
+
+              const mObj =
+                marksMap[`${studId.toUpperCase()}::${subUp}::${a.id.toUpperCase()}`] ||
+                marksMap[`${admNo.toUpperCase()}::${subUp}::${a.id.toUpperCase()}`] ||
+                marksMap[`${studId.toUpperCase()}::${subUp}::${a.name.toUpperCase()}`] ||
+                marksMap[`${admNo.toUpperCase()}::${subUp}::${a.name.toUpperCase()}`];
+
+              if (!mObj) {
+                marksCellsHtml += `<td class='text-muted'>-</td>`;
+                exRow[colKey] = "";
+                return;
+              }
+
+              if (mObj.isAbsent) {
+                marksCellsHtml += `<td><span class='badge bg-danger bg-opacity-10 text-danger border border-danger-subtle'>AB</span></td>`;
+                exRow[colKey] = "AB";
+                subAnyAb = true;
+                subAnyOmrVal = true;
+                return;
+              }
+
+              const num = parseFloat(mObj.marks);
+              const disp = !isNaN(num) ? parseFloat(num.toFixed(2)) : String(mObj.marks);
+              marksCellsHtml += `<td>${disp}</td>`;
+              exRow[colKey] = disp;
+
+              if (!isNaN(num)) {
+                if (isOmrAllMode) {
+                  if (a.type === "OMR_RIGHT") {
+                    subR = num;
+                    subRightMax = a.max;
+                    subAnyOmrVal = true;
+                    rowGrandTotal += num;
+                    anyScoreFound = true;
+                  } else if (a.type === "OMR_WRONG") {
+                    subW = num;
+                    subAnyOmrVal = true;
+                  }
+                } else {
+                  rowGrandTotal += num;
+                  anyScoreFound = true;
+                }
+              }
+            });
+
+            if (isOmrAllMode) {
+              const blankKey = `${sub} (Blank)`;
+              if (!subAnyOmrVal) {
+                marksCellsHtml += `<td class='text-muted'>-</td>`;
+                exRow[blankKey] = "";
+              } else if (subAnyAb) {
+                marksCellsHtml += `<td class='text-danger'>AB</td>`;
+                exRow[blankKey] = "AB";
+              } else {
+                const rAct = targetActivities.find(x => x.type === "OMR_RIGHT");
+                const maxQ = subRightMax || (rAct ? rAct.max : 0);
+                const blankVal = parseFloat(Math.max(0, maxQ - (subR + subW)).toFixed(2));
+                marksCellsHtml += `<td class='text-secondary'>${blankVal}</td>`;
+                exRow[blankKey] = blankVal;
+              }
+            }
+          });
+
+          const totalDisp = anyScoreFound ? parseFloat(rowGrandTotal.toFixed(2)) : 0;
+          exRow[totalColTitle] = totalDisp;
+          exportRowsCache.push(exRow);
+
+          const searchAttr = `${fullName} ${fatherName} ${admNo} ${studId} ${stuRoll} ${stuSec}`.toLowerCase();
+
+          return `<tr data-search='${searchAttr.replace(/'/g, "")}'>
+            <td>${idx + 1}</td>
+            <td>${cls}</td>
+            <td><span class='badge bg-light text-dark border'>${stuSec || '-'}</span></td>
+            <td><strong class='text-primary'>${stuRoll}</strong></td>
+            <td class='text-start fw-bold text-dark'>${fullName}</td>
+            <td class='text-start text-secondary'>${fatherName}</td>
+            <td class='text-secondary'>${admNo || '-'}</td>
+            ${marksCellsHtml}
+            <td class='fw-bold text-dark bg-light'>${totalDisp}</td>
+          </tr>`;
+        }).join('');
+
+        document.getElementById('vmkCountStudents').innerText = students.length;
+        const modePill = document.getElementById('vmkModePill');
+        if (isOmrAllMode) {
+          modePill.classList.remove('d-none');
+          document.getElementById('vmkModeText').innerText = "OMR (Total = Right)";
+        } else {
+          modePill.classList.add('d-none');
+        }
+
+        document.getElementById('vmkActionBar').classList.remove('d-none');
+        document.getElementById('vmkTableContainer').classList.remove('d-none');
+        const srch = document.getElementById('vmkSearchInput');
+        if (srch) srch.value = "";
 
       } catch(err) {
-        tbody.innerHTML = `<tr><td colspan='10' class='text-center py-4 text-danger fw-bold'>Error loading marks.</td></tr>`;
+        console.error("VMK Fetch Error:", err);
+        alert("Failed to load View Marks: " + err.message);
       }
     };
 
+    window.filterVmkTableRows = function() {
+      const q = (document.getElementById('vmkSearchInput')?.value || "").trim().toLowerCase();
+      const rows = document.querySelectorAll('#vmkTableBody tr');
+      rows.forEach(tr => {
+        const hay = tr.getAttribute('data-search') || "";
+        tr.style.display = (!q || hay.includes(q)) ? "" : "none";
+      });
+    };
+
+    // 📥 EXPORT AS EXCEL (WITH CLASS, SEC, ROLL, ADMNO, STUDID, NAME, FATHERNAME, ALL MARKS & TOTAL)
     window.exportViewMarksExcel = function() {
-      if (viewMarksList.length === 0) { alert("Please search marks first!"); return; }
-      const ws = XLSX.utils.json_to_sheet(viewMarksList);
+      if (typeof XLSX === 'undefined') {
+        alert("Excel library (XLSX) not loaded!");
+        return;
+      }
+      if (!exportRowsCache || exportRowsCache.length === 0) {
+        alert("Please click Submit to load marks first!");
+        return;
+      }
+
+      const ws = XLSX.utils.json_to_sheet(exportRowsCache);
+      const cols = Object.keys(exportRowsCache[0]).map(k => ({
+        wch: Math.max(11, k.length + 3)
+      }));
+      ws['!cols'] = cols;
+
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Marks_Ledger");
-      XLSX.writeFile(wb, `Student_Marks_Ledger_${new Date().toISOString().split('T')[0]}.xlsx`);
+      XLSX.utils.book_append_sheet(wb, ws, "View_Marks");
+      const m = currentViewMeta;
+      const fname = `ViewMarks_${m.cls}_${m.sec}_${m.examName}_${m.actLabel}.xlsx`.replace(/[^a-zA-Z0-9._-]/g, "_");
+      XLSX.writeFile(wb, fname);
+    };
+
+    // 🖨️ PRINT CLEAN LANDSCAPE MARKS SHEET
+    window.printViewMarksSheet = function() {
+      if (!exportRowsCache || exportRowsCache.length === 0) {
+        alert("Please click Submit to load marks first!");
+        return;
+      }
+      const m = currentViewMeta;
+      const tableHtml = document.getElementById('vmkDataTable').outerHTML;
+      const win = window.open('', '_blank', 'width=1100,height=750');
+      if (!win) { alert("Popup blocked! Please allow popups to print."); return; }
+
+      win.document.write(`
+        <html>
+        <head>
+          <title>View Marks - ${m.cls} ${m.sec}</title>
+          <style>
+            @page { size: landscape; margin: 10mm; }
+            body { font-family: Arial, sans-serif; color: #111; margin: 0; padding: 10px; }
+            .hdr { text-align: center; margin-bottom: 12px; border-bottom: 2px solid #333; padding-bottom: 8px; }
+            .hdr h2 { margin: 0 0 4px 0; font-size: 18px; text-transform: uppercase; }
+            .hdr p { margin: 2px 0; font-size: 12px; font-weight: bold; color: #333; }
+            table { width: 100%; border-collapse: collapse; font-size: 11px; }
+            th, td { border: 1px solid #444; padding: 5px 4px; text-align: center; }
+            th { background: #f1f5f9; font-weight: bold; }
+            .text-start { text-align: left !important; }
+            .badge { font-weight: bold; }
+          </style>
+        </head>
+        <body>
+          <div class="hdr">
+            <h2>${m.schoolName}</h2>
+            <p>Marks Register | Batch: ${m.batch} | Exam: ${m.examName} | Activity: ${m.actLabel}</p>
+            <p>Class: ${m.cls} | Section: ${m.sec} | Subject: ${m.subSel} | Printed: ${new Date().toLocaleDateString()}</p>
+          </div>
+          ${tableHtml}
+        </body>
+        </html>
+      `);
+      win.document.close();
+      win.focus();
+      setTimeout(() => { win.print(); }, 350);
     };
 
     window.initViewMarksModule();
