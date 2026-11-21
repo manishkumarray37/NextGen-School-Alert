@@ -37396,7 +37396,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 </template>
 
 <!-- =================================================================== -->
-<!-- MODULE: MANAGE MARKS ENTRY (CLEAN UI + SINGLE UPSERT + OMR BLANK)   -->
+<!-- MODULE: MANAGE MARKS ENTRY (EXCEL SMART PASTE + STRICT VALIDATION)  -->
 <!-- =================================================================== -->
 <template id='tpl-SubjectMarksEntry'>
   <style>
@@ -37412,6 +37412,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     .marks-input { width: 82px; height: 34px; border: 1.5px solid #cbd5e1; border-radius: 5px; text-align: center; font-weight: 800; font-size: 13px; color: #0f172a; margin: 0 auto; }
     .marks-input:focus { border-color: #0284c7; outline: none; background: #f0f9ff; }
     .marks-input.is-absent { background: #fee2e2 !important; color: #dc2626 !important; border-color: #f87171 !important; }
+    .marks-input.is-invalid-mark { background: #fff1f2 !important; color: #be123c !important; border-color: #e11d48 !important; box-shadow: 0 0 0 2px rgba(225,29,72,0.2); }
     .marks-input:disabled { background: #f1f5f9 !important; color: #94a3b8 !important; cursor: not-allowed; }
 
     .kpi-badge-pill { font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; display: inline-flex; align-items: center; gap: 5px; }
@@ -37510,7 +37511,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           <span class='kpi-badge-pill'>Mode: <strong class='text-info' id='smeModeBadge'>Standard</strong></span>
           <span class='kpi-badge-pill'>Total Max Marks: <strong class='text-success' id='smeTotalMaxBadge'>100</strong></span>
         </div>
-        <small class='text-muted'>Tip: Type <strong>AB</strong> for Absent. Press <strong>Enter</strong> to move down.</small>
+        <small class='text-muted'>Tip: Type <strong>AB</strong> for Absent. Direct <strong>Excel Copy-Paste</strong> supported!</small>
       </div>
 
       <!-- 3. DYNAMIC MARKS ENTRY TABLE -->
@@ -37523,7 +37524,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       <!-- 4. SAVE BUTTON BAR (STRICTLY HIDDEN WHEN 0 STUDENTS) -->
       <div class='d-flex justify-content-between align-items-center pt-2 border-top d-none' id='smeSaveBar'>
-        <span class='text-muted small'><i class='fas fa-shield-alt text-success me-1'></i> Marks are validated against Max Marks &amp; Freeze status.</span>
+        <span class='text-muted small'><i class='fas fa-shield-alt text-success me-1'></i> Marks are strictly validated against Max Marks &amp; Freeze status.</span>
         <button class='btn btn-success px-4 py-2 fw-bold shadow-sm' id='btnSaveSubjectMarks' onclick='window.submitSubjectMarksData()' type='button'>
           <i class='fas fa-save me-1'></i> Save Subject Marks
         </button>
@@ -37541,9 +37542,14 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     let freezeMap = {};
     let currentStudentsList = [];
     let activeActivities = [];
-    let existingDbRowMap = {}; // "admNo::actId" -> { id, markId, marks }
+    let existingDbRowMap = {};
     let isOmrRightWrongMode = false;
     let totalMaxSum = 100;
+
+    function isStrictValidMark(str) {
+      if (str === "" || str === "AB") return true;
+      return /^\d+(\.\d{1,2})?$/.test(str);
+    }
 
     window.initSubjectMarksEntryModule = async function() {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
@@ -37705,7 +37711,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         currentStudentsList = stuRes.data || [];
         currentStudentsList.sort((a, b) => (parseInt(a.RollNo, 10) || 0) - (parseInt(b.RollNo, 10) || 0));
 
-        // 0 STUDENTS GUARD: Hide Save Bar & Table completely!
         if (currentStudentsList.length === 0) {
           const emptyEl = document.getElementById('smeEmptyAlert');
           emptyEl.classList.remove('d-none');
@@ -37713,7 +37718,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           return;
         }
 
-        // Build Freeze Map
         freezeMap = {};
         (fRes.data || []).forEach(f => {
           if (f.ActivityID && f.FreezedClasses) {
@@ -37721,7 +37725,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           }
         });
 
-        // Resolve Activities
         let matchedActs = activitiesCache.filter(a => {
           if (String(a.Session || "").trim() !== batch) return false;
           if (String(a.TermCode || "").trim() !== term) return false;
@@ -37743,16 +37746,9 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           const isFrozen = frozenList.includes(cls.toLowerCase()) || frozenList.includes("all");
           const upName = String(a.ActivityName || "Marks").toUpperCase();
           const actType = upName.includes("RIGHT") ? "OMR_RIGHT" : (upName.includes("WRONG") ? "OMR_WRONG" : "SCORE");
-          return {
-            id: aid,
-            name: a.ActivityName || "Marks",
-            max: parseFloat(a.MaxMarks) || 100,
-            isFrozen,
-            type: actType
-          };
+          return { id: aid, name: a.ActivityName || "Marks", max: parseFloat(a.MaxMarks) || 100, isFrozen, type: actType };
         });
 
-        // Detect OMR Right/Wrong Mode automatically
         const hasRight = activeActivities.some(a => a.type === "OMR_RIGHT");
         const hasWrong = activeActivities.some(a => a.type === "OMR_WRONG");
         isOmrRightWrongMode = (hasRight && hasWrong);
@@ -37766,7 +37762,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           document.getElementById('smeModeBadge').innerText = "Standard (Activity Marks)";
         }
 
-        // Show Freeze Alert if any
         const frozenNames = activeActivities.filter(a => a.isFrozen).map(a => a.name);
         const allFrozen = activeActivities.every(a => a.isFrozen);
         if (frozenNames.length > 0) {
@@ -37781,7 +37776,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         document.getElementById('smeCountStudents').innerText = currentStudentsList.length;
         document.getElementById('smeTotalMaxBadge').innerText = totalMaxSum;
 
-        // Build Existing Marks Lookup (Matching Subject/SubjectName & ExamID/ExamCode/ExamName)
         existingDbRowMap = {};
         const targetExName = String(examObj.ExamName || "").trim().toLowerCase();
         (marksRes.data || []).forEach(m => {
@@ -37811,7 +37805,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           }));
         });
 
-        // Build OMR Fallback Map (in case raw OMR_Results exists before sync)
         const omrFallbackMap = {};
         (omrRes.data || []).forEach(r => {
           if (String(r.ExamName || "").trim().toLowerCase().includes(targetExName)) {
@@ -37822,7 +37815,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           }
         });
 
-        // Render Table Header (NO Total Obtained / NO Grade on Marks Entry)
         const thead = document.getElementById('smeDataTableHead');
         thead.innerHTML = `<tr>
           <th style='width:45px;'>#</th>
@@ -37833,7 +37825,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           ${isOmrRightWrongMode ? `<th style='width:95px;' class='text-secondary'>Blank (Auto)</th>` : ''}
         </tr>`;
 
-        // Render Rows
         const tbody = document.getElementById('smeDataTableBody');
         tbody.innerHTML = currentStudentsList.map((s, idx) => {
           const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.trim();
@@ -37849,20 +37840,22 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               existingDbRowMap[`${studId.toUpperCase()}::${a.name.toUpperCase()}`];
 
             let val = existingObj ? existingObj.marks : undefined;
-
             if (val === undefined && omrSc) {
               if (a.type === "OMR_RIGHT") val = omrSc.R;
               else if (a.type === "OMR_WRONG") val = omrSc.W;
               else if (activeActivities.length === 1) val = omrSc.R;
             }
 
-            const dispVal = (val !== undefined && val !== null) ? val : "";
-            const isAb = String(dispVal).toUpperCase() === "AB";
+            const dispVal = (val !== undefined && val !== null) ? String(val).trim() : "";
+            const isAb = dispVal.toUpperCase() === "AB";
+            const isBad = dispVal !== "" && !isStrictValidMark(dispVal.toUpperCase());
 
             return `<td>
-              <input type='text' class='marks-input ${isAb ? "is-absent" : ""}' id='smeInp_${idx}_${aIdx}'
+              <input type='text' class='marks-input ${isAb ? "is-absent" : ""} ${isBad ? "is-invalid-mark" : ""}'
+                     id='smeInp_${idx}_${aIdx}'
                      value='${dispVal}' placeholder='0' ${a.isFrozen ? "disabled='disabled'" : ""}
-                     oninput='window.calcStudentMarksLive(${idx}, ${aIdx})'
+                     oninput='window.calcStudentMarksLive(${idx}, ${aIdx}, event)'
+                     onpaste='window.handleSmePaste(event, ${idx}, ${aIdx})'
                      onkeydown='if(event.key==="Enter"){ event.preventDefault(); window.focusNextSmeInput(${idx}, ${aIdx}); }'>
             </td>`;
           }).join('');
@@ -37886,25 +37879,121 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
     };
 
-    // Live Validation & Auto-Blank Calculation (OMR Mode)
-    window.calcStudentMarksLive = function(rowIdx, actIdx) {
+    // 📋 SMART EXCEL COPY-PASTE (VERTICAL + 2D MULTI-COLUMN SUPPORT)
+    window.handleSmePaste = function(e, startRow, startAct) {
+      const clipText = ((e.clipboardData || window.clipboardData).getData('text') || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+      const trimmedEnd = clipText.replace(/\n+$/, "");
+      if (!trimmedEnd) return;
+
+      e.preventDefault();
+
+      // Split into rows; if single line has space-separated numbers (e.g. "12 11 15 16"), treat as vertical list
+      let rawRows = trimmedEnd.split("\n");
+      if (rawRows.length === 1 && !trimmedEnd.includes("\t") && /\s+/.test(trimmedEnd.trim())) {
+        rawRows = trimmedEnd.trim().split(/\s+/);
+      }
+
+      const skippedMsgs = [];
+      const touchedRows = new Set();
+
+      // Pass 1: Fill cells with strict per-cell validation
+      rawRows.forEach((line, rOffset) => {
+        const rIdx = startRow + rOffset;
+        if (rIdx >= currentStudentsList.length) return;
+        const cols = line.split("\t");
+
+        cols.forEach((rawCell, cOffset) => {
+          const aIdx = startAct + cOffset;
+          if (aIdx >= activeActivities.length) return;
+
+          const inp = document.getElementById(`smeInp_${rIdx}_${aIdx}`);
+          if (!inp || inp.disabled) return;
+
+          let v = rawCell.trim().toUpperCase();
+          if (v === "A") v = "AB";
+
+          if (v === "") {
+            inp.value = "";
+            inp.classList.remove('is-absent', 'is-invalid-mark');
+            touchedRows.add(rIdx);
+            return;
+          }
+
+          if (!isStrictValidMark(v)) {
+            skippedMsgs.push(`Row ${rIdx + 1} (${activeActivities[aIdx].name}): Invalid value "${rawCell.trim()}"`);
+            return;
+          }
+
+          if (v !== "AB") {
+            const num = parseFloat(v);
+            if (num < 0 || num > activeActivities[aIdx].max) {
+              skippedMsgs.push(`Row ${rIdx + 1} (${activeActivities[aIdx].name}): ${num} exceeds Max ${activeActivities[aIdx].max}`);
+              return;
+            }
+          }
+
+          inp.value = v;
+          inp.classList.remove('is-invalid-mark');
+          if (v === "AB") inp.classList.add('is-absent');
+          else inp.classList.remove('is-absent');
+          touchedRows.add(rIdx);
+        });
+      });
+
+      // Pass 2: Row-level OMR Right+Wrong <= Max check & Blank recalculation
+      touchedRows.forEach(rIdx => {
+        if (isOmrRightWrongMode) {
+          let rVal = 0, wVal = 0, wInp = null;
+          activeActivities.forEach((a, aIdx) => {
+            const el = document.getElementById(`smeInp_${rIdx}_${aIdx}`);
+            if (!el) return;
+            const n = parseFloat(el.value.trim()) || 0;
+            if (a.type === "OMR_RIGHT") rVal = n;
+            else if (a.type === "OMR_WRONG") { wVal = n; wInp = el; }
+          });
+          if ((rVal + wVal) > totalMaxSum) {
+            if (wInp) wInp.value = "";
+            skippedMsgs.push(`Row ${rIdx + 1}: Right (${rVal}) + Wrong (${wVal}) exceeded Full Marks (${totalMaxSum}) — Wrong cleared.`);
+          }
+        }
+        window.calcStudentMarksLive(rIdx, -1);
+      });
+
+      if (skippedMsgs.length > 0) {
+        alert("⚠️ Kuch pasted values invalid/Max Marks se zyada the (skip kar diye gaye):\n\n" + skippedMsgs.slice(0, 8).join("\n") + (skippedMsgs.length > 8 ? `\n...aur ${skippedMsgs.length - 8} aur.` : ""));
+      }
+    };
+
+    // Live Strict Validation & Auto-Blank Calculation (OMR Mode)
+    window.calcStudentMarksLive = function(rowIdx, actIdx, evt) {
       if (actIdx >= 0) {
         const inp = document.getElementById(`smeInp_${rowIdx}_${actIdx}`);
         const maxLim = activeActivities[actIdx].max;
         let v = inp.value.trim().toUpperCase();
+        const isDeleting = evt && evt.inputType && evt.inputType.includes('delete');
 
-        if (v === "AB" || v === "A") {
+        if (v === "AB" || (v === "A" && !isDeleting)) {
           inp.value = "AB";
           inp.classList.add('is-absent');
+          inp.classList.remove('is-invalid-mark');
+        } else if (v === "A" && isDeleting) {
+          inp.value = "";
+          inp.classList.remove('is-absent', 'is-invalid-mark');
         } else {
           inp.classList.remove('is-absent');
-          const num = parseFloat(v);
-          if (!isNaN(num) && num < 0) {
-            alert(`⚠️ Marks cannot be negative!`);
+          if (v === "") {
+            inp.classList.remove('is-invalid-mark');
+          } else if (!/^\d+(\.\d{0,2})?$/.test(v)) {
+            alert(`⚠️ Invalid entry "${v}"! Sirf number (0 - ${maxLim}) ya "AB" enter karein.`);
             inp.value = "";
-          } else if (!isNaN(num) && num > maxLim) {
-            alert(`⚠️ Maximum Marks for ${activeActivities[actIdx].name} is ${maxLim}!`);
-            inp.value = "";
+            inp.classList.remove('is-invalid-mark');
+          } else {
+            const num = parseFloat(v);
+            if (num > maxLim) {
+              alert(`⚠️ Maximum Marks for ${activeActivities[actIdx].name} is ${maxLim}!`);
+              inp.value = "";
+            }
+            inp.classList.remove('is-invalid-mark');
           }
         }
       }
@@ -37921,12 +38010,11 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           const val = el.value.trim().toUpperCase();
           if (val !== "") anyEntered = true;
           if (val !== "AB") allAbsent = false;
-          const n = parseFloat(val) || 0;
+          const n = isStrictValidMark(val) && val !== "AB" ? (parseFloat(val) || 0) : 0;
           if (a.type === "OMR_RIGHT") rVal = n;
           else if (a.type === "OMR_WRONG") wVal = n;
         });
 
-        // Validate Right + Wrong <= totalMaxSum
         if (actIdx >= 0 && (rVal + wVal) > totalMaxSum) {
           alert(`⚠️ Right (${rVal}) + Wrong (${wVal}) cannot exceed Full Marks (${totalMaxSum})!`);
           document.getElementById(`smeInp_${rowIdx}_${actIdx}`).value = "";
@@ -37947,7 +38035,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       if (next && !next.disabled) { next.focus(); next.select(); }
     };
 
-    // 💾 SINGLE-CLICK UPSERT TO "Student_Marks" (+ DELETE CLEARED CELLS)
+    // 💾 STRICT VALIDATION + SINGLE-CLICK UPSERT TO "Student_Marks"
     window.submitSubjectMarksData = async function() {
       if (currentStudentsList.length === 0) {
         alert("⚠️ No active students found to save marks!");
@@ -37975,6 +38063,43 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       const recordsToUpsert = [];
       const idsToDelete = [];
+
+      // Strict Validation Pass BEFORE saving anything!
+      for (let idx = 0; idx < currentStudentsList.length; idx++) {
+        const s = currentStudentsList[idx];
+        const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.trim();
+        let rowRight = 0, rowWrong = 0;
+
+        for (let aIdx = 0; aIdx < activeActivities.length; aIdx++) {
+          const a = activeActivities[aIdx];
+          if (a.isFrozen) continue;
+          const inp = document.getElementById(`smeInp_${idx}_${aIdx}`);
+          const rawVal = inp.value.trim().toUpperCase();
+
+          if (rawVal !== "" && !isStrictValidMark(rawVal)) {
+            inp.classList.add('is-invalid-mark');
+            inp.focus();
+            alert(`❌ Invalid marks "${rawVal}" for ${fullName} (${a.name})! Kripya sahi single number (0-${a.max}) ya AB enter karein.`);
+            return;
+          }
+          if (rawVal !== "" && rawVal !== "AB") {
+            const num = parseFloat(rawVal);
+            if (num < 0 || num > a.max) {
+              inp.classList.add('is-invalid-mark');
+              inp.focus();
+              alert(`❌ ${fullName} (${a.name}): Marks ${num} exceeds Max Marks (${a.max})!`);
+              return;
+            }
+            if (a.type === "OMR_RIGHT") rowRight = num;
+            else if (a.type === "OMR_WRONG") rowWrong = num;
+          }
+        }
+
+        if (isOmrRightWrongMode && (rowRight + rowWrong) > totalMaxSum) {
+          alert(`❌ ${fullName}: Right (${rowRight}) + Wrong (${rowWrong}) exceeds Full Marks (${totalMaxSum})!`);
+          return;
+        }
+      }
 
       currentStudentsList.forEach((s, idx) => {
         const studId = String(s.StudId || s.AdmissionNo || "").trim();
@@ -38062,7 +38187,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 </template>
   
 <!-- =================================================================== -->
-<!-- MODULE: FULL CLASS BULK MARKS ENTRY GRID (SUPABASE + MULTI-ACTIVITY)-->
+<!-- MODULE: FULL CLASS BULK MARKS ENTRY (EXCEL SMART PASTE + STRICT)    -->
 <!-- =================================================================== -->
 <template id='tpl-BulkMarksEntry'>
   <style>
@@ -38078,6 +38203,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     .grid-marks-input { width: 62px; height: 32px; border: 1.5px solid #cbd5e1; border-radius: 4px; text-align: center; font-weight: 800; font-size: 12.5px; color: #0f172a; }
     .grid-marks-input:focus { border-color: #0284c7; background: #f0f9ff; outline: none; }
     .grid-marks-input.is-absent { background: #fee2e2 !important; color: #dc2626 !important; border-color: #f87171 !important; }
+    .grid-marks-input.is-invalid-mark { background: #fff1f2 !important; color: #be123c !important; border-color: #e11d48 !important; box-shadow: 0 0 0 2px rgba(225,29,72,0.2); }
     .grid-marks-input:disabled { background: #f1f5f9 !important; color: #94a3b8 !important; cursor: not-allowed; }
 
     .bme-pill { font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; display: inline-flex; align-items: center; gap: 5px; }
@@ -38169,7 +38295,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           <span class='bme-pill'>Subjects: <strong class='text-dark' id='bmeCountSubjects'>0</strong></span>
           <span class='bme-pill'>Activities: <strong class='text-info' id='bmeCountActivities'>0</strong></span>
         </div>
-        <small class='text-muted'>Tip: Type <strong>AB</strong> for Absent. Press <strong>Enter</strong> to move down.</small>
+        <small class='text-muted'>Tip: Type <strong>AB</strong> for Absent. Direct <strong>Excel Copy-Paste</strong> supported!</small>
       </div>
 
       <!-- 3. GRID TABLE -->
@@ -38182,7 +38308,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       <!-- 4. SAVE BUTTON (STRICTLY HIDDEN WHEN 0 STUDENTS) -->
       <div class='d-flex justify-content-between align-items-center pt-2 border-top d-none' id='bmeSaveBar'>
-        <span class='text-muted small'><i class='fas fa-shield-alt text-success me-1'></i> Validated against Max Marks &amp; Freeze status.</span>
+        <span class='text-muted small'><i class='fas fa-shield-alt text-success me-1'></i> Strictly validated against Max Marks &amp; Freeze status.</span>
         <button class='btn btn-success px-4 py-2 fw-bold shadow' id='btnSaveBulkGrid' onclick='window.submitBulkGridData()' type='button'>
           <i class='fas fa-save me-1'></i> Save Full Class Marks Grid
         </button>
@@ -38201,8 +38327,14 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     let gridStudents = [];
     let gridSubjects = [];
     let gridActivities = [];
-    let existingDbRowMap = {}; // "admNo::subject::actId" -> { id, markId, marks }
+    let gridColumns = []; // Flat ordered list of columns [{ subIdx, aIdx, sub, act }] for 2D Excel Paste
+    let existingDbRowMap = {};
     let isOmrRightWrongMode = false;
+
+    function isStrictValidMark(str) {
+      if (str === "" || str === "AB") return true;
+      return /^\d+(\.\d{1,2})?$/.test(str);
+    }
 
     window.initBulkMarksEntryModule = async function() {
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
@@ -38255,6 +38387,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         if (el) el.classList.add('d-none');
       });
       gridStudents = [];
+      gridColumns = [];
       existingDbRowMap = {};
     };
 
@@ -38329,7 +38462,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       return actObj.subjects.some(s => String(s).trim().toLowerCase() === String(subName).trim().toLowerCase());
     }
 
-    // ⚡ FETCH FULL CLASS GRID (ALL SUBJECTS x SELECTED/ALL ACTIVITIES)
+    // ⚡ FETCH FULL CLASS GRID
     window.fetchFullClassGrid = async function() {
       const batch = document.getElementById('bmeBatchSelect').value;
       const cls = document.getElementById('bmeClassSelect').value;
@@ -38363,20 +38496,17 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         gridStudents = stuRes.data || [];
         gridStudents.sort((a, b) => (parseInt(a.RollNo, 10) || 0) - (parseInt(b.RollNo, 10) || 0));
 
-        // 0 STUDENTS GUARD
         if (gridStudents.length === 0) {
           document.getElementById('bmeEmptyAlert').classList.remove('d-none');
           document.getElementById('bmeEmptyAlertMsg').innerText = `No active students found in ${cls} - Section ${sec}. Save is disabled.`;
           return;
         }
 
-        // Class Subjects (unique)
         const rawSubs = (localConfig && localConfig.classSubjectMap && localConfig.classSubjectMap[cls])
           ? localConfig.classSubjectMap[cls].split(',').map(s => s.trim()).filter(Boolean)
           : ["ENGLISH", "HINDI", "MATHEMATICS", "SCIENCE", "SOCIAL SCIENCE"];
         gridSubjects = [...new Set(rawSubs)];
 
-        // Build Freeze Map
         freezeMap = {};
         (fRes.data || []).forEach(f => {
           if (f.ActivityID && f.FreezedClasses) {
@@ -38384,7 +38514,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           }
         });
 
-        // Resolve Activities
         let matchedActs = activitiesCache.filter(a => {
           if (String(a.Session || "").trim() !== batch) return false;
           if (String(a.TermCode || "").trim() !== term) return false;
@@ -38413,9 +38542,16 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           };
         });
 
+        // Build flat column map for 2D Excel copy-paste
+        gridColumns = [];
+        gridSubjects.forEach((sub, subIdx) => {
+          gridActivities.forEach((act, aIdx) => {
+            gridColumns.push({ subIdx, aIdx, sub, act });
+          });
+        });
+
         isOmrRightWrongMode = gridActivities.some(a => a.type === "OMR_RIGHT") && gridActivities.some(a => a.type === "OMR_WRONG");
 
-        // Freeze Alert
         const frozenNames = gridActivities.filter(a => a.isFrozen).map(a => a.name);
         const allFrozen = gridActivities.every(a => a.isFrozen);
         if (frozenNames.length > 0) {
@@ -38431,7 +38567,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         document.getElementById('bmeCountSubjects').innerText = gridSubjects.length;
         document.getElementById('bmeCountActivities').innerText = gridActivities.length;
 
-        // Build Existing Marks Lookup
         existingDbRowMap = {};
         (marksRes.data || []).forEach(m => {
           const mExId = String(m.ExamID || "").trim().toLowerCase();
@@ -38460,7 +38595,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           }));
         });
 
-        // Build OMR Fallback Map (Student -> SubjectsScore)
         const omrFallbackMap = {};
         (omrRes.data || []).forEach(r => {
           if (String(r.ExamName || "").trim().toLowerCase().includes(targetExName)) {
@@ -38469,7 +38603,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           }
         });
 
-        // Build Header (1-row if 1 activity, 2-row grouped if multiple activities)
         const thead = document.getElementById('bmeGridHead');
         if (gridActivities.length === 1) {
           const a = gridActivities[0];
@@ -38501,7 +38634,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           thead.innerHTML = row1 + row2;
         }
 
-        // Build Body Rows
         const tbody = document.getElementById('bmeGridBody');
         tbody.innerHTML = gridStudents.map((s, sIdx) => {
           const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.trim();
@@ -38510,7 +38642,13 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           const omrSubMap = omrFallbackMap[studId.toUpperCase()] || omrFallbackMap[admNo.toUpperCase()] || null;
 
           let cellsHtml = "";
-          gridSubjects.forEach((sub, subIdx) => {
+          gridColumns.forEach((col, colIdx) => {
+            const { subIdx, aIdx, sub, act: a } = col;
+            if (!activityAppliesToSubject(a, sub)) {
+              cellsHtml += `<td class='text-muted bg-light'>—</td>`;
+              return;
+            }
+
             const subUpper = sub.toUpperCase();
             let omrSc = null;
             if (omrSubMap) {
@@ -38518,36 +38656,31 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               if (matchedKey) omrSc = omrSubMap[matchedKey];
             }
 
-            gridActivities.forEach((a, aIdx) => {
-              if (!activityAppliesToSubject(a, sub)) {
-                cellsHtml += `<td class='text-muted bg-light'>—</td>`;
-                return;
-              }
+            const existingObj =
+              existingDbRowMap[`${admNo.toUpperCase()}::${subUpper}::${a.id.toUpperCase()}`] ||
+              existingDbRowMap[`${studId.toUpperCase()}::${subUpper}::${a.id.toUpperCase()}`] ||
+              existingDbRowMap[`${admNo.toUpperCase()}::${subUpper}::${a.name.toUpperCase()}`] ||
+              existingDbRowMap[`${studId.toUpperCase()}::${subUpper}::${a.name.toUpperCase()}`];
 
-              const existingObj =
-                existingDbRowMap[`${admNo.toUpperCase()}::${subUpper}::${a.id.toUpperCase()}`] ||
-                existingDbRowMap[`${studId.toUpperCase()}::${subUpper}::${a.id.toUpperCase()}`] ||
-                existingDbRowMap[`${admNo.toUpperCase()}::${subUpper}::${a.name.toUpperCase()}`] ||
-                existingDbRowMap[`${studId.toUpperCase()}::${subUpper}::${a.name.toUpperCase()}`];
+            let val = existingObj ? existingObj.marks : undefined;
+            if (val === undefined && omrSc) {
+              if (a.type === "OMR_RIGHT") val = omrSc.R;
+              else if (a.type === "OMR_WRONG") val = omrSc.W;
+              else if (gridActivities.length === 1) val = omrSc.R;
+            }
 
-              let val = existingObj ? existingObj.marks : undefined;
-              if (val === undefined && omrSc) {
-                if (a.type === "OMR_RIGHT") val = omrSc.R;
-                else if (a.type === "OMR_WRONG") val = omrSc.W;
-                else if (gridActivities.length === 1) val = omrSc.R;
-              }
+            const dispVal = (val !== undefined && val !== null) ? String(val).trim() : "";
+            const isAb = dispVal.toUpperCase() === "AB";
+            const isBad = dispVal !== "" && !isStrictValidMark(dispVal.toUpperCase());
 
-              const dispVal = (val !== undefined && val !== null) ? val : "";
-              const isAb = String(dispVal).toUpperCase() === "AB";
-
-              cellsHtml += `<td>
-                <input type='text' class='grid-marks-input ${isAb ? "is-absent" : ""}'
-                       id='bmeInp_${sIdx}_${subIdx}_${aIdx}'
-                       value='${dispVal}' placeholder='0' ${a.isFrozen ? "disabled='disabled'" : ""}
-                       oninput='window.onBmeCellInput(${sIdx}, ${subIdx}, ${aIdx})'
-                       onkeydown='if(event.key==="Enter"){ event.preventDefault(); window.focusNextBmeInput(${sIdx}, ${subIdx}, ${aIdx}); }'>
-              </td>`;
-            });
+            cellsHtml += `<td>
+              <input type='text' class='grid-marks-input ${isAb ? "is-absent" : ""} ${isBad ? "is-invalid-mark" : ""}'
+                     id='bmeInp_${sIdx}_${subIdx}_${aIdx}'
+                     value='${dispVal}' placeholder='0' ${a.isFrozen ? "disabled='disabled'" : ""}
+                     oninput='window.onBmeCellInput(${sIdx}, ${subIdx}, ${aIdx}, event)'
+                     onpaste='window.handleBmePaste(event, ${sIdx}, ${colIdx})'
+                     onkeydown='if(event.key==="Enter"){ event.preventDefault(); window.focusNextBmeInput(${sIdx}, ${subIdx}, ${aIdx}); }'>
+            </td>`;
           });
 
           return `<tr>
@@ -38565,32 +38698,133 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
     };
 
-    window.onBmeCellInput = function(sIdx, subIdx, aIdx) {
+    // 📋 SMART EXCEL COPY-PASTE FOR BULK GRID (VERTICAL + 2D MULTI-SUBJECT SUPPORT)
+    window.handleBmePaste = function(e, startRow, startCol) {
+      const clipText = ((e.clipboardData || window.clipboardData).getData('text') || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+      const trimmedEnd = clipText.replace(/\n+$/, "");
+      if (!trimmedEnd) return;
+
+      e.preventDefault();
+
+      // Split into rows; if single line has space-separated numbers (e.g. "12 11 15 16"), treat as vertical list
+      let rawRows = trimmedEnd.split("\n");
+      if (rawRows.length === 1 && !trimmedEnd.includes("\t") && /\s+/.test(trimmedEnd.trim())) {
+        rawRows = trimmedEnd.trim().split(/\s+/);
+      }
+
+      const skippedMsgs = [];
+      const touchedSubjectPairs = new Set(); // "sIdx::subIdx"
+
+      // Pass 1: Fill cells strictly
+      rawRows.forEach((line, rOffset) => {
+        const sIdx = startRow + rOffset;
+        if (sIdx >= gridStudents.length) return;
+        const cols = line.split("\t");
+
+        cols.forEach((rawCell, cOffset) => {
+          const colIdx = startCol + cOffset;
+          if (colIdx >= gridColumns.length) return;
+
+          const { subIdx, aIdx, sub, act } = gridColumns[colIdx];
+          const inp = document.getElementById(`bmeInp_${sIdx}_${subIdx}_${aIdx}`);
+          if (!inp || inp.disabled) return;
+
+          let v = rawCell.trim().toUpperCase();
+          if (v === "A") v = "AB";
+
+          if (v === "") {
+            inp.value = "";
+            inp.classList.remove('is-absent', 'is-invalid-mark');
+            touchedSubjectPairs.add(`${sIdx}::${subIdx}`);
+            return;
+          }
+
+          if (!isStrictValidMark(v)) {
+            skippedMsgs.push(`Row ${sIdx + 1} (${sub} - ${act.name}): Invalid value "${rawCell.trim()}"`);
+            return;
+          }
+
+          if (v !== "AB") {
+            const num = parseFloat(v);
+            if (num < 0 || num > act.max) {
+              skippedMsgs.push(`Row ${sIdx + 1} (${sub} - ${act.name}): ${num} exceeds Max ${act.max}`);
+              return;
+            }
+          }
+
+          inp.value = v;
+          inp.classList.remove('is-invalid-mark');
+          if (v === "AB") inp.classList.add('is-absent');
+          else inp.classList.remove('is-absent');
+          touchedSubjectPairs.add(`${sIdx}::${subIdx}`);
+        });
+      });
+
+      // Pass 2: Validate OMR Right + Wrong <= RightMax per (Student, Subject)
+      if (isOmrRightWrongMode) {
+        touchedSubjectPairs.forEach(pair => {
+          const [sIdx, subIdx] = pair.split("::").map(Number);
+          let rVal = 0, wVal = 0, rightMax = 0, wInp = null;
+          gridActivities.forEach((a, aIdx) => {
+            const el = document.getElementById(`bmeInp_${sIdx}_${subIdx}_${aIdx}`);
+            if (!el) return;
+            const n = parseFloat(el.value.trim()) || 0;
+            if (a.type === "OMR_RIGHT") { rVal = n; rightMax = a.max; }
+            else if (a.type === "OMR_WRONG") { wVal = n; wInp = el; }
+          });
+          if (rightMax > 0 && (rVal + wVal) > rightMax) {
+            if (wInp) wInp.value = "";
+            skippedMsgs.push(`Row ${sIdx + 1} (${gridSubjects[subIdx]}): Right (${rVal}) + Wrong (${wVal}) exceeded Full Marks (${rightMax}) — Wrong cleared.`);
+          }
+        });
+      }
+
+      if (skippedMsgs.length > 0) {
+        alert("⚠️ Kuch pasted values invalid/Max Marks se zyada the (skip kar diye gaye):\n\n" + skippedMsgs.slice(0, 8).join("\n") + (skippedMsgs.length > 8 ? `\n...aur ${skippedMsgs.length - 8} aur.` : ""));
+      }
+    };
+
+    window.onBmeCellInput = function(sIdx, subIdx, aIdx, evt) {
       const inp = document.getElementById(`bmeInp_${sIdx}_${subIdx}_${aIdx}`);
       if (!inp) return;
       const act = gridActivities[aIdx];
       let v = inp.value.trim().toUpperCase();
+      const isDeleting = evt && evt.inputType && evt.inputType.includes('delete');
 
-      if (v === "AB" || v === "A") {
+      if (v === "AB" || (v === "A" && !isDeleting)) {
         inp.value = "AB";
         inp.classList.add('is-absent');
+        inp.classList.remove('is-invalid-mark');
+        return;
+      }
+      if (v === "A" && isDeleting) {
+        inp.value = "";
+        inp.classList.remove('is-absent', 'is-invalid-mark');
         return;
       }
 
       inp.classList.remove('is-absent');
-      const num = parseFloat(v);
-      if (!isNaN(num) && num < 0) {
-        alert("⚠️ Marks cannot be negative!");
-        inp.value = "";
-        return;
-      }
-      if (!isNaN(num) && num > act.max) {
-        alert(`⚠️ Maximum Marks for ${gridSubjects[subIdx]} (${act.name}) is ${act.max}!`);
-        inp.value = "";
+      if (v === "") {
+        inp.classList.remove('is-invalid-mark');
         return;
       }
 
-      // OMR Right + Wrong <= RightMax Validation
+      if (!/^\d+(\.\d{0,2})?$/.test(v)) {
+        alert(`⚠️ Invalid entry "${v}"! Sirf number (0 - ${act.max}) ya "AB" enter karein.`);
+        inp.value = "";
+        inp.classList.remove('is-invalid-mark');
+        return;
+      }
+
+      const num = parseFloat(v);
+      if (num > act.max) {
+        alert(`⚠️ Maximum Marks for ${gridSubjects[subIdx]} (${act.name}) is ${act.max}!`);
+        inp.value = "";
+        inp.classList.remove('is-invalid-mark');
+        return;
+      }
+      inp.classList.remove('is-invalid-mark');
+
       if (isOmrRightWrongMode) {
         let rVal = 0, wVal = 0, rightMax = act.max;
         gridActivities.forEach((a, idx2) => {
@@ -38612,7 +38846,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       if (next && !next.disabled) { next.focus(); next.select(); }
     };
 
-    // 💾 SINGLE-CLICK UPSERT FULL CLASS GRID TO SUPABASE "Student_Marks"
+    // 💾 STRICT VALIDATION + SINGLE-CLICK UPSERT TO SUPABASE "Student_Marks"
     window.submitBulkGridData = async function() {
       if (gridStudents.length === 0) {
         alert("⚠️ No active students found to save!");
@@ -38623,6 +38857,48 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       if (unlocked.length === 0) {
         alert("⛔ All loaded activities are frozen!");
         return;
+      }
+
+      // Strict Validation Pass BEFORE saving anything!
+      for (let sIdx = 0; sIdx < gridStudents.length; sIdx++) {
+        const s = gridStudents[sIdx];
+        const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.trim();
+
+        for (let subIdx = 0; subIdx < gridSubjects.length; subIdx++) {
+          const sub = gridSubjects[subIdx];
+          let rVal = 0, wVal = 0, rightMax = 0;
+
+          for (let aIdx = 0; aIdx < gridActivities.length; aIdx++) {
+            const a = gridActivities[aIdx];
+            if (a.isFrozen || !activityAppliesToSubject(a, sub)) continue;
+            const inp = document.getElementById(`bmeInp_${sIdx}_${subIdx}_${aIdx}`);
+            if (!inp) continue;
+            const rawVal = inp.value.trim().toUpperCase();
+
+            if (rawVal !== "" && !isStrictValidMark(rawVal)) {
+              inp.classList.add('is-invalid-mark');
+              inp.focus();
+              alert(`❌ Invalid marks "${rawVal}" for ${fullName} (${sub} - ${a.name})! Kripya sahi single number (0-${a.max}) ya AB enter karein.`);
+              return;
+            }
+            if (rawVal !== "" && rawVal !== "AB") {
+              const num = parseFloat(rawVal);
+              if (num < 0 || num > a.max) {
+                inp.classList.add('is-invalid-mark');
+                inp.focus();
+                alert(`❌ ${fullName} (${sub} - ${a.name}): Marks ${num} exceeds Max Marks (${a.max})!`);
+                return;
+              }
+              if (a.type === "OMR_RIGHT") { rVal = num; rightMax = a.max; }
+              else if (a.type === "OMR_WRONG") { wVal = num; }
+            }
+          }
+
+          if (isOmrRightWrongMode && rightMax > 0 && (rVal + wVal) > rightMax) {
+            alert(`❌ ${fullName} (${sub}): Right (${rVal}) + Wrong (${wVal}) exceeds Full Marks (${rightMax})!`);
+            return;
+          }
+        }
       }
 
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
