@@ -37396,7 +37396,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 </template>
 
 <!-- =================================================================== -->
-<!-- MODULE: MANAGE MARKS ENTRY (EXCEL SMART PASTE + STRICT VALIDATION)  -->
+<!-- MODULE: MANAGE MARKS ENTRY (100% DB SUBJECTS + Pt/AB + EXCEL PASTE) -->
 <!-- =================================================================== -->
 <template id='tpl-SubjectMarksEntry'>
   <style>
@@ -37409,11 +37409,17 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     .table-sme th { background: #f8fafc; font-size: 11px; text-transform: uppercase; color: #334155; font-weight: 800; border: 1px solid #cbd5e1; padding: 10px 8px; text-align: center; }
     .table-sme td { border: 1px solid #e2e8f0; padding: 8px 6px; vertical-align: middle; font-weight: 600; color: #1e293b; text-align: center; }
 
-    .marks-input { width: 82px; height: 34px; border: 1.5px solid #cbd5e1; border-radius: 5px; text-align: center; font-weight: 800; font-size: 13px; color: #0f172a; margin: 0 auto; }
+    .marks-input { width: 92px; height: 34px; border: 1.5px solid #cbd5e1; border-radius: 5px; text-align: center; font-weight: 800; font-size: 13px; color: #0f172a; margin: 0 auto; display: block; }
     .marks-input:focus { border-color: #0284c7; outline: none; background: #f0f9ff; }
     .marks-input.is-absent { background: #fee2e2 !important; color: #dc2626 !important; border-color: #f87171 !important; }
     .marks-input.is-invalid-mark { background: #fff1f2 !important; color: #be123c !important; border-color: #e11d48 !important; box-shadow: 0 0 0 2px rgba(225,29,72,0.2); }
     .marks-input:disabled { background: #f1f5f9 !important; color: #94a3b8 !important; cursor: not-allowed; }
+
+    .att-toggle-wrap { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 5px; font-size: 11px; font-weight: 700; user-select: none; }
+    .att-toggle-lbl { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; margin: 0; color: #334155; }
+    .att-toggle-lbl input[type='checkbox'] { width: 14px; height: 14px; cursor: pointer; margin: 0; }
+    .att-chk-pt { accent-color: #16a34a; }
+    .att-chk-ab { accent-color: #dc2626; }
 
     .kpi-badge-pill { font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; display: inline-flex; align-items: center; gap: 5px; }
   </style>
@@ -37505,13 +37511,13 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         <i class='fas fa-user-slash me-1'></i> <span id='smeEmptyAlertMsg'>No active students found in this Class &amp; Section.</span>
       </div>
 
-      <div class='d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 d-none' id='smeInfoBar'>
+      <div class='d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2 d-none' id='smeInfoBar'>
         <div class='d-flex gap-2 flex-wrap'>
           <span class='kpi-badge-pill'>Total Students: <strong class='text-primary' id='smeCountStudents'>0</strong></span>
           <span class='kpi-badge-pill'>Mode: <strong class='text-info' id='smeModeBadge'>Standard</strong></span>
           <span class='kpi-badge-pill'>Total Max Marks: <strong class='text-success' id='smeTotalMaxBadge'>100</strong></span>
         </div>
-        <small class='text-muted'>Tip: Type <strong>AB</strong> for Absent. Direct <strong>Excel Copy-Paste</strong> supported!</small>
+        <small class='text-primary fw-semibold'>Marks will not be added if empty. Enter numeric values only. Tick <strong>AB</strong> for Absent. Excel Copy-Paste supported.</small>
       </div>
 
       <!-- 3. DYNAMIC MARKS ENTRY TABLE -->
@@ -37546,9 +37552,41 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     let isOmrRightWrongMode = false;
     let totalMaxSum = 100;
 
-    function isStrictValidMark(str) {
-      if (str === "" || str === "AB") return true;
+    function isStrictNumeric(str) {
+      if (str === "") return true;
       return /^\d+(\.\d{1,2})?$/.test(str);
+    }
+
+    function getMapValueCaseInsensitive(mapObj, key) {
+      if (!mapObj || !key) return null;
+      if (mapObj[key] !== undefined) return mapObj[key];
+      const target = String(key).trim().toLowerCase();
+      const matchedKey = Object.keys(mapObj).find(k => String(k).trim().toLowerCase() === target);
+      return matchedKey ? mapObj[matchedKey] : null;
+    }
+
+    function getClassSubjectsFromDb(cls) {
+      let subList = [];
+      if (localConfig && localConfig.classSubjectMap) {
+        const raw = getMapValueCaseInsensitive(localConfig.classSubjectMap, cls);
+        if (Array.isArray(raw)) {
+          subList = raw.map(s => String(s).trim()).filter(Boolean);
+        } else if (typeof raw === "string" && raw.trim() !== "") {
+          subList = raw.split(',').map(s => s.trim()).filter(Boolean);
+        }
+      }
+      // Also merge any subjects mapped directly inside DB Exam_Activities for this class
+      if (subList.length === 0 && activitiesCache.length > 0) {
+        const actSubs = new Set();
+        activitiesCache.forEach(a => {
+          const clsArr = String(a.Class || "ALL").split(",").map(x => x.trim().toLowerCase());
+          if ((clsArr.includes("all") || clsArr.includes(cls.toLowerCase())) && Array.isArray(a.Subjects)) {
+            a.Subjects.forEach(s => { if (String(s).trim()) actSubs.add(String(s).trim()); });
+          }
+        });
+        subList = Array.from(actSubs);
+      }
+      return [...new Set(subList)];
     }
 
     window.initSubjectMarksEntryModule = async function() {
@@ -37556,18 +37594,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       const schoolId = user.schoolId;
 
       localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
-
-      const bDrop = document.getElementById('smeBatchSelect');
-      const cDrop = document.getElementById('smeClassSelect');
-      if (localConfig) {
-        if (bDrop) {
-          const sessions = (localConfig.sessions && localConfig.sessions.length > 0) ? localConfig.sessions : ["2026-27"];
-          bDrop.innerHTML = '<option value="">Select</option>' + sessions.map(s => `<option value="${s}">${s}</option>`).join('');
-        }
-        if (cDrop && localConfig.classMap) {
-          cDrop.innerHTML = '<option value="">Select</option>' + Object.keys(localConfig.classMap).map(c => `<option value="${c}">${c}</option>`).join('');
-        }
-      }
 
       try {
         const [tRes, eRes, aRes, fRes] = await Promise.all([
@@ -37586,6 +37612,27 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           }
         });
       } catch(e) { console.error("SME Init Error:", e); }
+
+      const bDrop = document.getElementById('smeBatchSelect');
+      const cDrop = document.getElementById('smeClassSelect');
+
+      // Populate Sessions strictly from DB Config / Exam_Terms (NO hardcoding)
+      let sessions = (localConfig && Array.isArray(localConfig.sessions) && localConfig.sessions.length > 0)
+        ? localConfig.sessions
+        : [...new Set(termsCache.map(t => String(t.Session || t.Batch || "").trim()).filter(Boolean))];
+
+      if (bDrop) {
+        bDrop.innerHTML = sessions.length > 0
+          ? '<option value="">Select</option>' + sessions.map(s => `<option value="${s}">${s}</option>`).join('')
+          : '<option value="">No Sessions Configured</option>';
+      }
+
+      if (cDrop) {
+        const clsKeys = (localConfig && localConfig.classMap) ? Object.keys(localConfig.classMap) : [];
+        cDrop.innerHTML = clsKeys.length > 0
+          ? '<option value="">Select</option>' + clsKeys.map(c => `<option value="${c}">${c}</option>`).join('')
+          : '<option value="">No Classes Configured</option>';
+      }
 
       document.getElementById('smeSectionSelect').innerHTML = '<option value="">Select</option>';
       document.getElementById('smeSubjectSelect').innerHTML = '<option value="">Select</option>';
@@ -37622,19 +37669,30 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       const cls = document.getElementById('smeClassSelect').value;
       const sDrop = document.getElementById('smeSectionSelect');
       const subDrop = document.getElementById('smeSubjectSelect');
-      if (!cls || !localConfig) {
+
+      if (!cls) {
         sDrop.innerHTML = '<option value="">Select</option>';
         subDrop.innerHTML = '<option value="">Select</option>';
         window.onSmeExamChange();
         return;
       }
 
-      const rawSecs = (localConfig.classMap && localConfig.classMap[cls]) ? localConfig.classMap[cls] : "A,B";
-      sDrop.innerHTML = '<option value="">Select</option>' + rawSecs.split(',').map(s => `<option value="${s.trim()}">${s.trim()}</option>`).join('');
+      // Sections strictly from DB config (NO hardcoding)
+      const rawSecs = (localConfig && localConfig.classMap) ? getMapValueCaseInsensitive(localConfig.classMap, cls) : "";
+      const secArr = Array.isArray(rawSecs)
+        ? rawSecs.map(s => String(s).trim()).filter(Boolean)
+        : (typeof rawSecs === "string" ? rawSecs.split(',').map(s => s.trim()).filter(Boolean) : []);
 
-      const rawSubs = (localConfig.classSubjectMap && localConfig.classSubjectMap[cls]) ? localConfig.classSubjectMap[cls] : "";
-      const subArr = rawSubs ? rawSubs.split(',').map(s => s.trim()).filter(Boolean) : ["ENGLISH", "HINDI", "MATHEMATICS", "SCIENCE", "SOCIAL SCIENCE"];
-      subDrop.innerHTML = '<option value="">Select</option>' + subArr.map(s => `<option value="${s}">${s}</option>`).join('');
+      sDrop.innerHTML = secArr.length > 0
+        ? '<option value="">Select</option>' + secArr.map(s => `<option value="${s}">${s}</option>`).join('')
+        : '<option value="">No Sections Mapped</option>';
+
+      // Subjects strictly from DB config / Exam_Activities (NO hardcoding)
+      const subArr = getClassSubjectsFromDb(cls);
+      subDrop.innerHTML = subArr.length > 0
+        ? '<option value="">Select</option>' + subArr.map(s => `<option value="${s}">${s}</option>`).join('')
+        : '<option value="">No Subjects Mapped for this Class</option>';
+
       window.onSmeExamChange();
     };
 
@@ -37712,8 +37770,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         currentStudentsList.sort((a, b) => (parseInt(a.RollNo, 10) || 0) - (parseInt(b.RollNo, 10) || 0));
 
         if (currentStudentsList.length === 0) {
-          const emptyEl = document.getElementById('smeEmptyAlert');
-          emptyEl.classList.remove('d-none');
+          document.getElementById('smeEmptyAlert').classList.remove('d-none');
           document.getElementById('smeEmptyAlertMsg').innerText = `No active students found in ${cls} - Section ${sec}. Save is disabled.`;
           return;
         }
@@ -37799,7 +37856,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             String(m.ActivityName || "").trim().toUpperCase()
           ].filter(Boolean);
 
-          const rowInfo = { id: m.Id, markId: m.MarkID, marks: m.MarksObtained };
+          const rowInfo = { id: m.Id, markId: m.MarkID, marks: m.MarksObtained, isAbsent: !!m.IsAbsent };
           sKeys.forEach(sk => aKeys.forEach(ak => {
             existingDbRowMap[`${sk}::${ak}`] = rowInfo;
           }));
@@ -37817,11 +37874,11 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
         const thead = document.getElementById('smeDataTableHead');
         thead.innerHTML = `<tr>
-          <th style='width:45px;'>#</th>
+          <th style='width:45px;'>Sl.No.</th>
           <th style='width:75px;'>Roll No</th>
           <th style='width:120px;'>Adm No</th>
           <th style='text-align:left;padding-left:12px;'>Student Name</th>
-          ${activeActivities.map(a => `<th style='width:135px;'>${a.name}<br/><span class='text-primary'>(Max: ${a.max}) ${a.isFrozen ? '<i class="fas fa-lock text-danger"></i>' : ''}</span></th>`).join('')}
+          ${activeActivities.map(a => `<th style='width:140px;'>${a.name} (${a.max}) ${a.isFrozen ? '<i class="fas fa-lock text-danger ms-1"></i>' : ''}</th>`).join('')}
           ${isOmrRightWrongMode ? `<th style='width:95px;' class='text-secondary'>Blank (Auto)</th>` : ''}
         </tr>`;
 
@@ -37840,23 +37897,36 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               existingDbRowMap[`${studId.toUpperCase()}::${a.name.toUpperCase()}`];
 
             let val = existingObj ? existingObj.marks : undefined;
+            let isAb = existingObj ? (existingObj.isAbsent || String(existingObj.marks || "").trim().toUpperCase() === "AB") : false;
+
             if (val === undefined && omrSc) {
               if (a.type === "OMR_RIGHT") val = omrSc.R;
               else if (a.type === "OMR_WRONG") val = omrSc.W;
               else if (activeActivities.length === 1) val = omrSc.R;
             }
 
-            const dispVal = (val !== undefined && val !== null) ? String(val).trim() : "";
-            const isAb = dispVal.toUpperCase() === "AB";
-            const isBad = dispVal !== "" && !isStrictValidMark(dispVal.toUpperCase());
+            const dispVal = isAb ? "0" : ((val !== undefined && val !== null) ? String(val).trim() : "");
+            const isBad = !isAb && dispVal !== "" && !isStrictNumeric(dispVal);
 
             return `<td>
               <input type='text' class='marks-input ${isAb ? "is-absent" : ""} ${isBad ? "is-invalid-mark" : ""}'
                      id='smeInp_${idx}_${aIdx}'
-                     value='${dispVal}' placeholder='0' ${a.isFrozen ? "disabled='disabled'" : ""}
-                     oninput='window.calcStudentMarksLive(${idx}, ${aIdx}, event)'
+                     value='${dispVal}' placeholder='MO'
+                     ${a.isFrozen ? "disabled='disabled'" : ""}
+                     ${isAb ? "readonly='readonly'" : ""}
+                     oninput='window.calcStudentMarksLive(${idx}, ${aIdx})'
                      onpaste='window.handleSmePaste(event, ${idx}, ${aIdx})'
                      onkeydown='if(event.key==="Enter"){ event.preventDefault(); window.focusNextSmeInput(${idx}, ${aIdx}); }'>
+              <div class='att-toggle-wrap'>
+                <label class='att-toggle-lbl'>
+                  <input type='checkbox' class='att-chk-pt' id='smePt_${idx}_${aIdx}' ${!isAb ? "checked='checked'" : ""} ${a.isFrozen ? "disabled='disabled'" : ""}
+                         onchange='window.onSmeAttendanceToggle(${idx}, ${aIdx}, "PT")'> Pt
+                </label>
+                <label class='att-toggle-lbl'>
+                  <input type='checkbox' class='att-chk-ab' id='smeAb_${idx}_${aIdx}' ${isAb ? "checked='checked'" : ""} ${a.isFrozen ? "disabled='disabled'" : ""}
+                         onchange='window.onSmeAttendanceToggle(${idx}, ${aIdx}, "AB")'> AB
+                </label>
+              </div>
             </td>`;
           }).join('');
 
@@ -37879,7 +37949,39 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
     };
 
-    // 📋 SMART EXCEL COPY-PASTE (VERTICAL + 2D MULTI-COLUMN SUPPORT)
+    // ✅ Pt / AB CHECKBOX HANDLER (EXACT IMAGE 2 BEHAVIOR)
+    window.onSmeAttendanceToggle = function(rowIdx, actIdx, clickedType) {
+      const inp = document.getElementById(`smeInp_${rowIdx}_${actIdx}`);
+      const ptChk = document.getElementById(`smePt_${rowIdx}_${actIdx}`);
+      const abChk = document.getElementById(`smeAb_${rowIdx}_${actIdx}`);
+      if (!inp || !ptChk || !abChk) return;
+
+      let markAbsent = false;
+      if (clickedType === "AB") {
+        markAbsent = abChk.checked;
+      } else {
+        markAbsent = !ptChk.checked;
+      }
+
+      if (markAbsent) {
+        abChk.checked = true;
+        ptChk.checked = false;
+        inp.value = "0";
+        inp.readOnly = true;
+        inp.classList.add('is-absent');
+        inp.classList.remove('is-invalid-mark');
+      } else {
+        ptChk.checked = true;
+        abChk.checked = false;
+        inp.readOnly = false;
+        inp.classList.remove('is-absent', 'is-invalid-mark');
+        if (inp.value === "0") inp.value = "";
+        inp.focus();
+      }
+      window.calcStudentMarksLive(rowIdx, -1);
+    };
+
+    // 📋 SMART EXCEL COPY-PASTE (VERTICAL + 2D MULTI-COLUMN + AUTO AB CHECKBOX)
     window.handleSmePaste = function(e, startRow, startAct) {
       const clipText = ((e.clipboardData || window.clipboardData).getData('text') || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
       const trimmedEnd = clipText.replace(/\n+$/, "");
@@ -37887,7 +37989,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       e.preventDefault();
 
-      // Split into rows; if single line has space-separated numbers (e.g. "12 11 15 16"), treat as vertical list
       let rawRows = trimmedEnd.split("\n");
       if (rawRows.length === 1 && !trimmedEnd.includes("\t") && /\s+/.test(trimmedEnd.trim())) {
         rawRows = trimmedEnd.trim().split(/\s+/);
@@ -37896,7 +37997,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       const skippedMsgs = [];
       const touchedRows = new Set();
 
-      // Pass 1: Fill cells with strict per-cell validation
       rawRows.forEach((line, rOffset) => {
         const rIdx = startRow + rOffset;
         if (rIdx >= currentStudentsList.length) return;
@@ -37907,51 +38007,58 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           if (aIdx >= activeActivities.length) return;
 
           const inp = document.getElementById(`smeInp_${rIdx}_${aIdx}`);
+          const ptChk = document.getElementById(`smePt_${rIdx}_${aIdx}`);
+          const abChk = document.getElementById(`smeAb_${rIdx}_${aIdx}`);
           if (!inp || inp.disabled) return;
 
           let v = rawCell.trim().toUpperCase();
-          if (v === "A") v = "AB";
+          if (v === "A" || v === "AB") {
+            abChk.checked = true; ptChk.checked = false;
+            inp.value = "0"; inp.readOnly = true;
+            inp.classList.add('is-absent'); inp.classList.remove('is-invalid-mark');
+            touchedRows.add(rIdx);
+            return;
+          }
 
           if (v === "") {
-            inp.value = "";
+            ptChk.checked = true; abChk.checked = false;
+            inp.value = ""; inp.readOnly = false;
             inp.classList.remove('is-absent', 'is-invalid-mark');
             touchedRows.add(rIdx);
             return;
           }
 
-          if (!isStrictValidMark(v)) {
+          if (!isStrictNumeric(v)) {
             skippedMsgs.push(`Row ${rIdx + 1} (${activeActivities[aIdx].name}): Invalid value "${rawCell.trim()}"`);
             return;
           }
 
-          if (v !== "AB") {
-            const num = parseFloat(v);
-            if (num < 0 || num > activeActivities[aIdx].max) {
-              skippedMsgs.push(`Row ${rIdx + 1} (${activeActivities[aIdx].name}): ${num} exceeds Max ${activeActivities[aIdx].max}`);
-              return;
-            }
+          const num = parseFloat(v);
+          if (num < 0 || num > activeActivities[aIdx].max) {
+            skippedMsgs.push(`Row ${rIdx + 1} (${activeActivities[aIdx].name}): ${num} exceeds Max ${activeActivities[aIdx].max}`);
+            return;
           }
 
-          inp.value = v;
-          inp.classList.remove('is-invalid-mark');
-          if (v === "AB") inp.classList.add('is-absent');
-          else inp.classList.remove('is-absent');
+          ptChk.checked = true; abChk.checked = false;
+          inp.value = v; inp.readOnly = false;
+          inp.classList.remove('is-absent', 'is-invalid-mark');
           touchedRows.add(rIdx);
         });
       });
 
-      // Pass 2: Row-level OMR Right+Wrong <= Max check & Blank recalculation
       touchedRows.forEach(rIdx => {
         if (isOmrRightWrongMode) {
-          let rVal = 0, wVal = 0, wInp = null;
+          let rVal = 0, wVal = 0, wInp = null, anyAb = false;
           activeActivities.forEach((a, aIdx) => {
             const el = document.getElementById(`smeInp_${rIdx}_${aIdx}`);
+            const ab = document.getElementById(`smeAb_${rIdx}_${aIdx}`);
             if (!el) return;
+            if (ab && ab.checked) { anyAb = true; return; }
             const n = parseFloat(el.value.trim()) || 0;
             if (a.type === "OMR_RIGHT") rVal = n;
             else if (a.type === "OMR_WRONG") { wVal = n; wInp = el; }
           });
-          if ((rVal + wVal) > totalMaxSum) {
+          if (!anyAb && (rVal + wVal) > totalMaxSum) {
             if (wInp) wInp.value = "";
             skippedMsgs.push(`Row ${rIdx + 1}: Right (${rVal}) + Wrong (${wVal}) exceeded Full Marks (${totalMaxSum}) — Wrong cleared.`);
           }
@@ -37964,58 +38071,55 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
     };
 
-    // Live Strict Validation & Auto-Blank Calculation (OMR Mode)
-    window.calcStudentMarksLive = function(rowIdx, actIdx, evt) {
+    // Live Numeric Validation & Auto-Blank Calculation
+    window.calcStudentMarksLive = function(rowIdx, actIdx) {
       if (actIdx >= 0) {
         const inp = document.getElementById(`smeInp_${rowIdx}_${actIdx}`);
+        const ptChk = document.getElementById(`smePt_${rowIdx}_${actIdx}`);
+        const abChk = document.getElementById(`smeAb_${rowIdx}_${actIdx}`);
         const maxLim = activeActivities[actIdx].max;
         let v = inp.value.trim().toUpperCase();
-        const isDeleting = evt && evt.inputType && evt.inputType.includes('delete');
 
-        if (v === "AB" || (v === "A" && !isDeleting)) {
-          inp.value = "AB";
-          inp.classList.add('is-absent');
+        // If user types AB/A directly, toggle AB checkbox automatically
+        if (v === "AB" || v === "A") {
+          abChk.checked = true; ptChk.checked = false;
+          inp.value = "0"; inp.readOnly = true;
+          inp.classList.add('is-absent'); inp.classList.remove('is-invalid-mark');
+        } else if (v === "") {
           inp.classList.remove('is-invalid-mark');
-        } else if (v === "A" && isDeleting) {
+        } else if (!/^\d+(\.\d{0,2})?$/.test(v)) {
+          alert(`⚠️ Enter only numeric values (0 - ${maxLim})! For Absent, tick the AB checkbox.`);
           inp.value = "";
-          inp.classList.remove('is-absent', 'is-invalid-mark');
+          inp.classList.remove('is-invalid-mark');
         } else {
-          inp.classList.remove('is-absent');
-          if (v === "") {
-            inp.classList.remove('is-invalid-mark');
-          } else if (!/^\d+(\.\d{0,2})?$/.test(v)) {
-            alert(`⚠️ Invalid entry "${v}"! Sirf number (0 - ${maxLim}) ya "AB" enter karein.`);
+          const num = parseFloat(v);
+          if (num > maxLim) {
+            alert(`⚠️ Maximum Marks for ${activeActivities[actIdx].name} is ${maxLim}!`);
             inp.value = "";
-            inp.classList.remove('is-invalid-mark');
-          } else {
-            const num = parseFloat(v);
-            if (num > maxLim) {
-              alert(`⚠️ Maximum Marks for ${activeActivities[actIdx].name} is ${maxLim}!`);
-              inp.value = "";
-            }
-            inp.classList.remove('is-invalid-mark');
           }
+          inp.classList.remove('is-invalid-mark');
         }
       }
 
       if (isOmrRightWrongMode) {
         const blankEl = document.getElementById(`blankMarks_${rowIdx}`);
         let anyEntered = false;
-        let allAbsent = true;
+        let anyAbsent = false;
         let rVal = 0, wVal = 0;
 
         activeActivities.forEach((a, aIdx) => {
           const el = document.getElementById(`smeInp_${rowIdx}_${aIdx}`);
+          const ab = document.getElementById(`smeAb_${rowIdx}_${aIdx}`);
           if (!el) return;
-          const val = el.value.trim().toUpperCase();
+          if (ab && ab.checked) { anyAbsent = true; anyEntered = true; return; }
+          const val = el.value.trim();
           if (val !== "") anyEntered = true;
-          if (val !== "AB") allAbsent = false;
-          const n = isStrictValidMark(val) && val !== "AB" ? (parseFloat(val) || 0) : 0;
+          const n = isStrictNumeric(val) ? (parseFloat(val) || 0) : 0;
           if (a.type === "OMR_RIGHT") rVal = n;
           else if (a.type === "OMR_WRONG") wVal = n;
         });
 
-        if (actIdx >= 0 && (rVal + wVal) > totalMaxSum) {
+        if (actIdx >= 0 && !anyAbsent && (rVal + wVal) > totalMaxSum) {
           alert(`⚠️ Right (${rVal}) + Wrong (${wVal}) cannot exceed Full Marks (${totalMaxSum})!`);
           document.getElementById(`smeInp_${rowIdx}_${actIdx}`).value = "";
           window.calcStudentMarksLive(rowIdx, -1);
@@ -38024,7 +38128,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
         if (blankEl) {
           if (!anyEntered) blankEl.innerText = "-";
-          else if (allAbsent) blankEl.innerText = "AB";
+          else if (anyAbsent) blankEl.innerText = "AB";
           else blankEl.innerText = parseFloat(Math.max(0, totalMaxSum - (rVal + wVal)).toFixed(2));
         }
       }
@@ -38032,7 +38136,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
     window.focusNextSmeInput = function(rowIdx, actIdx) {
       const next = document.getElementById(`smeInp_${rowIdx + 1}_${actIdx}`);
-      if (next && !next.disabled) { next.focus(); next.select(); }
+      if (next && !next.disabled) { next.focus(); if (!next.readOnly) next.select(); }
     };
 
     // 💾 STRICT VALIDATION + SINGLE-CLICK UPSERT TO "Student_Marks"
@@ -38046,6 +38150,46 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       if (unlockedActivities.length === 0) {
         alert("⛔ All loaded activities are frozen!");
         return;
+      }
+
+      // Strict Validation Pass BEFORE saving
+      for (let idx = 0; idx < currentStudentsList.length; idx++) {
+        const s = currentStudentsList[idx];
+        const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.trim();
+        let rowRight = 0, rowWrong = 0, anyAb = false;
+
+        for (let aIdx = 0; aIdx < activeActivities.length; aIdx++) {
+          const a = activeActivities[aIdx];
+          if (a.isFrozen) continue;
+          const inp = document.getElementById(`smeInp_${idx}_${aIdx}`);
+          const abChk = document.getElementById(`smeAb_${idx}_${aIdx}`);
+          const isAb = !!(abChk && abChk.checked);
+          if (isAb) { anyAb = true; continue; }
+
+          const rawVal = inp.value.trim();
+          if (rawVal === "") continue;
+
+          if (!isStrictNumeric(rawVal)) {
+            inp.classList.add('is-invalid-mark');
+            inp.focus();
+            alert(`❌ Invalid marks "${rawVal}" for ${fullName} (${a.name})! Enter numeric value (0-${a.max}) or tick AB.`);
+            return;
+          }
+          const num = parseFloat(rawVal);
+          if (num < 0 || num > a.max) {
+            inp.classList.add('is-invalid-mark');
+            inp.focus();
+            alert(`❌ ${fullName} (${a.name}): Marks ${num} exceeds Max Marks (${a.max})!`);
+            return;
+          }
+          if (a.type === "OMR_RIGHT") rowRight = num;
+          else if (a.type === "OMR_WRONG") rowWrong = num;
+        }
+
+        if (isOmrRightWrongMode && !anyAb && (rowRight + rowWrong) > totalMaxSum) {
+          alert(`❌ ${fullName}: Right (${rowRight}) + Wrong (${rowWrong}) exceeds Full Marks (${totalMaxSum})!`);
+          return;
+        }
       }
 
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
@@ -38064,43 +38208,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       const recordsToUpsert = [];
       const idsToDelete = [];
 
-      // Strict Validation Pass BEFORE saving anything!
-      for (let idx = 0; idx < currentStudentsList.length; idx++) {
-        const s = currentStudentsList[idx];
-        const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.trim();
-        let rowRight = 0, rowWrong = 0;
-
-        for (let aIdx = 0; aIdx < activeActivities.length; aIdx++) {
-          const a = activeActivities[aIdx];
-          if (a.isFrozen) continue;
-          const inp = document.getElementById(`smeInp_${idx}_${aIdx}`);
-          const rawVal = inp.value.trim().toUpperCase();
-
-          if (rawVal !== "" && !isStrictValidMark(rawVal)) {
-            inp.classList.add('is-invalid-mark');
-            inp.focus();
-            alert(`❌ Invalid marks "${rawVal}" for ${fullName} (${a.name})! Kripya sahi single number (0-${a.max}) ya AB enter karein.`);
-            return;
-          }
-          if (rawVal !== "" && rawVal !== "AB") {
-            const num = parseFloat(rawVal);
-            if (num < 0 || num > a.max) {
-              inp.classList.add('is-invalid-mark');
-              inp.focus();
-              alert(`❌ ${fullName} (${a.name}): Marks ${num} exceeds Max Marks (${a.max})!`);
-              return;
-            }
-            if (a.type === "OMR_RIGHT") rowRight = num;
-            else if (a.type === "OMR_WRONG") rowWrong = num;
-          }
-        }
-
-        if (isOmrRightWrongMode && (rowRight + rowWrong) > totalMaxSum) {
-          alert(`❌ ${fullName}: Right (${rowRight}) + Wrong (${rowWrong}) exceeds Full Marks (${totalMaxSum})!`);
-          return;
-        }
-      }
-
       currentStudentsList.forEach((s, idx) => {
         const studId = String(s.StudId || s.AdmissionNo || "").trim();
         const admNo = String(s.AdmissionNo || studId).trim();
@@ -38108,12 +38215,17 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
         activeActivities.forEach((a, aIdx) => {
           if (a.isFrozen) return;
-          const rawVal = document.getElementById(`smeInp_${idx}_${aIdx}`).value.trim().toUpperCase();
+          const inp = document.getElementById(`smeInp_${idx}_${aIdx}`);
+          const abChk = document.getElementById(`smeAb_${idx}_${aIdx}`);
+          const isAb = !!(abChk && abChk.checked);
+          const rawVal = inp.value.trim();
+
           const existing =
             existingDbRowMap[`${admNo.toUpperCase()}::${a.id.toUpperCase()}`] ||
             existingDbRowMap[`${studId.toUpperCase()}::${a.id.toUpperCase()}`];
 
-          if (rawVal === "") {
+          // Empty & Present => Do NOT save (and remove old record if cleared)
+          if (!isAb && rawVal === "") {
             if (existing && existing.id) idsToDelete.push(existing.id);
             return;
           }
@@ -38138,8 +38250,8 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             AdmissionNo: admNo,
             RollNo: String(s.RollNo || ""),
             StudentName: fullName,
-            MarksObtained: rawVal,
-            IsAbsent: (rawVal === "AB"),
+            MarksObtained: isAb ? "AB" : rawVal,
+            IsAbsent: isAb,
             Source: "MANUAL",
             EnteredBy: user.name || "Teacher",
             UpdatedAt: nowIso
@@ -38148,7 +38260,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       });
 
       if (recordsToUpsert.length === 0 && idsToDelete.length === 0) {
-        alert("⚠️ Please enter marks for at least one student before saving.");
+        alert("⚠️ Please enter marks or mark Absent for at least one student before saving.");
         return;
       }
 
@@ -38187,7 +38299,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 </template>
   
 <!-- =================================================================== -->
-<!-- MODULE: FULL CLASS BULK MARKS ENTRY (EXCEL SMART PASTE + STRICT)    -->
+<!-- MODULE: FULL CLASS BULK MARKS ENTRY (100% DB SUBJECTS + Pt/AB)      -->
 <!-- =================================================================== -->
 <template id='tpl-BulkMarksEntry'>
   <style>
@@ -38198,13 +38310,19 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
     .table-bme { font-size: 12px; width: 100%; border-collapse: collapse; vertical-align: middle; }
     .table-bme th { background: #f8fafc; font-size: 10.5px; text-transform: uppercase; color: #334155; font-weight: 800; border: 1px solid #cbd5e1; padding: 8px 5px; text-align: center; white-space: nowrap; }
-    .table-bme td { border: 1px solid #e2e8f0; padding: 6px 4px; vertical-align: middle; text-align: center; font-weight: 600; color: #1e293b; }
+    .table-bme td { border: 1px solid #e2e8f0; padding: 6px 5px; vertical-align: middle; text-align: center; font-weight: 600; color: #1e293b; }
 
-    .grid-marks-input { width: 62px; height: 32px; border: 1.5px solid #cbd5e1; border-radius: 4px; text-align: center; font-weight: 800; font-size: 12.5px; color: #0f172a; }
+    .grid-marks-input { width: 76px; height: 32px; border: 1.5px solid #cbd5e1; border-radius: 4px; text-align: center; font-weight: 800; font-size: 12.5px; color: #0f172a; margin: 0 auto; display: block; }
     .grid-marks-input:focus { border-color: #0284c7; background: #f0f9ff; outline: none; }
     .grid-marks-input.is-absent { background: #fee2e2 !important; color: #dc2626 !important; border-color: #f87171 !important; }
     .grid-marks-input.is-invalid-mark { background: #fff1f2 !important; color: #be123c !important; border-color: #e11d48 !important; box-shadow: 0 0 0 2px rgba(225,29,72,0.2); }
     .grid-marks-input:disabled { background: #f1f5f9 !important; color: #94a3b8 !important; cursor: not-allowed; }
+
+    .bme-att-wrap { display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 4px; font-size: 10.5px; font-weight: 700; user-select: none; white-space: nowrap; }
+    .bme-att-lbl { display: inline-flex; align-items: center; gap: 3px; cursor: pointer; margin: 0; color: #334155; }
+    .bme-att-lbl input[type='checkbox'] { width: 12.5px; height: 12.5px; cursor: pointer; margin: 0; }
+    .bme-chk-pt { accent-color: #16a34a; }
+    .bme-chk-ab { accent-color: #dc2626; }
 
     .bme-pill { font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; display: inline-flex; align-items: center; gap: 5px; }
   </style>
@@ -38216,7 +38334,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         <i class='fas fa-table text-primary fa-lg'></i>
         <div>
           <h6 class='m-0 fw-bold text-dark'>Full Class Bulk Marks Grid Entry</h6>
-          <small class='text-muted' style='font-size: 11px;'>Enter marks for all subjects of a Class &amp; Section on one screen</small>
+          <small class='text-muted' style='font-size: 11px;'>Enter marks for all mapped subjects of a Class &amp; Section on one screen</small>
         </div>
       </div>
       <div class='d-flex gap-2'>
@@ -38286,16 +38404,16 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       </div>
 
       <div class='alert alert-warning py-2 small fw-bold mb-3 d-none' id='bmeEmptyAlert'>
-        <i class='fas fa-user-slash me-1'></i> <span id='bmeEmptyAlertMsg'>No active students found in this Class &amp; Section.</span>
+        <i class='fas fa-exclamation-triangle me-1'></i> <span id='bmeEmptyAlertMsg'>No active students or subjects found.</span>
       </div>
 
-      <div class='d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 d-none' id='bmeInfoBar'>
+      <div class='d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2 d-none' id='bmeInfoBar'>
         <div class='d-flex gap-2 flex-wrap'>
           <span class='bme-pill'>Total Students: <strong class='text-primary' id='bmeCountStudents'>0</strong></span>
           <span class='bme-pill'>Subjects: <strong class='text-dark' id='bmeCountSubjects'>0</strong></span>
           <span class='bme-pill'>Activities: <strong class='text-info' id='bmeCountActivities'>0</strong></span>
         </div>
-        <small class='text-muted'>Tip: Type <strong>AB</strong> for Absent. Direct <strong>Excel Copy-Paste</strong> supported!</small>
+        <small class='text-primary fw-semibold'>Marks will not be added if empty. Enter numeric values only. Tick <strong>AB</strong> for Absent. Excel Copy-Paste supported.</small>
       </div>
 
       <!-- 3. GRID TABLE -->
@@ -38306,7 +38424,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         </table>
       </div>
 
-      <!-- 4. SAVE BUTTON (STRICTLY HIDDEN WHEN 0 STUDENTS) -->
+      <!-- 4. SAVE BUTTON (STRICTLY HIDDEN WHEN 0 STUDENTS / 0 SUBJECTS) -->
       <div class='d-flex justify-content-between align-items-center pt-2 border-top d-none' id='bmeSaveBar'>
         <span class='text-muted small'><i class='fas fa-shield-alt text-success me-1'></i> Strictly validated against Max Marks &amp; Freeze status.</span>
         <button class='btn btn-success px-4 py-2 fw-bold shadow' id='btnSaveBulkGrid' onclick='window.submitBulkGridData()' type='button'>
@@ -38327,13 +38445,44 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     let gridStudents = [];
     let gridSubjects = [];
     let gridActivities = [];
-    let gridColumns = []; // Flat ordered list of columns [{ subIdx, aIdx, sub, act }] for 2D Excel Paste
+    let gridColumns = [];
     let existingDbRowMap = {};
     let isOmrRightWrongMode = false;
 
-    function isStrictValidMark(str) {
-      if (str === "" || str === "AB") return true;
+    function isStrictNumeric(str) {
+      if (str === "") return true;
       return /^\d+(\.\d{1,2})?$/.test(str);
+    }
+
+    function getMapValueCaseInsensitive(mapObj, key) {
+      if (!mapObj || !key) return null;
+      if (mapObj[key] !== undefined) return mapObj[key];
+      const target = String(key).trim().toLowerCase();
+      const matchedKey = Object.keys(mapObj).find(k => String(k).trim().toLowerCase() === target);
+      return matchedKey ? mapObj[matchedKey] : null;
+    }
+
+    function getClassSubjectsFromDb(cls) {
+      let subList = [];
+      if (localConfig && localConfig.classSubjectMap) {
+        const raw = getMapValueCaseInsensitive(localConfig.classSubjectMap, cls);
+        if (Array.isArray(raw)) {
+          subList = raw.map(s => String(s).trim()).filter(Boolean);
+        } else if (typeof raw === "string" && raw.trim() !== "") {
+          subList = raw.split(',').map(s => s.trim()).filter(Boolean);
+        }
+      }
+      if (subList.length === 0 && activitiesCache.length > 0) {
+        const actSubs = new Set();
+        activitiesCache.forEach(a => {
+          const clsArr = String(a.Class || "ALL").split(",").map(x => x.trim().toLowerCase());
+          if ((clsArr.includes("all") || clsArr.includes(cls.toLowerCase())) && Array.isArray(a.Subjects)) {
+            a.Subjects.forEach(s => { if (String(s).trim()) actSubs.add(String(s).trim()); });
+          }
+        });
+        subList = Array.from(actSubs);
+      }
+      return [...new Set(subList)];
     }
 
     window.initBulkMarksEntryModule = async function() {
@@ -38341,18 +38490,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       const schoolId = user.schoolId;
 
       localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
-
-      const bDrop = document.getElementById('bmeBatchSelect');
-      const cDrop = document.getElementById('bmeClassSelect');
-      if (localConfig) {
-        if (bDrop) {
-          const sessions = (localConfig.sessions && localConfig.sessions.length > 0) ? localConfig.sessions : ["2026-27"];
-          bDrop.innerHTML = '<option value="">Select</option>' + sessions.map(s => `<option value="${s}">${s}</option>`).join('');
-        }
-        if (cDrop && localConfig.classMap) {
-          cDrop.innerHTML = '<option value="">Select</option>' + Object.keys(localConfig.classMap).map(c => `<option value="${c}">${c}</option>`).join('');
-        }
-      }
 
       try {
         const [tRes, eRes, aRes, fRes] = await Promise.all([
@@ -38374,6 +38511,26 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         console.error("BME Init Error:", e);
       }
 
+      const bDrop = document.getElementById('bmeBatchSelect');
+      const cDrop = document.getElementById('bmeClassSelect');
+
+      let sessions = (localConfig && Array.isArray(localConfig.sessions) && localConfig.sessions.length > 0)
+        ? localConfig.sessions
+        : [...new Set(termsCache.map(t => String(t.Session || t.Batch || "").trim()).filter(Boolean))];
+
+      if (bDrop) {
+        bDrop.innerHTML = sessions.length > 0
+          ? '<option value="">Select</option>' + sessions.map(s => `<option value="${s}">${s}</option>`).join('')
+          : '<option value="">No Sessions Configured</option>';
+      }
+
+      if (cDrop) {
+        const clsKeys = (localConfig && localConfig.classMap) ? Object.keys(localConfig.classMap) : [];
+        cDrop.innerHTML = clsKeys.length > 0
+          ? '<option value="">Select</option>' + clsKeys.map(c => `<option value="${c}">${c}</option>`).join('')
+          : '<option value="">No Classes Configured</option>';
+      }
+
       document.getElementById('bmeSectionSelect').innerHTML = '<option value="">Select</option>';
       document.getElementById('bmeTermSelect').innerHTML = '<option value="">Select</option>';
       document.getElementById('bmeExamSelect').innerHTML = '<option value="">Select</option>';
@@ -38387,6 +38544,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         if (el) el.classList.add('d-none');
       });
       gridStudents = [];
+      gridSubjects = [];
       gridColumns = [];
       existingDbRowMap = {};
     };
@@ -38408,13 +38566,21 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     window.onBmeClassChange = function() {
       const cls = document.getElementById('bmeClassSelect').value;
       const sDrop = document.getElementById('bmeSectionSelect');
-      if (!cls || !localConfig) {
+      if (!cls) {
         sDrop.innerHTML = '<option value="">Select</option>';
         window.onBmeExamChange();
         return;
       }
-      const rawSecs = (localConfig.classMap && localConfig.classMap[cls]) ? localConfig.classMap[cls] : "A,B";
-      sDrop.innerHTML = '<option value="">Select</option>' + rawSecs.split(',').map(s => `<option value="${s.trim()}">${s.trim()}</option>`).join('');
+
+      const rawSecs = (localConfig && localConfig.classMap) ? getMapValueCaseInsensitive(localConfig.classMap, cls) : "";
+      const secArr = Array.isArray(rawSecs)
+        ? rawSecs.map(s => String(s).trim()).filter(Boolean)
+        : (typeof rawSecs === "string" ? rawSecs.split(',').map(s => s.trim()).filter(Boolean) : []);
+
+      sDrop.innerHTML = secArr.length > 0
+        ? '<option value="">Select</option>' + secArr.map(s => `<option value="${s}">${s}</option>`).join('')
+        : '<option value="">No Sections Mapped</option>';
+
       window.onBmeExamChange();
     };
 
@@ -38478,6 +38644,14 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       window.hideBmeWorkspace();
 
+      // Subjects strictly from DB (NO hardcoding!)
+      gridSubjects = getClassSubjectsFromDb(cls);
+      if (gridSubjects.length === 0) {
+        document.getElementById('bmeEmptyAlert').classList.remove('d-none');
+        document.getElementById('bmeEmptyAlertMsg').innerText = `No subjects are mapped for ${cls} in Subject Management. Please map subjects first.`;
+        return;
+      }
+
       const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
       const schoolId = user.schoolId;
       const examObj = examsCache.find(e => String(e.ExamID) === String(examId)) || {};
@@ -38501,11 +38675,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           document.getElementById('bmeEmptyAlertMsg').innerText = `No active students found in ${cls} - Section ${sec}. Save is disabled.`;
           return;
         }
-
-        const rawSubs = (localConfig && localConfig.classSubjectMap && localConfig.classSubjectMap[cls])
-          ? localConfig.classSubjectMap[cls].split(',').map(s => s.trim()).filter(Boolean)
-          : ["ENGLISH", "HINDI", "MATHEMATICS", "SCIENCE", "SOCIAL SCIENCE"];
-        gridSubjects = [...new Set(rawSubs)];
 
         freezeMap = {};
         (fRes.data || []).forEach(f => {
@@ -38542,7 +38711,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           };
         });
 
-        // Build flat column map for 2D Excel copy-paste
         gridColumns = [];
         gridSubjects.forEach((sub, subIdx) => {
           gridActivities.forEach((act, aIdx) => {
@@ -38589,7 +38757,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             String(m.ActivityName || "").trim().toUpperCase()
           ].filter(Boolean);
 
-          const rowInfo = { id: m.Id, markId: m.MarkID, marks: m.MarksObtained };
+          const rowInfo = { id: m.Id, markId: m.MarkID, marks: m.MarksObtained, isAbsent: !!m.IsAbsent };
           sKeys.forEach(sk => aKeys.forEach(ak => {
             existingDbRowMap[`${sk}::${subKey}::${ak}`] = rowInfo;
           }));
@@ -38607,7 +38775,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         if (gridActivities.length === 1) {
           const a = gridActivities[0];
           thead.innerHTML = `<tr>
-            <th style='width:38px;'>#</th>
+            <th style='width:38px;'>Sl.No.</th>
             <th style='width:55px;'>Roll</th>
             <th style='width:105px;'>Adm No</th>
             <th style='text-align:left; padding-left:10px; min-width:150px;'>Student Name</th>
@@ -38618,7 +38786,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           </tr>`;
         } else {
           let row1 = `<tr>
-            <th rowspan='2' style='width:38px;'>#</th>
+            <th rowspan='2' style='width:38px;'>Sl.No.</th>
             <th rowspan='2' style='width:55px;'>Roll</th>
             <th rowspan='2' style='width:105px;'>Adm No</th>
             <th rowspan='2' style='text-align:left; padding-left:10px; min-width:150px;'>Student Name</th>
@@ -38627,7 +38795,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           let row2 = `<tr>`;
           gridSubjects.forEach(() => {
             gridActivities.forEach(a => {
-              row2 += `<th>${a.name}<br/><span class='text-primary'>(${a.max}) ${a.isFrozen ? '<i class="fas fa-lock text-danger"></i>' : ''}</span></th>`;
+              row2 += `<th>${a.name} (${a.max}) ${a.isFrozen ? '<i class="fas fa-lock text-danger"></i>' : ''}</th>`;
             });
           });
           row2 += `</tr>`;
@@ -38663,23 +38831,36 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               existingDbRowMap[`${studId.toUpperCase()}::${subUpper}::${a.name.toUpperCase()}`];
 
             let val = existingObj ? existingObj.marks : undefined;
+            let isAb = existingObj ? (existingObj.isAbsent || String(existingObj.marks || "").trim().toUpperCase() === "AB") : false;
+
             if (val === undefined && omrSc) {
               if (a.type === "OMR_RIGHT") val = omrSc.R;
               else if (a.type === "OMR_WRONG") val = omrSc.W;
               else if (gridActivities.length === 1) val = omrSc.R;
             }
 
-            const dispVal = (val !== undefined && val !== null) ? String(val).trim() : "";
-            const isAb = dispVal.toUpperCase() === "AB";
-            const isBad = dispVal !== "" && !isStrictValidMark(dispVal.toUpperCase());
+            const dispVal = isAb ? "0" : ((val !== undefined && val !== null) ? String(val).trim() : "");
+            const isBad = !isAb && dispVal !== "" && !isStrictNumeric(dispVal);
 
             cellsHtml += `<td>
               <input type='text' class='grid-marks-input ${isAb ? "is-absent" : ""} ${isBad ? "is-invalid-mark" : ""}'
                      id='bmeInp_${sIdx}_${subIdx}_${aIdx}'
-                     value='${dispVal}' placeholder='0' ${a.isFrozen ? "disabled='disabled'" : ""}
-                     oninput='window.onBmeCellInput(${sIdx}, ${subIdx}, ${aIdx}, event)'
+                     value='${dispVal}' placeholder='MO'
+                     ${a.isFrozen ? "disabled='disabled'" : ""}
+                     ${isAb ? "readonly='readonly'" : ""}
+                     oninput='window.onBmeCellInput(${sIdx}, ${subIdx}, ${aIdx})'
                      onpaste='window.handleBmePaste(event, ${sIdx}, ${colIdx})'
                      onkeydown='if(event.key==="Enter"){ event.preventDefault(); window.focusNextBmeInput(${sIdx}, ${subIdx}, ${aIdx}); }'>
+              <div class='bme-att-wrap'>
+                <label class='bme-att-lbl'>
+                  <input type='checkbox' class='bme-chk-pt' id='bmePt_${sIdx}_${subIdx}_${aIdx}' ${!isAb ? "checked='checked'" : ""} ${a.isFrozen ? "disabled='disabled'" : ""}
+                         onchange='window.onBmeAttendanceToggle(${sIdx}, ${subIdx}, ${aIdx}, "PT")'> Pt
+                </label>
+                <label class='bme-att-lbl'>
+                  <input type='checkbox' class='bme-chk-ab' id='bmeAb_${sIdx}_${subIdx}_${aIdx}' ${isAb ? "checked='checked'" : ""} ${a.isFrozen ? "disabled='disabled'" : ""}
+                         onchange='window.onBmeAttendanceToggle(${sIdx}, ${subIdx}, ${aIdx}, "AB")'> AB
+                </label>
+              </div>
             </td>`;
           });
 
@@ -38698,7 +38879,33 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
     };
 
-    // 📋 SMART EXCEL COPY-PASTE FOR BULK GRID (VERTICAL + 2D MULTI-SUBJECT SUPPORT)
+    // ✅ Pt / AB CHECKBOX HANDLER FOR BULK GRID
+    window.onBmeAttendanceToggle = function(sIdx, subIdx, aIdx, clickedType) {
+      const inp = document.getElementById(`bmeInp_${sIdx}_${subIdx}_${aIdx}`);
+      const ptChk = document.getElementById(`bmePt_${sIdx}_${subIdx}_${aIdx}`);
+      const abChk = document.getElementById(`bmeAb_${sIdx}_${subIdx}_${aIdx}`);
+      if (!inp || !ptChk || !abChk) return;
+
+      let markAbsent = (clickedType === "AB") ? abChk.checked : !ptChk.checked;
+
+      if (markAbsent) {
+        abChk.checked = true;
+        ptChk.checked = false;
+        inp.value = "0";
+        inp.readOnly = true;
+        inp.classList.add('is-absent');
+        inp.classList.remove('is-invalid-mark');
+      } else {
+        ptChk.checked = true;
+        abChk.checked = false;
+        inp.readOnly = false;
+        inp.classList.remove('is-absent', 'is-invalid-mark');
+        if (inp.value === "0") inp.value = "";
+        inp.focus();
+      }
+    };
+
+    // 📋 SMART EXCEL COPY-PASTE (VERTICAL + 2D MULTI-SUBJECT + AUTO AB CHECKBOX)
     window.handleBmePaste = function(e, startRow, startCol) {
       const clipText = ((e.clipboardData || window.clipboardData).getData('text') || "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
       const trimmedEnd = clipText.replace(/\n+$/, "");
@@ -38706,16 +38913,14 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
       e.preventDefault();
 
-      // Split into rows; if single line has space-separated numbers (e.g. "12 11 15 16"), treat as vertical list
       let rawRows = trimmedEnd.split("\n");
       if (rawRows.length === 1 && !trimmedEnd.includes("\t") && /\s+/.test(trimmedEnd.trim())) {
         rawRows = trimmedEnd.trim().split(/\s+/);
       }
 
       const skippedMsgs = [];
-      const touchedSubjectPairs = new Set(); // "sIdx::subIdx"
+      const touchedSubjectPairs = new Set();
 
-      // Pass 1: Fill cells strictly
       rawRows.forEach((line, rOffset) => {
         const sIdx = startRow + rOffset;
         if (sIdx >= gridStudents.length) return;
@@ -38727,52 +38932,59 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
           const { subIdx, aIdx, sub, act } = gridColumns[colIdx];
           const inp = document.getElementById(`bmeInp_${sIdx}_${subIdx}_${aIdx}`);
+          const ptChk = document.getElementById(`bmePt_${sIdx}_${subIdx}_${aIdx}`);
+          const abChk = document.getElementById(`bmeAb_${sIdx}_${subIdx}_${aIdx}`);
           if (!inp || inp.disabled) return;
 
           let v = rawCell.trim().toUpperCase();
-          if (v === "A") v = "AB";
+          if (v === "A" || v === "AB") {
+            abChk.checked = true; ptChk.checked = false;
+            inp.value = "0"; inp.readOnly = true;
+            inp.classList.add('is-absent'); inp.classList.remove('is-invalid-mark');
+            touchedSubjectPairs.add(`${sIdx}::${subIdx}`);
+            return;
+          }
 
           if (v === "") {
-            inp.value = "";
+            ptChk.checked = true; abChk.checked = false;
+            inp.value = ""; inp.readOnly = false;
             inp.classList.remove('is-absent', 'is-invalid-mark');
             touchedSubjectPairs.add(`${sIdx}::${subIdx}`);
             return;
           }
 
-          if (!isStrictValidMark(v)) {
+          if (!isStrictNumeric(v)) {
             skippedMsgs.push(`Row ${sIdx + 1} (${sub} - ${act.name}): Invalid value "${rawCell.trim()}"`);
             return;
           }
 
-          if (v !== "AB") {
-            const num = parseFloat(v);
-            if (num < 0 || num > act.max) {
-              skippedMsgs.push(`Row ${sIdx + 1} (${sub} - ${act.name}): ${num} exceeds Max ${act.max}`);
-              return;
-            }
+          const num = parseFloat(v);
+          if (num < 0 || num > act.max) {
+            skippedMsgs.push(`Row ${sIdx + 1} (${sub} - ${act.name}): ${num} exceeds Max ${act.max}`);
+            return;
           }
 
-          inp.value = v;
-          inp.classList.remove('is-invalid-mark');
-          if (v === "AB") inp.classList.add('is-absent');
-          else inp.classList.remove('is-absent');
+          ptChk.checked = true; abChk.checked = false;
+          inp.value = v; inp.readOnly = false;
+          inp.classList.remove('is-absent', 'is-invalid-mark');
           touchedSubjectPairs.add(`${sIdx}::${subIdx}`);
         });
       });
 
-      // Pass 2: Validate OMR Right + Wrong <= RightMax per (Student, Subject)
       if (isOmrRightWrongMode) {
         touchedSubjectPairs.forEach(pair => {
           const [sIdx, subIdx] = pair.split("::").map(Number);
-          let rVal = 0, wVal = 0, rightMax = 0, wInp = null;
+          let rVal = 0, wVal = 0, rightMax = 0, wInp = null, anyAb = false;
           gridActivities.forEach((a, aIdx) => {
             const el = document.getElementById(`bmeInp_${sIdx}_${subIdx}_${aIdx}`);
+            const ab = document.getElementById(`bmeAb_${sIdx}_${subIdx}_${aIdx}`);
             if (!el) return;
+            if (ab && ab.checked) { anyAb = true; return; }
             const n = parseFloat(el.value.trim()) || 0;
             if (a.type === "OMR_RIGHT") { rVal = n; rightMax = a.max; }
             else if (a.type === "OMR_WRONG") { wVal = n; wInp = el; }
           });
-          if (rightMax > 0 && (rVal + wVal) > rightMax) {
+          if (!anyAb && rightMax > 0 && (rVal + wVal) > rightMax) {
             if (wInp) wInp.value = "";
             skippedMsgs.push(`Row ${sIdx + 1} (${gridSubjects[subIdx]}): Right (${rVal}) + Wrong (${wVal}) exceeded Full Marks (${rightMax}) — Wrong cleared.`);
           }
@@ -38784,33 +38996,28 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
     };
 
-    window.onBmeCellInput = function(sIdx, subIdx, aIdx, evt) {
+    window.onBmeCellInput = function(sIdx, subIdx, aIdx) {
       const inp = document.getElementById(`bmeInp_${sIdx}_${subIdx}_${aIdx}`);
+      const ptChk = document.getElementById(`bmePt_${sIdx}_${subIdx}_${aIdx}`);
+      const abChk = document.getElementById(`bmeAb_${sIdx}_${subIdx}_${aIdx}`);
       if (!inp) return;
       const act = gridActivities[aIdx];
       let v = inp.value.trim().toUpperCase();
-      const isDeleting = evt && evt.inputType && evt.inputType.includes('delete');
 
-      if (v === "AB" || (v === "A" && !isDeleting)) {
-        inp.value = "AB";
-        inp.classList.add('is-absent');
-        inp.classList.remove('is-invalid-mark');
-        return;
-      }
-      if (v === "A" && isDeleting) {
-        inp.value = "";
-        inp.classList.remove('is-absent', 'is-invalid-mark');
+      if (v === "AB" || v === "A") {
+        abChk.checked = true; ptChk.checked = false;
+        inp.value = "0"; inp.readOnly = true;
+        inp.classList.add('is-absent'); inp.classList.remove('is-invalid-mark');
         return;
       }
 
-      inp.classList.remove('is-absent');
       if (v === "") {
         inp.classList.remove('is-invalid-mark');
         return;
       }
 
       if (!/^\d+(\.\d{0,2})?$/.test(v)) {
-        alert(`⚠️ Invalid entry "${v}"! Sirf number (0 - ${act.max}) ya "AB" enter karein.`);
+        alert(`⚠️ Enter only numeric values (0 - ${act.max})! For Absent, tick the AB checkbox.`);
         inp.value = "";
         inp.classList.remove('is-invalid-mark');
         return;
@@ -38826,15 +39033,17 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       inp.classList.remove('is-invalid-mark');
 
       if (isOmrRightWrongMode) {
-        let rVal = 0, wVal = 0, rightMax = act.max;
+        let rVal = 0, wVal = 0, rightMax = act.max, anyAb = false;
         gridActivities.forEach((a, idx2) => {
           const el = document.getElementById(`bmeInp_${sIdx}_${subIdx}_${idx2}`);
+          const ab = document.getElementById(`bmeAb_${sIdx}_${subIdx}_${idx2}`);
           if (!el) return;
+          if (ab && ab.checked) { anyAb = true; return; }
           const valNum = parseFloat(el.value.trim()) || 0;
           if (a.type === "OMR_RIGHT") { rVal = valNum; rightMax = a.max; }
           else if (a.type === "OMR_WRONG") { wVal = valNum; }
         });
-        if ((rVal + wVal) > rightMax) {
+        if (!anyAb && (rVal + wVal) > rightMax) {
           alert(`⚠️ ${gridSubjects[subIdx]}: Right (${rVal}) + Wrong (${wVal}) cannot exceed Full Marks (${rightMax})!`);
           inp.value = "";
         }
@@ -38843,7 +39052,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
     window.focusNextBmeInput = function(sIdx, subIdx, aIdx) {
       const next = document.getElementById(`bmeInp_${sIdx + 1}_${subIdx}_${aIdx}`);
-      if (next && !next.disabled) { next.focus(); next.select(); }
+      if (next && !next.disabled) { next.focus(); if (!next.readOnly) next.select(); }
     };
 
     // 💾 STRICT VALIDATION + SINGLE-CLICK UPSERT TO SUPABASE "Student_Marks"
@@ -38859,42 +39068,46 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         return;
       }
 
-      // Strict Validation Pass BEFORE saving anything!
+      // Strict Validation Pass BEFORE saving
       for (let sIdx = 0; sIdx < gridStudents.length; sIdx++) {
         const s = gridStudents[sIdx];
         const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.trim();
 
         for (let subIdx = 0; subIdx < gridSubjects.length; subIdx++) {
           const sub = gridSubjects[subIdx];
-          let rVal = 0, wVal = 0, rightMax = 0;
+          let rVal = 0, wVal = 0, rightMax = 0, anyAb = false;
 
           for (let aIdx = 0; aIdx < gridActivities.length; aIdx++) {
             const a = gridActivities[aIdx];
             if (a.isFrozen || !activityAppliesToSubject(a, sub)) continue;
             const inp = document.getElementById(`bmeInp_${sIdx}_${subIdx}_${aIdx}`);
+            const abChk = document.getElementById(`bmeAb_${sIdx}_${subIdx}_${aIdx}`);
             if (!inp) continue;
-            const rawVal = inp.value.trim().toUpperCase();
 
-            if (rawVal !== "" && !isStrictValidMark(rawVal)) {
+            const isAb = !!(abChk && abChk.checked);
+            if (isAb) { anyAb = true; continue; }
+
+            const rawVal = inp.value.trim();
+            if (rawVal === "") continue;
+
+            if (!isStrictNumeric(rawVal)) {
               inp.classList.add('is-invalid-mark');
               inp.focus();
-              alert(`❌ Invalid marks "${rawVal}" for ${fullName} (${sub} - ${a.name})! Kripya sahi single number (0-${a.max}) ya AB enter karein.`);
+              alert(`❌ Invalid marks "${rawVal}" for ${fullName} (${sub} - ${a.name})! Enter numeric value (0-${a.max}) or tick AB.`);
               return;
             }
-            if (rawVal !== "" && rawVal !== "AB") {
-              const num = parseFloat(rawVal);
-              if (num < 0 || num > a.max) {
-                inp.classList.add('is-invalid-mark');
-                inp.focus();
-                alert(`❌ ${fullName} (${sub} - ${a.name}): Marks ${num} exceeds Max Marks (${a.max})!`);
-                return;
-              }
-              if (a.type === "OMR_RIGHT") { rVal = num; rightMax = a.max; }
-              else if (a.type === "OMR_WRONG") { wVal = num; }
+            const num = parseFloat(rawVal);
+            if (num < 0 || num > a.max) {
+              inp.classList.add('is-invalid-mark');
+              inp.focus();
+              alert(`❌ ${fullName} (${sub} - ${a.name}): Marks ${num} exceeds Max Marks (${a.max})!`);
+              return;
             }
+            if (a.type === "OMR_RIGHT") { rVal = num; rightMax = a.max; }
+            else if (a.type === "OMR_WRONG") { wVal = num; }
           }
 
-          if (isOmrRightWrongMode && rightMax > 0 && (rVal + wVal) > rightMax) {
+          if (isOmrRightWrongMode && !anyAb && rightMax > 0 && (rVal + wVal) > rightMax) {
             alert(`❌ ${fullName} (${sub}): Right (${rVal}) + Wrong (${wVal}) exceeds Full Marks (${rightMax})!`);
             return;
           }
@@ -38927,14 +39140,17 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           gridActivities.forEach((a, aIdx) => {
             if (a.isFrozen || !activityAppliesToSubject(a, sub)) return;
             const inp = document.getElementById(`bmeInp_${sIdx}_${subIdx}_${aIdx}`);
+            const abChk = document.getElementById(`bmeAb_${sIdx}_${subIdx}_${aIdx}`);
             if (!inp) return;
 
-            const rawVal = inp.value.trim().toUpperCase();
+            const isAb = !!(abChk && abChk.checked);
+            const rawVal = inp.value.trim();
+
             const existing =
               existingDbRowMap[`${admNo.toUpperCase()}::${subUpper}::${a.id.toUpperCase()}`] ||
               existingDbRowMap[`${studId.toUpperCase()}::${subUpper}::${a.id.toUpperCase()}`];
 
-            if (rawVal === "") {
+            if (!isAb && rawVal === "") {
               if (existing && existing.id) idsToDelete.push(existing.id);
               return;
             }
@@ -38959,8 +39175,8 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               AdmissionNo: admNo,
               RollNo: String(s.RollNo || ""),
               StudentName: fullName,
-              MarksObtained: rawVal,
-              IsAbsent: (rawVal === "AB"),
+              MarksObtained: isAb ? "AB" : rawVal,
+              IsAbsent: isAb,
               Source: "BULK",
               EnteredBy: user.name || "Operator",
               UpdatedAt: nowIso
@@ -38970,7 +39186,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       });
 
       if (recordsToUpsert.length === 0 && idsToDelete.length === 0) {
-        alert("⚠️ Please enter marks for at least one student before saving.");
+        alert("⚠️ Please enter marks or mark Absent for at least one student before saving.");
         return;
       }
 
