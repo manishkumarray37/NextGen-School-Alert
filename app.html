@@ -37756,7 +37756,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       try {
         const [stuRes, marksRes, omrRes, fRes] = await Promise.all([
           db.from('Students').select('*').eq('SchoolID', schoolId).eq('Class', cls).eq('Section', sec).eq('Status', 'ACTIVE'),
-          db.from('Student_Marks').select('*').eq('SchoolID', schoolId).eq('Session', batch).eq('Class', cls).eq('Section', sec),
+          db.from('Student_Marks').select('*').eq('SchoolID', schoolId).eq('Session', batch).eq('Class', cls),
           db.from('OMR_Results').select('*').eq('SchoolID', schoolId).eq('Class', cls).eq('Section', sec),
           db.from('Exam_Freeze_Status').select('*').eq('SchoolID', schoolId)
         ]);
@@ -38272,7 +38272,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
         if (recordsToUpsert.length > 0) {
           const { error: upErr } = await db.from('Student_Marks').upsert(recordsToUpsert, {
-            onConflict: 'SchoolID,Session,ExamID,Subject,ActivityID,AdmissionNo'
+            onConflict: 'SchoolID,Session,ExamID,Subject,ActivityID,StudId'
           });
           if (upErr) throw upErr;
         }
@@ -38657,7 +38657,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       try {
         const [stuRes, marksRes, omrRes, fRes] = await Promise.all([
           db.from('Students').select('*').eq('SchoolID', schoolId).eq('Class', cls).eq('Section', sec).eq('Status', 'ACTIVE'),
-          db.from('Student_Marks').select('*').eq('SchoolID', schoolId).eq('Session', batch).eq('Class', cls).eq('Section', sec),
+          db.from('Student_Marks').select('*').eq('SchoolID', schoolId).eq('Session', batch).eq('Class', cls),
           db.from('OMR_Results').select('*').eq('SchoolID', schoolId).eq('Class', cls).eq('Section', sec),
           db.from('Exam_Freeze_Status').select('*').eq('SchoolID', schoolId)
         ]);
@@ -39198,7 +39198,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
         if (recordsToUpsert.length > 0) {
           const { error: upErr } = await db.from('Student_Marks').upsert(recordsToUpsert, {
-            onConflict: 'SchoolID,Session,ExamID,Subject,ActivityID,AdmissionNo'
+            onConflict: 'SchoolID,Session,ExamID,Subject,ActivityID,StudId'
           });
           if (upErr) throw upErr;
         }
@@ -39221,7 +39221,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 </template>
   
 <!-- =================================================================== -->
-<!-- MODULE: SECURE OFFLINE EXCEL TEMPLATE & 1-CLICK VALIDATED IMPORT    -->
+<!-- MODULE: SECURE EXCEL TEMPLATE & IMPORT (STUDID DOUBLE-LOCKED)       -->
 <!-- =================================================================== -->
 <template id='tpl-ExcelUpload'>
   <style>
@@ -39247,7 +39247,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         <i class='fas fa-file-excel text-success fa-lg'></i>
         <div>
           <h6 class='m-0 fw-bold text-dark'>Offline Excel Marks Template &amp; Secure Import</h6>
-          <small class='text-muted' style='font-size: 11px;'>Download activity-wise demo Excel (Single or All Sections), fill offline, validate &amp; sync in 1-click</small>
+          <small class='text-muted' style='font-size: 11px;'>StudId Double-Locked template (Single or All Sections) — zero chance of student mix-up</small>
         </div>
       </div>
       <div class='d-flex gap-2'>
@@ -39261,7 +39261,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     </div>
 
     <div class='card-body p-3'>
-      <!-- 1. FULL CASCADING SELECTORS (100% DB DRIVEN) -->
+      <!-- 1. FULL CASCADING SELECTORS -->
       <div class='bg-light p-3 rounded-3 border mb-4'>
         <div class='row g-3 mb-3'>
           <div class='col-md-4'>
@@ -39312,7 +39312,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         </div>
       </div>
 
-      <!-- FREEZE / SECURITY ALERT BANNER -->
+      <!-- SECURITY / ALERT BANNER -->
       <div class='alert alert-danger py-2 small fw-bold mb-3 d-none' id='exuAlertBanner'>
         <i class='fas fa-shield-alt me-1'></i> <span id='exuAlertText'></span>
       </div>
@@ -39326,7 +39326,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               <i class='fas fa-file-download fa-3x text-success mb-3'></i>
               <h6 class='fw-bold text-dark'>Step 1: Download Activity Demo Excel</h6>
               <p class='small text-muted mb-3'>
-                Generates a secured Excel sheet with active students (Single or All Sections) &amp; exact <strong>Subject :: Activity (Max)</strong> headers. Type <strong>AB</strong> for Absent or leave blank to skip.
+                Generates a <strong>StudId-Locked</strong> Excel with active students &amp; exact <strong>Subject :: Activity (Max)</strong> headers. Type <strong>AB</strong> for Absent or leave blank to skip.
               </p>
               <div class='form-check d-inline-flex align-items-center gap-2 mb-3'>
                 <input class='form-check-input' id='exuPrefillExisting' type='checkbox' checked='checked'/>
@@ -39348,7 +39348,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               <i class='fas fa-cloud-upload-alt fa-3x text-primary mb-3'></i>
               <h6 class='fw-bold text-dark'>Step 2: Upload &amp; Validate Filled Excel</h6>
               <p class='small text-muted mb-2'>
-                File is verified for <strong>School, Class, Section, Exam, Freeze Lock &amp; Max Marks</strong> before saving to database.
+                Cross-verifies <strong>StudId + StudentName + AdmissionNo + School + Exam + Freeze + Max Marks</strong> before saving.
               </p>
               <input accept='.xlsx,.xls' class='form-control form-control-sm mb-3' id='excelFileInput' onchange='window.resetExuPreview()' type='file'/>
             </div>
@@ -39383,9 +39383,9 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               <thead>
                 <tr>
                   <th style='width:65px;'>Excel Row</th>
-                  <th style='width:120px;'>Adm No</th>
+                  <th style='width:110px;'>StudId</th>
                   <th>Column / Activity</th>
-                  <th style='width:95px;'>Value</th>
+                  <th style='width:110px;'>Value</th>
                   <th style='text-align:left;'>Error Reason</th>
                 </tr>
               </thead>
@@ -39397,21 +39397,22 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         <!-- VALID DATA PREVIEW TABLE -->
         <div class='d-none' id='exuValidSection'>
           <div class='alert alert-success py-2 small fw-bold mb-2'>
-            <i class='fas fa-check-circle me-1'></i> Sabhi security aur marks validations pass ho gaye hain! Preview check karke <strong>Confirm &amp; Save</strong> dabayein:
+            <i class='fas fa-check-circle me-1'></i> Sabhi StudId, Name, Security &amp; Marks validations pass ho gaye hain! <strong>Confirm &amp; Save</strong> dabayein:
           </div>
           <div class='table-responsive' style='max-height: 280px; overflow-y: auto;'>
             <table class='table-exu'>
               <thead>
                 <tr>
-                  <th style='width:42px;'>#</th>
-                  <th style='width:55px;'>Sec</th>
-                  <th style='width:65px;'>Roll</th>
-                  <th style='width:115px;'>Adm No</th>
+                  <th style='width:40px;'>#</th>
+                  <th style='width:95px;'>StudId</th>
+                  <th style='width:50px;'>Sec</th>
+                  <th style='width:55px;'>Roll</th>
+                  <th style='width:110px;'>Adm No</th>
                   <th style='text-align:left;'>Student Name</th>
                   <th>Subject</th>
                   <th>Activity</th>
-                  <th style='width:70px;'>Max</th>
-                  <th style='width:90px;'>Marks / Status</th>
+                  <th style='width:65px;'>Max</th>
+                  <th style='width:85px;'>Marks</th>
                 </tr>
               </thead>
               <tbody id='exuValidBody'></tbody>
@@ -39436,6 +39437,10 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
     function isStrictNumeric(str) {
       if (str === "") return true;
       return /^\d+(\.\d{1,2})?$/.test(str);
+    }
+
+    function normalizeName(str) {
+      return String(str || "").replace(/\s+/g, " ").trim().toUpperCase();
     }
 
     function getMapValueCaseInsensitive(mapObj, key) {
@@ -39583,7 +39588,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         ? rawSecs.map(s => String(s).trim()).filter(Boolean)
         : (typeof rawSecs === "string" ? rawSecs.split(',').map(s => s.trim()).filter(Boolean) : []);
 
-      // All Sections + Individual Sections from DB
       sDrop.innerHTML = secArr.length > 0
         ? '<option value="ALL">All Sections</option>' + secArr.map(s => `<option value="${s}">${s}</option>`).join('')
         : '<option value="ALL">All Sections</option>';
@@ -39706,11 +39710,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       targetSubjects.forEach(sub => {
         targetActivities.forEach(act => {
           if (activityAppliesToSubject(act, sub)) {
-            columns.push({
-              sub,
-              act,
-              header: buildActivityHeader(sub, act)
-            });
+            columns.push({ sub, act, header: buildActivityHeader(sub, act) });
           }
         });
       });
@@ -39723,7 +39723,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       return { user, schoolId, batch, cls, sec, term, examId, examCode, examName, subSel, actSel, targetSubjects, targetActivities, columns };
     }
 
-    // 📥 STEP 1: DOWNLOAD SECURED DEMO EXCEL (SINGLE SECTION OR ALL SECTIONS)
+    // 📥 STEP 1: DOWNLOAD STUDID-LOCKED DEMO EXCEL
     window.downloadExcelMarksTemplate = async function() {
       if (typeof XLSX === 'undefined') {
         alert("Excel library (XLSX) is not loaded on this page!");
@@ -39748,20 +39748,20 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
         const queries = [stuQuery];
         if (prefill) {
-          let mrkQuery = db.from('Student_Marks').select('*')
-            .eq('SchoolID', scope.schoolId)
-            .eq('Session', scope.batch)
-            .eq('Class', scope.cls)
-            .eq('ExamID', scope.examId);
-          if (scope.sec !== "ALL") mrkQuery = mrkQuery.eq('Section', scope.sec);
-          queries.push(mrkQuery);
+          // Section-transfer-safe: fetch all marks for Class + Exam, match strictly by StudId!
+          queries.push(
+            db.from('Student_Marks').select('*')
+              .eq('SchoolID', scope.schoolId)
+              .eq('Session', scope.batch)
+              .eq('Class', scope.cls)
+              .eq('ExamID', scope.examId)
+          );
         }
 
         const results = await Promise.all(queries);
         const stuRes = results[0];
         if (stuRes.error) throw stuRes.error;
 
-        // Sort by Section (A -> B -> C) then RollNo (1 -> 2 -> 3)
         const students = (stuRes.data || []).sort((a, b) => {
           const secCmp = String(a.Section || "").localeCompare(String(b.Section || ""));
           if (secCmp !== 0) return secCmp;
@@ -39769,7 +39769,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         });
 
         if (students.length === 0) {
-          alert(`⚠️ No active students found in ${scope.cls}${scope.sec === "ALL" ? " (All Sections)" : " - Section " + scope.sec}. Template cannot be generated.`);
+          alert(`⚠️ No active students found in ${scope.cls}${scope.sec === "ALL" ? " (All Sections)" : " - Section " + scope.sec}.`);
           return;
         }
 
@@ -39779,20 +39779,21 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             const subK = String(m.Subject || m.SubjectName || "").trim().toUpperCase();
             const actK = String(m.ActivityID || "MAIN").trim().toUpperCase();
             const val = (m.IsAbsent || String(m.MarksObtained || "").toUpperCase() === "AB") ? "AB" : String(m.MarksObtained ?? "");
-            [m.AdmissionNo, m.StudId].forEach(id => {
-              const sk = String(id || "").trim().toUpperCase();
-              if (sk) savedMap[`${sk}::${subK}::${actK}`] = val;
-            });
+            const sidK = String(m.StudId || "").trim().toUpperCase();
+            const admK = String(m.AdmissionNo || "").trim().toUpperCase();
+            if (sidK) savedMap[`SID:${sidK}::${subK}::${actK}`] = val;
+            if (admK) savedMap[`ADM:${admK}::${subK}::${actK}`] = val;
           });
         }
 
-        // Build Sheet 1: Marks_Entry (includes Section column for All Sections clarity)
+        // Sheet 1: StudId is FIRST & Primary Unique Column!
         const excelRows = students.map((s, idx) => {
           const studId = String(s.StudId || s.AdmissionNo || "").trim();
-          const admNo = String(s.AdmissionNo || studId).trim();
-          const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.trim();
+          const admNo = String(s.AdmissionNo || "").trim();
+          const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.replace(/\s+/g, " ").trim();
 
           const rowObj = {
+            "StudId": studId,
             "Section": String(s.Section || "").trim(),
             "RollNo": s.RollNo || (idx + 1),
             "AdmissionNo": admNo,
@@ -39800,9 +39801,9 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           };
 
           scope.columns.forEach(col => {
-            const key1 = `${admNo.toUpperCase()}::${col.sub.toUpperCase()}::${col.act.id.toUpperCase()}`;
-            const key2 = `${studId.toUpperCase()}::${col.sub.toUpperCase()}::${col.act.id.toUpperCase()}`;
-            rowObj[col.header] = savedMap[key1] ?? savedMap[key2] ?? "";
+            const k1 = `SID:${studId.toUpperCase()}::${col.sub.toUpperCase()}::${col.act.id.toUpperCase()}`;
+            const k2 = `ADM:${admNo.toUpperCase()}::${col.sub.toUpperCase()}::${col.act.id.toUpperCase()}`;
+            rowObj[col.header] = savedMap[k1] ?? savedMap[k2] ?? "";
           });
 
           return rowObj;
@@ -39810,14 +39811,14 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
         const wsMarks = XLSX.utils.json_to_sheet(excelRows);
         wsMarks['!cols'] = [
+          { wch: 13 },
           { wch: 9 },
-          { wch: 9 },
-          { wch: 18 },
+          { wch: 8 },
+          { wch: 17 },
           { wch: 24 },
           ...scope.columns.map(c => ({ wch: Math.max(20, c.header.length + 2) }))
         ];
 
-        // Build Sheet 2: Template_Info (Security Fingerprint)
         const metaRows = [
           { Field: "SchoolID", Value: scope.schoolId },
           { Field: "Session", Value: scope.batch },
@@ -39828,11 +39829,12 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           { Field: "Section", Value: scope.sec },
           { Field: "SubjectScope", Value: scope.subSel },
           { Field: "ActivityScope", Value: scope.actSel },
+          { Field: "UniqueKey", Value: "StudId" },
           { Field: "GeneratedAt", Value: new Date().toISOString() },
-          { Field: "INSTRUCTIONS", Value: "1. Do NOT edit AdmissionNo or Header names. 2. Enter numeric marks (0 to Max) or type AB for Absent. 3. Leave cell blank to skip." }
+          { Field: "INSTRUCTIONS", Value: "1. Do NOT edit StudId, AdmissionNo, StudentName or Header names. 2. Enter numeric marks (0 to Max) or AB for Absent. 3. Leave blank to skip." }
         ];
         const wsMeta = XLSX.utils.json_to_sheet(metaRows);
-        wsMeta['!cols'] = [{ wch: 18 }, { wch: 75 }];
+        wsMeta['!cols'] = [{ wch: 18 }, { wch: 78 }];
 
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, wsMarks, "Marks_Entry");
@@ -39850,7 +39852,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
     };
 
-    // 🛡️ STEP 2A: READ & FULL SECURITY VALIDATION (SUPPORTS SINGLE & ALL SECTIONS)
+    // 🛡️ STEP 2A: FULL DOUBLE-LOCK SECURITY VALIDATION (STUDID + NAME + ADMNO)
     window.validateExcelFileBeforeImport = async function() {
       if (typeof XLSX === 'undefined') {
         alert("Excel library (XLSX) is not loaded on this page!");
@@ -39884,12 +39886,12 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           .eq('Status', 'ACTIVE');
         if (scope.sec !== "ALL") stuQuery = stuQuery.eq('Section', scope.sec);
 
-        let existQuery = db.from('Student_Marks').select('Id,MarkID,AdmissionNo,StudId,Subject,ActivityID')
+        // Fetch existing MarkIDs across Class + Exam (Section-transfer-safe!)
+        const existQuery = db.from('Student_Marks').select('Id,MarkID,StudId,Subject,ActivityID')
           .eq('SchoolID', scope.schoolId)
           .eq('Session', scope.batch)
           .eq('Class', scope.cls)
           .eq('ExamID', scope.examId);
-        if (scope.sec !== "ALL") existQuery = existQuery.eq('Section', scope.sec);
 
         const [stuRes, existRes] = await Promise.all([stuQuery, existQuery]);
 
@@ -39900,24 +39902,23 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           return;
         }
 
-        const studentWhitelist = {};
+        // Strict Whitelist indexed ONLY by StudId!
+        const studIdWhitelist = {};
         activeStudents.forEach(s => {
-          const admK = String(s.AdmissionNo || "").trim().toUpperCase();
-          const stK = String(s.StudId || "").trim().toUpperCase();
-          if (admK) studentWhitelist[admK] = s;
-          if (stK) studentWhitelist[stK] = s;
+          const stK = String(s.StudId || s.AdmissionNo || "").trim().toUpperCase();
+          if (stK) studIdWhitelist[stK] = s;
         });
 
         const existMarkIdMap = {};
         (existRes.data || []).forEach(m => {
-          const k = `${String(m.AdmissionNo || "").trim().toUpperCase()}::${String(m.Subject || "").trim().toUpperCase()}::${String(m.ActivityID || "MAIN").trim().toUpperCase()}`;
+          const k = `${String(m.StudId || "").trim().toUpperCase()}::${String(m.Subject || "").trim().toUpperCase()}::${String(m.ActivityID || "MAIN").trim().toUpperCase()}`;
           existMarkIdMap[k] = m.MarkID;
         });
 
         const arrayBuf = await file.arrayBuffer();
         const workbook = XLSX.read(new Uint8Array(arrayBuf), { type: 'array' });
 
-        // SECURITY CHECK 1: Verify Template_Info fingerprint if present
+        // SECURITY CHECK 1: Template Fingerprint Check
         if (workbook.SheetNames.includes("Template_Info")) {
           const metaArr = XLSX.utils.sheet_to_json(workbook.Sheets["Template_Info"]);
           const meta = {};
@@ -39928,7 +39929,6 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           if (meta.Session && meta.Session !== scope.batch) mismatches.push(`Batch (${meta.Session} ≠ ${scope.batch})`);
           if (meta.ExamID && meta.ExamID !== String(scope.examId)) mismatches.push(`Exam (${meta.ExamName || meta.ExamID} ≠ ${scope.examName})`);
           if (meta.Class && meta.Class.toLowerCase() !== scope.cls.toLowerCase()) mismatches.push(`Class (${meta.Class} ≠ ${scope.cls})`);
-          // Block section mismatch if user selected a specific section and uploaded a different section's file
           if (scope.sec !== "ALL" && meta.Section && meta.Section.toLowerCase() !== scope.sec.toLowerCase()) {
             mismatches.push(`Section (${meta.Section} ≠ ${scope.sec})`);
           }
@@ -39948,13 +39948,22 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         }
 
         const excelHeaders = Object.keys(rows[0]);
+        const studIdColKey = excelHeaders.find(h => ["studid", "stud id", "studentid", "student id"].includes(h.trim().toLowerCase()));
+        const admColKey = excelHeaders.find(h => ["admissionno", "admission no", "adm no", "admno"].includes(h.trim().toLowerCase()));
+        const nameColKey = excelHeaders.find(h => ["studentname", "student name", "name"].includes(h.trim().toLowerCase()));
+
+        if (!studIdColKey) {
+          showExuAlert("❌ 'StudId' column missing! Please download the fresh StudId-Locked Demo Excel from Step 1.");
+          return;
+        }
+
         const matchedCols = [];
         let frozenSkippedCols = 0;
 
         excelHeaders.forEach(hdr => {
           const cleanHdr = String(hdr).trim();
           const lowHdr = cleanHdr.toLowerCase();
-          if (["section", "sec", "rollno", "roll no", "admissionno", "admission no", "studentname", "student name", "s.no", "sl.no", "sl.no."].includes(lowHdr)) return;
+          if (["studid", "stud id", "studentid", "student id", "section", "sec", "rollno", "roll no", "admissionno", "admission no", "studentname", "student name", "s.no", "sl.no", "sl.no."].includes(lowHdr)) return;
 
           let found = scope.columns.find(c => c.header.toLowerCase() === lowHdr);
 
@@ -39985,40 +39994,70 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
         }
 
         if (matchedCols.length === 0) {
-          showExuAlert("❌ No matching unlocked Exam Activity columns found in Excel! Please use Step 1 to download the official Demo Excel Template.");
+          showExuAlert("❌ No matching unlocked Exam Activity columns found in Excel! Please download the official Demo Excel from Step 1.");
           return;
         }
 
         const errors = [];
         const validRecords = [];
+        const seenStudIds = new Set();
         const dedupMap = new Map();
         let absentCount = 0;
         let skippedCount = 0;
         const nowIso = new Date().toISOString();
 
-        const admColKey = excelHeaders.find(h => ["admissionno", "admission no", "adm no", "admno", "studid"].includes(h.trim().toLowerCase()));
-        if (!admColKey) {
-          showExuAlert("❌ 'AdmissionNo' column is missing in Excel! Please download the official template.");
-          return;
-        }
-
         rows.forEach((r, rIdx) => {
           const excelRowNum = rIdx + 2;
-          const rawAdm = String(r[admColKey] ?? "").trim().toUpperCase();
-          if (!rawAdm) return;
+          const rawSid = String(r[studIdColKey] ?? "").trim().toUpperCase();
+          if (!rawSid) return;
 
-          // SECURITY CHECK 2: Student must exist in ACTIVE whitelist of selected Class (+ Section if specific)
-          const stu = studentWhitelist[rawAdm];
+          // SECURITY CHECK 2: Duplicate StudId inside same Excel
+          if (seenStudIds.has(rawSid)) {
+            errors.push({ row: excelRowNum, sid: rawSid, col: "StudId", val: rawSid, reason: `Duplicate StudId "${rawSid}" found in Excel! Remove duplicate row.` });
+            return;
+          }
+          seenStudIds.add(rawSid);
+
+          // SECURITY CHECK 3: StudId must exist in ACTIVE students of selected Class (+ Section if single)
+          const stu = studIdWhitelist[rawSid];
           if (!stu) {
             const secInfo = scope.sec === "ALL" ? `${scope.cls} (Any Section)` : `${scope.cls} - Section ${scope.sec}`;
-            errors.push({ row: excelRowNum, adm: rawAdm, col: "AdmissionNo", val: rawAdm, reason: `Not an ACTIVE student in ${secInfo}` });
+            errors.push({ row: excelRowNum, sid: rawSid, col: "StudId", val: rawSid, reason: `StudId "${rawSid}" is NOT an ACTIVE student in ${secInfo}.` });
             return;
           }
 
           const studId = String(stu.StudId || stu.AdmissionNo || "").trim();
-          const admNo = String(stu.AdmissionNo || studId).trim();
+          const dbAdm = String(stu.AdmissionNo || "").trim();
+          const dbFullName = `${stu.StudentName || ""} ${stu.LastName || ""}`.replace(/\s+/g, " ").trim();
           const realSection = String(stu.Section || (scope.sec !== "ALL" ? scope.sec : "")).trim();
-          const fullName = `${stu.StudentName || ""} ${stu.LastName || ""}`.trim();
+
+          // SECURITY CHECK 4 (DOUBLE-LOCK): Cross-check StudentName & AdmissionNo against StudId to stop row-shift mixups!
+          if (nameColKey) {
+            const exName = normalizeName(r[nameColKey]);
+            if (exName && exName !== normalizeName(dbFullName)) {
+              errors.push({
+                row: excelRowNum,
+                sid: studId,
+                col: "StudentName",
+                val: String(r[nameColKey]).trim(),
+                reason: `Row Mix-up Blocked! StudId "${studId}" belongs to "${dbFullName}", NOT "${String(r[nameColKey]).trim()}".`
+              });
+              return;
+            }
+          }
+          if (admColKey && dbAdm) {
+            const exAdm = String(r[admColKey] ?? "").trim().toUpperCase();
+            if (exAdm && exAdm !== dbAdm.toUpperCase()) {
+              errors.push({
+                row: excelRowNum,
+                sid: studId,
+                col: "AdmissionNo",
+                val: String(r[admColKey]).trim(),
+                reason: `AdmNo Mismatch! StudId "${studId}" has AdmissionNo "${dbAdm}", NOT "${String(r[admColKey]).trim()}".`
+              });
+              return;
+            }
+          }
 
           const omrCheck = {};
 
@@ -40032,7 +40071,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
 
             const isAb = (rawCell === "AB" || rawCell === "A");
             if (!isAb && !isStrictNumeric(rawCell)) {
-              errors.push({ row: excelRowNum, adm: admNo, col: mc.header, val: rawCell, reason: `Invalid format! Only numeric (0-${mc.act.max}) or "AB" allowed.` });
+              errors.push({ row: excelRowNum, sid: studId, col: mc.header, val: rawCell, reason: `Invalid format! Only numeric (0-${mc.act.max}) or "AB" allowed.` });
               return;
             }
 
@@ -40040,7 +40079,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             if (!isAb) {
               numVal = parseFloat(rawCell);
               if (numVal < 0 || numVal > mc.act.max) {
-                errors.push({ row: excelRowNum, adm: admNo, col: mc.header, val: rawCell, reason: `Exceeds Max Marks (${mc.act.max}).` });
+                errors.push({ row: excelRowNum, sid: studId, col: mc.header, val: rawCell, reason: `Exceeds Max Marks (${mc.act.max}).` });
                 return;
               }
             } else {
@@ -40055,7 +40094,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               else if (mc.act.type === "OMR_WRONG") { omrCheck[subUp].w = numVal; }
             }
 
-            const conflictKey = `${admNo.toUpperCase()}::${subUp}::${mc.act.id.toUpperCase()}`;
+            const conflictKey = `${studId.toUpperCase()}::${subUp}::${mc.act.id.toUpperCase()}`;
             const existingMarkId = existMarkIdMap[conflictKey];
 
             dedupMap.set(conflictKey, {
@@ -40073,11 +40112,11 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               ActivityType: mc.act.type,
               MaxMarks: mc.act.max,
               Class: scope.cls,
-              Section: realSection, // Always student's real section from DB (never "ALL")!
+              Section: realSection,
               StudId: studId,
-              AdmissionNo: admNo,
+              AdmissionNo: dbAdm || studId,
               RollNo: String(stu.RollNo || ""),
-              StudentName: fullName,
+              StudentName: dbFullName,
               MarksObtained: isAb ? "AB" : String(numVal),
               IsAbsent: isAb,
               Source: "EXCEL",
@@ -40090,7 +40129,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
             if (!o.anyAb && o.max > 0 && (o.r + o.w) > o.max) {
               errors.push({
                 row: excelRowNum,
-                adm: admNo,
+                sid: studId,
                 col: `${o.sub} (OMR)`,
                 val: `R:${o.r} + W:${o.w}`,
                 reason: `Right (${o.r}) + Wrong (${o.w}) exceeds Full Marks (${o.max}).`
@@ -40116,7 +40155,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           document.getElementById('exuErrorBody').innerHTML = errors.map(er => `
             <tr>
               <td><span class='badge bg-danger'>Row ${er.row}</span></td>
-              <td class='fw-bold'>${er.adm}</td>
+              <td class='fw-bold'>${er.sid}</td>
               <td>${er.col}</td>
               <td class='text-danger fw-bold'>${er.val}</td>
               <td class='text-start text-danger'>${er.reason}</td>
@@ -40136,6 +40175,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
           document.getElementById('exuValidBody').innerHTML = validRecords.slice(0, 150).map((rec, i) => `
             <tr>
               <td>${i + 1}</td>
+              <td><span class='badge bg-dark'>${rec.StudId}</span></td>
               <td><span class='badge bg-secondary'>${rec.Section || '-'}</span></td>
               <td><strong class='text-primary'>${rec.RollNo || '-'}</strong></td>
               <td>${rec.AdmissionNo}</td>
@@ -40144,7 +40184,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
               <td>${rec.ActivityName}</td>
               <td>${rec.MaxMarks}</td>
               <td>${rec.IsAbsent ? `<span class='badge bg-danger'>AB</span>` : `<span class='badge bg-success'>${rec.MarksObtained}</span>`}</td>
-            </tr>`).join('') + (validRecords.length > 150 ? `<tr><td colspan='9' class='text-muted'>...and ${validRecords.length - 150} more validated entries ready to save.</td></tr>` : '');
+            </tr>`).join('') + (validRecords.length > 150 ? `<tr><td colspan='10' class='text-muted'>...and ${validRecords.length - 150} more validated entries ready to save.</td></tr>` : '');
         }
       } catch(err) {
         console.error("EXU Validate Error:", err);
@@ -40155,7 +40195,7 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       }
     };
 
-    // 💾 STEP 2B: CONFIRM & BATCH UPSERT TO SUPABASE
+    // 💾 STEP 2B: CONFIRM & BATCH UPSERT ON STUDID UNIQUE KEY
     window.confirmAndSaveExcelMarks = async function() {
       if (!validatedUpsertPayload || validatedUpsertPayload.length === 0) {
         alert("⚠️ No validated marks ready to save!");
@@ -40167,17 +40207,16 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Saving ${validatedUpsertPayload.length} Marks...`;
 
       try {
-        // Chunk into batches of 500 for safe large-class uploads
         const CHUNK_SIZE = 500;
         for (let i = 0; i < validatedUpsertPayload.length; i += CHUNK_SIZE) {
           const chunk = validatedUpsertPayload.slice(i, i + CHUNK_SIZE);
           const { error } = await db.from('Student_Marks').upsert(chunk, {
-            onConflict: 'SchoolID,Session,ExamID,Subject,ActivityID,AdmissionNo'
+            onConflict: 'SchoolID,Session,ExamID,Subject,ActivityID,StudId'
           });
           if (error) throw error;
         }
 
-        alert(`🎉 Success: ${validatedUpsertPayload.length} marks imported & updated cleanly from Excel!`);
+        alert(`🎉 Success: ${validatedUpsertPayload.length} marks imported & updated cleanly via StudId!`);
         document.getElementById('excelFileInput').value = "";
         window.resetExuPreview();
       } catch(err) {
