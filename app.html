@@ -39224,13 +39224,24 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   </script>
 </template>
   
-<!-- MODULE: OFFLINE EXCEL MARKS TEMPLATE & 1-CLICK IMPORT               -->
+<!-- =================================================================== -->
+<!-- MODULE: SECURE OFFLINE EXCEL TEMPLATE & 1-CLICK VALIDATED IMPORT    -->
+<!-- =================================================================== -->
 <template id='tpl-ExcelUpload'>
   <style>
-    .exu-card { border-radius: 12px; border: 1.5px solid #e2e8f0; min-height: 520px; background: #ffffff; }
-    .exu-label { font-size: 11.5px; font-weight: 700; color: #1e293b; margin-bottom: 4px; display: block; }
+    .exu-card { border-radius: 12px; border: 1.5px solid #e2e8f0; min-height: 540px; background: #ffffff; }
+    .exu-label { font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 4px; display: block; }
     .exu-select { height: 38px; font-size: 12.5px; font-weight: 600; border-radius: 6px; border: 1.5px solid #cbd5e1; }
-    .exu-btn { height: 38px; font-size: 12.5px; font-weight: 700; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; }
+    .exu-select:focus { border-color: #0284c7; box-shadow: 0 0 0 3px rgba(2,132,199,0.12); }
+
+    .exu-step-box { border: 1.5px solid #e2e8f0; border-radius: 10px; background: #f8fafc; transition: 0.2s; }
+    .exu-step-box:hover { border-color: #cbd5e1; }
+
+    .exu-pill { font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 6px; border: 1px solid #cbd5e1; background: #ffffff; display: inline-flex; align-items: center; gap: 5px; }
+
+    .table-exu { font-size: 11.5px; width: 100%; border-collapse: collapse; }
+    .table-exu th { background: #f1f5f9; font-weight: 800; color: #334155; border: 1px solid #cbd5e1; padding: 7px 6px; text-align: center; white-space: nowrap; }
+    .table-exu td { border: 1px solid #e2e8f0; padding: 6px; text-align: center; font-weight: 600; color: #1e293b; }
   </style>
 
   <div class='card exu-card shadow-sm animate__animated animate__fadeIn mb-5'>
@@ -39239,67 +39250,175 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
       <div class='d-flex align-items-center gap-2'>
         <i class='fas fa-file-excel text-success fa-lg'></i>
         <div>
-          <h6 class='m-0 fw-bold text-dark'>Offline Excel Marks Sheet Template &amp; Import</h6>
-          <small class='text-muted' style='font-size: 11px;'>Download pre-filled student list in Excel, enter marks offline, and upload back in 1-click</small>
+          <h6 class='m-0 fw-bold text-dark'>Offline Excel Marks Template &amp; Secure Import</h6>
+          <small class='text-muted' style='font-size: 11px;'>Download activity-wise demo Excel, fill marks offline, validate &amp; sync in 1-click</small>
         </div>
+      </div>
+      <div class='d-flex gap-2'>
+        <button class='btn btn-outline-secondary btn-sm fw-bold' onclick='window.initExcelUploadModule()' type='button'>
+          <i class='fas fa-sync-alt me-1'></i> Refresh
+        </button>
+        <button class='btn btn-outline-primary btn-sm fw-bold' onclick='window.navigateTo(&quot;SubjectMarksEntry&quot;)' type='button'>
+          <i class='fas fa-edit me-1'></i> Subject Marks Entry
+        </button>
       </div>
     </div>
 
-    <div class='card-body p-2'>
-      <!-- 1. CLASS & EXAM SELECTOR -->
+    <div class='card-body p-3'>
+      <!-- 1. FULL CASCADING SELECTORS (100% DB DRIVEN) -->
       <div class='bg-light p-3 rounded-3 border mb-4'>
-        <div class='row g-2 align-items-end'>
-          <div class='col-lg-3 col-md-3 col-6'>
-            <label class='exu-label'>Session *</label>
-            <select class='form-select exu-select' id='exuSession'></select>
-          </div>
-          <div class='col-lg-3 col-md-3 col-6'>
-            <label class='exu-label'>Exam *</label>
-            <select class='form-select exu-select fw-bold text-primary' id='exuExam'></select>
-          </div>
-          <div class='col-lg-3 col-md-3 col-6'>
-            <label class='exu-label'>Class *</label>
-            <select class='form-select exu-select' id='exuClass' onchange='window.onExuClassChange()'>
-              <option value=''>-- Class --</option>
+        <div class='row g-3 mb-3'>
+          <div class='col-md-4'>
+            <label class='exu-label'>Batch <span class='text-danger'>*</span></label>
+            <select class='form-select exu-select' id='exuBatchSelect' onchange='window.onExuBatchChange()'>
+              <option value=''>Select</option>
             </select>
           </div>
-          <div class='col-lg-3 col-md-3 col-6'>
-            <label class='exu-label'>Section *</label>
-            <select class='form-select exu-select' id='exuSection'>
-              <option value='A'>Section A</option>
+          <div class='col-md-4'>
+            <label class='exu-label'>Class <span class='text-danger'>*</span></label>
+            <select class='form-select exu-select' id='exuClassSelect' onchange='window.onExuClassChange()'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+          <div class='col-md-4'>
+            <label class='exu-label'>Section <span class='text-danger'>*</span></label>
+            <select class='form-select exu-select' id='exuSectionSelect' onchange='window.resetExuPreview()'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+        </div>
+
+        <div class='row g-3'>
+          <div class='col-md-3'>
+            <label class='exu-label'>Term <span class='text-danger'>*</span></label>
+            <select class='form-select exu-select' id='exuTermSelect' onchange='window.onExuTermChange()'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+          <div class='col-md-3'>
+            <label class='exu-label'>Exam <span class='text-danger'>*</span></label>
+            <select class='form-select exu-select fw-bold text-primary' id='exuExamSelect' onchange='window.onExuExamChange()'>
+              <option value=''>Select</option>
+            </select>
+          </div>
+          <div class='col-md-3'>
+            <label class='exu-label'>Subject</label>
+            <select class='form-select exu-select' id='exuSubjectSelect' onchange='window.resetExuPreview()'>
+              <option value='ALL'>All Mapped Subjects</option>
+            </select>
+          </div>
+          <div class='col-md-3'>
+            <label class='exu-label'>Activity</label>
+            <select class='form-select exu-select' id='exuActivitySelect' onchange='window.resetExuPreview()'>
+              <option value='ALL'>All Activities</option>
             </select>
           </div>
         </div>
       </div>
 
+      <!-- FREEZE / SECURITY ALERT BANNER -->
+      <div class='alert alert-danger py-2 small fw-bold mb-3 d-none' id='exuAlertBanner'>
+        <i class='fas fa-shield-alt me-1'></i> <span id='exuAlertText'></span>
+      </div>
+
       <!-- 2. TWO-STEP WORKFLOW CARDS -->
-      <div class='row g-4'>
-        <!-- STEP A: DOWNLOAD TEMPLATE -->
+      <div class='row g-4 mb-4'>
+        <!-- STEP A: DOWNLOAD DEMO TEMPLATE -->
         <div class='col-md-6 col-12'>
-          <div class='p-4 border rounded-3 bg-light text-center h-100 d-flex flex-column justify-content-between'>
+          <div class='p-4 exu-step-box text-center h-100 d-flex flex-column justify-content-between'>
             <div>
-              <i class='fas fa-download fa-3x text-success mb-3'></i>
-              <h6 class='fw-bold text-dark'>Step 1: Download Pre-Filled Excel</h6>
-              <p class='small text-muted mb-3'>Generates an Excel sheet with your class students&#39; Roll No, Admission No &amp; Subject Columns ready to fill.</p>
+              <i class='fas fa-file-download fa-3x text-success mb-3'></i>
+              <h6 class='fw-bold text-dark'>Step 1: Download Activity Demo Excel</h6>
+              <p class='small text-muted mb-3'>
+                Generates a secured Excel sheet with active students &amp; exact <strong>Subject :: Activity (Max)</strong> headers. Type <strong>AB</strong> for Absent or leave blank to skip.
+              </p>
+              <div class='form-check d-inline-flex align-items-center gap-2 mb-3'>
+                <input class='form-check-input' id='exuPrefillExisting' type='checkbox' checked='checked'/>
+                <label class='form-check-label small fw-bold text-secondary' for='exuPrefillExisting'>
+                  Pre-fill already saved marks (for editing)
+                </label>
+              </div>
             </div>
-            <button class='btn btn-success fw-bold py-2 shadow-sm' onclick='window.downloadExcelMarksTemplate()' type='button'>
-              <i class='fas fa-file-excel me-1'></i> Download Excel Template
+            <button class='btn btn-success fw-bold py-2 shadow-sm' id='btnDownloadExuTpl' onclick='window.downloadExcelMarksTemplate()' type='button'>
+              <i class='fas fa-file-excel me-1'></i> Download Demo Excel Template
             </button>
           </div>
         </div>
 
-        <!-- STEP B: UPLOAD COMPLETED EXCEL -->
+        <!-- STEP B: UPLOAD & VALIDATE FILLED EXCEL -->
         <div class='col-md-6 col-12'>
-          <div class='p-4 border rounded-3 bg-light text-center h-100 d-flex flex-column justify-content-between'>
+          <div class='p-4 exu-step-box text-center h-100 d-flex flex-column justify-content-between'>
             <div>
               <i class='fas fa-cloud-upload-alt fa-3x text-primary mb-3'></i>
-              <h6 class='fw-bold text-dark'>Step 2: Upload Filled Excel File</h6>
-              <p class='small text-muted mb-2'>Select your filled Excel sheet to automatically sync and save all marks to database.</p>
-              <input accept='.xlsx, .xls' class='form-control form-control-sm mb-3' id='excelFileInput' type='file'></i>
+              <h6 class='fw-bold text-dark'>Step 2: Upload &amp; Validate Filled Excel</h6>
+              <p class='small text-muted mb-2'>
+                File is verified for <strong>School, Class, Section, Exam, Freeze Lock &amp; Max Marks</strong> before saving to database.
+              </p>
+              <input accept='.xlsx,.xls' class='form-control form-control-sm mb-3' id='excelFileInput' onchange='window.resetExuPreview()' type='file'/>
             </div>
-            <button class='btn btn-primary fw-bold py-2 shadow-sm' id='btnImportExcel' onclick='window.importExcelFileToDatabase()' type='button'>
-              <i class='fas fa-upload me-1'></i> Upload &amp; Save Marks
+            <button class='btn btn-primary fw-bold py-2 shadow-sm' id='btnValidateExcel' onclick='window.validateExcelFileBeforeImport()' type='button'>
+              <i class='fas fa-shield-alt me-1'></i> Validate &amp; Preview Excel
             </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. VALIDATION REPORT & PREVIEW WORKSPACE -->
+      <div class='border rounded-3 p-3 bg-white d-none' id='exuPreviewBox'>
+        <div class='d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 pb-2 border-bottom'>
+          <div class='d-flex gap-2 flex-wrap'>
+            <span class='exu-pill'>Valid Marks Ready: <strong class='text-success' id='exuStatValid'>0</strong></span>
+            <span class='exu-pill'>Absent (AB): <strong class='text-warning' id='exuStatAbsent'>0</strong></span>
+            <span class='exu-pill'>Errors Found: <strong class='text-danger' id='exuStatErrors'>0</strong></span>
+            <span class='exu-pill'>Skipped (Empty/Frozen): <strong class='text-secondary' id='exuStatSkipped'>0</strong></span>
+          </div>
+          <button class='btn btn-success btn-sm px-4 py-2 fw-bold shadow-sm' id='btnConfirmImportExcel' onclick='window.confirmAndSaveExcelMarks()' type='button' disabled='disabled'>
+            <i class='fas fa-check-circle me-1'></i> Confirm &amp; Save Marks to Database
+          </button>
+        </div>
+
+        <!-- ERROR LIST TABLE (SHOWN ONLY IF ERRORS > 0) -->
+        <div class='mb-3 d-none' id='exuErrorSection'>
+          <div class='alert alert-danger py-2 small fw-bold mb-2'>
+            <i class='fas fa-times-circle me-1'></i> Niche diye gaye errors theek karke Excel dubara upload karein (galat data save nahi kiya jayega):
+          </div>
+          <div class='table-responsive' style='max-height: 240px; overflow-y: auto;'>
+            <table class='table-exu'>
+              <thead>
+                <tr>
+                  <th style='width:65px;'>Excel Row</th>
+                  <th style='width:120px;'>Adm No</th>
+                  <th>Column / Activity</th>
+                  <th style='width:95px;'>Value</th>
+                  <th style='text-align:left;'>Error Reason</th>
+                </tr>
+              </thead>
+              <tbody id='exuErrorBody'></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- VALID DATA PREVIEW TABLE (SHOWN WHEN 0 ERRORS) -->
+        <div class='d-none' id='exuValidSection'>
+          <div class='alert alert-success py-2 small fw-bold mb-2'>
+            <i class='fas fa-check-circle me-1'></i> Sabhi security aur marks validations pass ho gaye hain! Preview check karke <strong>Confirm &amp; Save</strong> dabayein:
+          </div>
+          <div class='table-responsive' style='max-height: 280px; overflow-y: auto;'>
+            <table class='table-exu'>
+              <thead>
+                <tr>
+                  <th style='width:45px;'>#</th>
+                  <th style='width:70px;'>Roll No</th>
+                  <th style='width:115px;'>Adm No</th>
+                  <th style='text-align:left;'>Student Name</th>
+                  <th>Subject</th>
+                  <th>Activity</th>
+                  <th style='width:80px;'>Max</th>
+                  <th style='width:95px;'>Marks / Status</th>
+                </tr>
+              </thead>
+              <tbody id='exuValidBody'></tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -39311,162 +39430,749 @@ Wishing your ward #name# (Class: #class#-#sec#) a very Happy Birthday! May #name
   // <![CDATA[
   (function() {
     let localConfig = null;
-    const AMP = String.fromCharCode(38);
+    let termsCache = [];
+    let examsCache = [];
+    let activitiesCache = [];
+    let freezeMap = {};
+    let validatedUpsertPayload = [];
+
+    function isStrictNumeric(str) {
+      if (str === "") return true;
+      return /^\d+(\.\d{1,2})?$/.test(str);
+    }
+
+    function getMapValueCaseInsensitive(mapObj, key) {
+      if (!mapObj || !key) return null;
+      if (mapObj[key] !== undefined) return mapObj[key];
+      const target = String(key).trim().toLowerCase();
+      const matchedKey = Object.keys(mapObj).find(k => String(k).trim().toLowerCase() === target);
+      return matchedKey ? mapObj[matchedKey] : null;
+    }
+
+    function getClassSubjectsFromDb(cls) {
+      let subList = [];
+      if (localConfig && localConfig.classSubjectMap) {
+        const raw = getMapValueCaseInsensitive(localConfig.classSubjectMap, cls);
+        if (Array.isArray(raw)) subList = raw.map(s => String(s).trim()).filter(Boolean);
+        else if (typeof raw === "string" && raw.trim() !== "") subList = raw.split(',').map(s => s.trim()).filter(Boolean);
+      }
+      if (subList.length === 0 && activitiesCache.length > 0) {
+        const actSubs = new Set();
+        activitiesCache.forEach(a => {
+          const clsArr = String(a.Class || "ALL").split(",").map(x => x.trim().toLowerCase());
+          if ((clsArr.includes("all") || clsArr.includes(cls.toLowerCase())) && Array.isArray(a.Subjects)) {
+            a.Subjects.forEach(s => { if (String(s).trim()) actSubs.add(String(s).trim()); });
+          }
+        });
+        subList = Array.from(actSubs);
+      }
+      return [...new Set(subList)];
+    }
+
+    function activityAppliesToSubject(actObj, subName) {
+      if (!actObj.subjects || actObj.subjects.length === 0) return true;
+      return actObj.subjects.some(s => String(s).trim().toLowerCase() === String(subName).trim().toLowerCase());
+    }
+
+    function buildActivityHeader(sub, act) {
+      return `${sub} :: ${act.name} (Max:${act.max})`;
+    }
+
+    window.resetExuPreview = function() {
+      validatedUpsertPayload = [];
+      ['exuPreviewBox', 'exuErrorSection', 'exuValidSection', 'exuAlertBanner'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('d-none');
+      });
+      const btn = document.getElementById('btnConfirmImportExcel');
+      if (btn) btn.disabled = true;
+    };
+
+    function showExuAlert(msg) {
+      const box = document.getElementById('exuAlertBanner');
+      const txt = document.getElementById('exuAlertText');
+      if (box && txt) {
+        txt.innerText = msg;
+        box.classList.remove('d-none');
+      }
+    }
 
     window.initExcelUploadModule = async function() {
-      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData() : null;
-      const sDrop = document.getElementById('exuSession');
-      const cDrop = document.getElementById('exuClass');
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
 
-      if (localConfig) {
-        if (sDrop) sDrop.innerHTML = (localConfig.sessions || ["2026-2027"]).map(s => `<option value="${s}">${s}</option>`).join('');
-        if (cDrop && localConfig.classMap) {
-          cDrop.innerHTML = '<option value="">-- Class --</option>' + Object.keys(localConfig.classMap).map(c => `<option value="${c}">${c}</option>`).join('');
-        }
-      }
+      localConfig = (typeof window.getConfigData === 'function') ? await window.getConfigData(true) : null;
 
       try {
-        const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-        const res = await (await fetch(`${scriptURL}?action=getExamMaster${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&_t=${Date.now()}`)).json();
-        const list = Array.isArray(res.data) ? res.data : [];
-        const eDrop = document.getElementById('exuExam');
-        if (eDrop) eDrop.innerHTML = list.map(x => `<option value="${x.ExamCode}">[${x.ExamCode}] ${x.ExamName}</option>`).join('');
-      } catch(e) {}
+        const [tRes, eRes, aRes, fRes] = await Promise.all([
+          db.from('Exam_Terms').select('*').eq('SchoolID', schoolId).order('Id', { ascending: true }),
+          db.from('Exam_Master').select('*').eq('SchoolID', schoolId).order('SequenceNo', { ascending: true }),
+          db.from('Exam_Activities').select('*').eq('SchoolID', schoolId).order('Id', { ascending: true }),
+          db.from('Exam_Freeze_Status').select('*').eq('SchoolID', schoolId)
+        ]);
+        termsCache = tRes.data || [];
+        examsCache = eRes.data || [];
+        activitiesCache = aRes.data || [];
+        freezeMap = {};
+        (fRes.data || []).forEach(f => {
+          if (f.ActivityID && f.FreezedClasses) {
+            freezeMap[String(f.ActivityID)] = f.FreezedClasses.split(',').map(x => x.trim().toLowerCase());
+          }
+        });
+      } catch(e) {
+        console.error("EXU Init Error:", e);
+      }
+
+      const bDrop = document.getElementById('exuBatchSelect');
+      const cDrop = document.getElementById('exuClassSelect');
+
+      const sessions = (localConfig && Array.isArray(localConfig.sessions) && localConfig.sessions.length > 0)
+        ? localConfig.sessions
+        : [...new Set(termsCache.map(t => String(t.Session || t.Batch || "").trim()).filter(Boolean))];
+
+      if (bDrop) {
+        bDrop.innerHTML = sessions.length > 0
+          ? '<option value="">Select</option>' + sessions.map(s => `<option value="${s}">${s}</option>`).join('')
+          : '<option value="">No Sessions Configured</option>';
+      }
+
+      if (cDrop) {
+        const clsKeys = (localConfig && localConfig.classMap) ? Object.keys(localConfig.classMap) : [];
+        cDrop.innerHTML = clsKeys.length > 0
+          ? '<option value="">Select</option>' + clsKeys.map(c => `<option value="${c}">${c}</option>`).join('')
+          : '<option value="">No Classes Configured</option>';
+      }
+
+      document.getElementById('exuSectionSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('exuTermSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('exuExamSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('exuSubjectSelect').innerHTML = '<option value="ALL">All Mapped Subjects</option>';
+      document.getElementById('exuActivitySelect').innerHTML = '<option value="ALL">All Activities</option>';
+      const fi = document.getElementById('excelFileInput');
+      if (fi) fi.value = "";
+      window.resetExuPreview();
+    };
+
+    window.onExuBatchChange = function() {
+      const selBatch = document.getElementById('exuBatchSelect').value;
+      const tDrop = document.getElementById('exuTermSelect');
+      document.getElementById('exuExamSelect').innerHTML = '<option value="">Select</option>';
+      document.getElementById('exuActivitySelect').innerHTML = '<option value="ALL">All Activities</option>';
+      window.resetExuPreview();
+      if (!selBatch) { tDrop.innerHTML = '<option value="">Select</option>'; return; }
+
+      const matched = termsCache.filter(t => String(t.Session || t.Batch || "").trim() === selBatch);
+      tDrop.innerHTML = '<option value="">Select</option>' + matched.map(t => {
+        const val = t.TermCode || t.TermID || t.TermName;
+        return `<option value="${val}">${t.TermName} - ${selBatch}</option>`;
+      }).join('');
     };
 
     window.onExuClassChange = function() {
-      const cls = document.getElementById('exuClass').value;
-      const sDrop = document.getElementById('exuSection');
-      if (!cls || !localConfig) return;
-      const rawSecs = (localConfig.classMap && localConfig.classMap[cls]) ? localConfig.classMap[cls] : "A,B";
-      sDrop.innerHTML = rawSecs.split(',').map(s => `<option value="${s.trim()}">Section ${s.trim()}</option>`).join('');
-    };
+      const cls = document.getElementById('exuClassSelect').value;
+      const sDrop = document.getElementById('exuSectionSelect');
+      const subDrop = document.getElementById('exuSubjectSelect');
+      window.resetExuPreview();
 
-    // 📥 1. DOWNLOAD PRE-FILLED TEMPLATE
-    window.downloadExcelMarksTemplate = async function() {
-      const cls = document.getElementById('exuClass').value;
-      const sec = document.getElementById('exuSection').value;
-      const exCode = document.getElementById('exuExam').value;
-      const sess = document.getElementById('exuSession').value;
-
-      if (!cls) { alert("Please select Class!"); return; }
-
-      const rawSubs = (localConfig && localConfig.classSubjectMap && localConfig.classSubjectMap[cls]) 
-        ? localConfig.classSubjectMap[cls].split(',').map(s => s.trim()).filter(Boolean) 
-        : ["ENGLISH", "HINDI", "MATHEMATICS", "SCIENCE", "SST"];
-
-      let studentsList = [];
-      if (typeof fastGetStudents === 'function') studentsList = await fastGetStudents();
-      else {
-        const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-        const sRes = await (await fetch(`${scriptURL}?action=getStudents${AMP}tsid=${encodeURIComponent(user.targetSheetId || "")}&sheet=Students&_t=${Date.now()}`)).json();
-        studentsList = Array.isArray(sRes) ? sRes : [];
+      if (!cls) {
+        sDrop.innerHTML = '<option value="">Select</option>';
+        subDrop.innerHTML = '<option value="ALL">All Mapped Subjects</option>';
+        window.onExuExamChange();
+        return;
       }
 
-      const filtered = studentsList.filter(s => String(s.Class).toUpperCase() === cls.toUpperCase() && String(s.Section || s.Sec || "A").toUpperCase() === sec.toUpperCase());
-      filtered.sort((a, b) => (parseInt(a.RollNo) || 0) - (parseInt(b.RollNo) || 0));
+      const rawSecs = (localConfig && localConfig.classMap) ? getMapValueCaseInsensitive(localConfig.classMap, cls) : "";
+      const secArr = Array.isArray(rawSecs)
+        ? rawSecs.map(s => String(s).trim()).filter(Boolean)
+        : (typeof rawSecs === "string" ? rawSecs.split(',').map(s => s.trim()).filter(Boolean) : []);
 
-      const excelRows = filtered.map((s, idx) => {
-        const rowObj = {
-          "RollNo": s.RollNo || (idx + 1),
-          "AdmissionNo": s.AdmissionNo || s.StudId || "",
-          "StudentName": `${s.StudentName || s.FirstName || ""} ${s.LastName || ""}`.trim()
-        };
-        rawSubs.forEach(sub => { rowObj[sub] = ""; });
-        rowObj["AttendanceDays"] = "";
-        rowObj["TeacherRemarks"] = "";
-        return rowObj;
-      });
+      sDrop.innerHTML = secArr.length > 0
+        ? '<option value="">Select</option>' + secArr.map(s => `<option value="${s}">${s}</option>`).join('')
+        : '<option value="">No Sections Mapped</option>';
 
-      const ws = XLSX.utils.json_to_sheet(excelRows);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Marks_Template");
-      XLSX.writeFile(wb, `Marks_Template_Class_${cls}_${sec}_${exCode}.xlsx`);
+      const subArr = getClassSubjectsFromDb(cls);
+      subDrop.innerHTML = subArr.length > 0
+        ? '<option value="ALL">All Mapped Subjects</option>' + subArr.map(s => `<option value="${s}">${s}</option>`).join('')
+        : '<option value="">No Subjects Mapped for this Class</option>';
+
+      window.onExuExamChange();
     };
 
-    // 📤 2. IMPORT FILLED EXCEL
-    window.importExcelFileToDatabase = async function() {
-      const fileInput = document.getElementById('excelFileInput');
-      if (!fileInput.files || !fileInput.files[0]) { alert("Please choose an Excel file to upload!"); return; }
+    window.onExuTermChange = function() {
+      const selBatch = document.getElementById('exuBatchSelect').value;
+      const selTerm = document.getElementById('exuTermSelect').value;
+      const eDrop = document.getElementById('exuExamSelect');
+      document.getElementById('exuActivitySelect').innerHTML = '<option value="ALL">All Activities</option>';
+      window.resetExuPreview();
+      if (!selBatch || !selTerm) { eDrop.innerHTML = '<option value="">Select</option>'; return; }
 
-      const cls = document.getElementById('exuClass').value;
-      const sec = document.getElementById('exuSection').value;
-      const exCode = document.getElementById('exuExam').value;
-      const sess = document.getElementById('exuSession').value;
-      if (!cls) { alert("Please select Class!"); return; }
+      const matchedExams = examsCache.filter(e =>
+        String(e.Session || "").trim() === selBatch &&
+        String(e.TermCode || "").trim() === selTerm
+      );
+      eDrop.innerHTML = '<option value="">Select</option>' + matchedExams.map(e => `<option value="${e.ExamID}">${e.ExamName}</option>`).join('');
+    };
 
-      const btn = document.getElementById('btnImportExcel');
+    window.onExuExamChange = function() {
+      const selBatch = document.getElementById('exuBatchSelect').value;
+      const selTerm = document.getElementById('exuTermSelect').value;
+      const selExam = document.getElementById('exuExamSelect').value;
+      const selCls = document.getElementById('exuClassSelect').value;
+      const aDrop = document.getElementById('exuActivitySelect');
+      window.resetExuPreview();
+      if (!selExam) { aDrop.innerHTML = '<option value="ALL">All Activities</option>'; return; }
+
+      const matched = activitiesCache.filter(a => {
+        if (selBatch && String(a.Session || "").trim() !== selBatch) return false;
+        if (selTerm && String(a.TermCode || "").trim() !== selTerm) return false;
+        if (String(a.ExamID || "").trim() !== selExam) return false;
+        if (selCls) {
+          const clsArr = String(a.Class || "ALL").split(",").map(x => x.trim().toLowerCase());
+          if (!clsArr.includes("all") && !clsArr.includes(selCls.toLowerCase())) return false;
+        }
+        return true;
+      });
+
+      aDrop.innerHTML = '<option value="ALL">All Activities</option>' + matched.map(a => {
+        const aid = a.ActivityID || a.Id;
+        return `<option value="${aid}">${a.ActivityName} (Max: ${a.MaxMarks})</option>`;
+      }).join('');
+    };
+
+    // Helper: Resolve selected scope (Subjects + Activities + Fresh Freeze Map)
+    async function resolveExuScope() {
+      const batch = document.getElementById('exuBatchSelect').value;
+      const cls = document.getElementById('exuClassSelect').value;
+      const sec = document.getElementById('exuSectionSelect').value;
+      const term = document.getElementById('exuTermSelect').value;
+      const examId = document.getElementById('exuExamSelect').value;
+      const subSel = document.getElementById('exuSubjectSelect').value;
+      const actSel = document.getElementById('exuActivitySelect').value;
+
+      if (!batch || !cls || !sec || !term || !examId) {
+        alert("⚠️ Please select Batch, Class, Section, Term, and Exam first!");
+        return null;
+      }
+
+      const allClassSubs = getClassSubjectsFromDb(cls);
+      if (allClassSubs.length === 0) {
+        alert(`⚠️ No subjects mapped for ${cls} in database! Please configure subjects first.`);
+        return null;
+      }
+
+      const targetSubjects = (subSel && subSel !== "ALL") ? [subSel] : allClassSubs;
+      const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
+      const schoolId = user.schoolId;
+      const examObj = examsCache.find(e => String(e.ExamID) === String(examId)) || {};
+      const examName = examObj.ExamName || examId;
+      const examCode = (examObj.ExamCode && examObj.ExamCode !== "NA") ? examObj.ExamCode : examId;
+
+      // Fresh freeze check from DB
+      const { data: fData } = await db.from('Exam_Freeze_Status').select('*').eq('SchoolID', schoolId);
+      freezeMap = {};
+      (fData || []).forEach(f => {
+        if (f.ActivityID && f.FreezedClasses) {
+          freezeMap[String(f.ActivityID)] = f.FreezedClasses.split(',').map(x => x.trim().toLowerCase());
+        }
+      });
+
+      let matchedActs = activitiesCache.filter(a => {
+        if (String(a.Session || "").trim() !== batch) return false;
+        if (String(a.TermCode || "").trim() !== term) return false;
+        if (String(a.ExamID || "").trim() !== examId) return false;
+        const clsArr = String(a.Class || "ALL").split(",").map(x => x.trim().toLowerCase());
+        if (!clsArr.includes("all") && !clsArr.includes(cls.toLowerCase())) return false;
+        return true;
+      });
+
+      if (actSel !== "ALL") matchedActs = matchedActs.filter(a => String(a.ActivityID || a.Id) === actSel);
+      if (matchedActs.length === 0) {
+        matchedActs = [{ ActivityID: "MAIN", ActivityName: "Marks", MaxMarks: examObj.MaxMarks || 100, Subjects: [] }];
+      }
+
+      const targetActivities = matchedActs.map(a => {
+        const aid = String(a.ActivityID || a.Id);
+        const frozenList = freezeMap[aid] || [];
+        const isFrozen = frozenList.includes(cls.toLowerCase()) || frozenList.includes("all");
+        const upName = String(a.ActivityName || "Marks").toUpperCase();
+        const actType = upName.includes("RIGHT") ? "OMR_RIGHT" : (upName.includes("WRONG") ? "OMR_WRONG" : "SCORE");
+        return {
+          id: aid,
+          name: a.ActivityName || "Marks",
+          max: parseFloat(a.MaxMarks) || 100,
+          isFrozen,
+          type: actType,
+          subjects: Array.isArray(a.Subjects) ? a.Subjects : []
+        };
+      });
+
+      // Build ordered columns (Subject x Applicable Activity)
+      const columns = [];
+      targetSubjects.forEach(sub => {
+        targetActivities.forEach(act => {
+          if (activityAppliesToSubject(act, sub)) {
+            columns.push({
+              sub,
+              act,
+              header: buildActivityHeader(sub, act)
+            });
+          }
+        });
+      });
+
+      if (columns.length === 0) {
+        alert("⚠️ No applicable Exam Activities found for the selected Subject(s)!");
+        return null;
+      }
+
+      return { user, schoolId, batch, cls, sec, term, examId, examCode, examName, subSel, actSel, targetSubjects, targetActivities, columns };
+    }
+
+    // 📥 STEP 1: DOWNLOAD SECURED DEMO EXCEL WITH EXACT EXAM ACTIVITY HEADERS
+    window.downloadExcelMarksTemplate = async function() {
+      if (typeof XLSX === 'undefined') {
+        alert("Excel library (XLSX) is not loaded on this page!");
+        return;
+      }
+
+      const scope = await resolveExuScope();
+      if (!scope) return;
+
+      const btn = document.getElementById('btnDownloadExuTpl');
       btn.disabled = true;
-      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Reading Excel...`;
+      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Generating Excel...`;
 
-      const reader = new FileReader();
-      reader.onload = async function(e) {
-        try {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: 'array' });
-          const sheetName = workbook.SheetNames[0];
-          const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+      try {
+        const prefill = document.getElementById('exuPrefillExisting')?.checked;
+        const queries = [
+          db.from('Students').select('*').eq('SchoolID', scope.schoolId).eq('Class', scope.cls).eq('Section', scope.sec).eq('Status', 'ACTIVE')
+        ];
+        if (prefill) {
+          queries.push(
+            db.from('Student_Marks').select('*').eq('SchoolID', scope.schoolId).eq('Session', scope.batch).eq('Class', scope.cls).eq('Section', scope.sec).eq('ExamID', scope.examId)
+          );
+        }
 
-          if (rows.length === 0) { alert("Excel sheet is empty!"); return; }
+        const results = await Promise.all(queries);
+        const stuRes = results[0];
+        if (stuRes.error) throw stuRes.error;
 
-          const marksPayload = [];
-          const rawSubs = (localConfig && localConfig.classSubjectMap && localConfig.classSubjectMap[cls]) 
-            ? localConfig.classSubjectMap[cls].split(',').map(s => s.trim()).filter(Boolean) 
-            : ["ENGLISH", "HINDI", "MATHEMATICS", "SCIENCE", "SST"];
+        const students = (stuRes.data || []).sort((a, b) => (parseInt(a.RollNo, 10) || 0) - (parseInt(b.RollNo, 10) || 0));
+        if (students.length === 0) {
+          alert(`⚠️ No active students found in ${scope.cls} - Section ${scope.sec}. Template cannot be generated.`);
+          return;
+        }
 
-          rows.forEach(r => {
-            const adm = String(r.AdmissionNo || "").trim();
-            const sName = String(r.StudentName || "").trim();
-            const roll = String(r.RollNo || "");
-            const att = String(r.AttendanceDays || "");
-            const rem = String(r.TeacherRemarks || "");
+        const savedMap = {};
+        if (prefill && results[1] && results[1].data) {
+          results[1].data.forEach(m => {
+            const subK = String(m.Subject || m.SubjectName || "").trim().toUpperCase();
+            const actK = String(m.ActivityID || "MAIN").trim().toUpperCase();
+            const val = (m.IsAbsent || String(m.MarksObtained || "").toUpperCase() === "AB") ? "AB" : String(m.MarksObtained ?? "");
+            [m.AdmissionNo, m.StudId].forEach(id => {
+              const sk = String(id || "").trim().toUpperCase();
+              if (sk) savedMap[`${sk}::${subK}::${actK}`] = val;
+            });
+          });
+        }
 
-            rawSubs.forEach(sub => {
-              if (r[sub] !== undefined) {
-                marksPayload.push({
-                  Session: sess,
-                  TermCode: "T1",
-                  ExamCode: exCode,
-                  Class: cls,
-                  Section: sec,
-                  RollNo: roll,
-                  AdmissionNo: adm,
-                  StudentName: sName,
-                  SubjectName: sub,
-                  TheoryMarks: r[sub] || 0,
-                  PracticalMarks: 0,
-                  TotalMarks: r[sub] || 0,
-                  MaxMarks: 100,
-                  AttendanceDays: att,
-                  TeacherRemarks: rem
-                });
+        // Build Sheet 1: Marks_Entry
+        const excelRows = students.map((s, idx) => {
+          const studId = String(s.StudId || s.AdmissionNo || "").trim();
+          const admNo = String(s.AdmissionNo || studId).trim();
+          const fullName = `${s.StudentName || ""} ${s.LastName || ""}`.trim();
+
+          const rowObj = {
+            "RollNo": s.RollNo || (idx + 1),
+            "AdmissionNo": admNo,
+            "StudentName": fullName
+          };
+
+          scope.columns.forEach(col => {
+            const key1 = `${admNo.toUpperCase()}::${col.sub.toUpperCase()}::${col.act.id.toUpperCase()}`;
+            const key2 = `${studId.toUpperCase()}::${col.sub.toUpperCase()}::${col.act.id.toUpperCase()}`;
+            rowObj[col.header] = savedMap[key1] ?? savedMap[key2] ?? "";
+          });
+
+          return rowObj;
+        });
+
+        const wsMarks = XLSX.utils.json_to_sheet(excelRows);
+        wsMarks['!cols'] = [
+          { wch: 9 },
+          { wch: 18 },
+          { wch: 24 },
+          ...scope.columns.map(c => ({ wch: Math.max(20, c.header.length + 2) }))
+        ];
+
+        // Build Sheet 2: Template_Info (Security Fingerprint + Instructions)
+        const metaRows = [
+          { Field: "SchoolID", Value: scope.schoolId },
+          { Field: "Session", Value: scope.batch },
+          { Field: "TermCode", Value: scope.term },
+          { Field: "ExamID", Value: scope.examId },
+          { Field: "ExamName", Value: scope.examName },
+          { Field: "Class", Value: scope.cls },
+          { Field: "Section", Value: scope.sec },
+          { Field: "SubjectScope", Value: scope.subSel },
+          { Field: "ActivityScope", Value: scope.actSel },
+          { Field: "GeneratedAt", Value: new Date().toISOString() },
+          { Field: "INSTRUCTIONS", Value: "1. Do NOT edit AdmissionNo or Header names. 2. Enter numeric marks (0 to Max) or type AB for Absent. 3. Leave cell blank to skip." }
+        ];
+        const wsMeta = XLSX.utils.json_to_sheet(metaRows);
+        wsMeta['!cols'] = [{ wch: 18 }, { wch: 75 }];
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, wsMarks, "Marks_Entry");
+        XLSX.utils.book_append_sheet(wb, wsMeta, "Template_Info");
+
+        const safeFileName = `Marks_${scope.cls}_${scope.sec}_${scope.examName}_${scope.subSel}.xlsx`.replace(/[^a-zA-Z0-9._-]/g, "_");
+        XLSX.writeFile(wb, safeFileName);
+      } catch(err) {
+        console.error("EXU Download Error:", err);
+        alert("Failed to generate demo Excel: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class='fas fa-file-excel me-1'></i> Download Demo Excel Template`;
+      }
+    };
+
+    // 🛡️ STEP 2A: READ & FULL SECURITY VALIDATION BEFORE SAVING
+    window.validateExcelFileBeforeImport = async function() {
+      if (typeof XLSX === 'undefined') {
+        alert("Excel library (XLSX) is not loaded on this page!");
+        return;
+      }
+
+      const fileInput = document.getElementById('excelFileInput');
+      if (!fileInput.files || !fileInput.files[0]) {
+        alert("⚠️ Please choose a filled Excel (.xlsx / .xls) file first!");
+        return;
+      }
+
+      const file = fileInput.files[0];
+      if (file.size > 5 * 1024 * 1024) {
+        alert("⛔ File too large! Maximum allowed Excel file size is 5 MB.");
+        return;
+      }
+
+      window.resetExuPreview();
+      const scope = await resolveExuScope();
+      if (!scope) return;
+
+      const btn = document.getElementById('btnValidateExcel');
+      btn.disabled = true;
+      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Validating Security...`;
+
+      try {
+        // Fetch ACTIVE Students whitelist for selected Class & Section
+        const [stuRes, existRes] = await Promise.all([
+          db.from('Students').select('*').eq('SchoolID', scope.schoolId).eq('Class', scope.cls).eq('Section', scope.sec).eq('Status', 'ACTIVE'),
+          db.from('Student_Marks').select('Id,MarkID,AdmissionNo,StudId,Subject,ActivityID').eq('SchoolID', scope.schoolId).eq('Session', scope.batch).eq('Class', scope.cls).eq('Section', scope.sec).eq('ExamID', scope.examId)
+        ]);
+
+        if (stuRes.error) throw stuRes.error;
+        const activeStudents = stuRes.data || [];
+        if (activeStudents.length === 0) {
+          showExuAlert(`No ACTIVE students exist in ${scope.cls} - Section ${scope.sec}. Upload blocked.`);
+          return;
+        }
+
+        const studentWhitelist = {};
+        activeStudents.forEach(s => {
+          const admK = String(s.AdmissionNo || "").trim().toUpperCase();
+          const stK = String(s.StudId || "").trim().toUpperCase();
+          if (admK) studentWhitelist[admK] = s;
+          if (stK) studentWhitelist[stK] = s;
+        });
+
+        const existMarkIdMap = {};
+        (existRes.data || []).forEach(m => {
+          const k = `${String(m.AdmissionNo || "").trim().toUpperCase()}::${String(m.Subject || "").trim().toUpperCase()}::${String(m.ActivityID || "MAIN").trim().toUpperCase()}`;
+          existMarkIdMap[k] = m.MarkID;
+        });
+
+        // Read Excel Workbook
+        const arrayBuf = await file.arrayBuffer();
+        const workbook = XLSX.read(new Uint8Array(arrayBuf), { type: 'array' });
+
+        // SECURITY CHECK 1: Verify Template_Info fingerprint if present
+        if (workbook.SheetNames.includes("Template_Info")) {
+          const metaArr = XLSX.utils.sheet_to_json(workbook.Sheets["Template_Info"]);
+          const meta = {};
+          metaArr.forEach(r => { if (r.Field) meta[String(r.Field).trim()] = String(r.Value ?? "").trim(); });
+
+          const mismatches = [];
+          if (meta.SchoolID && meta.SchoolID !== String(scope.schoolId)) mismatches.push(`School (${meta.SchoolID} ≠ ${scope.schoolId})`);
+          if (meta.Session && meta.Session !== scope.batch) mismatches.push(`Batch (${meta.Session} ≠ ${scope.batch})`);
+          if (meta.ExamID && meta.ExamID !== String(scope.examId)) mismatches.push(`Exam (${meta.ExamName || meta.ExamID} ≠ ${scope.examName})`);
+          if (meta.Class && meta.Class.toLowerCase() !== scope.cls.toLowerCase()) mismatches.push(`Class (${meta.Class} ≠ ${scope.cls})`);
+          if (meta.Section && meta.Section.toLowerCase() !== scope.sec.toLowerCase()) mismatches.push(`Section (${meta.Section} ≠ ${scope.sec})`);
+
+          if (mismatches.length > 0) {
+            showExuAlert(`⛔ SECURITY BLOCK: Uploaded Excel does NOT match selected filters! Mismatch: ${mismatches.join(' | ')}`);
+            return;
+          }
+        }
+
+        const sheetName = workbook.SheetNames.includes("Marks_Entry") ? "Marks_Entry" : workbook.SheetNames[0];
+        const rows = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: "" });
+
+        if (!rows || rows.length === 0) {
+          showExuAlert("⚠️ Uploaded Excel sheet is empty!");
+          return;
+        }
+
+        // Map Excel Column Headers strictly to DB (Subject, Activity) pairs
+        const excelHeaders = Object.keys(rows[0]);
+        const matchedCols = [];
+        let frozenSkippedCols = 0;
+
+        excelHeaders.forEach(hdr => {
+          const cleanHdr = String(hdr).trim();
+          const lowHdr = cleanHdr.toLowerCase();
+          if (["rollno", "roll no", "admissionno", "admission no", "studentname", "student name", "s.no", "sl.no", "sl.no."].includes(lowHdr)) return;
+
+          // Match exact "SUBJECT :: ACTIVITY (Max:XX)"
+          let found = scope.columns.find(c => c.header.toLowerCase() === lowHdr);
+
+          // Fallback 1: "SUBJECT :: ACTIVITY" (without Max suffix)
+          if (!found && cleanHdr.includes("::")) {
+            const parts = cleanHdr.split("::");
+            const pSub = parts[0].trim().toLowerCase();
+            const pAct = parts[1].replace(/\(max:.*?\)/i, "").trim().toLowerCase();
+            found = scope.columns.find(c => c.sub.toLowerCase() === pSub && c.act.name.toLowerCase() === pAct);
+          }
+
+          // Fallback 2: Only 1 activity in scope & header matches Subject name
+          if (!found && scope.targetActivities.length === 1) {
+            found = scope.columns.find(c => c.sub.toLowerCase() === lowHdr);
+          }
+
+          // Fallback 3: Only 1 subject in scope & header matches Activity name
+          if (!found && scope.targetSubjects.length === 1) {
+            const cleanAct = cleanHdr.replace(/\(max:.*?\)/i, "").trim().toLowerCase();
+            found = scope.columns.find(c => c.act.name.toLowerCase() === cleanAct);
+          }
+
+          if (found) {
+            if (found.act.isFrozen) {
+              frozenSkippedCols++;
+            } else {
+              matchedCols.push({ excelKey: hdr, ...found });
+            }
+          }
+        });
+
+        if (frozenSkippedCols > 0) {
+          showExuAlert(`🔒 Note: ${frozenSkippedCols} activity column(s) are FROZEN by Admin and will be skipped automatically.`);
+        }
+
+        if (matchedCols.length === 0) {
+          showExuAlert("❌ No matching unlocked Exam Activity columns found in Excel! Please use Step 1 to download the official Demo Excel Template.");
+          return;
+        }
+
+        // Parse & Validate Every Cell
+        const errors = [];
+        const validRecords = [];
+        const dedupMap = new Map();
+        let absentCount = 0;
+        let skippedCount = 0;
+        const nowIso = new Date().toISOString();
+
+        const admColKey = excelHeaders.find(h => ["admissionno", "admission no", "adm no", "admno", "studid"].includes(h.trim().toLowerCase()));
+        if (!admColKey) {
+          showExuAlert("❌ 'AdmissionNo' column is missing in Excel! Please download the official template.");
+          return;
+        }
+
+        rows.forEach((r, rIdx) => {
+          const excelRowNum = rIdx + 2; // Row 1 is Header
+          const rawAdm = String(r[admColKey] ?? "").trim().toUpperCase();
+          if (!rawAdm) return; // Ignore completely blank trailing rows
+
+          // SECURITY CHECK 2: Verify Student belongs to ACTIVE whitelist of this Class & Section
+          const stu = studentWhitelist[rawAdm];
+          if (!stu) {
+            errors.push({ row: excelRowNum, adm: rawAdm, col: "AdmissionNo", val: rawAdm, reason: `Not an ACTIVE student in ${scope.cls} - Section ${scope.sec}` });
+            return;
+          }
+
+          const studId = String(stu.StudId || stu.AdmissionNo || "").trim();
+          const admNo = String(stu.AdmissionNo || studId).trim();
+          const fullName = `${stu.StudentName || ""} ${stu.LastName || ""}`.trim();
+
+          // Track OMR Right+Wrong per subject for this student
+          const omrCheck = {}; // subUpper -> { r, w, max, anyAb }
+
+          matchedCols.forEach(mc => {
+            const rawCell = String(r[mc.excelKey] ?? "").trim().toUpperCase();
+
+            if (rawCell === "") {
+              skippedCount++;
+              return;
+            }
+
+            const isAb = (rawCell === "AB" || rawCell === "A");
+            if (!isAb && !isStrictNumeric(rawCell)) {
+              errors.push({ row: excelRowNum, adm: admNo, col: mc.header, val: rawCell, reason: `Invalid format! Only numeric (0-${mc.act.max}) or "AB" allowed.` });
+              return;
+            }
+
+            let numVal = 0;
+            if (!isAb) {
+              numVal = parseFloat(rawCell);
+              if (numVal < 0 || numVal > mc.act.max) {
+                errors.push({ row: excelRowNum, adm: admNo, col: mc.header, val: rawCell, reason: `Exceeds Max Marks (${mc.act.max}).` });
+                return;
               }
+            } else {
+              absentCount++;
+            }
+
+            // Record OMR values for Right+Wrong <= Max validation
+            const subUp = mc.sub.toUpperCase();
+            if (mc.act.type === "OMR_RIGHT" || mc.act.type === "OMR_WRONG") {
+              if (!omrCheck[subUp]) omrCheck[subUp] = { r: 0, w: 0, max: 0, anyAb: false, sub: mc.sub };
+              if (isAb) omrCheck[subUp].anyAb = true;
+              else if (mc.act.type === "OMR_RIGHT") { omrCheck[subUp].r = numVal; omrCheck[subUp].max = mc.act.max; }
+              else if (mc.act.type === "OMR_WRONG") { omrCheck[subUp].w = numVal; }
+            }
+
+            const conflictKey = `${admNo.toUpperCase()}::${subUp}::${mc.act.id.toUpperCase()}`;
+            const existingMarkId = existMarkIdMap[conflictKey];
+
+            dedupMap.set(conflictKey, {
+              MarkID: existingMarkId || `MRK-${Date.now().toString(36).toUpperCase()}-${rIdx}-${mc.act.id}`,
+              SchoolID: scope.schoolId,
+              Session: scope.batch,
+              TermCode: scope.term,
+              ExamID: scope.examId,
+              ExamCode: scope.examCode,
+              ExamName: scope.examName,
+              Subject: mc.sub,
+              SubjectName: mc.sub,
+              ActivityID: mc.act.id,
+              ActivityName: mc.act.name,
+              ActivityType: mc.act.type,
+              MaxMarks: mc.act.max,
+              Class: scope.cls,
+              Section: scope.sec,
+              StudId: studId,
+              AdmissionNo: admNo,
+              RollNo: String(stu.RollNo || ""),
+              StudentName: fullName,
+              MarksObtained: isAb ? "AB" : String(numVal),
+              IsAbsent: isAb,
+              Source: "EXCEL",
+              EnteredBy: scope.user.name || "Excel Import",
+              UpdatedAt: nowIso
             });
           });
 
-          const user = JSON.parse(localStorage.getItem("a2z_user") || "{}");
-          const payload = {
-            action: "saveStudentMarksMaster",
-            tsid: user.targetSheetId,
-            session: sess,
-            examCode: exCode,
-            className: cls,
-            section: sec,
-            enteredBy: user.name || "Excel Import",
-            marksList: marksPayload
-          };
+          // OMR Cross-Column Validation: Right + Wrong <= Max
+          Object.values(omrCheck).forEach(o => {
+            if (!o.anyAb && o.max > 0 && (o.r + o.w) > o.max) {
+              errors.push({
+                row: excelRowNum,
+                adm: admNo,
+                col: `${o.sub} (OMR)`,
+                val: `R:${o.r} + W:${o.w}`,
+                reason: `Right (${o.r}) + Wrong (${o.w}) exceeds Full Marks (${o.max}).`
+              });
+            }
+          });
+        });
 
-          const res = await (await fetch(scriptURL, { method: "POST", body: JSON.stringify(payload) })).json();
-          alert(`🎉 Successfully imported ${marksPayload.length} marks entries from Excel!`);
-          fileInput.value = "";
-        } catch(err) {
-          alert("Error processing Excel file: " + err.message);
-        } finally {
-          btn.disabled = false;
-          btn.innerHTML = `<i class='fas fa-upload me-1'></i> Upload & Save Marks`;
+        dedupMap.forEach(rec => validRecords.push(rec));
+
+        // Render Validation Preview Dashboard
+        document.getElementById('exuPreviewBox').classList.remove('d-none');
+        document.getElementById('exuStatValid').innerText = validRecords.length;
+        document.getElementById('exuStatAbsent').innerText = absentCount;
+        document.getElementById('exuStatErrors').innerText = errors.length;
+        document.getElementById('exuStatSkipped').innerText = skippedCount;
+
+        if (errors.length > 0) {
+          validatedUpsertPayload = [];
+          document.getElementById('exuErrorSection').classList.remove('d-none');
+          document.getElementById('exuValidSection').classList.add('d-none');
+          document.getElementById('btnConfirmImportExcel').disabled = true;
+
+          document.getElementById('exuErrorBody').innerHTML = errors.map(er => `
+            <tr>
+              <td><span class='badge bg-danger'>Row ${er.row}</span></td>
+              <td class='fw-bold'>${er.adm}</td>
+              <td>${er.col}</td>
+              <td class='text-danger fw-bold'>${er.val}</td>
+              <td class='text-start text-danger'>${er.reason}</td>
+            </tr>`).join('');
+        } else if (validRecords.length === 0) {
+          validatedUpsertPayload = [];
+          document.getElementById('exuErrorSection').classList.add('d-none');
+          document.getElementById('exuValidSection').classList.add('d-none');
+          document.getElementById('btnConfirmImportExcel').disabled = true;
+          showExuAlert("⚠️ Excel mein koi bhi marks bhare hue nahi mile (saare cells khali hain).");
+        } else {
+          validatedUpsertPayload = validRecords;
+          document.getElementById('exuErrorSection').classList.add('d-none');
+          document.getElementById('exuValidSection').classList.remove('d-none');
+          document.getElementById('btnConfirmImportExcel').disabled = false;
+
+          document.getElementById('exuValidBody').innerHTML = validRecords.slice(0, 150).map((rec, i) => `
+            <tr>
+              <td>${i + 1}</td>
+              <td><strong class='text-primary'>${rec.RollNo || '-'}</strong></td>
+              <td>${rec.AdmissionNo}</td>
+              <td class='text-start'>${rec.StudentName}</td>
+              <td>${rec.Subject}</td>
+              <td>${rec.ActivityName}</td>
+              <td>${rec.MaxMarks}</td>
+              <td>${rec.IsAbsent ? `<span class='badge bg-danger'>AB</span>` : `<span class='badge bg-success'>${rec.MarksObtained}</span>`}</td>
+            </tr>`).join('') + (validRecords.length > 150 ? `<tr><td colspan='8' class='text-muted'>...and ${validRecords.length - 150} more validated entries ready to save.</td></tr>` : '');
         }
-      };
-      reader.readAsArrayBuffer(fileInput.files[0]);
+      } catch(err) {
+        console.error("EXU Validate Error:", err);
+        showExuAlert("Error reading Excel file: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class='fas fa-shield-alt me-1'></i> Validate &amp; Preview Excel`;
+      }
+    };
+
+    // 💾 STEP 2B: CONFIRM & BATCH UPSERT VALIDATED MARKS TO SUPABASE
+    window.confirmAndSaveExcelMarks = async function() {
+      if (!validatedUpsertPayload || validatedUpsertPayload.length === 0) {
+        alert("⚠️ No validated marks ready to save!");
+        return;
+      }
+
+      const btn = document.getElementById('btnConfirmImportExcel');
+      btn.disabled = true;
+      btn.innerHTML = `<i class='fas fa-spinner fa-spin me-1'></i> Saving ${validatedUpsertPayload.length} Marks...`;
+
+      try {
+        // Chunk into batches of 500 for safe large-class uploads
+        const CHUNK_SIZE = 500;
+        for (let i = 0; i < validatedUpsertPayload.length; i += CHUNK_SIZE) {
+          const chunk = validatedUpsertPayload.slice(i, i + CHUNK_SIZE);
+          const { error } = await db.from('Student_Marks').upsert(chunk, {
+            onConflict: 'SchoolID,Session,ExamID,Subject,ActivityID,AdmissionNo'
+          });
+          if (error) throw error;
+        }
+
+        alert(`🎉 Success: ${validatedUpsertPayload.length} marks imported & updated cleanly from Excel!`);
+        document.getElementById('excelFileInput').value = "";
+        window.resetExuPreview();
+      } catch(err) {
+        console.error("EXU Save Error:", err);
+        alert("Failed to save Excel marks: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class='fas fa-check-circle me-1'></i> Confirm &amp; Save Marks to Database`;
+      }
     };
 
     window.initExcelUploadModule();
